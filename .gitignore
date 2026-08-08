@@ -1,0 +1,43 @@
+# dependencies
+node_modules/
+
+# builds
+dist/
+out/
+release/
+*.tsbuildinfo
+
+# python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# local toolchains (not part of the repo)
+.tools/
+
+# editors / os
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# logs & local data
+logs/
+*.log
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*
+
+# test artifacts
+playwright-report/
+test-results/
+coverage/
+.eslintcache
