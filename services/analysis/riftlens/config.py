@@ -32,6 +32,11 @@ class Settings(BaseSettings):
         """Return the SQLite path under data_dir. Assumes data_dir is writable later."""
         return self.data_dir / "riftlens.db"
 
+    @property
+    def cache_dir(self) -> Path:
+        """Return the on-disk cache root. Assumes data_dir is writable later."""
+        return self.data_dir / "cache"
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

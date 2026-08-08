@@ -8,9 +8,7 @@ from typing import Any
 import structlog
 from structlog.typing import EventDict, WrappedLogger
 
-_RGAPI_RE = re.compile(
-    r"RGAPI-[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}"
-)
+_RGAPI_RE = re.compile(r"RGAPI-[0-9A-Za-z-]+")
 _REDACTED = "RGAPI-[REDACTED]"
 
 
@@ -27,7 +25,10 @@ def _redact_value(value: Any) -> Any:
         return type(value)(_redact_value(item) for item in value)
     if isinstance(value, BaseException):
         redacted = _redact_text(str(value))
-        return type(value)(redacted)
+        try:
+            return type(value)(redacted)
+        except Exception:
+            return RuntimeError(redacted)
     return value
 
 
@@ -67,5 +68,5 @@ def configure_logging(*, json_output: bool = False, level: int = logging.INFO) -
         ],
         wrapper_class=structlog.make_filtering_bound_logger(level),
         logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
-        cache_logger_on_first_use=True,
+        cache_logger_on_first_use=False,
     )
