@@ -1,0 +1,22 @@
+# Minimal Phase 1 H.4 stub. Real rules land in H.7.
+id: R-000
+version: 1
+name: "Stub rule (not evaluated)"
+concept_id: LANING
+category: LANING
+severity_base: LOW
+data_tier: RIOT_ONLY
+patch_range: null
+applicability:
+  roles: [TOP, MIDDLE, BOTTOM, UTILITY, JUNGLE]
+  queues: [420, 400, 440]
+  phases: [EARLY, MID, LATE]
+trigger:
+  evaluate_on: EVENT
+  predicate: rules.stubs.never
+params: {}
+false_positives:
+  - "Stub rule is never evaluated"
+  - "Present only so RuleDefinitionLoader can upsert a row"
+cooldown_ms: 0
+max_findings_per_match: 0

@@ -1,0 +1,39 @@
+# Minimal Phase 1 H.4 stub. Full taxonomy lands in H.6.
+version: 1
+concepts:
+  - id: LANING
+    parent_id: null
+    domain: LANING
+    label: Laning
+    description: Early-game lane play.
+    data_tier: RIOT_ONLY
+    teachability: 0.7
+    roles: [TOP, MIDDLE, BOTTOM, UTILITY]
+    phases: [EARLY, MID]
+  - id: LANING.WAVE_MANAGEMENT
+    parent_id: LANING
+    domain: LANING
+    label: Wave management
+    description: Controlling minion waves.
+    data_tier: RIOT_DERIVED
+    teachability: 0.8
+    roles: [TOP, MIDDLE, BOTTOM]
+    phases: [EARLY, MID]
+  - id: LANING.WAVE_MANAGEMENT.SLOW_PUSH
+    parent_id: LANING.WAVE_MANAGEMENT
+    domain: LANING
+    label: Slow push
+    description: Building a stacked wave before crashing.
+    data_tier: RIOT_DERIVED
+    teachability: 0.85
+    roles: [TOP, MIDDLE, BOTTOM]
+    phases: [EARLY]
+  - id: COMBAT
+    parent_id: null
+    domain: COMBAT
+    label: Combat
+    description: Fights, trades, and deaths.
+    data_tier: RIOT_ONLY
+    teachability: 0.6
+    roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+    phases: [EARLY, MID, LATE]

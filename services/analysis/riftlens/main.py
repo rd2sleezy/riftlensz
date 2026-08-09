@@ -5,7 +5,8 @@ import json
 import os
 import sys
 import time
-from collections.abc import Awaitable, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
+from contextlib import asynccontextmanager
 from typing import Any
 
 import typer
@@ -14,6 +15,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from riftlens import __version__
+from riftlens.adapters.db.engine import init_database, make_session_factory
 from riftlens.api.health import router as health_router
 from riftlens.config import Settings, get_settings
 from riftlens.logging import configure_logging
@@ -24,7 +26,24 @@ _UNAUTHORIZED = JSONResponse({"detail": "Unauthorized"}, status_code=401)
 def create_app(*, settings: Settings | None = None, token: str | None = None) -> FastAPI:
     """Build the FastAPI app. Assumes token is the process bearer secret when serving."""
     resolved = settings or get_settings()
-    app = FastAPI(title="RiftLens", version=__version__, docs_url=None, redoc_url=None)
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        engine = init_database(resolved)
+        app.state.engine = engine
+        app.state.session_factory = make_session_factory(engine)
+        try:
+            yield
+        finally:
+            engine.dispose()
+
+    app = FastAPI(
+        title="RiftLens",
+        version=__version__,
+        docs_url=None,
+        redoc_url=None,
+        lifespan=lifespan,
+    )
     app.state.settings = resolved
     app.state.token = token or ""
     app.state.started_monotonic = time.monotonic()

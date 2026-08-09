@@ -22,6 +22,7 @@ dependencies = [
     "numpy>=2",
     "jinja2>=3.1",
     "typer>=0.15",
+    "pyyaml>=6",
 ]
 
 [dependency-groups]
@@ -33,6 +34,7 @@ dev = [
     "ruff>=0.8",
     "mypy>=1.13",
     "import-linter>=2",
+    "types-pyyaml>=6",
 ]
 
 [tool.hatch.build.targets.wheel]
