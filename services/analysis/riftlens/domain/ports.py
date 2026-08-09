@@ -520,10 +520,10 @@ class PatchData(Protocol):
         """Return passive gold accrued on ``[start_ms, end_ms)``. Assumes ms game clock."""
 
     def gold_per_second_rate(self, raw: int) -> float | None:
-        """Return gold/ms implied by a timeline ``goldPerSecond`` sample, or None."""
+        """Return gold/ms implied by timeline ``goldPerSecond``, or None if unverified."""
 
     def respawn_ms(self, level: int, death_t_ms: int) -> int | None:
         """Return respawn duration in ms for ``level`` at ``death_t_ms``, or None."""
 
     def health_regen_per_ms(self, regen_stat: float) -> float:
-        """Return HP per ms from a timeline ``healthRegen`` stat. Assumes loaded constants."""
+        """Return HP/ms from timeline ``healthRegen``, or 0 when the unit is unverified."""

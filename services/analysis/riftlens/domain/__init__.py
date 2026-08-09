@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from riftlens.domain.enums import (
     DataTier,
+    EvidenceKind,
     FactKind,
     GamePhase,
     Role,
@@ -10,7 +11,9 @@ from riftlens.domain.enums import (
     Team,
 )
 from riftlens.domain.estimate import Estimate, combine
+from riftlens.domain.evidence import Evidence
 from riftlens.domain.fact import Fact, Provenance, SubjectRef
+from riftlens.domain.finding import Finding
 from riftlens.domain.geometry import Point, TurretRef, Zone, zone_of
 from riftlens.domain.ids import is_ulid, new_ulid
 from riftlens.domain.timeline import (
@@ -23,8 +26,11 @@ from riftlens.domain.timeline import (
 __all__ = [
     "DataTier",
     "Estimate",
+    "Evidence",
+    "EvidenceKind",
     "Fact",
     "FactKind",
+    "Finding",
     "GamePhase",
     "GameStateSnapshot",
     "GameStateTimeline",

@@ -23,9 +23,10 @@ def hp_fraction(gst: GameStateTimeline, pid: int, t_ms: int, patch: PatchData) -
     """Return estimated HP / HPMax at ``t_ms``.
 
     Exact at HEALTH frame times. Between frames, subtract a uniform share of the
-    ``totalDamageTaken`` delta and add ``healthRegen``. Hard-resets to 1.0 at
-    detected fountain visits and respawns. ``lo``/``hi`` are generous so rules
-    can require the whole interval to clear a threshold. Assumes HEALTH facts exist.
+    ``totalDamageTaken`` delta. Timeline ``healthRegen`` is quarantined (unit
+    unverified) and is not applied. Hard-resets to 1.0 at detected fountain
+    visits and respawns. ``lo``/``hi`` are generous so rules can require the
+    whole interval to clear a threshold. Assumes HEALTH facts exist.
     """
     health_facts = facts_for(gst, FactKind.HEALTH, pid)
     exact = exact_frame(health_facts, t_ms)
@@ -93,6 +94,7 @@ def _integrate_hp(
     taken = _damage_taken_delta(gst, pid, left.t_ms, right.t_ms) * frac
     regen_stat = float(left.payload.get("healthRegen") or 0.0)
     regen = patch.health_regen_per_ms(regen_stat) * max(0, t_ms - left.t_ms)
+    # health_regen_per_ms is 0 while units are quarantined.
     hp = start * left_max - taken + regen
     return min(1.0, max(0.0, hp / hmax))
 

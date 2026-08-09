@@ -17,6 +17,8 @@ from riftlens.adapters.riot.models import MatchDto, TimelineDto
 from riftlens.adapters.riot.rate_limiter import RiotRateLimiter
 from riftlens.analysis.metrics.base import MetricValue
 from riftlens.analysis.metrics.registry import compute_metrics
+from riftlens.analysis.rules.engine import RuleEngine
+from riftlens.analysis.rules.loader import load_rule_pack
 from riftlens.config import get_settings
 from riftlens.domain.enums import FactKind, GamePhase
 from riftlens.domain.fact import SubjectRef
@@ -83,6 +85,25 @@ def dump_metrics(
     patch.load_bundled(gst.patch)
     values = compute_metrics(gst, pid, patch)
     _print_metrics_table(gst, pid, values, paired=games_are_paired(match, timeline))
+
+
+@app.command("rules")
+def dump_rules(
+    match_id: str,
+    pid: Annotated[int, typer.Option("--pid", help="Participant id to evaluate.")],
+    fixtures: Annotated[
+        Path | None, typer.Option("--fixtures", help="Directory of NA1_fixture_* folders.")
+    ] = None,
+) -> None:
+    """Print H.6 rule findings for a local fixture. Assumes GST is built without network."""
+    configure_logging()
+    match, timeline = _load_fixture_pair(match_id, fixtures)
+    gst = build_game_state_timeline(match, timeline)
+    patch = PatchDataProvider()
+    patch.load_bundled(gst.patch)
+    pack = load_rule_pack()
+    findings = RuleEngine(pack, patch=patch).run(gst, pid)
+    _print_findings(gst, pid, findings, paired=games_are_paired(match, timeline))
 
 
 @app.command("gst")
@@ -195,6 +216,41 @@ def _print_metrics_table(
             f"{raw.metric_id:<6} {phase_label:<16} {raw.value:10.3f} {raw.unit:<16} "
             f"{raw.confidence:5.2f} {pctl:>6}  {raw.sample_context}"
         )
+
+
+def _print_findings(
+    gst: GameStateTimeline,
+    pid: int,
+    findings: Sequence[object],
+    *,
+    paired: bool,
+) -> None:
+    from riftlens.domain.finding import Finding
+
+    info = gst.participants.get(pid)
+    champ = info.champion if info else "?"
+    role = info.role.value if info else "?"
+    print(f"match_id={gst.match_id} pid={pid} champion={champ} role={role} patch={gst.patch}")
+    if not paired:
+        print(
+            "NOTE: match.json and timeline.json are unpaired games. "
+            "Findings are computed from the GameStateTimeline only."
+        )
+    print(f"findings={len(findings)}")
+    print()
+    for raw in findings:
+        if not isinstance(raw, Finding):
+            continue
+        minutes, seconds = divmod(raw.t_ms // 1000, 60)
+        clock = f"{minutes:02d}:{seconds:02d}"
+        flag = " suppressed" if raw.suppressed else ""
+        print(
+            f"{raw.rule_id} v{raw.rule_version} {clock} {raw.severity.value} "
+            f"conf={raw.confidence:.2f}{flag}  {raw.title}"
+        )
+        print(f"  concept={raw.concept_id} suppressed_by={raw.suppressed_by}")
+        for item in raw.evidence:
+            print(f"  evidence[{item.kind.value}] {item.label}: {item.value}")
 
 
 def main() -> None:

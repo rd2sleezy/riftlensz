@@ -1,15 +1,15 @@
-# Minimal Phase 1 stub. Real coaching rules land in H.7.
-id: R-000
+# Throwaway H.6 engine test rule — jungle-only, so laners never match.
+id: T-002
 version: 1
-name: "Stub rule (not evaluated)"
-concept_id: LANING
-category: LANING
-severity_base: LOW
+name: "Role-gated jungle-only (test)"
+concept_id: MACRO.OBJECTIVES.DRAGON_SETUP
+category: MACRO
+severity_base: MEDIUM
 data_tier: RIOT_ONLY
 patch_range: null
 
 applicability:
-  roles: [TOP, MIDDLE, BOTTOM, UTILITY, JUNGLE]
+  roles: [JUNGLE]
   champions:
     include: ["*"]
     exclude: []
@@ -27,25 +27,25 @@ required_inputs:
 trigger:
   evaluate_on: EVENT
   fact_kinds: [LEVEL_UP]
-  predicate: rules.stubs.never
+  predicate: rules.test.role_gated_never_fires
 
 params: {}
 
 severity_modifiers: []
 
 evidence_template:
-  - "Stub rule never emits findings"
+  - "Would fire only for jungle subjects"
 
 explanation: |
-  Placeholder so RuleDefinitionLoader can upsert a validated row.
+  Test rule: applicability restricts evaluation to JUNGLE.
 
 better_alternative: |
-  No alternative — this rule never fires.
+  Not a coaching suggestion.
 
 false_positives:
-  - "Stub rule is never evaluated"
-  - "Present only so RuleDefinitionLoader can upsert a row"
+  - "Never fires for non-jungle roles by design"
+  - "Not intended for production reviews"
 
 suppressed_by: []
 cooldown_ms: 0
-max_findings_per_match: 0
+max_findings_per_match: 8

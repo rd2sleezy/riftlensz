@@ -3,20 +3,23 @@
 # PatchDataProvider — never hardcode them beside a threshold.
 #
 # Values are wiki-derived / fixture-calibrated for Season 12 and labelled
-# provisional. ASK before treating timeline goldPerSecond or healthRegen units
-# as documented Riot fields — they are not named in MATCH-V5 docs.
+# provisional. Timeline goldPerSecond and healthRegen units are QUARANTINED —
+# no authoritative unit was found in Data Dragon, MATCH-V5 models, fixtures, or
+# the design doc. Do not treat either field as a hard fact in H.6+ analysis.
 
 default:
   passive_gold_per_second: 2.04
   passive_gold_start_ms: 110000
-  # Observed timeline goldPerSecond values are 0 / 20 / 30. Treating them as
-  # tenths of gold per second (20 → 2.0 g/s) matches support-item income scale.
-  # Unit is NOT documented by Riot; residual reconciliation absorbs error.
-  gold_per_second_unit: 0.1
+  # QUARANTINED. Observed timeline values are 0 / 20 / 30 (see NA1 fixtures).
+  # Tenths-of-g/s is a plausible guess but is not documented. PatchDataProvider
+  # ignores this key until a cited unit exists.
+  gold_per_second_unit: null
   average_lane_minion_gold: 19.8
   jungle_minion_gold: 22.0
-  # Timeline healthRegen matches client HP/5 display (e.g. 17 → 17 HP per 5 s).
-  health_regen_period_ms: 5000
+  # QUARANTINED. Data Dragon ``stats.hpregen`` is HP/5 for champion base stats,
+  # but timeline ``championStats.healthRegen`` is a different field with no
+  # schema comment. PatchDataProvider will not convert it.
+  health_regen_period_ms: null
   respawn:
     # Commonly cited Summoner's Rift BRW table (seconds by champion level).
     base_seconds_by_level:

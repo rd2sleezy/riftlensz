@@ -44,4 +44,6 @@ def test_bundled_patch_data_is_offline() -> None:
     assert provider.respawn_ms(6, 180_000) is not None
     assert provider.passive_gold(0, 60_000) == 0.0
     assert provider.passive_gold(110_000, 120_000) > 0
+    assert provider.gold_per_second_rate(20) is None
+    assert provider.health_regen_per_ms(17.0) == 0.0
 

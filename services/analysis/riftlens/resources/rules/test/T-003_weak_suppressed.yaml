@@ -1,0 +1,51 @@
+# Throwaway H.6 suppression-pair member — marked suppressed when T-004 fires.
+id: T-003
+version: 1
+name: "Weak finding (test, suppressed by T-004)"
+concept_id: RISK.DEATH_CAUSE.DEATH_TO_UNSEEN_JUNGLER
+category: RISK
+severity_base: LOW
+data_tier: RIOT_ONLY
+patch_range: null
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [LEVEL_UP]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [LEVEL_UP]
+  predicate: rules.test.weak_finding
+
+params: {}
+
+severity_modifiers: []
+
+evidence_template:
+  - "Weak test signal at {t_ms}"
+
+explanation: |
+  Weaker test finding. Hidden when T-004 fires at the same timestamp.
+
+better_alternative: |
+  Not a coaching suggestion.
+
+false_positives:
+  - "Always fires on level-up by design"
+  - "Suppression pair is synthetic"
+
+suppressed_by: [T-004]
+cooldown_ms: 0
+max_findings_per_match: 8

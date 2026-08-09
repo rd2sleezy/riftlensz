@@ -1,14 +1,21 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, cast
 
 import yaml
+from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
 from riftlens.adapters.db.models import ConceptRow, RuleDefinitionRow
+from riftlens.analysis.rules.loader import (
+    import_predicate_modules,
+    load_rule_file,
+    load_taxonomy,
+)
+from riftlens.analysis.rules.registry import global_predicates
 
 _RESOURCES = Path(__file__).resolve().parents[2] / "resources"
 _TAXONOMY_PATH = _RESOURCES / "taxonomy" / "taxonomy.yaml"
@@ -34,11 +41,7 @@ class TaxonomyLoader:
 
         Assumes each concept ``id`` is unique and ``parent_id`` values resolve in-file.
         """
-        payload = _load_yaml(self._path)
-        concepts = payload.get("concepts")
-        if not isinstance(concepts, list):
-            raise ValueError(f"{self._path} must contain a top-level 'concepts' list")
-        ordered = _order_concepts(cast(list[Mapping[str, Any]], concepts))
+        ordered = load_taxonomy(self._path)
         session = self._factory()
         try:
             for item in ordered:
@@ -64,12 +67,20 @@ class RuleDefinitionLoader:
     def load(self) -> int:
         """Upsert rule YAML files into ``rule_definition``. Returns rows written.
 
-        Assumes each file has ``id`` + ``version`` and a ``concept_id`` already loaded.
+        Validates every file against ``RuleDefinition``; malformed YAML is a startup error.
+        Assumes taxonomy rows are already loaded so ``concept_id`` foreign keys resolve.
         """
+        import_predicate_modules()
+        registry = global_predicates()
         paths = sorted(self._root.rglob("*.yaml")) + sorted(self._root.rglob("*.yml"))
-        definitions = [_rule_row(_load_yaml(path), path) for path in paths]
         session = self._factory()
         try:
+            concept_ids = set(session.scalars(select(ConceptRow.id)))
+            definitions: list[RuleDefinitionRow] = []
+            for path in paths:
+                payload = _load_yaml(path)
+                load_rule_file(path, concept_ids=concept_ids, registry=registry)
+                definitions.append(_rule_row(payload, path))
             for row in definitions:
                 session.merge(row)
             session.commit()
@@ -78,7 +89,7 @@ class RuleDefinitionLoader:
             raise
         finally:
             session.close()
-        return len(definitions)
+        return len(paths)
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -90,37 +101,17 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     return cast(dict[str, Any], loaded)
 
 
-def _order_concepts(concepts: Iterable[Mapping[str, Any]]) -> list[Mapping[str, Any]]:
-    remaining = [dict(item) for item in concepts]
-    ordered: list[Mapping[str, Any]] = []
-    loaded: set[str] = set()
-    while remaining:
-        ready = [
-            item
-            for item in remaining
-            if not item.get("parent_id") or str(item["parent_id"]) in loaded
-        ]
-        if not ready:
-            ids = [str(item.get("id")) for item in remaining]
-            raise ValueError(f"concept parent cycle or missing parent among {ids}")
-        for item in ready:
-            concept_id = str(item["id"])
-            ordered.append(item)
-            loaded.add(concept_id)
-        remaining = [item for item in remaining if str(item["id"]) not in loaded]
-    return ordered
-
-
 def _concept_row(item: Mapping[str, Any]) -> ConceptRow:
     concept_id = str(item["id"])
-    parent = item.get("parent_id")
+    parent = item.get("parent_id", item.get("parent"))
+    data_tier = item.get("data_tier", item.get("min_data_tier"))
     return ConceptRow(
         id=concept_id,
         parent_id=None if parent in (None, "") else str(parent),
         domain=str(item["domain"]),
         label=str(item["label"]),
         description=None if item.get("description") is None else str(item["description"]),
-        data_tier=str(item["data_tier"]),
+        data_tier=str(data_tier),
         teachability=float(item["teachability"]),
         roles=dumps_json(item["roles"]),
         phases=dumps_json(item["phases"]),

@@ -58,16 +58,24 @@ class Source(StrEnum):
 
 
 class Severity(StrEnum):
-    CRIT = "CRIT"
-    HIGH = "HIGH"
-    MEDIUM = "MEDIUM"
     LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
 
 
 class DataTier(StrEnum):
     RIOT_ONLY = "RIOT_ONLY"
     RIOT_DERIVED = "RIOT_DERIVED"
     CV_REQUIRED = "CV_REQUIRED"
+
+
+class EvidenceKind(StrEnum):
+    FACT = "FACT"
+    METRIC = "METRIC"
+    EVENT = "EVENT"
+    SERIES = "SERIES"
+    FRAME = "FRAME"
 
 
 class Lane(StrEnum):

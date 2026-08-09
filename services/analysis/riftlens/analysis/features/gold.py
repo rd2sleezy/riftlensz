@@ -17,8 +17,8 @@ from riftlens.domain.timeline import GameStateTimeline
 def unspent_gold(gst: GameStateTimeline, pid: int, t_ms: int, patch: PatchData) -> Estimate[int]:
     """Return reconstructed ``currentGold`` at ``t_ms``.
 
-    Anchors at bracketing GOLD frames. Between frames: passive income (frame
-    ``goldPerSecond`` when interpretable, else patch passive), CS-gold from CS
+    Anchors at bracketing GOLD frames. Between frames: patch passive gold (not
+    timeline ``goldPerSecond`` — that unit is quarantined), CS-gold from CS
     deltas × patch minion values, minus ITEM_PURCHASED costs, plus ITEM_SOLD
     refunds. Unexplained residual to the next frame is blended in and penalizes
     confidence. Assumes GOLD/CS facts exist for ``pid``.
@@ -119,6 +119,7 @@ def _passive(left: Fact, start_ms: int, end_ms: int, patch: PatchData) -> float:
     rate = patch.gold_per_second_rate(int(raw_gps)) if raw_gps is not None else None
     if rate is not None:
         return rate * max(0, end_ms - start_ms)
+    # goldPerSecond unit unverified → ignore the frame field; use patch passive.
     return patch.passive_gold(start_ms, end_ms)
 
 

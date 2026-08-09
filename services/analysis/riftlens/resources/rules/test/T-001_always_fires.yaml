@@ -1,15 +1,15 @@
-# Minimal Phase 1 stub. Real coaching rules land in H.7.
-id: R-000
+# Throwaway H.6 engine test rule — not a production coaching rule.
+id: T-001
 version: 1
-name: "Stub rule (not evaluated)"
-concept_id: LANING
+name: "Always fires on level-up (test)"
+concept_id: LANING.LEVEL_SPIKES.LEVEL_2_PRIORITY_RACE
 category: LANING
 severity_base: LOW
 data_tier: RIOT_ONLY
-patch_range: null
+patch_range: ">=12.1"
 
 applicability:
-  roles: [TOP, MIDDLE, BOTTOM, UTILITY, JUNGLE]
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
   champions:
     include: ["*"]
     exclude: []
@@ -27,25 +27,25 @@ required_inputs:
 trigger:
   evaluate_on: EVENT
   fact_kinds: [LEVEL_UP]
-  predicate: rules.stubs.never
+  predicate: rules.test.always_fires
 
 params: {}
 
 severity_modifiers: []
 
 evidence_template:
-  - "Stub rule never emits findings"
+  - "Level-up at {t_ms} for pid {pid}"
 
 explanation: |
-  Placeholder so RuleDefinitionLoader can upsert a validated row.
+  Test rule: fires on every LEVEL_UP fact for the subject.
 
 better_alternative: |
-  No alternative — this rule never fires.
+  Not a coaching suggestion.
 
 false_positives:
-  - "Stub rule is never evaluated"
-  - "Present only so RuleDefinitionLoader can upsert a row"
+  - "Fires on every level-up by design"
+  - "Not intended for production reviews"
 
 suppressed_by: []
 cooldown_ms: 0
-max_findings_per_match: 0
+max_findings_per_match: 8

@@ -112,7 +112,12 @@ class PatchDataProvider:
         return rate * (hi - lo) / 1000.0
 
     def gold_per_second_rate(self, raw: int) -> float | None:
-        """Return gold/ms from a timeline ``goldPerSecond`` sample. Assumes constants loaded."""
+        """Return gold/ms from timeline ``goldPerSecond``, or None when units are unverified.
+
+        The MATCH-V5 field has no documented unit. Constants omit
+        ``gold_per_second_unit`` until an authoritative citation exists.
+        Assumes ``raw`` is the integer stored on the GOLD fact payload.
+        """
         if raw <= 0:
             return None
         unit = self._constants.get("gold_per_second_unit")
@@ -139,8 +144,15 @@ class PatchDataProvider:
         return int(round(base * (1.0 + tif) * 1000.0))
 
     def health_regen_per_ms(self, regen_stat: float) -> float:
-        """Return HP/ms from timeline ``healthRegen``. Assumes a period constant is loaded."""
-        period = float(self._constants.get("health_regen_period_ms") or 5000.0)
+        """Return HP/ms from timeline ``healthRegen``, or 0 when units are unverified.
+
+        ``health_regen_period_ms`` is omitted while the timeline field's unit is
+        unconfirmed. Assumes callers treat 0 as "do not apply regen".
+        """
+        period_raw = self._constants.get("health_regen_period_ms")
+        if period_raw is None:
+            return 0.0
+        period = float(period_raw)
         if period <= 0:
             return 0.0
         return float(regen_stat) / period
