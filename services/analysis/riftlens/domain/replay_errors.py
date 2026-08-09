@@ -13,6 +13,9 @@ class ReplayErrorCode(StrEnum):
     ROFL_MISSING = "ROFL_MISSING"
     ROFL_UNREADABLE = "ROFL_UNREADABLE"
     ROFL_INVALID = "ROFL_INVALID"
+    ROFL_NOT_RECOGNISED = "ROFL_NOT_RECOGNISED"
+    ROFL_METADATA_UNPARSED = "ROFL_METADATA_UNPARSED"
+    MATCH_ID_UNRESOLVED = "MATCH_ID_UNRESOLVED"
     INSTALL_NOT_FOUND = "INSTALL_NOT_FOUND"
     INSTALL_INVALID = "INSTALL_INVALID"
     PATCH_INCOMPATIBLE = "PATCH_INCOMPATIBLE"
@@ -40,6 +43,13 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
     ReplayErrorCode.ROFL_MISSING: "Replay file is missing.",
     ReplayErrorCode.ROFL_UNREADABLE: "Replay file exists but could not be read.",
     ReplayErrorCode.ROFL_INVALID: "Replay file is not a valid .rofl.",
+    ReplayErrorCode.ROFL_NOT_RECOGNISED: "This file doesn't look like a League replay.",
+    ReplayErrorCode.ROFL_METADATA_UNPARSED: (
+        "Replay metadata could not be parsed; patch and length are unknown."
+    ),
+    ReplayErrorCode.MATCH_ID_UNRESOLVED: (
+        "Could not determine which match this replay belongs to."
+    ),
     ReplayErrorCode.INSTALL_NOT_FOUND: "League of Legends installation was not found.",
     ReplayErrorCode.INSTALL_INVALID: "League of Legends installation is incomplete.",
     ReplayErrorCode.PATCH_INCOMPATIBLE: "Replay patch does not match the installed client.",
@@ -71,6 +81,9 @@ _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
     ReplayErrorCode.ROFL_MISSING: "fatal",
     ReplayErrorCode.ROFL_UNREADABLE: "fatal",
     ReplayErrorCode.ROFL_INVALID: "fatal",
+    ReplayErrorCode.ROFL_NOT_RECOGNISED: "fatal",
+    ReplayErrorCode.ROFL_METADATA_UNPARSED: "informational",
+    ReplayErrorCode.MATCH_ID_UNRESOLVED: "retryable",
     ReplayErrorCode.INSTALL_NOT_FOUND: "fatal",
     ReplayErrorCode.INSTALL_INVALID: "fatal",
     ReplayErrorCode.PATCH_INCOMPATIBLE: "fatal",

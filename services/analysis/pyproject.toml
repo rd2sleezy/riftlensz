@@ -74,4 +74,17 @@ forbidden_modules = [
     "riftlens.pipeline",
     "riftlens.analysis",
     "riftlens.coaching",
+    "riftlens.rofl",
+]
+
+[[tool.importlinter.contracts]]
+name = "rofl sniffer isolation"
+type = "forbidden"
+source_modules = ["riftlens.rofl"]
+forbidden_modules = [
+    "riftlens.api",
+    "riftlens.adapters",
+    "riftlens.pipeline",
+    "riftlens.analysis",
+    "riftlens.coaching",
 ]
