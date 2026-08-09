@@ -52,6 +52,8 @@ def test_frame_facts_are_riot_timeline_and_confident() -> None:
         facts = gst.facts(kind=kind, subject=subject)
         assert facts
         assert all(fact.source is Source.RIOT_TIMELINE and fact.confidence == 1.0 for fact in facts)
+    health = gst.facts(kind=FactKind.HEALTH, subject=subject)[1]
+    assert "healthRegen" in health.payload
 
 
 def test_champion_kill_keeps_damage_arrays() -> None:

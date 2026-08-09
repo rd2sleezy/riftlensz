@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 
 @dataclass(frozen=True)
@@ -498,3 +498,32 @@ class CoachingRepository(Protocol):
 
     async def get_focus_commitment(self, commitment_id: str) -> FocusCommitmentRecord | None:
         """Return a focus commitment or None. Assumes ``commitment_id`` is a ULID."""
+
+
+@runtime_checkable
+class PatchData(Protocol):
+    """Patch-scoped game constants. Metrics/features must not hardcode these values."""
+
+    def item_gold(self, item_id: int) -> int:
+        """Return total item cost, or 0 when unknown. Assumes load() or load_bundled() ran."""
+
+    def item_purchase_cost(self, item_id: int) -> int | None:
+        """Return incremental buy gold (Data Dragon ``gold.base``), or None if missing."""
+
+    def item_sell_value(self, item_id: int) -> int | None:
+        """Return sell refund gold, or None if missing."""
+
+    def average_cs_gold(self, *, jungle: bool = False) -> float | None:
+        """Return average gold per CS tick. Assumes patch constants were loaded."""
+
+    def passive_gold(self, start_ms: int, end_ms: int) -> float:
+        """Return passive gold accrued on ``[start_ms, end_ms)``. Assumes ms game clock."""
+
+    def gold_per_second_rate(self, raw: int) -> float | None:
+        """Return gold/ms implied by a timeline ``goldPerSecond`` sample, or None."""
+
+    def respawn_ms(self, level: int, death_t_ms: int) -> int | None:
+        """Return respawn duration in ms for ``level`` at ``death_t_ms``, or None."""
+
+    def health_regen_per_ms(self, regen_stat: float) -> float:
+        """Return HP per ms from a timeline ``healthRegen`` stat. Assumes loaded constants."""

@@ -1,0 +1,29 @@
+# Patch constants that Data Dragon does not publish (minion gold, respawn timers,
+# passive income, healthRegen units). Metrics and rules must resolve these through
+# PatchDataProvider — never hardcode them beside a threshold.
+#
+# Values are wiki-derived / fixture-calibrated for Season 12 and labelled
+# provisional. ASK before treating timeline goldPerSecond or healthRegen units
+# as documented Riot fields — they are not named in MATCH-V5 docs.
+
+default:
+  passive_gold_per_second: 2.04
+  passive_gold_start_ms: 110000
+  # Observed timeline goldPerSecond values are 0 / 20 / 30. Treating them as
+  # tenths of gold per second (20 → 2.0 g/s) matches support-item income scale.
+  # Unit is NOT documented by Riot; residual reconciliation absorbs error.
+  gold_per_second_unit: 0.1
+  average_lane_minion_gold: 19.8
+  jungle_minion_gold: 22.0
+  # Timeline healthRegen matches client HP/5 display (e.g. 17 → 17 HP per 5 s).
+  health_regen_period_ms: 5000
+  respawn:
+    # Commonly cited Summoner's Rift BRW table (seconds by champion level).
+    base_seconds_by_level:
+      [0, 10, 10, 12, 12, 14, 16, 20, 25, 28, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5]
+    scaling_start_ms: 900000
+    scaling_per_30s: 0.00425
+    scaling_cap: 0.50
+
+patches:
+  "12.4": {}

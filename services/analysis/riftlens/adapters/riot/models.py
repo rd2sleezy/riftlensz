@@ -133,6 +133,7 @@ class PositionDto(RiotModel):
 class ChampionStatsDto(RiotModel):
     health: float | int | None = None
     health_max: float | int | None = Field(default=None, alias="healthMax")
+    health_regen: float | int | None = Field(default=None, alias="healthRegen")
     power: float | int | None = None
     power_max: float | int | None = Field(default=None, alias="powerMax")
     armor: float | int | None = None

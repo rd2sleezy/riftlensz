@@ -139,6 +139,7 @@ def _frame_stat_facts(
         {
             "health": 0 if stats is None or stats.health is None else stats.health,
             "healthMax": 0 if stats is None or stats.health_max is None else stats.health_max,
+            "healthRegen": 0 if stats is None or stats.health_regen is None else stats.health_regen,
         },
     )
     damage = {} if pframe.damage_stats is None else pframe.damage_stats.model_dump(by_alias=True)

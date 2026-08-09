@@ -1,0 +1,488 @@
+{
+  "0": {
+    "base": 0,
+    "name": "None",
+    "sell": 0,
+    "total": 0
+  },
+  "1001": {
+    "base": 300,
+    "name": "Boots",
+    "sell": 210,
+    "total": 300
+  },
+  "1011": {
+    "base": 500,
+    "name": "Giant's Belt",
+    "sell": 630,
+    "total": 900
+  },
+  "1018": {
+    "base": 600,
+    "name": "Cloak of Agility",
+    "sell": 420,
+    "total": 600
+  },
+  "1026": {
+    "base": 850,
+    "name": "Blasting Wand",
+    "sell": 595,
+    "total": 850
+  },
+  "1027": {
+    "base": 350,
+    "name": "Sapphire Crystal",
+    "sell": 245,
+    "total": 350
+  },
+  "1028": {
+    "base": 400,
+    "name": "Ruby Crystal",
+    "sell": 280,
+    "total": 400
+  },
+  "1029": {
+    "base": 300,
+    "name": "Cloth Armor",
+    "sell": 210,
+    "total": 300
+  },
+  "1033": {
+    "base": 450,
+    "name": "Null-Magic Mantle",
+    "sell": 315,
+    "total": 450
+  },
+  "1036": {
+    "base": 350,
+    "name": "Long Sword",
+    "sell": 245,
+    "total": 350
+  },
+  "1037": {
+    "base": 875,
+    "name": "Pickaxe",
+    "sell": 613,
+    "total": 875
+  },
+  "1038": {
+    "base": 1300,
+    "name": "B. F. Sword",
+    "sell": 910,
+    "total": 1300
+  },
+  "1039": {
+    "base": 350,
+    "name": "Hailblade",
+    "sell": 140,
+    "total": 350
+  },
+  "1042": {
+    "base": 300,
+    "name": "Dagger",
+    "sell": 210,
+    "total": 300
+  },
+  "1052": {
+    "base": 435,
+    "name": "Amplifying Tome",
+    "sell": 305,
+    "total": 435
+  },
+  "1053": {
+    "base": 550,
+    "name": "Vampiric Scepter",
+    "sell": 630,
+    "total": 900
+  },
+  "1054": {
+    "base": 450,
+    "name": "Doran's Shield",
+    "sell": 180,
+    "total": 450
+  },
+  "1055": {
+    "base": 450,
+    "name": "Doran's Blade",
+    "sell": 180,
+    "total": 450
+  },
+  "1082": {
+    "base": 350,
+    "name": "Dark Seal",
+    "sell": 140,
+    "total": 350
+  },
+  "2003": {
+    "base": 50,
+    "name": "Health Potion",
+    "sell": 20,
+    "total": 50
+  },
+  "2015": {
+    "base": 400,
+    "name": "Kircheis Shard",
+    "sell": 490,
+    "total": 700
+  },
+  "2031": {
+    "base": 150,
+    "name": "Refillable Potion",
+    "sell": 60,
+    "total": 150
+  },
+  "2033": {
+    "base": 350,
+    "name": "Corrupting Potion",
+    "sell": 200,
+    "total": 500
+  },
+  "2055": {
+    "base": 75,
+    "name": "Control Ward",
+    "sell": 30,
+    "total": 75
+  },
+  "2138": {
+    "base": 500,
+    "name": "Elixir of Iron",
+    "sell": 200,
+    "total": 500
+  },
+  "2420": {
+    "base": 650,
+    "name": "Stopwatch",
+    "sell": 260,
+    "total": 650
+  },
+  "2421": {
+    "base": 650,
+    "name": "Broken Stopwatch",
+    "sell": 260,
+    "total": 650
+  },
+  "2422": {
+    "base": 300,
+    "name": "Slightly Magical Footwear",
+    "sell": 210,
+    "total": 300
+  },
+  "3006": {
+    "base": 500,
+    "name": "Berserker's Greaves",
+    "sell": 770,
+    "total": 1100
+  },
+  "3009": {
+    "base": 600,
+    "name": "Boots of Swiftness",
+    "sell": 630,
+    "total": 900
+  },
+  "3020": {
+    "base": 800,
+    "name": "Sorcerer's Shoes",
+    "sell": 770,
+    "total": 1100
+  },
+  "3031": {
+    "base": 625,
+    "name": "Infinity Edge",
+    "sell": 2380,
+    "total": 3400
+  },
+  "3035": {
+    "base": 750,
+    "name": "Last Whisper",
+    "sell": 1015,
+    "total": 1450
+  },
+  "3036": {
+    "base": 950,
+    "name": "Lord Dominik's Regards",
+    "sell": 2100,
+    "total": 3000
+  },
+  "3044": {
+    "base": 350,
+    "name": "Phage",
+    "sell": 770,
+    "total": 1100
+  },
+  "3053": {
+    "base": 725,
+    "name": "Sterak's Gage",
+    "sell": 2170,
+    "total": 3100
+  },
+  "3057": {
+    "base": 700,
+    "name": "Sheen",
+    "sell": 490,
+    "total": 700
+  },
+  "3065": {
+    "base": 850,
+    "name": "Spirit Visage",
+    "sell": 2030,
+    "total": 2900
+  },
+  "3066": {
+    "base": 400,
+    "name": "Winged Moonplate",
+    "sell": 560,
+    "total": 800
+  },
+  "3067": {
+    "base": 400,
+    "name": "Kindlegem",
+    "sell": 560,
+    "total": 800
+  },
+  "3068": {
+    "base": 700,
+    "name": "Sunfire Aegis",
+    "sell": 2240,
+    "total": 3200
+  },
+  "3071": {
+    "base": 850,
+    "name": "Black Cleaver",
+    "sell": 2170,
+    "total": 3100
+  },
+  "3075": {
+    "base": 1000,
+    "name": "Thornmail",
+    "sell": 1890,
+    "total": 2700
+  },
+  "3076": {
+    "base": 200,
+    "name": "Bramble Vest",
+    "sell": 560,
+    "total": 800
+  },
+  "3095": {
+    "base": 100,
+    "name": "Stormrazor",
+    "sell": 1890,
+    "total": 2700
+  },
+  "3108": {
+    "base": 465,
+    "name": "Fiendish Codex",
+    "sell": 630,
+    "total": 900
+  },
+  "3111": {
+    "base": 350,
+    "name": "Mercury's Treads",
+    "sell": 770,
+    "total": 1100
+  },
+  "3117": {
+    "base": 700,
+    "name": "Mobility Boots",
+    "sell": 700,
+    "total": 1000
+  },
+  "3133": {
+    "base": 400,
+    "name": "Caulfield's Warhammer",
+    "sell": 770,
+    "total": 1100
+  },
+  "3134": {
+    "base": 400,
+    "name": "Serrated Dirk",
+    "sell": 770,
+    "total": 1100
+  },
+  "3142": {
+    "base": 800,
+    "name": "Youmuu's Ghostblade",
+    "sell": 2100,
+    "total": 3000
+  },
+  "3157": {
+    "base": 50,
+    "name": "Zhonya's Hourglass",
+    "sell": 1820,
+    "total": 2600
+  },
+  "3158": {
+    "base": 650,
+    "name": "Ionian Boots of Lucidity",
+    "sell": 665,
+    "total": 950
+  },
+  "3179": {
+    "base": 600,
+    "name": "Umbral Glaive",
+    "sell": 1680,
+    "total": 2400
+  },
+  "3191": {
+    "base": 265,
+    "name": "Seeker's Armguard",
+    "sell": 700,
+    "total": 1000
+  },
+  "3211": {
+    "base": 400,
+    "name": "Spectre's Cowl",
+    "sell": 875,
+    "total": 1250
+  },
+  "3340": {
+    "base": 0,
+    "name": "Stealth Ward",
+    "sell": 0,
+    "total": 0
+  },
+  "3363": {
+    "base": 0,
+    "name": "Farsight Alteration",
+    "sell": 0,
+    "total": 0
+  },
+  "3364": {
+    "base": 0,
+    "name": "Oracle Lens",
+    "sell": 0,
+    "total": 0
+  },
+  "3400": {
+    "base": 0,
+    "name": "Your Cut",
+    "sell": 0,
+    "total": 0
+  },
+  "3508": {
+    "base": 400,
+    "name": "Essence Reaver",
+    "sell": 1960,
+    "total": 2800
+  },
+  "3513": {
+    "base": 0,
+    "name": "Eye of the Herald",
+    "sell": 0,
+    "total": 0
+  },
+  "3802": {
+    "base": 80,
+    "name": "Lost Chapter",
+    "sell": 910,
+    "total": 1300
+  },
+  "3850": {
+    "base": 400,
+    "name": "Spellthief's Edge",
+    "sell": 160,
+    "total": 400
+  },
+  "3851": {
+    "base": 400,
+    "name": "Frostfang",
+    "sell": 160,
+    "total": 400
+  },
+  "3854": {
+    "base": 400,
+    "name": "Steel Shoulderguards",
+    "sell": 160,
+    "total": 400
+  },
+  "3855": {
+    "base": 400,
+    "name": "Runesteel Spaulders",
+    "sell": 160,
+    "total": 400
+  },
+  "3916": {
+    "base": 365,
+    "name": "Oblivion Orb",
+    "sell": 560,
+    "total": 800
+  },
+  "4637": {
+    "base": 815,
+    "name": "Demonic Embrace",
+    "sell": 2100,
+    "total": 3000
+  },
+  "4638": {
+    "base": 1100,
+    "name": "Watchful Wardstone",
+    "sell": 770,
+    "total": 1100
+  },
+  "6029": {
+    "base": 225,
+    "name": "Ironspike Whip",
+    "sell": 770,
+    "total": 1100
+  },
+  "6630": {
+    "base": 300,
+    "name": "Goredrinker",
+    "sell": 2310,
+    "total": 3300
+  },
+  "6653": {
+    "base": 1000,
+    "name": "Liandry's Anguish",
+    "sell": 2240,
+    "total": 3200
+  },
+  "6660": {
+    "base": 300,
+    "name": "Bami's Cinder",
+    "sell": 770,
+    "total": 1100
+  },
+  "6662": {
+    "base": 950,
+    "name": "Frostfire Gauntlet",
+    "sell": 1960,
+    "total": 2800
+  },
+  "6670": {
+    "base": 300,
+    "name": "Noonquiver",
+    "sell": 910,
+    "total": 1300
+  },
+  "6671": {
+    "base": 625,
+    "name": "Galeforce",
+    "sell": 2380,
+    "total": 3400
+  },
+  "6676": {
+    "base": 425,
+    "name": "The Collector",
+    "sell": 2100,
+    "total": 3000
+  },
+  "6691": {
+    "base": 900,
+    "name": "Duskblade of Draktharr",
+    "sell": 2170,
+    "total": 3100
+  },
+  "6692": {
+    "base": 750,
+    "name": "Eclipse",
+    "sell": 2170,
+    "total": 3100
+  },
+  "8001": {
+    "base": 800,
+    "name": "Anathema's Chains",
+    "sell": 1750,
+    "total": 2500
+  }
+}

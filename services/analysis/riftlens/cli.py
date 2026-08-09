@@ -3,23 +3,27 @@ from __future__ import annotations
 import asyncio
 import json
 from collections import Counter
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Annotated
 
 import structlog
 import typer
 
+from riftlens.adapters.ddragon.patch_data import PatchDataProvider
 from riftlens.adapters.riot.cache import RiotCache
 from riftlens.adapters.riot.client import RiotClient
 from riftlens.adapters.riot.models import MatchDto, TimelineDto
 from riftlens.adapters.riot.rate_limiter import RiotRateLimiter
+from riftlens.analysis.metrics.base import MetricValue
+from riftlens.analysis.metrics.registry import compute_metrics
 from riftlens.config import get_settings
-from riftlens.domain.enums import FactKind
+from riftlens.domain.enums import FactKind, GamePhase
 from riftlens.domain.fact import SubjectRef
 from riftlens.domain.geometry import Point, zone_of
 from riftlens.domain.timeline import GameStateTimeline
 from riftlens.logging import configure_logging
-from riftlens.pipeline.ingest_riot.fact_builder import build_game_state_timeline
+from riftlens.pipeline.ingest_riot.fact_builder import build_game_state_timeline, games_are_paired
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 riot_app = typer.Typer(add_completion=False, no_args_is_help=True)
@@ -61,6 +65,24 @@ async def _fetch_match(*, match_id: str, region: str) -> None:
         frames=len(timeline.info.frames),
         cache_dir=str(settings.cache_dir),
     )
+
+
+@app.command("metrics")
+def dump_metrics(
+    match_id: str,
+    pid: Annotated[int, typer.Option("--pid", help="Participant id to score.")],
+    fixtures: Annotated[
+        Path | None, typer.Option("--fixtures", help="Directory of NA1_fixture_* folders.")
+    ] = None,
+) -> None:
+    """Print H.5 metrics for a local fixture. Assumes GST is built without network."""
+    configure_logging()
+    match, timeline = _load_fixture_pair(match_id, fixtures)
+    gst = build_game_state_timeline(match, timeline)
+    patch = PatchDataProvider()
+    patch.load_bundled(gst.patch)
+    values = compute_metrics(gst, pid, patch)
+    _print_metrics_table(gst, pid, values, paired=games_are_paired(match, timeline))
 
 
 @app.command("gst")
@@ -137,6 +159,42 @@ def _print_per_minute_table(gst: GameStateTimeline, pid: int) -> None:
         minutes, seconds = divmod(t_ms // 1000, 60)
         clock = f"{minutes:02d}:{seconds:02d}"
         print(f"{t_ms:<10} {clock:<8} {zone:<20} {gold:<8} {cs:<6} {level:<5} {hp_pct}")
+
+
+def _print_metrics_table(
+    gst: GameStateTimeline,
+    pid: int,
+    values: Sequence[MetricValue],
+    *,
+    paired: bool,
+) -> None:
+    info = gst.participants.get(pid)
+    champ = info.champion if info else "?"
+    role = info.role.value if info else "?"
+    print(f"match_id={gst.match_id} pid={pid} champion={champ} role={role} patch={gst.patch}")
+    if not paired:
+        print(
+            "NOTE: match.json and timeline.json are unpaired games. "
+            "Metrics are computed from the GameStateTimeline (timeline-grounded) only."
+        )
+    print()
+    header = (
+        f"{'metric':<6} {'phase':<16} {'value':>10} {'unit':<16} {'conf':>5} {'pctl':>6}  context"
+    )
+    print(header)
+    print("-" * len(header))
+    for raw in values:
+        if isinstance(raw.phase, GamePhase):
+            phase_label = raw.phase.value
+        elif raw.phase is None:
+            phase_label = "-"
+        else:
+            phase_label = str(raw.phase)
+        pctl = "-" if raw.baseline_percentile is None else f"{raw.baseline_percentile:5.1f}"
+        print(
+            f"{raw.metric_id:<6} {phase_label:<16} {raw.value:10.3f} {raw.unit:<16} "
+            f"{raw.confidence:5.2f} {pctl:>6}  {raw.sample_context}"
+        )
 
 
 def main() -> None:
