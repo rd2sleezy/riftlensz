@@ -4,6 +4,8 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
+from riftlens.domain.gameplay_source import GameplaySource, PlaybackState, SourceCapability
+
 
 @dataclass(frozen=True)
 class PlayerRecord:
@@ -536,3 +538,42 @@ class PatchData(Protocol):
 
     def named_constant(self, key: str) -> object:
         """Return a patch-constants.yaml value, or None. Assumes load_bundled/load ran."""
+
+
+@runtime_checkable
+class PlaybackControl(Protocol):
+    """Transport control for a GameplaySource. Implementations live outside domain."""
+
+    def read_state(self) -> PlaybackState:
+        """Return the current playback snapshot. Assumes the source is open."""
+
+    def pause(self) -> PlaybackState:
+        """Pause playback and return the resulting state. Assumes PAUSE is supported."""
+
+    def resume(self) -> PlaybackState:
+        """Resume playback and return the resulting state. Assumes RESUME is supported."""
+
+    def seek_to_game_ms(self, t_game_ms: int) -> PlaybackState:
+        """Seek to canonical game time. Assumes SEEK is supported and ``t_game_ms`` is int ms."""
+
+
+@runtime_checkable
+class LiveClientDataPort(Protocol):
+    """Optional live-client reads during replay. Absence must not fail Replay API proof."""
+
+    def is_available(self) -> bool:
+        """Return True when any live-client snapshot can be read. Assumes replay is running."""
+
+    def active_player_available(self) -> bool:
+        """Return True when activeplayer is readable. R.0 observed this may be false."""
+
+
+@runtime_checkable
+class GameplaySourcePort(Protocol):
+    """Resolves the current gameplay source. Does not launch or persist anything."""
+
+    def current_source(self) -> GameplaySource:
+        """Return the active GameplaySource. Assumes a review session selected one."""
+
+    def capabilities(self) -> frozenset[SourceCapability]:
+        """Return advertised capabilities. Assumes ``current_source`` would succeed."""

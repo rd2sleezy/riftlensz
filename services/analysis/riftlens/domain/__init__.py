@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from riftlens.domain.clock_map import ClockConfidence, ClockMap, ClockMode
 from riftlens.domain.enums import (
     DataTier,
     EvidenceKind,
@@ -16,8 +17,17 @@ from riftlens.domain.estimate import Estimate, combine
 from riftlens.domain.evidence import Evidence
 from riftlens.domain.fact import Fact, Provenance, SubjectRef
 from riftlens.domain.finding import Finding
+from riftlens.domain.gameplay_source import (
+    NATIVE_REPLAY_CAPABILITIES,
+    VIDEO_CAPABILITIES,
+    GameplaySource,
+    PlaybackState,
+    SourceCapability,
+    SourceKind,
+)
 from riftlens.domain.geometry import Point, TurretRef, Zone, zone_of
 from riftlens.domain.ids import is_ulid, new_ulid
+from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 from riftlens.domain.review import (
     CoachingItem,
     FindingCluster,
@@ -44,6 +54,9 @@ from riftlens.domain.timeline import (
 )
 
 __all__ = [
+    "ClockConfidence",
+    "ClockMap",
+    "ClockMode",
     "DataTier",
     "Estimate",
     "Evidence",
@@ -53,14 +66,21 @@ __all__ = [
     "CoachingItem",
     "Finding",
     "FindingCluster",
+    "GameplaySource",
     "GamePhase",
     "GroupingDecision",
     "IssueType",
     "MetricSnapshot",
+    "NATIVE_REPLAY_CAPABILITIES",
     "PauseInterval",
+    "PlaybackState",
     "RankTier",
+    "ReplayError",
+    "ReplayErrorCode",
     "Review",
     "SeekTarget",
+    "SourceCapability",
+    "SourceKind",
     "SyncMap",
     "SyncQuality",
     "SyncSegment",
@@ -76,6 +96,7 @@ __all__ = [
     "SubjectRef",
     "Team",
     "TurretRef",
+    "VIDEO_CAPABILITIES",
     "Zone",
     "build_manual_sync",
     "certainty_bucket",
