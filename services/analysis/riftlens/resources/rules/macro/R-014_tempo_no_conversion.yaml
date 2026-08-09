@@ -1,0 +1,57 @@
+id: R-014
+version: 1
+name: "Tempo wasted after a won fight"
+concept_id: MACRO.TEMPO.NO_CONVERSION
+category: MACRO
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL]
+  - features: [segment_fights]
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.fights.subject_fight_ends
+  predicate: rules.macro.tempo_no_conversion
+
+params:
+  min_kills: 2
+  tempo_window_ms: 25000
+
+severity_modifiers:
+  - if: "kills >= 4"
+    then: 1
+
+evidence_template:
+  - "Won fight at {fight_mmss} ({kills} kills)"
+  - "No objective/tower/plate in the next {window_s}s"
+
+explanation: |
+  After a {kills}-kill win at {fight_mmss}, nothing was converted in {window_s}s.
+
+better_alternative: |
+  Take the nearest tower plates, herald, or dragon during the respawn window.
+
+false_positives:
+  - "Resetting to spend a huge gold pile can be the correct conversion"
+  - "An elder/baron already live on the other side of the map is not scored here"
+  - "Respawn timers are modelled from patch tables, not observed"
+
+suppressed_by: []
+cooldown_ms: 60000
+max_findings_per_match: 3
+is_strength: false

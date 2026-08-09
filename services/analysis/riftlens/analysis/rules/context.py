@@ -48,6 +48,9 @@ class FeatureFacade:
         self._gst = gst
         self._patch = patch
         self._fights: list[Fight] | None = None
+        self._gold_cache: dict[tuple[int, int], Estimate[int]] = {}
+        self._hp_cache: dict[tuple[int, int], Estimate[float]] = {}
+        self._info_cache: dict[tuple[Team, int, int], Estimate[int]] = {}
 
     def available(self) -> frozenset[str]:
         """Return feature names this facade can evaluate. Assumes H.5 is loaded."""
@@ -55,15 +58,30 @@ class FeatureFacade:
 
     def unspent_gold(self, pid: int, t_ms: int) -> Estimate[int]:
         """Return reconstructed currentGold. Assumes GOLD facts exist for ``pid``."""
-        return unspent_gold(self._gst, pid, t_ms, self._patch)
+        key = (pid, t_ms)
+        cached = self._gold_cache.get(key)
+        if cached is None:
+            cached = unspent_gold(self._gst, pid, t_ms, self._patch)
+            self._gold_cache[key] = cached
+        return cached
 
     def hp_fraction(self, pid: int, t_ms: int) -> Estimate[float]:
         """Return HP/HPMax. Exact at frames; between frames regen is quarantined."""
-        return hp_fraction(self._gst, pid, t_ms, self._patch)
+        key = (pid, t_ms)
+        cached = self._hp_cache.get(key)
+        if cached is None:
+            cached = hp_fraction(self._gst, pid, t_ms, self._patch)
+            self._hp_cache[key] = cached
+        return cached
 
     def info_age(self, team: Team, target_pid: int, t_ms: int) -> Estimate[int]:
         """Return ms since ``target_pid`` was observable by ``team``."""
-        return info_age(self._gst, team, target_pid, t_ms)
+        key = (team, target_pid, t_ms)
+        cached = self._info_cache.get(key)
+        if cached is None:
+            cached = info_age(self._gst, team, target_pid, t_ms)
+            self._info_cache[key] = cached
+        return cached
 
     def segment_fights(self) -> list[Fight]:
         """Return cached fight clusters. Assumes CHAMPION_KILL facts carry positions."""
@@ -192,7 +210,7 @@ class RuleContext:
 
 def evidence_fact(
     label: str,
-    value: Mapping[str, Any] | str | int | float | bool | None,
+    value: Mapping[str, Any] | Sequence[Any] | str | int | float | bool | None,
     *,
     t_ms: int | None,
     source: Source = Source.RIOT_TIMELINE,

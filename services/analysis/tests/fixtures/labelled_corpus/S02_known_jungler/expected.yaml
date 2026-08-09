@@ -1,0 +1,7 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S02_known_jungler
+synthetic: true
+subject_pid: 1
+notes: "Same death but jungler observed 10s earlier."
+expected_rule_ids:
+  - R-003

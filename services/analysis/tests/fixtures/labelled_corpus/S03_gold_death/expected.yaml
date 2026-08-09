@@ -1,0 +1,7 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S03_gold_death
+synthetic: true
+subject_pid: 1
+notes: "Death holding 1600 frame-exact currentGold."
+expected_rule_ids:
+  - R-002

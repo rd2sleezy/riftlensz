@@ -1,0 +1,60 @@
+# Next-item threshold uses patch constant next_item_gold_threshold via params, not a hardcoded item cost.
+id: R-006
+version: 1
+name: "Long stretch with unspendable gold"
+concept_id: ECONOMY.SPENDING.DEAD_GOLD
+category: ECONOMY
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [PARTICIPANT_FRAME]
+  - features: [unspent_gold_estimate]
+  - min_confidence:
+      unspent_gold_estimate: 0.35
+
+trigger:
+  evaluate_on: PERIODIC
+  period_ms: 30000
+  predicate: rules.economy.dead_gold
+
+params:
+  unspent_gold_min: 1300
+  min_hold_ms: 120000
+  sample_step_ms: 30000
+
+severity_modifiers:
+  - if: "unspent_gold > 2200"
+    then: 1
+
+evidence_template:
+  - "Unspent gold at sample: {gold}"
+  - "Held above {threshold} for {hold_s}s while alive"
+
+explanation: |
+  You sat on about {gold} gold for {hold_s}s without spending.
+
+better_alternative: |
+  Base when you can buy a meaningful component — gold in the pocket does not win fights.
+
+false_positives:
+  - "Holding for a specific legendary can be correct"
+  - "A long siege with no recall window looks like dead gold"
+  - "Between-frame gold is reconstructed; goldPerSecond is quarantined"
+
+suppressed_by: []
+cooldown_ms: 180000
+max_findings_per_match: 2
+is_strength: false

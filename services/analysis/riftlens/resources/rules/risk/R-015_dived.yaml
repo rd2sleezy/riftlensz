@@ -1,0 +1,56 @@
+id: R-015
+version: 1
+name: "Died to a dive under your own tower"
+concept_id: RISK.DEATH_CAUSE.DIVED
+category: RISK
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL, PARTICIPANT_FRAME]
+  - features: [hp_fraction_estimate]
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [CHAMPION_KILL]
+  predicate: rules.risk.dived
+
+params:
+  prior_hp_max: 0.45
+
+severity_modifiers:
+  - if: "dealer_count >= 3"
+    then: 1
+
+evidence_template:
+  - "Death under own turret vs {dealer_count} enemies"
+  - "Turret damage in recap: {turret_damage}"
+
+explanation: |
+  You died under your tower to {dealer_count} enemies (turret damage={turret_damage}).
+
+better_alternative: |
+  Drop below tower range before HP is diveable, or ping for help before the second enemy arrives.
+
+false_positives:
+  - "Static turret coordinates ignore destroyed towers"
+  - "Execute damage from a prior trade can look like a dive"
+  - "Support peeling under tower can still result in a death"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 3
+is_strength: false

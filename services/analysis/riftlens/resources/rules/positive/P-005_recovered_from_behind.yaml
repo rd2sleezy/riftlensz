@@ -1,0 +1,56 @@
+id: P-005
+version: 1
+name: "Recovered from behind"
+concept_id: STRENGTH.RECOVERED_FROM_BEHIND
+category: STRENGTH
+severity_base: LOW
+data_tier: RIOT_ONLY
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, MIDDLE, BOTTOM]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [GOLD]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.positive.recovered_from_behind
+
+params:
+  min_deficit: 1500
+  recover_by_ms: 1500000
+
+severity_modifiers:
+  - if: "worst <= -2500"
+    then: 0
+
+evidence_template:
+  - "Worst gold diff {worst} at {worst_mmss}"
+  - "Even or ahead by 25:00"
+
+explanation: |
+  You were {worst} gold at {worst_mmss} and even by 25:00.
+
+better_alternative: |
+  Whatever closed that gap — keep doing that mid-game pattern.
+
+false_positives:
+  - "Lane opponent AFK creates a fake comeback"
+  - "Gold frames are timeline current/totalGold, not mixed post-game stats"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: true

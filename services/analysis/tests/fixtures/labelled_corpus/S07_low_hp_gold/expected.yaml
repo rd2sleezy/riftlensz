@@ -1,0 +1,8 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S07_low_hp_gold
+synthetic: true
+subject_pid: 1
+notes: "Low HP + high unspent gold in lane (also trips dead-gold)."
+expected_rule_ids:
+  - R-006
+  - R-007

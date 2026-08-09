@@ -1,0 +1,58 @@
+id: R-002
+version: 1
+name: "Died holding a large gold pile"
+concept_id: ECONOMY.SPENDING.UNSPENT_AT_DEATH
+category: ECONOMY
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL, PARTICIPANT_FRAME]
+  - features: [unspent_gold_estimate]
+  - min_confidence:
+      unspent_gold_estimate: 0.35
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [CHAMPION_KILL]
+  predicate: rules.economy.unspent_gold_at_death
+
+params:
+  unspent_gold_min: 1400
+  min_alive_since_shop_ms: 60000
+
+severity_modifiers:
+  - if: "unspent_gold > 2200"
+    then: 1
+
+evidence_template:
+  - "Unspent gold at death: {gold}"
+  - "Last shop visit: {last_shop_mmss}"
+
+explanation: |
+  You died holding {gold} unspent gold (last shop {last_shop_mmss}).
+
+better_alternative: |
+  Spend before playing aggressive — dying with a full component costs the death twice.
+
+false_positives:
+  - "Saving deliberately for a specific spike item"
+  - "Gold reconstruction between minute frames can drift (goldPerSecond is not used)"
+  - "A forced death immediately after a wave crash can look like greed"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 3
+is_strength: false

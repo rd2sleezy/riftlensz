@@ -27,6 +27,24 @@ default:
     scaling_start_ms: 900000
     scaling_per_30s: 0.00425
     scaling_cap: 0.50
+  # Vision / summoner / item *names* (not numeric costs) for H.7 rules. Item gold
+  # still comes from Data Dragon via PatchDataProvider.item_gold / item_ids_named.
+  trinket_ward_cooldown_ms: 240000
+  flash_cooldown_ms: 300000
+  flash_summoner_ids: [4]
+  control_ward_item_names:
+    - Control Ward
+  anti_heal_item_name_needles:
+    - Oblivion Orb
+    - Morellonomicon
+    - Thornmail
+    - Bramble Vest
+    - Executioner
+    - Chempunk
+    - Mortal Reminder
+    - Chemtech Putrifier
+  next_item_gold_threshold: 1300
+  reset_cluster_gap_ms: 12000
 
 patches:
   "12.4": {}

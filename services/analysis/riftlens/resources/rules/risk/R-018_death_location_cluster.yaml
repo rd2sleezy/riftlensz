@@ -1,0 +1,57 @@
+id: R-018
+version: 1
+name: "Excessive deaths in one map area"
+concept_id: RISK.DEATH_CAUSE.LOCATION_CLUSTER
+category: RISK
+severity_base: HIGH
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.risk.death_location_cluster
+
+params:
+  min_deaths: 3
+  cluster_radius: 2000
+
+severity_modifiers:
+  - if: "cluster_n >= 4"
+    then: 1
+
+evidence_template:
+  - "Cluster size: {cluster_n} in {zone}"
+  - "Death times: {death_clocks}"
+
+explanation: |
+  {cluster_n} deaths clustered in {zone} ({death_clocks}).
+
+better_alternative: |
+  Change the next-play pattern in that pocket — ward it or stop pathing through it.
+
+false_positives:
+  - "A single long siege naturally clusters deaths at one tower"
+  - "Remakes / AFK games can dump deaths in fountain-adjacent zones"
+  - "Cluster radius 2000 can merge two nearby but distinct mistakes"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: false

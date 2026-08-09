@@ -1,0 +1,58 @@
+id: R-019
+version: 1
+name: "Damage share far below gold share"
+concept_id: ECONOMY.INCOME.LOW_CONVERSION
+category: ECONOMY
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [DAMAGE_ACCUM, GOLD]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.economy.low_damage_conversion
+
+params:
+  min_game_ms: 1200000
+  ratio_max: 0.65
+
+severity_modifiers:
+  - if: "ratio < 0.5"
+    then: 1
+
+evidence_template:
+  - "Team damage share: {dmg_pct}%"
+  - "Team gold share: {gold_pct}%"
+  - "Ratio: {ratio}"
+
+explanation: |
+  Damage share {dmg_pct}% vs gold share {gold_pct}% (ratio {ratio}).
+
+better_alternative: |
+  Look for fights where your item spike is online, or farm less if you never convert it.
+
+false_positives:
+  - "Split-pushers correctly show low damage share"
+  - "Supports mis-tagged as ADC will fail this check"
+  - "Damage is from the last DAMAGE_ACCUM frame, not post-game match.json"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: false

@@ -1,0 +1,58 @@
+id: R-011
+version: 1
+name: "No anti-heal against a healing comp"
+concept_id: ECONOMY.BUILD.NO_ANTI_HEAL
+category: ECONOMY
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [PARTICIPANT_FRAME]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.marks_20_and_end
+  predicate: rules.economy.no_anti_heal
+
+params:
+  enemy_healing_min: 2500
+  allow_tag_only: false
+
+severity_modifiers:
+  - if: "healing_known == True"
+    then: 1
+
+evidence_template:
+  - "High-sustain enemies: {enemy_names}"
+  - "Healing totals known from timeline: {healing_known}"
+  - "Suggested component: {suggested_item}"
+
+explanation: |
+  No anti-heal vs {enemy_names}. Healing known={healing_known}.
+
+better_alternative: |
+  Buy {suggested_item} when the enemy healing threat is real.
+
+false_positives:
+  - "HIGH_SUSTAIN tags are a static list, not live patch heal numbers"
+  - "Timeline frames do not include healing totals — tag-only fires are hedged"
+  - "Support anti-heal (Thornmail on a tank teammate) is not credited to you"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 2
+is_strength: false

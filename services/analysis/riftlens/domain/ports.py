@@ -527,3 +527,12 @@ class PatchData(Protocol):
 
     def health_regen_per_ms(self, regen_stat: float) -> float:
         """Return HP/ms from timeline ``healthRegen``, or 0 when the unit is unverified."""
+
+    def item_ids_named(self, *names: str) -> frozenset[int]:
+        """Return item ids whose Data Dragon name matches any of ``names`` (casefold)."""
+
+    def item_ids_name_contains(self, *needles: str) -> frozenset[int]:
+        """Return item ids whose name contains any needle (casefold). Assumes bundled items."""
+
+    def named_constant(self, key: str) -> object:
+        """Return a patch-constants.yaml value, or None. Assumes load_bundled/load ran."""

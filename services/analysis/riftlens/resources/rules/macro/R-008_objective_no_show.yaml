@@ -1,0 +1,60 @@
+id: R-008
+version: 1
+name: "Missed the objective without a trade"
+concept_id: MACRO.OBJECTIVES.NO_SHOW
+category: MACRO
+severity_base: HIGH
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [ELITE_MONSTER_KILL, PARTICIPANT_FRAME]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [ELITE_MONSTER_KILL]
+  predicate: rules.macro.objective_no_show
+
+params:
+  min_distance: 6000
+  max_team_down: 2
+  trade_window_ms: 45000
+  trade_plates_min: 2
+
+severity_modifiers:
+  - if: "distance > 9000"
+    then: 1
+
+evidence_template:
+  - "Objective: {monster} at {t_mmss}"
+  - "Distance to pit: {distance}"
+  - "CS delta in window: {cs_delta}"
+
+explanation: |
+  You were ~{distance} units from {monster} and took no plate/tower trade.
+
+better_alternative: |
+  Either rotate on time or take a real cross-map trade (two plates or a tower).
+
+false_positives:
+  - "Position is interpolated between 60s frames — you may have been closer"
+  - "A split-push that took a full inhib is a trade we only count via plates/towers"
+  - "Dead teammates can make the objective uncontestable (gated by team-down count)"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 4
+is_strength: false

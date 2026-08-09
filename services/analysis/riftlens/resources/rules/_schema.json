@@ -310,6 +310,11 @@
       "title": "Id",
       "type": "string"
     },
+    "is_strength": {
+      "default": false,
+      "title": "Is Strength",
+      "type": "boolean"
+    },
     "max_findings_per_match": {
       "anyOf": [
         {

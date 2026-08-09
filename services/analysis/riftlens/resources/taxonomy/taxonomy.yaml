@@ -2893,3 +2893,264 @@ concepts:
   roles: *id003
   phases: *id004
   rank_relevance: ALL
+# H.7 Appendix E leaves (short IDs) plus STRENGTH concepts for P-001–P-005.
+- id: RISK.DEATH_CAUSE.UNSEEN_JUNGLER
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: unseen jungler (Appendix E R-001)
+  description: Died to an unseen jungler
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.UNSPENT_AT_DEATH
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: unspent at death (Appendix E R-002)
+  description: Died holding a large gold pile
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK.EXPOSURE.FORWARD_NO_VISION_ATTEMPT
+  parent_id: RISK.EXPOSURE
+  domain: RISK
+  label: forward with no recent ward (Appendix E R-003)
+  description: Died in the enemy half with no recent ward
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.CAUGHT_ALONE
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: caught alone (Appendix E R-004)
+  description: Solo death with no enemy nearby a minute earlier
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: LANING.FARM.CS_COLLAPSE_AFTER_DEATH
+  parent_id: LANING.FARM
+  domain: LANING
+  label: CS collapse after a death (Appendix E R-005)
+  description: CS/min collapses after dying
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id003
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.DEAD_GOLD
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: dead gold (Appendix E R-006)
+  description: Long stretch with unspendable gold
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: LANING.RECALL_TIMING.RECALL_WITH_EXCESS_GOLD
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: low HP high gold still in lane (Appendix E R-007)
+  description: Stayed in lane on low HP with a large unspent gold pile
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: MACRO.OBJECTIVES.NO_SHOW
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: objective no-show (Appendix E R-008)
+  description: Missed the objective without a trade
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.TIMING.NO_WARD_PRE_OBJECTIVE
+  parent_id: VISION.TIMING
+  domain: VISION
+  label: no ward before objective (Appendix E R-009)
+  description: No ward before a major objective
+  data_tier: RIOT_ONLY
+  teachability: 1.3
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.DENIAL.NO_CONTROL_WARDS
+  parent_id: VISION.DENIAL
+  domain: VISION
+  label: control wards not bought (Appendix E R-010)
+  description: Control wards not being bought
+  data_tier: RIOT_ONLY
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD.NO_ANTI_HEAL
+  parent_id: ECONOMY.BUILD
+  domain: ECONOMY
+  label: no anti-heal (Appendix E R-011)
+  description: No anti-heal against a healing comp
+  data_tier: RIOT_DERIVED
+  teachability: 1.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: COMBAT.ENGAGE_DECISION.FIGHT_INTO_UNKNOWN
+  parent_id: COMBAT.ENGAGE_DECISION
+  domain: COMBAT
+  label: fight into unknown (Appendix E R-012)
+  description: Fought into unaccounted-for enemies
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING.DIES_FIRST
+  parent_id: COMBAT.POSITIONING
+  domain: COMBAT
+  label: dies first in fights (Appendix E R-013)
+  description: Died first in fights repeatedly
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.TEMPO.NO_CONVERSION
+  parent_id: MACRO.TEMPO
+  domain: MACRO
+  label: tempo not converted (Appendix E R-014)
+  description: Tempo wasted after a won fight
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK.DEATH_CAUSE.DIVED
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: dived (Appendix E R-015)
+  description: Died to a dive under your own tower
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: LANING.LEVEL_SPIKES.DEFICIT_AT_SPIKE
+  parent_id: LANING.LEVEL_SPIKES
+  domain: LANING
+  label: level deficit at a spike (Appendix E R-016)
+  description: Level deficit at a key spike
+  data_tier: RIOT_ONLY
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: MACRO.ROAMING.ROAM_COST_EXCEEDED
+  parent_id: MACRO.ROAMING
+  domain: MACRO
+  label: roam cost exceeded (Appendix E R-017)
+  description: Roamed without lane priority
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: RISK.DEATH_CAUSE.LOCATION_CLUSTER
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death location cluster (Appendix E R-018)
+  description: Excessive deaths in one map area
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: ECONOMY.INCOME.LOW_CONVERSION
+  parent_id: ECONOMY.INCOME
+  domain: ECONOMY
+  label: low damage conversion (Appendix E R-019)
+  description: Damage share far below gold share
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.UNUSED_ESCAPE
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: unused escape summoner (Appendix E R-020)
+  description: Died with a summoner spell unused in a losing fight
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH
+  parent_id: null
+  domain: STRENGTH
+  label: Strengths
+  description: Positive habits the player should keep
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH.CLEAN_LANE_PHASE
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: clean lane phase (Appendix E P-001)
+  description: CS diff ≥ +10 at 14:00 with ≤ 1 death
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: STRENGTH.EFFICIENT_RESETS
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: efficient resets (Appendix E P-002)
+  description: Resets spend most gold with little CS lost
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH.OBJECTIVE_DISCIPLINE
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: objective discipline (Appendix E P-003)
+  description: Contest-weighted objective participation
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH.VISION_HABIT
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: vision habit (Appendix E P-004)
+  description: Control ward purchased on most resets
+  data_tier: RIOT_ONLY
+  teachability: 1.3
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH.RECOVERED_FROM_BEHIND
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: recovered from behind (Appendix E P-005)
+  description: Closed a large gold deficit by 25:00
+  data_tier: RIOT_ONLY
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL

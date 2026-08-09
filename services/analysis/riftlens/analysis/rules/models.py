@@ -120,6 +120,14 @@ class RuleDefinition(BaseModel):
     suppressed_by: list[str] = Field(default_factory=list)
     cooldown_ms: int = 0
     max_findings_per_match: int | None = None
+    is_strength: bool = False
+
+    @field_validator("false_positives")
+    @classmethod
+    def _min_false_positives(cls, value: list[str]) -> list[str]:
+        if len(value) < 2:
+            raise ValueError("false_positives must contain at least 2 entries (§4.1)")
+        return value
 
     def required_fact_names(self) -> tuple[str, ...]:
         """Return declared required fact names across input blocks."""

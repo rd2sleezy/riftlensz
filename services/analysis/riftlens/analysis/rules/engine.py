@@ -5,6 +5,7 @@ from collections.abc import Mapping, Sequence
 
 import structlog
 
+from riftlens.analysis.rules.champion_tags import load_champion_tags
 from riftlens.analysis.rules.context import FeatureFacade, RuleContext
 from riftlens.analysis.rules.models import RuleDefinition, RulePack
 from riftlens.analysis.rules.postprocess import DEFAULT_CONFIDENCE_FLOOR, postprocess
@@ -38,9 +39,8 @@ class RuleEngine:
         self.registry = registry or global_predicates()
         self.patch = patch
         self.min_confidence = min_confidence
-        self._champion_tags = {
-            name: tuple(tags) for name, tags in dict(champion_tags or {}).items()
-        }
+        loaded = load_champion_tags() if champion_tags is None else champion_tags
+        self._champion_tags = {name: tuple(tags) for name, tags in dict(loaded).items()}
 
     def run(self, gst: GameStateTimeline, subject_pid: int) -> list[Finding]:
         """Return postprocessed findings for ``subject_pid``. Assumes GST is complete."""
@@ -110,6 +110,17 @@ class RuleEngine:
         return [t_ms for t_ms in times if gst.phase(t_ms) in phases]
 
 
+_GLOBAL_EVENT_KINDS = frozenset(
+    {
+        FactKind.ELITE_MONSTER_KILL,
+        FactKind.BUILDING_KILL,
+        FactKind.TURRET_PLATE_DESTROYED,
+        FactKind.GAME_END,
+        FactKind.PAUSE_END,
+    }
+)
+
+
 def _event_times(rule: RuleDefinition, gst: GameStateTimeline, subject_pid: int) -> list[int]:
     kinds = rule.event_fact_kinds()
     if not kinds:
@@ -117,6 +128,10 @@ def _event_times(rule: RuleDefinition, gst: GameStateTimeline, subject_pid: int)
     subject = SubjectRef(kind="participant", id=subject_pid)
     stamps: set[int] = set()
     for kind in kinds:
+        if kind in _GLOBAL_EVENT_KINDS:
+            for fact in gst.facts(kind=kind):
+                stamps.add(fact.t_ms)
+            continue
         for fact in gst.facts(kind=kind, subject=subject):
             stamps.add(fact.t_ms)
         if kind is FactKind.CHAMPION_KILL:

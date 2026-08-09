@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -14,7 +14,7 @@ class Evidence:
 
     kind: EvidenceKind
     label: str
-    value: Mapping[str, Any] | str | int | float | bool | None
+    value: Mapping[str, Any] | Sequence[Any] | str | int | float | bool | None
     source: Source
     t_ms: int | None = None
     confidence: float | None = None

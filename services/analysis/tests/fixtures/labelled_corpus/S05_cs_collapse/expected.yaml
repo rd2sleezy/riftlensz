@@ -1,0 +1,7 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S05_cs_collapse
+synthetic: true
+subject_pid: 1
+notes: "CS/min collapses after two deaths."
+expected_rule_ids:
+  - R-005

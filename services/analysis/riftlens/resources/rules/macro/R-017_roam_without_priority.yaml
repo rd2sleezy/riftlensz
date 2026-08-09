@@ -1,0 +1,59 @@
+# Fire rate kept in check by requiring ≥12 CS lost vs expected and no kill/assist/ward/objective payoff.
+id: R-017
+version: 1
+name: "Roamed without lane priority"
+concept_id: MACRO.ROAMING.ROAM_COST_EXCEEDED
+category: MACRO
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, MIDDLE, BOTTOM]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CS, PARTICIPANT_FRAME]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: PERIODIC
+  period_ms: 60000
+  predicate: rules.macro.roam_cost_exceeded
+
+params:
+  roam_window_ms: 60000
+  expected_cs_in_window: 15
+  min_cs_lost: 12
+
+severity_modifiers:
+  - if: "cs_lost >= 18"
+    then: 1
+
+evidence_template:
+  - "Off-lane zone: {zone}"
+  - "Estimated CS lost vs expected: {cs_lost}"
+
+explanation: |
+  A roam through {zone} cost about {cs_lost} CS with no payoff.
+
+better_alternative: |
+  Roam only when the wave is crashing or you already see a guaranteed play.
+
+false_positives:
+  - "60s frames make roam detection coarse — this is inferred"
+  - "A successful roam that only drew a Flash is still a payoff we cannot see"
+  - "Expected CS/min is a param, not a live wave estimator"
+
+suppressed_by: []
+cooldown_ms: 120000
+max_findings_per_match: 2
+is_strength: false

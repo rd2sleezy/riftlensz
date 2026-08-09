@@ -1,4 +1,7 @@
 # Throwaway H.6 engine test rule — not a production coaching rule.
+# Fire-rate justification: intentionally fires on every LEVEL_UP so the H.6
+# engine contract test stays deterministic. Excluded from production rule_lab
+# reviews; >50% fire rate is expected and not a coaching signal.
 id: T-001
 version: 1
 name: "Always fires on level-up (test)"

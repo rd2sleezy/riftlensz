@@ -1,0 +1,6 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S12_bought_antiheal
+synthetic: true
+subject_pid: 1
+notes: "Oblivion Orb purchased."
+expected_rule_ids: []

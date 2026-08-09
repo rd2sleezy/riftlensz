@@ -1,0 +1,60 @@
+# Restricted to JUNGLE/UTILITY so 0 control wards on every solo laner does not trip the 50% fire-rate gate.
+id: R-010
+version: 1
+name: "Control wards not being bought"
+concept_id: VISION.DENIAL.NO_CONTROL_WARDS
+category: VISION
+severity_base: MEDIUM
+data_tier: RIOT_ONLY
+patch_range: ">=12.1"
+
+applicability:
+  roles: [JUNGLE, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [ITEM_PURCHASED]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.resets.purchase_clusters
+  predicate: rules.vision.no_control_wards
+
+params:
+  min_game_time_ms: 480000
+  min_resets: 3
+  ratio_max: 0.4
+
+severity_modifiers:
+  - if: "ratio < 0.2"
+    then: 1
+
+evidence_template:
+  - "Resets after 8:00: {resets}"
+  - "Control wards bought: {bought}"
+  - "Ratio: {ratio}"
+
+explanation: |
+  Control wards on {bought}/{resets} resets after 8:00 (ratio {ratio}).
+
+better_alternative: |
+  Buy a control ward on every reset once lanes break.
+
+false_positives:
+  - "Inventory full of components can block a control ward"
+  - "Some patches rename the item — ids resolve via PatchDataProvider names"
+  - "Support item quest gold can change reset patterns"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: false

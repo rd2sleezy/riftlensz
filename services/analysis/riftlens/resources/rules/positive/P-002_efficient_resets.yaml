@@ -1,0 +1,60 @@
+id: P-002
+version: 1
+name: "Efficient resets"
+concept_id: STRENGTH.EFFICIENT_RESETS
+category: STRENGTH
+severity_base: LOW
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [ITEM_PURCHASED, CS, PARTICIPANT_FRAME]
+  - features: [unspent_gold_estimate]
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.positive.efficient_resets
+
+params:
+  reset_gap_ms: 12000
+  min_resets: 3
+  min_spend_frac: 0.85
+  max_cs_lost: 8
+  expected_cs_in_window: 10
+  cs_window_ms: 60000
+
+severity_modifiers:
+  - if: "n >= 5"
+    then: 0
+
+evidence_template:
+  - "Efficient resets: {n}"
+  - "Example reset: {example_mmss}"
+
+explanation: |
+  {n} resets spent ≥85% of gold with little CS lost (e.g. {example_mmss}).
+
+better_alternative: |
+  Repeat that recall timing — crash, buy, return.
+
+false_positives:
+  - "Expected CS during recall is a param, not a wave estimator"
+  - "Selling items can make spend fraction look better than it was"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: true

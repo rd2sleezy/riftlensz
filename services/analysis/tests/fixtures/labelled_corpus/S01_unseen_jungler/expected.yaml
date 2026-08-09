@@ -1,0 +1,7 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S01_unseen_jungler
+synthetic: true
+subject_pid: 1
+notes: "Unseen enemy jungler kills blue mid in enemy-half river after 4:00."
+expected_rule_ids:
+  - R-001

@@ -1,0 +1,7 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S14_clean_lane
+synthetic: true
+subject_pid: 1
+notes: "CS diff +40 at 14:00, 0 deaths."
+expected_rule_ids:
+  - P-001

@@ -165,6 +165,45 @@ class PatchDataProvider:
         blob = data.get(champion_name)
         return blob if isinstance(blob, dict) else {}
 
+    def item_ids_named(self, *names: str) -> frozenset[int]:
+        """Return item ids whose name equals any of ``names`` (casefold)."""
+        wanted = {name.casefold() for name in names}
+        found: set[int] = set()
+        for item_id, entry in self._item_entries():
+            label = str(entry.get("name") or "").casefold()
+            if label in wanted:
+                found.add(item_id)
+        return frozenset(found)
+
+    def item_ids_name_contains(self, *needles: str) -> frozenset[int]:
+        """Return item ids whose name contains any needle (casefold)."""
+        wanted = [needle.casefold() for needle in needles if needle]
+        found: set[int] = set()
+        for item_id, entry in self._item_entries():
+            label = str(entry.get("name") or "").casefold()
+            if any(needle in label for needle in wanted):
+                found.add(item_id)
+        return frozenset(found)
+
+    def named_constant(self, key: str) -> object:
+        """Return a constants.yaml value for this patch, or None when unset."""
+        return self._constants.get(key)
+
+    def _item_entries(self) -> list[tuple[int, dict[str, Any]]]:
+        data = self._items.get("data", self._items)
+        if not isinstance(data, dict):
+            return []
+        out: list[tuple[int, dict[str, Any]]] = []
+        for raw_id, entry in data.items():
+            if not isinstance(entry, dict):
+                continue
+            try:
+                item_id = int(raw_id)
+            except (TypeError, ValueError):
+                continue
+            out.append((item_id, entry))
+        return out
+
     def _item_gold_blob(self, item_id: int) -> dict[str, Any] | None:
         data = self._items.get("data", self._items)
         if not isinstance(data, dict):

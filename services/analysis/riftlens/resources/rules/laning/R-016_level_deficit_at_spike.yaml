@@ -1,0 +1,58 @@
+id: R-016
+version: 1
+name: "Level deficit at a key spike"
+concept_id: LANING.LEVEL_SPIKES.DEFICIT_AT_SPIKE
+category: LANING
+severity_base: LOW
+data_tier: RIOT_ONLY
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, MIDDLE, BOTTOM]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [LEVEL_UP, LEVEL, DAMAGE_ACCUM, CHAMPION_KILL]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [LEVEL_UP]
+  predicate: rules.laning.deficit_at_spike
+
+params:
+  spike_levels: [6, 11, 16]
+  min_lead_ms: 25000
+  outcome_window_ms: 45000
+  min_damage_frac: 0.15
+
+severity_modifiers:
+  - if: "level == 6"
+    then: 1
+
+evidence_template:
+  - "Level {level}: opponent spiked {lead_s}s earlier ({opponent})"
+
+explanation: |
+  {opponent} hit {level} {lead_s}s before you, then you took damage or died.
+
+better_alternative: |
+  Play the 25s after their spike as if their ultimate is up — it is.
+
+false_positives:
+  - "XP from a nearby wave crash can hide a real even-level state"
+  - "Jungle XP influence is not separated from lane XP"
+  - "Some champions spike at 7/13, not 6/11/16"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 3
+is_strength: false
