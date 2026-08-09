@@ -27,6 +27,15 @@ from riftlens.domain.review import (
     certainty_bucket,
     format_mmss,
 )
+from riftlens.domain.sync_map import (
+    PauseInterval,
+    SeekTarget,
+    SyncMap,
+    SyncQuality,
+    SyncSegment,
+    build_manual_sync,
+    seek_target,
+)
 from riftlens.domain.timeline import (
     GameStateSnapshot,
     GameStateTimeline,
@@ -48,8 +57,13 @@ __all__ = [
     "GroupingDecision",
     "IssueType",
     "MetricSnapshot",
+    "PauseInterval",
     "RankTier",
     "Review",
+    "SeekTarget",
+    "SyncMap",
+    "SyncQuality",
+    "SyncSegment",
     "GameStateSnapshot",
     "GameStateTimeline",
     "ParticipantInfo",
@@ -63,10 +77,12 @@ __all__ = [
     "Team",
     "TurretRef",
     "Zone",
+    "build_manual_sync",
     "certainty_bucket",
     "combine",
     "format_mmss",
     "is_ulid",
     "new_ulid",
+    "seek_target",
     "zone_of",
 ]

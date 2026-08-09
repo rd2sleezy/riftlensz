@@ -265,6 +265,12 @@ def _persist_review(
         )
         for item in updated.focus_items:
             await coaching.upsert_focus_commitment(_commitment(updated, item, player_id))
+        from riftlens.pipeline.assemble.review_presentation import (
+            review_to_presentation,
+            save_review_presentation,
+        )
+
+        save_review_presentation(settings.data_dir, review_to_presentation(updated))
         return updated
 
     return asyncio.run(work())

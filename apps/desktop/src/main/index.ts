@@ -2,14 +2,17 @@ import { join } from 'node:path'
 import { app, BrowserWindow, shell } from 'electron'
 import { registerIpcHandlers } from './ipc/handlers'
 import { logger } from './logging'
+import { handleMediaProtocol, registerMediaScheme } from './media/protocol'
 import { SidecarSupervisor } from './sidecar/supervisor'
+
+registerMediaScheme()
 
 const supervisor = new SidecarSupervisor()
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
-    width: 960,
-    height: 640,
+    width: 1440,
+    height: 900,
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -40,6 +43,7 @@ function createWindow(): BrowserWindow {
 }
 
 app.whenReady().then(() => {
+  handleMediaProtocol()
   registerIpcHandlers(supervisor)
   supervisor.start()
   createWindow()

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { HealthSchema, SidecarStatusSchema } from './channels'
+import { HealthSchema, ListReviewsResultSchema, SidecarStatusSchema } from './channels'
 
 describe('IPC zod schemas', () => {
   it('parses a ready sidecar status', () => {
@@ -21,5 +21,14 @@ describe('IPC zod schemas', () => {
       uptime_ms: 12
     })
     expect(parsed.uptime_ms).toBe(12)
+  })
+
+  it('parses a review list error without bypassing the schema', () => {
+    const parsed = ListReviewsResultSchema.parse({
+      ok: false,
+      code: 'NOT_FOUND',
+      message: 'Review not found: missing'
+    })
+    expect(parsed.ok).toBe(false)
   })
 })

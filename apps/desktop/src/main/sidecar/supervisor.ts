@@ -56,6 +56,14 @@ export class SidecarSupervisor extends EventEmitter<SupervisorEvents> {
     return this.client.health()
   }
 
+  /** Authenticated sidecar JSON call. Assumes the sidecar is ready. */
+  public async request(path: string, init: RequestInit = {}, timeoutMs = 120_000): Promise<unknown> {
+    if (!this.client) {
+      throw new Error('sidecar is not ready')
+    }
+    return this.client.request(path, init, timeoutMs)
+  }
+
   /** Spawn the sidecar and begin health polling. Assumes Electron app is ready. */
   public start(): void {
     this.installQuitHook()

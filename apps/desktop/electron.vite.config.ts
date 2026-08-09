@@ -13,6 +13,11 @@ export default defineConfig({
       }
     },
     plugins: [react()],
+    server: {
+      fs: {
+        allow: [resolve('src')]
+      }
+    },
     resolve: {
       alias: {
         '@': resolve('src/renderer')

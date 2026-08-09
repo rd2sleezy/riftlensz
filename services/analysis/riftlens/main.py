@@ -17,6 +17,9 @@ from fastapi.responses import JSONResponse
 from riftlens import __version__
 from riftlens.adapters.db.engine import init_database, make_session_factory
 from riftlens.api.health import router as health_router
+from riftlens.api.media import router as media_router
+from riftlens.api.reviews import router as reviews_router
+from riftlens.api.sync import router as sync_router
 from riftlens.config import Settings, get_settings
 from riftlens.logging import configure_logging
 
@@ -62,6 +65,9 @@ def create_app(*, settings: Settings | None = None, token: str | None = None) ->
         return await call_next(request)
 
     app.include_router(health_router)
+    app.include_router(reviews_router)
+    app.include_router(media_router)
+    app.include_router(sync_router)
     return app
 
 
