@@ -234,7 +234,7 @@ class XpDifferential:
                 context=ctx,
                 role=role,
                 band_key="deficit_ge_1",
-                sample_context="time at ≥1 level deficit vs lane opponent",
+                sample_context="time at >=1 level deficit vs lane opponent",
                 detail={"xp_curve": xp_curve, "opponent_pid": opponent},
             ),
             emit(
@@ -246,7 +246,7 @@ class XpDifferential:
                 context=ctx,
                 role=role,
                 band_key="deficit_ge_2",
-                sample_context="time at ≥2 level deficit vs lane opponent",
+                sample_context="time at >=2 level deficit vs lane opponent",
                 detail={"opponent_pid": opponent},
             ),
         ]

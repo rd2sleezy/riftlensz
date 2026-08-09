@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sys
 from collections import Counter
 from collections.abc import Sequence
 from pathlib import Path
@@ -353,8 +354,24 @@ def _print_coaching_item(item: object) -> None:
     print()
 
 
+def _configure_stdio() -> None:
+    """Encode stdio as UTF-8 so Windows cp1252 consoles do not crash on print().
+
+    Metric values are unchanged. Only the process stdout/stderr codec is adjusted.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if not callable(reconfigure):
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except (OSError, ValueError):
+            continue
+
+
 def main() -> None:
     """CLI entrypoint. Assumes invocation via python -m riftlens.cli."""
+    _configure_stdio()
     app()
 
 

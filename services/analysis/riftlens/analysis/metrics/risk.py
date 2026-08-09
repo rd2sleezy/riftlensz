@@ -113,7 +113,7 @@ class DeathLocationClusters:
                 context=ctx,
                 role=gst.role_of(pid),
                 band_key="ALL",
-                sample_context=f"{len(points)} located deaths → {len(payload)} clusters",
+                sample_context=f"{len(points)} located deaths -> {len(payload)} clusters",
                 detail={"clusters": payload, "eps": _DEATH_CLUSTER_EPS},
             )
         ]
