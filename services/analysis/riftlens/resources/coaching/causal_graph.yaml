@@ -1,0 +1,82 @@
+# Hand-authored A←B graph over taxonomy concept IDs (§6.3).
+# test values are registered coaching.causal predicates, not free-text.
+# H.6 suppressed_by remains the noise gate; this graph only promotes roots.
+version: 1
+edges:
+  - symptom: RISK.DEATH_CAUSE.UNSEEN_JUNGLER
+    causes:
+      - concept: LANING.JUNGLE_TRACKING.POSITIONING_BY_ENEMY_JUNGLER_INFORMATION_AGE
+        strength: 0.8
+        test: coaching.causal.median_jungler_info_age_gt
+        params: {min_age_ms: 45000}
+        description: "median enemy-jungler info age at these deaths > 45s"
+      - concept: VISION.TIMING.WARDING_WHEN_PLAYING_FORWARD
+        strength: 0.5
+        test: coaching.causal.no_ward_before_majority_deaths
+        params: {lookback_ms: 90000, min_fraction: 0.6}
+        description: "no ward placed in the 90s before ≥60% of these deaths"
+      - concept: LANING.WAVE_MANAGEMENT.PUSHING_WITHOUT_A_PLAN
+        strength: 0.7
+        test: coaching.causal.majority_deaths_while_pushing
+        params: {min_fraction: 0.6}
+        description: "wave state at ≥60% of these deaths was PUSHING/CRASHED_THEIRS"
+
+  - symptom: RISK.EXPOSURE.FORWARD_NO_VISION_ATTEMPT
+    causes:
+      - concept: RISK.DEATH_CAUSE.UNSEEN_JUNGLER
+        strength: 0.75
+        test: coaching.causal.related_rule_near
+        params: {rule_ids: [R-001], window_ms: 1000, min_fraction: 0.6}
+        description: "most forward-no-ward deaths coincide with R-001 unseen-jungler"
+
+  - symptom: RISK.DEATH_CAUSE.CAUGHT_ALONE
+    causes:
+      - concept: RISK.DEATH_CAUSE.UNSEEN_JUNGLER
+        strength: 0.7
+        test: coaching.causal.related_rule_near
+        params: {rule_ids: [R-001], window_ms: 1000, min_fraction: 0.6}
+      - concept: RISK.DEATH_CAUSE.DIVED
+        strength: 0.65
+        test: coaching.causal.related_rule_near
+        params: {rule_ids: [R-015], window_ms: 1000, min_fraction: 0.6}
+
+  - symptom: LANING.FARM.CS_COLLAPSE_AFTER_DEATH
+    causes:
+      - concept: RISK.DEATH_CAUSE.UNSEEN_JUNGLER
+        strength: 0.6
+        test: coaching.causal.related_rule_near
+        params: {rule_ids: [R-001], window_ms: 180000, min_fraction: 0.5}
+        description: "CS collapse windows follow unseen-jungler deaths"
+      - concept: ECONOMY.SPENDING.UNSPENT_AT_DEATH
+        strength: 0.55
+        test: coaching.causal.related_rule_near
+        params: {rule_ids: [R-002], window_ms: 180000, min_fraction: 0.5}
+
+  - symptom: LANING.RECALL_TIMING.RECALL_WITH_EXCESS_GOLD
+    causes:
+      - concept: ECONOMY.SPENDING.UNSPENT_AT_DEATH
+        strength: 0.8
+        test: coaching.causal.related_rule_near
+        params: {rule_ids: [R-002], window_ms: 1000, min_fraction: 0.6}
+        description: "low-HP high-gold stays are the same incident as dying with gold (H.6 R-007←R-002)"
+
+  - symptom: COMBAT.ENGAGE_DECISION.FIGHT_INTO_UNKNOWN
+    causes:
+      - concept: LANING.JUNGLE_TRACKING.POSITIONING_BY_ENEMY_JUNGLER_INFORMATION_AGE
+        strength: 0.55
+        test: coaching.causal.median_jungler_info_age_gt
+        params: {min_age_ms: 30000}
+
+  - symptom: MACRO.OBJECTIVES.NO_SHOW
+    causes:
+      - concept: VISION.TIMING.NO_WARD_PRE_OBJECTIVE
+        strength: 0.55
+        test: coaching.causal.related_rule_near
+        params: {rule_ids: [R-009], window_ms: 90000, min_fraction: 0.5}
+
+  - symptom: VISION.TIMING.NO_WARD_PRE_OBJECTIVE
+    causes:
+      - concept: VISION.DENIAL.NO_CONTROL_WARDS
+        strength: 0.45
+        test: coaching.causal.related_rule_near
+        params: {rule_ids: [R-010], window_ms: 600000, min_fraction: 0.5}

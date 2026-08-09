@@ -1,0 +1,30 @@
+# Impact formula terms and selection knobs. None of these belong in Python.
+# Impact = GoldEquivalent × Frequency^exponent × Teachability × RankRelevance × Confidence
+version: 1
+confidence_floor: 0.35
+frequency_exponent: 0.5
+diversity_penalty: 0.6
+domain_dominance_ratio: 3.0
+max_gold_equivalent: 5000
+unspent_gold_weight: 0.3
+default_death_gold: 300
+default_cs_gold_per_minion: 19.0
+focus_count: 3
+secondary_cap: 5
+strength_min: 2
+strength_max: 3
+dedup_window_ms: 2000
+incident_window_ms: 1000
+exemplar_clip_count: 3
+min_title_words: 2
+max_title_words: 10
+confidence_mode: min
+unranked_treats_as: IRON
+below_gold_tiers: [IRON, BRONZE, SILVER, UNRANKED]
+gold_floor_for_zero: 1.0
+outcome_gold:
+  DEATH: 300
+  CS_LOST: 80
+  OBJECTIVE_LOST: 400
+  NONE: 40
+  STRENGTH: 50

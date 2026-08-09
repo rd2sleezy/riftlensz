@@ -82,3 +82,23 @@ class Lane(StrEnum):
     TOP = "TOP"
     MIDDLE = "MIDDLE"
     BOTTOM = "BOTTOM"
+
+
+class IssueType(StrEnum):
+    MECHANICAL = "MECHANICAL"
+    TACTICAL = "TACTICAL"
+    STRATEGIC = "STRATEGIC"
+
+
+class RankTier(StrEnum):
+    IRON = "IRON"
+    BRONZE = "BRONZE"
+    SILVER = "SILVER"
+    GOLD = "GOLD"
+    PLATINUM = "PLATINUM"
+    EMERALD = "EMERALD"
+    DIAMOND = "DIAMOND"
+    MASTER = "MASTER"
+    GRANDMASTER = "GRANDMASTER"
+    CHALLENGER = "CHALLENGER"
+    UNRANKED = "UNRANKED"

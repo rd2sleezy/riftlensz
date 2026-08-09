@@ -106,6 +106,40 @@ def dump_rules(
     _print_findings(gst, pid, findings, paired=games_are_paired(match, timeline))
 
 
+@app.command("review")
+def dump_review(
+    match_id: str,
+    pid: Annotated[int, typer.Option("--pid", help="Participant id to coach.")],
+    fixtures: Annotated[
+        Path | None, typer.Option("--fixtures", help="Directory of NA1_fixture_* folders.")
+    ] = None,
+    rank: Annotated[
+        str, typer.Option("--rank", help="Rank tier for relevance curves.")
+    ] = "UNRANKED",
+    no_llm: Annotated[
+        bool, typer.Option("--no-llm", help="Use Jinja templates only (H.8 default).")
+    ] = False,
+    persist: Annotated[
+        bool, typer.Option("--persist/--no-persist", help="Write the Review to the local DB.")
+    ] = True,
+) -> None:
+    """Print a deterministic H.8 coaching review. Assumes GST is built without network."""
+    del no_llm  # H.11 LLM narration is not in scope; templates are always used.
+    configure_logging()
+    match, timeline = _load_fixture_pair(match_id, fixtures)
+    from riftlens.pipeline.assemble.review_builder import build_review_from_dtos
+
+    result = build_review_from_dtos(
+        match,
+        timeline,
+        pid,
+        rank=rank,
+        llm_provider="null",
+        persist=persist,
+    )
+    _print_review(result.review, paired=result.paired)
+
+
 @app.command("gst")
 def dump_gst(
     match_id: str,
@@ -251,6 +285,72 @@ def _print_findings(
         print(f"  concept={raw.concept_id} suppressed_by={raw.suppressed_by}")
         for item in raw.evidence:
             print(f"  evidence[{item.kind.value}] {item.label}: {item.value}")
+
+
+def _print_review(review: object, *, paired: bool) -> None:
+    from riftlens.domain.review import Review
+
+    if not isinstance(review, Review):
+        raise TypeError("expected a Review")
+    print(
+        f"match_id={review.match_id} pid={review.participant_id} "
+        f"champion={review.champion} role={review.role.value} rank={review.rank} "
+        f"patch={review.patch} duration_ms={review.duration_ms} result={review.result}"
+    )
+    print(f"llm_provider={review.llm_provider} engine={review.engine_version}")
+    if not paired or review.unpaired_match_timeline:
+        print(
+            "NOTE: match.json and timeline.json are unpaired games. "
+            "Review is computed from the GameStateTimeline only. "
+            "Do not treat this fixture dump as a paired match+timeline validation."
+        )
+    print(f"findings={len(review.findings)} clusters={len(review.clusters)}")
+    print()
+    print("FOCUS")
+    for item in review.focus_items:
+        _print_coaching_item(item)
+    print("SECONDARY")
+    if not review.secondary_items:
+        print("  (none)")
+    for item in review.secondary_items:
+        _print_coaching_item(item)
+    print("STRENGTHS")
+    if not review.strengths:
+        print("  (none)")
+    for item in review.strengths:
+        _print_coaching_item(item)
+    print("METRICS")
+    header = (
+        f"{'metric':<6} {'phase':<16} {'value':>10} {'unit':<16} "
+        f"{'conf':>5} {'pctl':>6}  context"
+    )
+    print(header)
+    print("-" * len(header))
+    for metric in review.metrics:
+        pctl = "-" if metric.baseline_percentile is None else f"{metric.baseline_percentile:5.1f}"
+        phase = metric.phase or "-"
+        print(
+            f"{metric.metric_id:<6} {phase:<16} {metric.value:10.3f} {metric.unit:<16} "
+            f"{metric.confidence:5.2f} {pctl:>6}  {metric.sample_context}"
+        )
+
+
+def _print_coaching_item(item: object) -> None:
+    from riftlens.domain.review import CoachingItem, format_mmss
+
+    if not isinstance(item, CoachingItem):
+        return
+    clocks = ", ".join(format_mmss(stamp) for stamp in item.evidence_timestamps_ms) or "-"
+    kind = "FOCUS" if item.is_focus else ("STRENGTH" if item.is_strength else "SECONDARY")
+    print(f"{item.rank}. [{kind}] {item.title}")
+    print(f"   type={item.issue_type.value} cost={item.cost_summary} conf={item.confidence:.2f}")
+    print(f"   why: {item.body.replace(chr(10), ' / ')}")
+    print(f"   fix: {item.the_fix}")
+    print(f"   check: {item.next_game_check}")
+    print(f"   evidence_t={clocks} (ms={list(item.evidence_timestamps_ms)})")
+    print(f"   grouping: {item.grouping_reason}")
+    print(f"   findings={list(item.finding_ids)}")
+    print()
 
 
 def main() -> None:

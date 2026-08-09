@@ -5,6 +5,8 @@ from riftlens.domain.enums import (
     EvidenceKind,
     FactKind,
     GamePhase,
+    IssueType,
+    RankTier,
     Role,
     Severity,
     Source,
@@ -16,6 +18,15 @@ from riftlens.domain.fact import Fact, Provenance, SubjectRef
 from riftlens.domain.finding import Finding
 from riftlens.domain.geometry import Point, TurretRef, Zone, zone_of
 from riftlens.domain.ids import is_ulid, new_ulid
+from riftlens.domain.review import (
+    CoachingItem,
+    FindingCluster,
+    GroupingDecision,
+    MetricSnapshot,
+    Review,
+    certainty_bucket,
+    format_mmss,
+)
 from riftlens.domain.timeline import (
     GameStateSnapshot,
     GameStateTimeline,
@@ -30,8 +41,15 @@ __all__ = [
     "EvidenceKind",
     "Fact",
     "FactKind",
+    "CoachingItem",
     "Finding",
+    "FindingCluster",
     "GamePhase",
+    "GroupingDecision",
+    "IssueType",
+    "MetricSnapshot",
+    "RankTier",
+    "Review",
     "GameStateSnapshot",
     "GameStateTimeline",
     "ParticipantInfo",
@@ -45,7 +63,9 @@ __all__ = [
     "Team",
     "TurretRef",
     "Zone",
+    "certainty_bucket",
     "combine",
+    "format_mmss",
     "is_ulid",
     "new_ulid",
     "zone_of",
