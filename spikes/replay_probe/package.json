@@ -1,0 +1,10 @@
+{
+  "name": "riftlens-replay-probe-r0",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Isolated disposable R.0 spike — real League .rofl replay control proof. Not part of H.1–H.9.",
+  "type": "module",
+  "scripts": {
+    "probe": "node probe.mjs"
+  }
+}

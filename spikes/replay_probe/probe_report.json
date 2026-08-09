@@ -1,0 +1,1071 @@
+{
+  "workOrder": "R.0",
+  "title": "Replay Control Proof of Concept",
+  "result": "PASSED",
+  "startedAt": "2026-08-09T22:30:01.916Z",
+  "finishedAt": "2026-08-09T22:30:38.301Z",
+  "roflPath": "C:\\Users\\<user>\\OneDrive\\Documents\\League of Legends\\Replays\\NA1-5617764200.rofl",
+  "leagueInstall": {
+    "root": "C:\\Riot Games\\League of Legends",
+    "gameExe": "C:\\Riot Games\\League of Legends\\Game\\League of Legends.exe",
+    "clientExe": "C:\\Riot Games\\League of Legends\\LeagueClient.exe",
+    "gameCfg": "C:\\Riot Games\\League of Legends\\Config\\game.cfg",
+    "clientVersion": "16.15.8024387+branch.releases-16-15.code.public",
+    "cfgVersion": "16.15.801.3452",
+    "localeHint": "en_GB",
+    "regionHint": "NA"
+  },
+  "launch": {
+    "method": "game_exe_args",
+    "pid": 14520,
+    "exe": "C:\\Riot Games\\League of Legends\\Game\\League of Legends.exe",
+    "args": [
+      "C:\\Users\\<user>\\OneDrive\\Documents\\League of Legends\\Replays\\NA1-5617764200.rofl",
+      "-GameBaseDir=C:\\Riot Games\\League of Legends",
+      "-Region=NA",
+      "-PlatformID=NA1",
+      "-Locale=en_US",
+      "-SkipBuild",
+      "-EnableCrashpad=true"
+    ]
+  },
+  "patchCompatibility": {
+    "roflEmbeddedVersion": "16.15.802.4387",
+    "clientCodeVersion": "16.15.8024387+branch.releases-16-15.code.public",
+    "cfgVersion": "16.15.801.3452",
+    "apparentlySamePatchFamily": true
+  },
+  "replayApi": {
+    "baseUrl": "https://127.0.0.1:2999",
+    "initialPlayback": {
+      "length": 1902.9725341796875,
+      "paused": false,
+      "seeking": false,
+      "speed": 1,
+      "time": 2.2609195709228516
+    },
+    "tls": {
+      "mode": "riot_ca_verify",
+      "caFile": "riotgames.pem",
+      "hostnameCheck": "disabled_for_loopback",
+      "insecureSkipVerify": false
+    }
+  },
+  "capabilities": {
+    "swaggerV2Available": true,
+    "openapiV3Available": true,
+    "documentedPaths": [
+      "/AsyncDelete",
+      "/AsyncResult",
+      "/AsyncStatus",
+      "/Cancel",
+      "/Exit",
+      "/Help",
+      "/Subscribe",
+      "/Unsubscribe",
+      "/async/v1/result/{asyncToken}",
+      "/async/v1/status/{asyncToken}",
+      "/liveclientdata/activeplayer",
+      "/liveclientdata/activeplayerabilities",
+      "/liveclientdata/activeplayername",
+      "/liveclientdata/activeplayerrunes",
+      "/liveclientdata/allgamedata",
+      "/liveclientdata/eventdata",
+      "/liveclientdata/gamestats",
+      "/liveclientdata/playeritems",
+      "/liveclientdata/playerlist",
+      "/liveclientdata/playermainrunes",
+      "/liveclientdata/playerscores",
+      "/liveclientdata/playersummonerspells",
+      "/replay/banners",
+      "/replay/game",
+      "/replay/particles",
+      "/replay/playback",
+      "/replay/recording",
+      "/replay/render",
+      "/replay/sequence",
+      "/swagger/v1/api-docs",
+      "/swagger/v1/api-docs/{api}",
+      "/swagger/v2/swagger.json",
+      "/swagger/v3/openapi.json"
+    ],
+    "openapiTitle": "LoLClient",
+    "openapiVersion": "1.0.0",
+    "replayObserved": {
+      "/replay/game": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "processID"
+        ],
+        "error": null,
+        "keyCount": 1,
+        "truncated": false
+      },
+      "/replay/playback": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "length",
+          "paused",
+          "seeking",
+          "speed",
+          "time"
+        ],
+        "error": null,
+        "keyCount": 5,
+        "truncated": false
+      },
+      "/replay/render": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "banners",
+          "cameraAttached",
+          "cameraLockX",
+          "cameraLockY",
+          "cameraLockZ",
+          "cameraLookSpeed",
+          "cameraMode",
+          "cameraMoveSpeed",
+          "cameraPosition",
+          "cameraRotation",
+          "champions",
+          "characters",
+          "depthFogColor",
+          "depthFogEnabled",
+          "depthFogEnd",
+          "depthFogIntensity",
+          "depthFogStart",
+          "depthOfFieldCircle",
+          "depthOfFieldDebug",
+          "depthOfFieldEnabled",
+          "depthOfFieldFar",
+          "depthOfFieldMid",
+          "depthOfFieldNear",
+          "depthOfFieldWidth",
+          "environment",
+          "farClip",
+          "fieldOfView",
+          "floatingText",
+          "fogOfWar",
+          "healthBarChampions",
+          "healthBarMinions",
+          "healthBarPets",
+          "healthBarStructures",
+          "healthBarWards",
+          "heightFogColor",
+          "heightFogEnabled",
+          "heightFogEnd",
+          "heightFogIntensity",
+          "heightFogStart",
+          "interfaceAll"
+        ],
+        "error": null,
+        "keyCount": 66,
+        "truncated": true
+      },
+      "/replay/recording": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "codec",
+          "currentTime",
+          "endTime",
+          "enforceFrameRate",
+          "framesPerSecond",
+          "height",
+          "lossless",
+          "path",
+          "recording",
+          "replaySpeed",
+          "startTime",
+          "width"
+        ],
+        "error": null,
+        "keyCount": 12,
+        "truncated": false
+      },
+      "/replay/sequence": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "cameraPosition",
+          "cameraRotation",
+          "depthFogColor",
+          "depthFogEnabled",
+          "depthFogEnd",
+          "depthFogIntensity",
+          "depthFogStart",
+          "depthOfFieldCircle",
+          "depthOfFieldEnabled",
+          "depthOfFieldFar",
+          "depthOfFieldMid",
+          "depthOfFieldNear",
+          "depthOfFieldWidth",
+          "farClip",
+          "fieldOfView",
+          "heightFogColor",
+          "heightFogEnabled",
+          "heightFogEnd",
+          "heightFogIntensity",
+          "heightFogStart",
+          "navGridOffset",
+          "nearClip",
+          "playbackSpeed",
+          "selectionName",
+          "selectionOffset",
+          "skyboxOffset",
+          "skyboxRadius",
+          "skyboxRotation",
+          "sunDirection"
+        ],
+        "error": null,
+        "keyCount": 29,
+        "truncated": false
+      },
+      "/replay/particles": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "10098_EM_LL_SpaceCat_AllGoooood",
+          "1101_AvatarUpgrade",
+          "1101_Avatar_Apply",
+          "1101_Avatar_Dot",
+          "1101_Avatarchild",
+          "1101_Debuff_tar",
+          "1101_RecPathIndicator",
+          "1101_SmiteUpgrade",
+          "1101_Smitechild",
+          "1101_Stacks_Ready",
+          "1101_Stacks_ReadyPersistent",
+          "1102_AvatarChild",
+          "1102_AvatarUpgrade",
+          "1102_Debuff_tar",
+          "1102_Haste_Buff",
+          "1102_RecPathIndicator",
+          "1102_SmiteChild",
+          "1102_SmiteUpgrade",
+          "1103_1103_AvatarChild",
+          "1103_AvatarUpgrade",
+          "1103_AvatarUpgrade_Shield",
+          "1103_AvatarUpgrade_child",
+          "1103_AvatarUpgrade_child2",
+          "1103_Debuff_tar",
+          "1103_Falloff_Buff",
+          "1103_RecPathIndicator",
+          "1103_Shield_Break",
+          "1103_SmiteChild",
+          "1103_SmiteUpgrade",
+          "2024_Hall_of_Legends_Ahri_Godrays",
+          "2052_Item2052_PoroCoin_Missile",
+          "2052_Missile_Hamburger",
+          "2052_Missile_RainbowCandy",
+          "2141_Activate",
+          "2150_Glow",
+          "2151_Ground_Trail",
+          "2502_Heal_Buff",
+          "2502_Icathia_Drain_VFX",
+          "2503_Dot_Tar",
+          "2504_MagicDMG_Shield"
+        ],
+        "error": null,
+        "keyCount": 2460,
+        "truncated": true
+      }
+    },
+    "liveObserved": {
+      "/liveclientdata/allgamedata": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "activePlayer",
+          "allPlayers",
+          "events",
+          "gameData"
+        ],
+        "error": null,
+        "keyCount": 4,
+        "truncated": false
+      },
+      "/liveclientdata/gamestats": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "gameMode",
+          "gameTime",
+          "mapName",
+          "mapNumber",
+          "mapTerrain"
+        ],
+        "error": null,
+        "keyCount": 5,
+        "truncated": false
+      },
+      "/liveclientdata/eventdata": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "Events"
+        ],
+        "error": null,
+        "keyCount": 1,
+        "truncated": false
+      },
+      "/liveclientdata/playerlist": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": [
+          "<array>"
+        ],
+        "error": null,
+        "keyCount": 1,
+        "truncated": false
+      },
+      "/liveclientdata/activeplayer": {
+        "reachable": true,
+        "httpStatus": 400,
+        "ok": false,
+        "sampleKeys": [
+          "errorCode",
+          "httpStatus",
+          "implementationDetails",
+          "message"
+        ],
+        "error": null,
+        "keyCount": 4,
+        "truncated": false
+      },
+      "/liveclientdata/activeplayername": {
+        "reachable": true,
+        "httpStatus": 200,
+        "ok": true,
+        "sampleKeys": null,
+        "error": null
+      }
+    },
+    "liveClientDataAvailable": true,
+    "openapiPathCount": 33
+  },
+  "playbackProofs": {
+    "timeAdvances": {
+      "t0": {
+        "length": 1902.9725341796875,
+        "paused": false,
+        "seeking": false,
+        "speed": 1,
+        "time": 3.1183736324310303
+      },
+      "t1": {
+        "length": 1902.9725341796875,
+        "paused": false,
+        "seeking": false,
+        "speed": 1,
+        "time": 6.631958484649658
+      },
+      "delta": 3.513584852218628
+    },
+    "pause": {
+      "t0": {
+        "length": 1902.9725341796875,
+        "paused": true,
+        "seeking": false,
+        "speed": 1,
+        "time": 6.656513690948486
+      },
+      "t1": {
+        "length": 1902.9725341796875,
+        "paused": true,
+        "seeking": false,
+        "speed": 1,
+        "time": 6.656513690948486
+      },
+      "drift": 0
+    },
+    "resume": {
+      "t0": {
+        "length": 1902.9725341796875,
+        "paused": false,
+        "seeking": false,
+        "speed": 1,
+        "time": 7.176101207733154
+      },
+      "t1": {
+        "length": 1902.9725341796875,
+        "paused": false,
+        "seeking": false,
+        "speed": 1,
+        "time": 10.69745922088623
+      },
+      "delta": 3.521358013153076
+    },
+    "seeks": [
+      {
+        "target": 60,
+        "landed": 60,
+        "errorAbs": 0,
+        "ok": true,
+        "paused": true,
+        "seeking": false,
+        "sample": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 60
+        },
+        "settled": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 60
+        }
+      },
+      {
+        "target": 180,
+        "landed": 180,
+        "errorAbs": 0,
+        "ok": true,
+        "paused": true,
+        "seeking": false,
+        "sample": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 180
+        },
+        "settled": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 180
+        }
+      },
+      {
+        "target": 300,
+        "landed": 300,
+        "errorAbs": 0,
+        "ok": true,
+        "paused": true,
+        "seeking": false,
+        "sample": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 300
+        },
+        "settled": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 300
+        }
+      }
+    ]
+  },
+  "checks": {
+    "rofl_readable": {
+      "id": "rofl_readable",
+      "status": "pass",
+      "detail": "ROFL present and readable",
+      "evidence": {
+        "magic": "RIOT",
+        "looksLikeRofl": true,
+        "embeddedVersion": "16.15.802.4387",
+        "sizeBytes": 15708127,
+        "mtime": "2026-08-09T21:28:54.075Z",
+        "basename": "NA1-5617764200.rofl",
+        "gameIdHint": "5617764200"
+      },
+      "ts": "2026-08-09T22:30:01.945Z"
+    },
+    "league_install": {
+      "id": "league_install",
+      "status": "pass",
+      "detail": "Validated install at C:\\Riot Games\\League of Legends",
+      "evidence": {
+        "root": "C:\\Riot Games\\League of Legends",
+        "gameExe": "C:\\Riot Games\\League of Legends\\Game\\League of Legends.exe",
+        "clientExe": "C:\\Riot Games\\League of Legends\\LeagueClient.exe",
+        "gameCfg": "C:\\Riot Games\\League of Legends\\Config\\game.cfg",
+        "clientVersion": "16.15.8024387+branch.releases-16-15.code.public",
+        "cfgVersion": "16.15.801.3452",
+        "localeHint": "en_GB",
+        "regionHint": "NA"
+      },
+      "ts": "2026-08-09T22:30:01.956Z"
+    },
+    "patch_compatibility": {
+      "id": "patch_compatibility",
+      "status": "pass",
+      "detail": "ROFL=16.15.802.4387 client=16.15.8024387+branch.releases-16-15.code.public cfg=16.15.801.3452",
+      "evidence": {
+        "roflEmbeddedVersion": "16.15.802.4387",
+        "clientCodeVersion": "16.15.8024387+branch.releases-16-15.code.public",
+        "cfgVersion": "16.15.801.3452",
+        "apparentlySamePatchFamily": true
+      },
+      "ts": "2026-08-09T22:30:01.958Z"
+    },
+    "enable_replay_api": {
+      "id": "enable_replay_api",
+      "status": "pass",
+      "detail": "Wrote EnableReplayApi=1 under [General]",
+      "evidence": {
+        "path": "C:\\Riot Games\\League of Legends\\Config\\game.cfg",
+        "backupPath": "C:\\Riot Games\\League of Legends\\Config\\game.cfg.r0.bak.1786314601962"
+      },
+      "ts": "2026-08-09T22:30:01.965Z"
+    },
+    "replay_launch_attempted": {
+      "id": "replay_launch_attempted",
+      "status": "pass",
+      "detail": "Launch method=game_exe_args",
+      "evidence": {
+        "method": "game_exe_args",
+        "pid": 14520,
+        "exe": "C:\\Riot Games\\League of Legends\\Game\\League of Legends.exe",
+        "args": [
+          "C:\\Users\\<user>\\OneDrive\\Documents\\League of Legends\\Replays\\NA1-5617764200.rofl",
+          "-GameBaseDir=C:\\Riot Games\\League of Legends",
+          "-Region=NA",
+          "-PlatformID=NA1",
+          "-Locale=en_US",
+          "-SkipBuild",
+          "-EnableCrashpad=true"
+        ]
+      },
+      "ts": "2026-08-09T22:30:01.993Z"
+    },
+    "replay_process_detected": {
+      "id": "replay_process_detected",
+      "status": "pass",
+      "detail": "Process detected pid=14520",
+      "evidence": {
+        "pid": 14520,
+        "name": "League of Legends"
+      },
+      "ts": "2026-08-09T22:30:03.338Z"
+    },
+    "replay_api_available": {
+      "id": "replay_api_available",
+      "status": "pass",
+      "detail": "GET /replay/playback succeeded",
+      "evidence": {
+        "length": 1902.9725341796875,
+        "paused": false,
+        "seeking": false,
+        "speed": 1,
+        "time": 2.2609195709228516
+      },
+      "ts": "2026-08-09T22:30:20.430Z"
+    },
+    "playback_time_readable": {
+      "id": "playback_time_readable",
+      "status": "pass",
+      "detail": "Playback time readable",
+      "evidence": {
+        "length": 1902.9725341796875,
+        "paused": false,
+        "seeking": false,
+        "speed": 1,
+        "time": 2.2609195709228516
+      },
+      "ts": "2026-08-09T22:30:20.431Z"
+    },
+    "replay_capabilities": {
+      "id": "replay_capabilities",
+      "status": "pass",
+      "detail": "Documented paths=33; probed replay endpoints",
+      "evidence": {
+        "documentedPaths": [
+          "/AsyncDelete",
+          "/AsyncResult",
+          "/AsyncStatus",
+          "/Cancel",
+          "/Exit",
+          "/Help",
+          "/Subscribe",
+          "/Unsubscribe",
+          "/async/v1/result/{asyncToken}",
+          "/async/v1/status/{asyncToken}",
+          "/liveclientdata/activeplayer",
+          "/liveclientdata/activeplayerabilities",
+          "/liveclientdata/activeplayername",
+          "/liveclientdata/activeplayerrunes",
+          "/liveclientdata/allgamedata",
+          "/liveclientdata/eventdata",
+          "/liveclientdata/gamestats",
+          "/liveclientdata/playeritems",
+          "/liveclientdata/playerlist",
+          "/liveclientdata/playermainrunes",
+          "/liveclientdata/playerscores",
+          "/liveclientdata/playersummonerspells",
+          "/replay/banners",
+          "/replay/game",
+          "/replay/particles",
+          "/replay/playback",
+          "/replay/recording",
+          "/replay/render",
+          "/replay/sequence",
+          "/swagger/v1/api-docs",
+          "/swagger/v1/api-docs/{api}",
+          "/swagger/v2/swagger.json",
+          "/swagger/v3/openapi.json"
+        ],
+        "replayObserved": {
+          "/replay/game": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "processID"
+            ],
+            "error": null,
+            "keyCount": 1,
+            "truncated": false
+          },
+          "/replay/playback": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "length",
+              "paused",
+              "seeking",
+              "speed",
+              "time"
+            ],
+            "error": null,
+            "keyCount": 5,
+            "truncated": false
+          },
+          "/replay/render": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "banners",
+              "cameraAttached",
+              "cameraLockX",
+              "cameraLockY",
+              "cameraLockZ",
+              "cameraLookSpeed",
+              "cameraMode",
+              "cameraMoveSpeed",
+              "cameraPosition",
+              "cameraRotation",
+              "champions",
+              "characters",
+              "depthFogColor",
+              "depthFogEnabled",
+              "depthFogEnd",
+              "depthFogIntensity",
+              "depthFogStart",
+              "depthOfFieldCircle",
+              "depthOfFieldDebug",
+              "depthOfFieldEnabled",
+              "depthOfFieldFar",
+              "depthOfFieldMid",
+              "depthOfFieldNear",
+              "depthOfFieldWidth",
+              "environment",
+              "farClip",
+              "fieldOfView",
+              "floatingText",
+              "fogOfWar",
+              "healthBarChampions",
+              "healthBarMinions",
+              "healthBarPets",
+              "healthBarStructures",
+              "healthBarWards",
+              "heightFogColor",
+              "heightFogEnabled",
+              "heightFogEnd",
+              "heightFogIntensity",
+              "heightFogStart",
+              "interfaceAll"
+            ],
+            "error": null,
+            "keyCount": 66,
+            "truncated": true
+          },
+          "/replay/recording": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "codec",
+              "currentTime",
+              "endTime",
+              "enforceFrameRate",
+              "framesPerSecond",
+              "height",
+              "lossless",
+              "path",
+              "recording",
+              "replaySpeed",
+              "startTime",
+              "width"
+            ],
+            "error": null,
+            "keyCount": 12,
+            "truncated": false
+          },
+          "/replay/sequence": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "cameraPosition",
+              "cameraRotation",
+              "depthFogColor",
+              "depthFogEnabled",
+              "depthFogEnd",
+              "depthFogIntensity",
+              "depthFogStart",
+              "depthOfFieldCircle",
+              "depthOfFieldEnabled",
+              "depthOfFieldFar",
+              "depthOfFieldMid",
+              "depthOfFieldNear",
+              "depthOfFieldWidth",
+              "farClip",
+              "fieldOfView",
+              "heightFogColor",
+              "heightFogEnabled",
+              "heightFogEnd",
+              "heightFogIntensity",
+              "heightFogStart",
+              "navGridOffset",
+              "nearClip",
+              "playbackSpeed",
+              "selectionName",
+              "selectionOffset",
+              "skyboxOffset",
+              "skyboxRadius",
+              "skyboxRotation",
+              "sunDirection"
+            ],
+            "error": null,
+            "keyCount": 29,
+            "truncated": false
+          },
+          "/replay/particles": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "10098_EM_LL_SpaceCat_AllGoooood",
+              "1101_AvatarUpgrade",
+              "1101_Avatar_Apply",
+              "1101_Avatar_Dot",
+              "1101_Avatarchild",
+              "1101_Debuff_tar",
+              "1101_RecPathIndicator",
+              "1101_SmiteUpgrade",
+              "1101_Smitechild",
+              "1101_Stacks_Ready",
+              "1101_Stacks_ReadyPersistent",
+              "1102_AvatarChild",
+              "1102_AvatarUpgrade",
+              "1102_Debuff_tar",
+              "1102_Haste_Buff",
+              "1102_RecPathIndicator",
+              "1102_SmiteChild",
+              "1102_SmiteUpgrade",
+              "1103_1103_AvatarChild",
+              "1103_AvatarUpgrade",
+              "1103_AvatarUpgrade_Shield",
+              "1103_AvatarUpgrade_child",
+              "1103_AvatarUpgrade_child2",
+              "1103_Debuff_tar",
+              "1103_Falloff_Buff",
+              "1103_RecPathIndicator",
+              "1103_Shield_Break",
+              "1103_SmiteChild",
+              "1103_SmiteUpgrade",
+              "2024_Hall_of_Legends_Ahri_Godrays",
+              "2052_Item2052_PoroCoin_Missile",
+              "2052_Missile_Hamburger",
+              "2052_Missile_RainbowCandy",
+              "2141_Activate",
+              "2150_Glow",
+              "2151_Ground_Trail",
+              "2502_Heal_Buff",
+              "2502_Icathia_Drain_VFX",
+              "2503_Dot_Tar",
+              "2504_MagicDMG_Shield"
+            ],
+            "error": null,
+            "keyCount": 2460,
+            "truncated": true
+          }
+        }
+      },
+      "ts": "2026-08-09T22:30:20.746Z"
+    },
+    "liveclientdata_during_replay": {
+      "id": "liveclientdata_during_replay",
+      "status": "pass",
+      "detail": "At least one /liveclientdata/* endpoint responded OK during replay",
+      "evidence": {
+        "liveObserved": {
+          "/liveclientdata/allgamedata": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "activePlayer",
+              "allPlayers",
+              "events",
+              "gameData"
+            ],
+            "error": null,
+            "keyCount": 4,
+            "truncated": false
+          },
+          "/liveclientdata/gamestats": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "gameMode",
+              "gameTime",
+              "mapName",
+              "mapNumber",
+              "mapTerrain"
+            ],
+            "error": null,
+            "keyCount": 5,
+            "truncated": false
+          },
+          "/liveclientdata/eventdata": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "Events"
+            ],
+            "error": null,
+            "keyCount": 1,
+            "truncated": false
+          },
+          "/liveclientdata/playerlist": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": [
+              "<array>"
+            ],
+            "error": null,
+            "keyCount": 1,
+            "truncated": false
+          },
+          "/liveclientdata/activeplayer": {
+            "reachable": true,
+            "httpStatus": 400,
+            "ok": false,
+            "sampleKeys": [
+              "errorCode",
+              "httpStatus",
+              "implementationDetails",
+              "message"
+            ],
+            "error": null,
+            "keyCount": 4,
+            "truncated": false
+          },
+          "/liveclientdata/activeplayername": {
+            "reachable": true,
+            "httpStatus": 200,
+            "ok": true,
+            "sampleKeys": null,
+            "error": null
+          }
+        }
+      },
+      "ts": "2026-08-09T22:30:20.746Z"
+    },
+    "time_advances_while_playing": {
+      "id": "time_advances_while_playing",
+      "status": "pass",
+      "detail": "Time advanced by 3.514s while playing",
+      "evidence": {
+        "t0": {
+          "length": 1902.9725341796875,
+          "paused": false,
+          "seeking": false,
+          "speed": 1,
+          "time": 3.1183736324310303
+        },
+        "t1": {
+          "length": 1902.9725341796875,
+          "paused": false,
+          "seeking": false,
+          "speed": 1,
+          "time": 6.631958484649658
+        },
+        "delta": 3.513584852218628,
+        "minRequired": 1.5
+      },
+      "ts": "2026-08-09T22:30:24.803Z"
+    },
+    "pause_holds_time": {
+      "id": "pause_holds_time",
+      "status": "pass",
+      "detail": "Paused; drift=0.000s",
+      "evidence": {
+        "before": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 6.656513690948486
+        },
+        "t0": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 6.656513690948486
+        },
+        "t1": {
+          "length": 1902.9725341796875,
+          "paused": true,
+          "seeking": false,
+          "speed": 1,
+          "time": 6.656513690948486
+        },
+        "drift": 0,
+        "maxDrift": 0.75
+      },
+      "ts": "2026-08-09T22:30:28.387Z"
+    },
+    "resume_advances_time": {
+      "id": "resume_advances_time",
+      "status": "pass",
+      "detail": "Resumed; advanced 3.521s",
+      "evidence": {
+        "t0": {
+          "length": 1902.9725341796875,
+          "paused": false,
+          "seeking": false,
+          "speed": 1,
+          "time": 7.176101207733154
+        },
+        "t1": {
+          "length": 1902.9725341796875,
+          "paused": false,
+          "seeking": false,
+          "speed": 1,
+          "time": 10.69745922088623
+        },
+        "delta": 3.521358013153076
+      },
+      "ts": "2026-08-09T22:30:32.439Z"
+    },
+    "seek_multiple_targets": {
+      "id": "seek_multiple_targets",
+      "status": "pass",
+      "detail": "All 3 seeks within ±2s",
+      "evidence": {
+        "results": [
+          {
+            "target": 60,
+            "landed": 60,
+            "errorAbs": 0,
+            "ok": true,
+            "paused": true,
+            "seeking": false,
+            "sample": {
+              "length": 1902.9725341796875,
+              "paused": true,
+              "seeking": false,
+              "speed": 1,
+              "time": 60
+            },
+            "settled": {
+              "length": 1902.9725341796875,
+              "paused": true,
+              "seeking": false,
+              "speed": 1,
+              "time": 60
+            }
+          },
+          {
+            "target": 180,
+            "landed": 180,
+            "errorAbs": 0,
+            "ok": true,
+            "paused": true,
+            "seeking": false,
+            "sample": {
+              "length": 1902.9725341796875,
+              "paused": true,
+              "seeking": false,
+              "speed": 1,
+              "time": 180
+            },
+            "settled": {
+              "length": 1902.9725341796875,
+              "paused": true,
+              "seeking": false,
+              "speed": 1,
+              "time": 180
+            }
+          },
+          {
+            "target": 300,
+            "landed": 300,
+            "errorAbs": 0,
+            "ok": true,
+            "paused": true,
+            "seeking": false,
+            "sample": {
+              "length": 1902.9725341796875,
+              "paused": true,
+              "seeking": false,
+              "speed": 1,
+              "time": 300
+            },
+            "settled": {
+              "length": 1902.9725341796875,
+              "paused": true,
+              "seeking": false,
+              "speed": 1,
+              "time": 300
+            }
+          }
+        ],
+        "toleranceS": 2
+      },
+      "ts": "2026-08-09T22:30:38.301Z"
+    }
+  },
+  "failures": [],
+  "implications": {
+    "nativeRoflArchitecture": "viable_for_further_spikes",
+    "summary": "Real .rofl launched in the installed League client and was programmatically controlled via the local Replay API (read time, pause, resume, seek). A native .rofl-driven review path is worth pursuing in later R.* spikes; do not fold into H.1–H.9 yet."
+  },
+  "notes": [
+    "Isolated spike under spikes/replay_probe/. Does not modify H.1–H.9 production behavior.",
+    "TLS uses Riot Games CA (riotgames.pem) with hostname check disabled for 127.0.0.1 — not verify=false.",
+    "Live Client Data during replay is informational and does not gate R.0 pass/fail."
+  ]
+}
