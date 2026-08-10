@@ -37,6 +37,7 @@ class ReplayErrorCode(StrEnum):
     CAPABILITY_UNSUPPORTED = "CAPABILITY_UNSUPPORTED"
     CLOCK_UNMAPPED = "CLOCK_UNMAPPED"
     CLOCK_OUT_OF_BOUNDS = "CLOCK_OUT_OF_BOUNDS"
+    CLOCK_CALIBRATION_FAILED = "CLOCK_CALIBRATION_FAILED"
     LIVE_CLIENT_DATA_UNAVAILABLE = "LIVE_CLIENT_DATA_UNAVAILABLE"
     ACTIVE_PLAYER_UNAVAILABLE = "ACTIVE_PLAYER_UNAVAILABLE"
     PLATFORM_UNSUPPORTED = "PLATFORM_UNSUPPORTED"
@@ -78,6 +79,9 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
     ReplayErrorCode.CAPABILITY_UNSUPPORTED: "Gameplay source does not expose this capability.",
     ReplayErrorCode.CLOCK_UNMAPPED: "No clock mapping exists for this timestamp.",
     ReplayErrorCode.CLOCK_OUT_OF_BOUNDS: "Timestamp is outside the clock map bounds.",
+    ReplayErrorCode.CLOCK_CALIBRATION_FAILED: (
+        "Automatic replay clock calibration failed; using an estimated or manual map."
+    ),
     ReplayErrorCode.LIVE_CLIENT_DATA_UNAVAILABLE: (
         "Live Client Data is unavailable during this replay (non-fatal)."
     ),
@@ -117,6 +121,7 @@ _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
     ReplayErrorCode.CAPABILITY_UNSUPPORTED: "fatal",
     ReplayErrorCode.CLOCK_UNMAPPED: "fatal",
     ReplayErrorCode.CLOCK_OUT_OF_BOUNDS: "fatal",
+    ReplayErrorCode.CLOCK_CALIBRATION_FAILED: "informational",
     ReplayErrorCode.LIVE_CLIENT_DATA_UNAVAILABLE: "informational",
     ReplayErrorCode.ACTIVE_PLAYER_UNAVAILABLE: "informational",
     ReplayErrorCode.PLATFORM_UNSUPPORTED: "fatal",

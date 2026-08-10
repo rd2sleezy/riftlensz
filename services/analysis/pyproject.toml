@@ -118,6 +118,22 @@ forbidden_modules = [
 ]
 
 [[tool.importlinter.contracts]]
+name = "replay clock isolation"
+type = "forbidden"
+source_modules = ["riftlens.replay_host.clock"]
+forbidden_modules = [
+    "riftlens.replay_host.windows",
+    "riftlens.replay_host.lcu",
+    "riftlens.replay_host.supervisor",
+    "riftlens.replay_host.session",
+    "riftlens.api",
+    "riftlens.adapters",
+    "riftlens.pipeline",
+    "riftlens.analysis",
+    "riftlens.coaching",
+]
+
+[[tool.importlinter.contracts]]
 name = "replay lcu isolation"
 type = "forbidden"
 source_modules = ["riftlens.replay_host.lcu"]

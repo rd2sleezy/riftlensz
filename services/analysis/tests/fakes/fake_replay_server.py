@@ -82,9 +82,12 @@ class FakeReplayBehavior:
     slow_paths: dict[str, float] = field(default_factory=dict)
     seek_delay_s: float = 0.0
     seeking_stuck: bool = False
+    seeking_polls_remaining: int = 0
+    seek_misses_remaining: int = 0
     time_frozen: bool = True
     drop_next: int = 0
     transient_failures: dict[str, int] = field(default_factory=dict)
+    post_log: list[tuple[str, dict[str, Any]]] = field(default_factory=list)
 
 
 class FakeReplayApiServer:
@@ -200,6 +203,7 @@ class _ReplayHandler(BaseHTTPRequestHandler):
     def _apply_post(self, path: str, body: dict[str, Any], behavior: FakeReplayBehavior) -> None:
         """Mutate fake state from a POST. Delayed seek sleeps before applying time."""
         if path == "/replay/playback":
+            behavior.post_log.append((path, dict(body)))
             if "time" in body and behavior.seek_delay_s > 0:
                 time.sleep(behavior.seek_delay_s)
             if "paused" in body:
@@ -207,8 +211,18 @@ class _ReplayHandler(BaseHTTPRequestHandler):
             if "speed" in body:
                 behavior.playback["speed"] = body["speed"]
             if "time" in body:
-                behavior.playback["time"] = body["time"]
-                behavior.playback["seeking"] = bool(behavior.seeking_stuck)
+                requested = float(body["time"])
+                if behavior.seek_misses_remaining > 0:
+                    behavior.seek_misses_remaining -= 1
+                    behavior.playback["time"] = requested + 2.0
+                else:
+                    behavior.playback["time"] = requested
+                if behavior.seeking_stuck:
+                    behavior.playback["seeking"] = True
+                elif behavior.seeking_polls_remaining > 0:
+                    behavior.playback["seeking"] = True
+                else:
+                    behavior.playback["seeking"] = False
             return
         if path == "/replay/render" and isinstance(body, dict):
             behavior.render.update(body)
@@ -221,8 +235,14 @@ class _ReplayHandler(BaseHTTPRequestHandler):
 
     def _payload_for(self, path: str, behavior: FakeReplayBehavior) -> Any:
         if path == "/replay/playback":
+            if behavior.playback.get("seeking") and behavior.seeking_polls_remaining > 0:
+                behavior.seeking_polls_remaining -= 1
+                if behavior.seeking_polls_remaining <= 0 and not behavior.seeking_stuck:
+                    behavior.playback["seeking"] = False
             snapshot = dict(behavior.playback)
-            if not behavior.time_frozen and not snapshot.get("paused"):
+            if not behavior.time_frozen and not snapshot.get("paused") and not snapshot.get(
+                "seeking"
+            ):
                 behavior.playback["time"] = float(snapshot.get("time") or 0.0) + 1.0
             return snapshot
         if path == "/replay/game":
