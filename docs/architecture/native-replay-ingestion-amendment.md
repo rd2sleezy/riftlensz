@@ -979,6 +979,8 @@ H.9 ──┬── H.10, H.11 …  (existing product roadmap, unblocked)
 
 **Acceptance.** Full flow on Windows: import → open → click a finding → replay seeks and plays. Full flow on macOS: import is explained-disabled, video path unchanged, a persisted ROFL source renders as unavailable without errors.
 
+**T4 (2026-08-09).** Windows desktop manual demo on `NA1_5617764200` (Kaisa pid 9) **PASSED**. Report: `docs/architecture/r9-desktop-t4-report.md`. A separate H.7/H.8 coaching follow-up found during that demo is recorded in `docs/follow-ups/post-fight-actionable-state.md` and is not an R.9 failure.
+
 **Do NOT implement.** Capture UI. Camera controls. Any change to focus/secondary/strength/metrics/evidence components.
 
 ---
