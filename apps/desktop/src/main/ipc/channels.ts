@@ -14,6 +14,7 @@ export const IPC = {
   getAuthSession: 'rift:auth:get-session',
   authSessionEvent: 'rift:auth:session',
   signIn: 'rift:auth:sign-in',
+  signInWithApiKey: 'rift:auth:sign-in-api-key',
   signOut: 'rift:auth:sign-out'
 } as const
 
@@ -72,6 +73,13 @@ export const SignInResultSchema = z.discriminatedUnion('ok', [
   z.object({ ok: z.literal(true), session: AuthSessionSchema }),
   ErrorResultSchema
 ])
+
+export const SignInWithApiKeyInputSchema = z.object({
+  apiKey: z.string().min(1),
+  gameName: z.string().min(1),
+  tagLine: z.string().min(1),
+  region: z.enum(['americas', 'asia', 'europe'])
+})
 
 export const ProvenanceSchema = z.object({
   producer: z.string(),
@@ -352,3 +360,4 @@ export type BuildManualSyncResult = z.infer<typeof BuildManualSyncResultSchema>
 export type OpenFixtureInput = z.infer<typeof OpenFixtureInputSchema>
 export type AuthSession = z.infer<typeof AuthSessionSchema>
 export type SignInResult = z.infer<typeof SignInResultSchema>
+export type SignInWithApiKeyInput = z.infer<typeof SignInWithApiKeyInputSchema>

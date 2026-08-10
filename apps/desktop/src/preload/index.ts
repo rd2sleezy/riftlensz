@@ -13,6 +13,7 @@ import {
   ProbeVodResultSchema,
   SidecarStatusSchema,
   SignInResultSchema,
+  SignInWithApiKeyInputSchema,
   type AuthSession,
   type BuildManualSyncResult,
   type GetReviewResult,
@@ -22,7 +23,8 @@ import {
   type PickVodResult,
   type ProbeVodResult,
   type SidecarStatus,
-  type SignInResult
+  type SignInResult,
+  type SignInWithApiKeyInput
 } from '../main/ipc/channels'
 
 const rift = {
@@ -81,6 +83,11 @@ const rift = {
   },
   signIn(): Promise<SignInResult> {
     return ipcRenderer.invoke(IPC.signIn).then((value) => SignInResultSchema.parse(value))
+  },
+  signInWithApiKey(input: SignInWithApiKeyInput): Promise<SignInResult> {
+    return ipcRenderer
+      .invoke(IPC.signInWithApiKey, SignInWithApiKeyInputSchema.parse(input))
+      .then((value) => SignInResultSchema.parse(value))
   },
   signOut(): Promise<AuthSession> {
     return ipcRenderer.invoke(IPC.signOut).then((value) => AuthSessionSchema.parse(value))

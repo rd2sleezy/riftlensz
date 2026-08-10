@@ -17,6 +17,7 @@ import {
   ReviewSummarySchema,
   SidecarStatusSchema,
   SignInResultSchema,
+  SignInWithApiKeyInputSchema,
   SyncMapSchema,
   type ErrorResult
 } from './channels'
@@ -42,6 +43,13 @@ export function registerIpcHandlers(supervisor: SidecarSupervisor, authService: 
 
   ipcMain.handle(IPC.signIn, async () => {
     return SignInResultSchema.parse(await authService.signIn())
+  })
+
+  ipcMain.handle(IPC.signInWithApiKey, async (_event, raw: unknown) => {
+    const input = SignInWithApiKeyInputSchema.parse(raw)
+    return SignInResultSchema.parse(
+      await authService.signInWithApiKey(input.apiKey, input.gameName, input.tagLine, input.region)
+    )
   })
 
   ipcMain.handle(IPC.signOut, () => {

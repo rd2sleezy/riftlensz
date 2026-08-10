@@ -12,6 +12,7 @@ import {
   RsoAuthCancelledError
 } from './rsoClient'
 import { clearSession, loadSession, saveSession, type StoredSession } from './sessionStore'
+import { fetchRiotAccount, type RiotAccountRegion } from './riotApiKeyClient'
 
 export type AuthServiceEvents = {
   session: [AuthSession]
@@ -60,7 +61,7 @@ export class AuthService extends EventEmitter<AuthServiceEvents> {
       const code = await promise
       const tokens = await exchangeCodeForTokens(config, code)
       const identity = await fetchIdentity(tokens.accessToken)
-      const session: StoredSession = { tokens, identity, signedInAt: Date.now() }
+      const session: StoredSession = { method: 'rso', tokens, identity, signedInAt: Date.now() }
       this.stored = session
       saveSession(session)
       const publicSession = toPublicSession(session)
@@ -73,6 +74,33 @@ export class AuthService extends EventEmitter<AuthServiceEvents> {
       return { ok: false, code, message }
     } finally {
       this.pendingCancel = null
+    }
+  }
+
+  /**
+   * Signs in by verifying a Riot ID against the real Account-V1 API using the
+   * user's own personal developer key. Works today without RSO approval;
+   * the key isn't a login credential so it must be supplied fresh whenever
+   * it expires (~24h for personal keys).
+   */
+  public async signInWithApiKey(
+    apiKey: string,
+    gameName: string,
+    tagLine: string,
+    region: RiotAccountRegion
+  ): Promise<SignInResult> {
+    try {
+      const identity = await fetchRiotAccount(apiKey.trim(), gameName.trim(), tagLine.trim(), region)
+      const session: StoredSession = { method: 'apikey', apiKey: apiKey.trim(), region, identity, signedInAt: Date.now() }
+      this.stored = session
+      saveSession(session)
+      const publicSession = toPublicSession(session)
+      this.emit('session', publicSession)
+      return { ok: true, session: publicSession }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Sign-in failed'
+      logger.warn({ err: message }, 'riot api-key sign-in failed')
+      return { ok: false, code: 'AUTH_FAILED', message }
     }
   }
 

@@ -8,7 +8,8 @@ import type {
   PickVodResult,
   ProbeVodResult,
   SidecarStatus,
-  SignInResult
+  SignInResult,
+  SignInWithApiKeyInput
 } from '../main/ipc/channels'
 
 export interface RiftApi {
@@ -30,6 +31,7 @@ export interface RiftApi {
   }) => Promise<BuildManualSyncResult>
   getAuthSession: () => Promise<AuthSession>
   signIn: () => Promise<SignInResult>
+  signInWithApiKey: (input: SignInWithApiKeyInput) => Promise<SignInResult>
   signOut: () => Promise<AuthSession>
   onAuthSession: (cb: (session: AuthSession) => void) => () => void
 }

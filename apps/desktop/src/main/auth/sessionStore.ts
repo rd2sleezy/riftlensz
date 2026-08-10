@@ -2,12 +2,11 @@ import { app, safeStorage } from 'electron'
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import type { RsoIdentity, RsoTokens } from './rsoClient'
+import type { RiotAccount, RiotAccountRegion } from './riotApiKeyClient'
 
-export type StoredSession = {
-  tokens: RsoTokens
-  identity: RsoIdentity
-  signedInAt: number
-}
+export type StoredSession =
+  | { method: 'rso'; tokens: RsoTokens; identity: RsoIdentity; signedInAt: number }
+  | { method: 'apikey'; apiKey: string; region: RiotAccountRegion; identity: RiotAccount; signedInAt: number }
 
 function sessionFilePath(): string {
   return join(app.getPath('userData'), 'auth', 'session.enc')

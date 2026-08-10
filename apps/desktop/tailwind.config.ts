@@ -39,10 +39,27 @@ const config: Config = {
         'fade-in': {
           '0%': { opacity: '0', transform: 'translateY(4px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' }
+        },
+        'splash-mark': {
+          '0%': { opacity: '0', transform: 'scale(0.82)' },
+          '60%': { opacity: '1', transform: 'scale(1.03)' },
+          '100%': { opacity: '1', transform: 'scale(1)' }
+        },
+        'splash-word': {
+          '0%': { opacity: '0', transform: 'translateY(3px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' }
+        },
+        'splash-ring': {
+          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '50%': { opacity: '0.5' },
+          '100%': { opacity: '0', transform: 'scale(1.35)' }
         }
       },
       animation: {
-        'fade-in': 'fade-in 240ms ease-out both'
+        'fade-in': 'fade-in 240ms ease-out both',
+        'splash-mark': 'splash-mark 700ms cubic-bezier(0.16, 1, 0.3, 1) both',
+        'splash-word': 'splash-word 500ms ease-out 260ms both',
+        'splash-ring': 'splash-ring 1600ms cubic-bezier(0.16, 1, 0.3, 1) infinite'
       }
     }
   },
