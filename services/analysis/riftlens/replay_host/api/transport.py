@@ -126,17 +126,32 @@ def _is_transient(error: ReplayError) -> bool:
 
 
 def _classify_connect_error(exc: httpx.ConnectError, url: str) -> ReplayError:
-    """Map TLS verify failures separately from connection refused."""
+    """Map certificate pin failures to TLS; handshake resets stay transient."""
     cause: BaseException | None = exc
     while cause is not None:
-        if isinstance(cause, ssl.SSLError):
+        if isinstance(cause, ssl.SSLCertVerificationError):
             return ReplayError(
                 ReplayErrorCode.REPLAY_API_TLS,
                 details={"reason": "tls_verify_failed", "error": type(cause).__name__, "url": url},
             )
+        if isinstance(cause, ssl.SSLError):
+            text = str(cause).lower()
+            if "certificate" in text or "verify" in text:
+                return ReplayError(
+                    ReplayErrorCode.REPLAY_API_TLS,
+                    details={
+                        "reason": "tls_verify_failed",
+                        "error": type(cause).__name__,
+                        "url": url,
+                    },
+                )
+            return ReplayError(
+                ReplayErrorCode.REPLAY_API_UNAVAILABLE,
+                details={"reason": "connect_failed", "error": type(cause).__name__, "url": url},
+            )
         cause = cause.__cause__ or cause.__context__
     text = str(exc).lower()
-    if "certificate" in text or "ssl" in text or "tls" in text:
+    if "certificate" in text and ("verify" in text or "ssl" in text):
         return ReplayError(
             ReplayErrorCode.REPLAY_API_TLS,
             details={"reason": "tls_verify_failed", "url": url},

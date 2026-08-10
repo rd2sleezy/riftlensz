@@ -10,6 +10,19 @@ from riftlens.replay_host.api import (
     replay_api_ssl_context,
     riot_ca_path,
 )
+from riftlens.replay_host.launch_strategies import (
+    STRATEGY_DIRECT_EXE,
+    STRATEGY_LCU_WATCH,
+    STRATEGY_SHELL_OPEN,
+    STRATEGY_USER_ASSISTED,
+)
+from riftlens.replay_host.session import (
+    IllegalSessionTransition,
+    ReplaySessionMachine,
+    ReplaySessionPhase,
+    ReplaySessionSnapshot,
+)
+from riftlens.replay_host.supervisor import ReplayProcessSupervisor, default_api_transport
 from riftlens.replay_host.windows.capability_probe import (
     ReplayApiCapability,
     probe_replay_api_capability,
@@ -40,10 +53,20 @@ __all__ = [
     "InstallDiscoveryMethod",
     "LeagueInstall",
     "LeagueInstallResult",
+    "IllegalSessionTransition",
     "LiveClientDataClient",
     "ReplayApiCapability",
     "ReplayApiClient",
     "ReplayPlayback",
+    "ReplayProcessSupervisor",
+    "ReplaySessionMachine",
+    "ReplaySessionPhase",
+    "ReplaySessionSnapshot",
+    "STRATEGY_DIRECT_EXE",
+    "STRATEGY_LCU_WATCH",
+    "STRATEGY_SHELL_OPEN",
+    "STRATEGY_USER_ASSISTED",
+    "default_api_transport",
     "backup_path_for",
     "default_well_known_roots",
     "enable_replay_api",

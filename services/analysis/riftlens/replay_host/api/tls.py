@@ -31,6 +31,11 @@ def replay_api_ssl_context(ca_file: str | Path | None = None) -> ssl.SSLContext:
     ctx.verify_mode = ssl.CERT_REQUIRED
     # League serves 127.0.0.1 with a cert that is not hostname-issued for loopback.
     ctx.check_hostname = False
+    # Python 3.13+/OpenSSL 3.x enables X509_STRICT, which rejects Riot's leaf
+    # (missing Authority Key Identifier). Still pin the Riot CA; never verify=False.
+    strict = getattr(ssl, "VERIFY_X509_STRICT", 0)
+    if strict:
+        ctx.verify_flags &= ~strict
     return ctx
 
 

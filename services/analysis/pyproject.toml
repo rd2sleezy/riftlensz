@@ -109,6 +109,20 @@ type = "forbidden"
 source_modules = ["riftlens.replay_host.api"]
 forbidden_modules = [
     "riftlens.replay_host.windows",
+    "riftlens.replay_host.lcu",
+    "riftlens.api",
+    "riftlens.adapters",
+    "riftlens.pipeline",
+    "riftlens.analysis",
+    "riftlens.coaching",
+]
+
+[[tool.importlinter.contracts]]
+name = "replay lcu isolation"
+type = "forbidden"
+source_modules = ["riftlens.replay_host.lcu"]
+forbidden_modules = [
+    "riftlens.replay_host.windows",
     "riftlens.api",
     "riftlens.adapters",
     "riftlens.pipeline",

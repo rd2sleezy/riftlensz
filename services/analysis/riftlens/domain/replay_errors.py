@@ -20,8 +20,12 @@ class ReplayErrorCode(StrEnum):
     INSTALL_INVALID = "INSTALL_INVALID"
     PATCH_INCOMPATIBLE = "PATCH_INCOMPATIBLE"
     REPLAY_API_DISABLED = "REPLAY_API_DISABLED"
+    LIVE_GAME_IN_PROGRESS = "LIVE_GAME_IN_PROGRESS"
     LAUNCH_FAILED = "LAUNCH_FAILED"
+    LAUNCH_REJECTED = "LAUNCH_REJECTED"
+    LAUNCH_TIMEOUT = "LAUNCH_TIMEOUT"
     PLAYBACK_NOT_STARTED = "PLAYBACK_NOT_STARTED"
+    PLAYBACK_NOT_ADVANCING = "PLAYBACK_NOT_ADVANCING"
     REPLAY_API_UNAVAILABLE = "REPLAY_API_UNAVAILABLE"
     REPLAY_API_TLS = "REPLAY_API_TLS"
     PLAYBACK_UNREADABLE = "PLAYBACK_UNREADABLE"
@@ -37,6 +41,7 @@ class ReplayErrorCode(StrEnum):
     ACTIVE_PLAYER_UNAVAILABLE = "ACTIVE_PLAYER_UNAVAILABLE"
     PLATFORM_UNSUPPORTED = "PLATFORM_UNSUPPORTED"
     SOURCE_NOT_READY = "SOURCE_NOT_READY"
+    SESSION_LOST = "SESSION_LOST"
 
 
 _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
@@ -54,8 +59,14 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
     ReplayErrorCode.INSTALL_INVALID: "League of Legends installation is incomplete.",
     ReplayErrorCode.PATCH_INCOMPATIBLE: "Replay patch does not match the installed client.",
     ReplayErrorCode.REPLAY_API_DISABLED: "Replay API is not enabled in the game client.",
+    ReplayErrorCode.LIVE_GAME_IN_PROGRESS: (
+        "A live League game or queue is active; replay launch was refused."
+    ),
     ReplayErrorCode.LAUNCH_FAILED: "Failed to launch the replay in the game client.",
+    ReplayErrorCode.LAUNCH_REJECTED: "The game client refused or exited immediately after launch.",
+    ReplayErrorCode.LAUNCH_TIMEOUT: "Replay API did not become ready before the launch timeout.",
     ReplayErrorCode.PLAYBACK_NOT_STARTED: "Replay process started but playback has not begun.",
+    ReplayErrorCode.PLAYBACK_NOT_ADVANCING: "Replay is unpaused but game time is not advancing.",
     ReplayErrorCode.REPLAY_API_UNAVAILABLE: "Local Replay API is not reachable.",
     ReplayErrorCode.REPLAY_API_TLS: "Replay API TLS verification failed.",
     ReplayErrorCode.PLAYBACK_UNREADABLE: "Playback time/state could not be read.",
@@ -75,6 +86,7 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
     ),
     ReplayErrorCode.PLATFORM_UNSUPPORTED: "This gameplay source is not supported on this platform.",
     ReplayErrorCode.SOURCE_NOT_READY: "Gameplay source is not ready.",
+    ReplayErrorCode.SESSION_LOST: "Replay window was closed. Reopen the replay to continue.",
 }
 
 _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
@@ -88,8 +100,12 @@ _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
     ReplayErrorCode.INSTALL_INVALID: "fatal",
     ReplayErrorCode.PATCH_INCOMPATIBLE: "fatal",
     ReplayErrorCode.REPLAY_API_DISABLED: "fatal",
+    ReplayErrorCode.LIVE_GAME_IN_PROGRESS: "retryable",
     ReplayErrorCode.LAUNCH_FAILED: "fatal",
+    ReplayErrorCode.LAUNCH_REJECTED: "retryable",
+    ReplayErrorCode.LAUNCH_TIMEOUT: "retryable",
     ReplayErrorCode.PLAYBACK_NOT_STARTED: "retryable",
+    ReplayErrorCode.PLAYBACK_NOT_ADVANCING: "retryable",
     ReplayErrorCode.REPLAY_API_UNAVAILABLE: "retryable",
     ReplayErrorCode.REPLAY_API_TLS: "fatal",
     ReplayErrorCode.PLAYBACK_UNREADABLE: "retryable",
@@ -105,6 +121,7 @@ _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
     ReplayErrorCode.ACTIVE_PLAYER_UNAVAILABLE: "informational",
     ReplayErrorCode.PLATFORM_UNSUPPORTED: "fatal",
     ReplayErrorCode.SOURCE_NOT_READY: "retryable",
+    ReplayErrorCode.SESSION_LOST: "retryable",
 }
 
 

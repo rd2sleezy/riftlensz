@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import socket
+import ssl
 from pathlib import Path
 
 import pytest
@@ -9,7 +10,7 @@ from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 from riftlens.replay_host.api.live_client import LiveClientDataClient
 from riftlens.replay_host.api.models import ActivePlayerError, ReplayPlayback
 from riftlens.replay_host.api.replay_client import ReplayApiClient
-from riftlens.replay_host.api.tls import riot_ca_path
+from riftlens.replay_host.api.tls import replay_api_ssl_context, riot_ca_path
 from tests.fakes.fake_replay_server import FakeReplayApiServer, FakeReplayBehavior
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "replay_api"
@@ -228,6 +229,15 @@ def test_activeplayer_error_body_matches_r0_shape() -> None:
     )
     assert model.httpStatus == 400
     assert model.errorCode == "RPC_ERROR"
+
+
+def test_tls_context_pins_ca_without_x509_strict() -> None:
+    ctx = replay_api_ssl_context()
+    assert ctx.verify_mode == ssl.CERT_REQUIRED
+    assert ctx.check_hostname is False
+    strict = getattr(ssl, "VERIFY_X509_STRICT", 0)
+    if strict:
+        assert ctx.verify_flags & strict == 0
 
 
 def test_tls_success_with_pinned_server_cert() -> None:
