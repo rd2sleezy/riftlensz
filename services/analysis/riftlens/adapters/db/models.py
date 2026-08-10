@@ -452,3 +452,106 @@ class BaselineStatRow(Base):
     mean: Mapped[float | None] = mapped_column(Float)
     stddev: Mapped[float | None] = mapped_column(Float)
     updated_at: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class GameplaySourceRow(Base):
+    __tablename__ = "gameplay_source"
+    __table_args__ = (
+        UniqueConstraint("match_id", "source_uri", name="uq_gameplay_source_match_uri"),
+        Index("ix_gameplay_source_match", "match_id"),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
+    match_id: Mapped[str] = mapped_column(Text, ForeignKey("match.match_id"), nullable=False)
+    source_type: Mapped[str] = mapped_column(Text, nullable=False)
+    source_uri: Mapped[str] = mapped_column(Text, nullable=False)
+    content_hash: Mapped[str | None] = mapped_column(Text)
+    display_name: Mapped[str] = mapped_column(Text, nullable=False)
+    duration_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(Text, nullable=False)
+    platform_scope: Mapped[str] = mapped_column(Text, nullable=False)
+    media_asset_id: Mapped[str | None] = mapped_column(Text, ForeignKey("media_asset.id"))
+    created_at: Mapped[int] = mapped_column(Integer, nullable=False)
+    updated_at: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class RoflSourceDetailRow(Base):
+    __tablename__ = "rofl_source_detail"
+
+    gameplay_source_id: Mapped[str] = mapped_column(
+        Text, ForeignKey("gameplay_source.id", ondelete="CASCADE"), primary_key=True
+    )
+    platform_id: Mapped[str | None] = mapped_column(Text)
+    game_id: Mapped[int | None] = mapped_column(Integer)
+    declared_patch: Mapped[str | None] = mapped_column(Text)
+    declared_length_ms: Mapped[int | None] = mapped_column(Integer)
+    identify_method: Mapped[str] = mapped_column(Text, nullable=False)
+    header_parse_status: Mapped[str] = mapped_column(Text, nullable=False)
+    file_size_bytes: Mapped[int | None] = mapped_column(Integer)
+    magic: Mapped[str | None] = mapped_column(Text)
+    raw_metadata_json: Mapped[str | None] = mapped_column(Text)
+
+
+class ClockMapRow(Base):
+    __tablename__ = "clock_map"
+    __table_args__ = (Index("ix_clock_map_source", "gameplay_source_id"),)
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
+    gameplay_source_id: Mapped[str] = mapped_column(
+        Text, ForeignKey("gameplay_source.id", ondelete="CASCADE"), nullable=False
+    )
+    kind: Mapped[str] = mapped_column(Text, nullable=False)
+    offset_ms: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    rate: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
+    confidence: Mapped[str] = mapped_column(Text, nullable=False)
+    method: Mapped[str] = mapped_column(Text, nullable=False)
+    anchor_count: Mapped[int | None] = mapped_column(Integer)
+    residual_ms: Mapped[int | None] = mapped_column(Integer)
+    is_active: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[int] = mapped_column(Integer, nullable=False)
+    payload_json: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class ReplaySessionRow(Base):
+    __tablename__ = "replay_session"
+    __table_args__ = (Index("ix_replay_session_source", "gameplay_source_id"),)
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
+    gameplay_source_id: Mapped[str] = mapped_column(
+        Text, ForeignKey("gameplay_source.id", ondelete="CASCADE"), nullable=False
+    )
+    replay_api_base: Mapped[str | None] = mapped_column(Text)
+    replay_api_port: Mapped[int | None] = mapped_column(Integer)
+    state: Mapped[str] = mapped_column(Text, nullable=False)
+    last_error: Mapped[str | None] = mapped_column(Text)
+    started_at: Mapped[int] = mapped_column(Integer, nullable=False)
+    ended_at: Mapped[int | None] = mapped_column(Integer)
+
+
+class CaptureIntervalRow(Base):
+    __tablename__ = "capture_interval"
+    __table_args__ = (Index("ix_capture_interval_source_t", "gameplay_source_id", "t_start_ms"),)
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
+    gameplay_source_id: Mapped[str] = mapped_column(
+        Text, ForeignKey("gameplay_source.id", ondelete="CASCADE"), nullable=False
+    )
+    t_start_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    t_end_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[int] = mapped_column(Integer, nullable=False)
+
+
+class MediaArtifactRow(Base):
+    __tablename__ = "media_artifact"
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
+    capture_interval_id: Mapped[str] = mapped_column(
+        Text, ForeignKey("capture_interval.id", ondelete="CASCADE"), nullable=False
+    )
+    kind: Mapped[str] = mapped_column(Text, nullable=False)
+    path: Mapped[str] = mapped_column(Text, nullable=False)
+    content_hash: Mapped[str | None] = mapped_column(Text)
+    width: Mapped[int | None] = mapped_column(Integer)
+    height: Mapped[int | None] = mapped_column(Integer)
+    created_at: Mapped[int] = mapped_column(Integer, nullable=False)

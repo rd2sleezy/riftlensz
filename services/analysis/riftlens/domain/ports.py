@@ -4,6 +4,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
+from riftlens.domain.clock_map import ClockMap
 from riftlens.domain.gameplay_source import GameplaySource, PlaybackState, SourceCapability
 
 
@@ -166,6 +167,75 @@ class SyncMapRecord:
     quality: str
     verified: int
     created_at: int
+
+
+@dataclass(frozen=True)
+class GameplaySourceRecord:
+    id: str
+    match_id: str
+    source_type: str
+    source_uri: str
+    content_hash: str | None
+    display_name: str
+    duration_ms: int
+    status: str
+    platform_scope: str
+    created_at: int
+    updated_at: int
+    media_asset_id: str | None = None
+
+
+@dataclass(frozen=True)
+class RoflSourceDetailRecord:
+    gameplay_source_id: str
+    platform_id: str | None
+    game_id: int | None
+    declared_patch: str | None
+    declared_length_ms: int | None
+    identify_method: str
+    header_parse_status: str
+    file_size_bytes: int | None
+    magic: str | None
+    raw_metadata_json: str | None = None
+
+
+@dataclass(frozen=True)
+class ClockCalibrationRecord:
+    id: str
+    gameplay_source_id: str
+    kind: str
+    offset_ms: int
+    rate: float
+    confidence: str
+    method: str
+    anchor_count: int | None
+    residual_ms: int | None
+    is_active: int
+    created_at: int
+    clock: ClockMap
+    stdev_ms: float | None = None
+    warning: str | None = None
+    media_asset_id: str | None = None
+
+
+@dataclass(frozen=True)
+class ReplaySessionAuditRecord:
+    id: str
+    gameplay_source_id: str
+    replay_api_base: str | None
+    replay_api_port: int | None
+    state: str
+    last_error: str | None
+    started_at: int
+    ended_at: int | None
+
+
+@dataclass(frozen=True)
+class GameplaySourceSnapshot:
+    source: GameplaySourceRecord
+    rofl: RoflSourceDetailRecord | None
+    clock: ClockCalibrationRecord | None
+    file_present: bool
 
 
 @dataclass(frozen=True)
@@ -425,6 +495,55 @@ class SyncRepository(Protocol):
 
     async def get_by_media_and_match(self, media_id: str, match_id: str) -> SyncMapRecord | None:
         """Return the unique sync map for a VOD+match pair, or None. Assumes FKs are valid."""
+
+
+class GameplayRepository(Protocol):
+    async def upsert_source(
+        self,
+        row: GameplaySourceRecord,
+        *,
+        rofl: RoflSourceDetailRecord | None = None,
+    ) -> str:
+        """Insert or update a gameplay source. Assumes the match row exists."""
+
+    async def get_source(self, source_id: str) -> GameplaySourceSnapshot | None:
+        """Return a source snapshot or None. Revalidates path existence at read time."""
+
+    async def list_sources_for_match(self, match_id: str) -> Sequence[GameplaySourceSnapshot]:
+        """Return sources for a match, newest first. Missing matches yield an empty list."""
+
+    async def replace_clock(
+        self,
+        source_id: str,
+        clock: ClockMap,
+        *,
+        method: str,
+        created_at: int,
+        anchor_count: int | None = None,
+        residual_ms: int | None = None,
+        stdev_ms: float | None = None,
+        warning: str | None = None,
+        calibration_id: str | None = None,
+        media_asset_id: str | None = None,
+    ) -> ClockCalibrationRecord:
+        """Append a clock_map row and mark it active. Assumes the source exists."""
+
+    async def get_active_clock(self, source_id: str) -> ClockCalibrationRecord | None:
+        """Return the active ClockMap calibration, or None when none is stored."""
+
+    async def update_source_status(
+        self, source_id: str, status: str, *, updated_at: int
+    ) -> None:
+        """Update cached source status. Does not imply the file or session is live."""
+
+    async def revalidate_source(self, source_id: str, *, updated_at: int) -> GameplaySourceSnapshot:
+        """Refresh the unavailable/linked hint from disk. Assumes the source exists."""
+
+    async def record_session(self, row: ReplaySessionAuditRecord) -> None:
+        """Append a historical replay-session audit row. Does not restore liveness."""
+
+    async def list_sessions(self, source_id: str) -> Sequence[ReplaySessionAuditRecord]:
+        """Return audit rows for a source, newest first. Missing sources yield []."""
 
 
 class ReviewRepository(Protocol):

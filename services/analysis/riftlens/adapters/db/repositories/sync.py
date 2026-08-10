@@ -5,13 +5,19 @@ from sqlalchemy.orm import Session
 
 from riftlens.adapters.db.models import SyncMapRow
 from riftlens.adapters.db.repositories.base import SessionRepository
+from riftlens.adapters.db.repositories.gameplay import mirror_h9_sync_map
 from riftlens.domain.ports import SyncMapRecord
 
 
 class SqlSyncRepository(SessionRepository):
     async def upsert(self, row: SyncMapRecord) -> None:
-        """Insert or replace a sync map. Assumes media and match rows exist."""
-        await self.call(lambda session: session.merge(_sync_row(row)))
+        """Insert or replace a sync map and mirror it onto gameplay_source/clock_map."""
+
+        def work(session: Session) -> None:
+            session.merge(_sync_row(row))
+            mirror_h9_sync_map(session, row)
+
+        await self.call(work)
 
     async def get(self, sync_id: str) -> SyncMapRecord | None:
         """Return a sync map or None. Assumes ``sync_id`` is a ULID."""
