@@ -1,0 +1,51 @@
+# Minimal Phase 1 stub. Real coaching rules land in H.7.
+id: R-000
+version: 1
+name: "Stub rule (not evaluated)"
+concept_id: LANING
+category: LANING
+severity_base: LOW
+data_tier: RIOT_ONLY
+patch_range: null
+
+applicability:
+  roles: [TOP, MIDDLE, BOTTOM, UTILITY, JUNGLE]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [LEVEL_UP]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [LEVEL_UP]
+  predicate: rules.stubs.never
+
+params: {}
+
+severity_modifiers: []
+
+evidence_template:
+  - "Stub rule never emits findings"
+
+explanation: |
+  Placeholder so RuleDefinitionLoader can upsert a validated row.
+
+better_alternative: |
+  No alternative — this rule never fires.
+
+false_positives:
+  - "Stub rule is never evaluated"
+  - "Present only so RuleDefinitionLoader can upsert a row"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 0

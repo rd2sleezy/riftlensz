@@ -1,0 +1,57 @@
+id: P-001
+version: 1
+name: "Clean lane phase"
+concept_id: STRENGTH.CLEAN_LANE_PHASE
+category: STRENGTH
+severity_base: LOW
+data_tier: RIOT_ONLY
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, MIDDLE, BOTTOM]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CS]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.positive.clean_lane_phase
+
+params:
+  mark_ms: 840000
+  min_cs_diff: 10
+  max_deaths: 1
+
+severity_modifiers:
+  - if: "diff >= 20"
+    then: 0
+
+evidence_template:
+  - "CS diff at 14:00: +{diff}"
+  - "Deaths before 14:00: {deaths}"
+
+explanation: |
+  CS diff +{diff} at 14:00 vs {opponent} with {deaths} death(s).
+
+better_alternative: |
+  Keep the same early-game discipline — this is a strength to repeat.
+
+false_positives:
+  - "Opponent roaming can gift CS diff that is not lane skill"
+  - "Jungle presence is not subtracted from the differential"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: true

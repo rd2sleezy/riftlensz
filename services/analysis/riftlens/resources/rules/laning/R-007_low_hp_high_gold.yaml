@@ -1,0 +1,64 @@
+id: R-007
+version: 1
+name: "Low HP, high gold, still in lane"
+concept_id: LANING.RECALL_TIMING.RECALL_WITH_EXCESS_GOLD
+category: LANING
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: [HEALTHY_SUSTAIN]
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [PARTICIPANT_FRAME]
+  - features: [hp_fraction_estimate, unspent_gold_estimate]
+  - min_confidence:
+      hp_fraction_estimate: 0.35
+      unspent_gold_estimate: 0.35
+
+trigger:
+  evaluate_on: PERIODIC
+  period_ms: 30000
+  predicate: rules.laning.low_hp_high_gold
+
+params:
+  hp_fraction_max: 0.42
+  unspent_gold_min: 1150
+  min_time_since_last_purchase_ms: 90000
+  min_game_time_ms: 240000
+
+severity_modifiers:
+  - if: "hp_fraction < 0.25"
+    then: 1
+  - if: "unspent_gold > 2200"
+    then: 1
+
+evidence_template:
+  - "HP at {t_mmss}: {hp_pct}% (CI-bounded)"
+  - "Unspent gold: {gold}"
+  - "Last shop: {last_purchase_mmss}"
+
+explanation: |
+  At {t_mmss} you were at {hp_pct}% HP holding {gold} gold with no recent shop.
+
+better_alternative: |
+  Recall — you cannot trade or spend that gold from lane.
+
+false_positives:
+  - "HP between frames ignores quarantined healthRegen, so mid-minute HP is uncertain"
+  - "Sustain champions can play lower HP (excluded via HEALTHY_SUSTAIN when tagged)"
+  - "A jungler arriving to dive the enemy can make staying correct"
+
+suppressed_by: [R-002]
+cooldown_ms: 120000
+max_findings_per_match: 3
+is_strength: false

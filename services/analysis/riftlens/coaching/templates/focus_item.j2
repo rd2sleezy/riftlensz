@@ -1,0 +1,9 @@
+{% if certainty == 'certain' %}You did this {{ occurrences }} time{{ 's' if occurrences != 1 else '' }}.
+{% elif certainty == 'likely' %}You likely did this {{ occurrences }} time{{ 's' if occurrences != 1 else '' }}.
+{% else %}This looks like {{ occurrences }} time{{ 's' if occurrences != 1 else '' }}, though we cannot see ward locations, camera, or exact positioning between timeline frames from match data alone.
+{% endif %}
+Cost this game: {{ cost_summary }}. Clearest example at {{ exemplar_mmss }} (t_ms={{ exemplar_t_ms }}).
+{% if explanation %}{{ explanation | trim }}{% endif %}
+
+{% if alternative %}Instead: {{ alternative | trim }}{% endif %}
+{% if uncertainty_note %}{{ uncertainty_note }}{% endif %}

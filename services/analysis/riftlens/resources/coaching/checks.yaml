@@ -1,0 +1,119 @@
+# concept_id → focus title / fix / next-game check (§6.8). Titles ≤ 10 words.
+version: 1
+defaults:
+  title: "Fix this repeated mistake"
+  the_fix: "Change one concrete habit and check it next game."
+  next_game_check: "Track whether this exact pattern repeats. Target: zero repeats."
+concepts:
+  LANING.JUNGLE_TRACKING.POSITIONING_BY_ENEMY_JUNGLER_INFORMATION_AGE:
+    title: "Know the jungler before you push"
+    the_fix: "Before stepping past river, check the minimap for the enemy jungler."
+    next_game_check: "Track: deaths in the enemy half with the jungler unseen. Target: ≤1."
+  VISION.TIMING.WARDING_WHEN_PLAYING_FORWARD:
+    title: "Ward before you play forward"
+    the_fix: "Place a ward when you walk past the river with your trinket up."
+    next_game_check: "Track: forward deaths with no ward in the prior 90s. Target: 0."
+  LANING.WAVE_MANAGEMENT.PUSHING_WITHOUT_A_PLAN:
+    title: "Stop pushing blind waves"
+    the_fix: "Hold near your side of river unless the enemy jungler is shown."
+    next_game_check: "Track: deaths on a crashing wave with fogged jungle. Target: ≤1."
+  RISK.DEATH_CAUSE.UNSEEN_JUNGLER:
+    title: "Stop dying to an unseen jungler"
+    the_fix: "Give up a few CS when the jungler has been missing for 45s."
+    next_game_check: "Track: unseen-jungler deaths. Target: ≤1."
+  RISK.EXPOSURE.FORWARD_NO_VISION_ATTEMPT:
+    title: "Do not walk forward unwared"
+    the_fix: "If your trinket is up, ward before crossing the river."
+    next_game_check: "Track: enemy-half deaths with no recent ward. Target: 0."
+  RISK.DEATH_CAUSE.CAUGHT_ALONE:
+    title: "Stop getting caught alone"
+    the_fix: "Group or leave before you are the only person on a side."
+    next_game_check: "Track: solo deaths after 14:00. Target: ≤1."
+  RISK.DEATH_CAUSE.DIVED:
+    title: "Respect dive angles under tower"
+    the_fix: "Back off when two enemies crash your tower and you are low."
+    next_game_check: "Track: tower-dive deaths. Target: 0."
+  RISK.DEATH_CAUSE.LOCATION_CLUSTER:
+    title: "Stop repeating the same death spot"
+    the_fix: "After two deaths in one pocket, play the opposite side of the map."
+    next_game_check: "Track: deaths inside one 2000-unit pocket. Target: ≤2."
+  LANING.FARM.CS_COLLAPSE_AFTER_DEATH:
+    title: "Farm the next wave after dying"
+    the_fix: "On respawn, go to the nearest safe wave before looking for a fight."
+    next_game_check: "Track: CS/min in the 3 minutes after each death. Target: ≥55% of pre-death."
+  LANING.RECALL_TIMING.RECALL_WITH_EXCESS_GOLD:
+    title: "Base when low with a gold pile"
+    the_fix: "If HP is low and you can buy a component, recall immediately."
+    next_game_check: "Track: low-HP moments with ≥1000 unspent gold. Target: 0 deaths."
+  ECONOMY.SPENDING.UNSPENT_AT_DEATH:
+    title: "Spend your gold before you fight"
+    the_fix: "Back and buy when unspent gold covers your next component."
+    next_game_check: "Track: gold held at death. Target: ≤600."
+  ECONOMY.SPENDING.DEAD_GOLD:
+    title: "Stop sitting on unspendable gold"
+    the_fix: "Recall once unspent gold exceeds your next item for two minutes."
+    next_game_check: "Track: stretches ≥120s above next-item gold. Target: 0."
+  ECONOMY.BUILD.NO_ANTI_HEAL:
+    title: "Buy anti-heal on time"
+    the_fix: "Against a healing comp, buy Executioner's or Morellonomicon at the first back after 8:00."
+    next_game_check: "Track: anti-heal purchased before 14:00 vs sustain comps. Target: yes."
+  ECONOMY.INCOME.LOW_CONVERSION:
+    title: "Turn your gold into damage"
+    the_fix: "Take fights on your item spikes instead of catching side waves forever."
+    next_game_check: "Track: damage share vs gold share. Target: ratio ≥0.65."
+  MACRO.OBJECTIVES.NO_SHOW:
+    title: "Show up for objectives"
+    the_fix: "Move toward dragon or baron 40s before spawn unless you are crashing a wave."
+    next_game_check: "Track: major objectives you neither contest nor trade. Target: 0."
+  MACRO.TEMPO.NO_CONVERSION:
+    title: "Spend tempo after a won fight"
+    the_fix: "After a 2+ kill fight, take the nearest objective or plates before resetting."
+    next_game_check: "Track: won fights with no objective or plate in the respawn window. Target: ≤1."
+  MACRO.ROAMING.ROAM_COST_EXCEEDED:
+    title: "Roam only with lane priority"
+    the_fix: "Crash or freeze before leaving lane, or do not roam."
+    next_game_check: "Track: roams that lose ≥12 CS with no kill or objective. Target: 0."
+  VISION.TIMING.NO_WARD_PRE_OBJECTIVE:
+    title: "Ward before the objective spawns"
+    the_fix: "Place a ward on the objective path 60s before spawn."
+    next_game_check: "Track: major objectives with zero wards in the prior 75s. Target: 0."
+  VISION.DENIAL.NO_CONTROL_WARDS:
+    title: "Buy a control ward every back"
+    the_fix: "If you have 75 gold after your buy, leave with a control ward."
+    next_game_check: "Track: control wards bought per reset. Target: ≥0.8."
+  COMBAT.ENGAGE_DECISION.FIGHT_INTO_UNKNOWN:
+    title: "Do not start fogged fights"
+    the_fix: "If two or more enemies are unaccounted for, wait or leave."
+    next_game_check: "Track: lost fights started into fog. Target: 0."
+  COMBAT.POSITIONING.DIES_FIRST:
+    title: "Stop dying first in fights"
+    the_fix: "Enter after your frontline, not before them."
+    next_game_check: "Track: fights where you die first. Target: <30%."
+  COMBAT.SUMMONER_SPELLS.UNUSED_ESCAPE:
+    title: "Flash out of losing fights"
+    the_fix: "If the recap lasts over a second and Flash is up, use it to live."
+    next_game_check: "Track: deaths with unused Flash in a long recap. Target: 0."
+  LANING.LEVEL_SPIKES.DEFICIT_AT_SPIKE:
+    title: "Respect the opponent's level spike"
+    the_fix: "When they hit 6 first, play behind your minions for 30s."
+    next_game_check: "Track: damage taken in the 30s after an enemy spike. Target: low or none."
+  STRENGTH.CLEAN_LANE_PHASE:
+    title: "Keep your clean early lane"
+    the_fix: "Repeat the same CS-first pattern through the next laning phase."
+    next_game_check: "Track: CS diff at 14:00. Target: ≥+10 with ≤1 death."
+  STRENGTH.EFFICIENT_RESETS:
+    title: "Keep crashing before you reset"
+    the_fix: "Crash, buy, and return on the same timer you used here."
+    next_game_check: "Track: resets that spend ≥85% gold with little CS lost. Target: ≥3."
+  STRENGTH.OBJECTIVE_DISCIPLINE:
+    title: "Keep showing for objectives"
+    the_fix: "Continue moving on spawn timers the same way."
+    next_game_check: "Track: contest-weighted objective participation. Target: keep 100%."
+  STRENGTH.VISION_HABIT:
+    title: "Keep buying control wards"
+    the_fix: "Leave base with a control ward whenever gold allows."
+    next_game_check: "Track: control ward on resets. Target: ≥80%."
+  STRENGTH.RECOVERED_FROM_BEHIND:
+    title: "Keep playing for the comeback"
+    the_fix: "When behind, farm safely and take the next free objective."
+    next_game_check: "Track: gold deficit closed by 25:00. Target: repeat this recovery."

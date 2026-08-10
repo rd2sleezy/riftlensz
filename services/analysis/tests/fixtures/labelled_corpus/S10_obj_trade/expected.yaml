@@ -1,0 +1,6 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S10_obj_trade
+synthetic: true
+subject_pid: 1
+notes: "Far from dragon but took 2 plates."
+expected_rule_ids: []

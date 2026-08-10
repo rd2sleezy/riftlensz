@@ -1,0 +1,58 @@
+id: R-005
+version: 1
+name: "CS collapsed after a death"
+concept_id: LANING.FARM.CS_COLLAPSE_AFTER_DEATH
+category: LANING
+severity_base: HIGH
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, MIDDLE, BOTTOM]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL, CS]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.laning.cs_collapse_after_death
+
+params:
+  window_ms: 180000
+  ratio_max: 0.55
+  min_occurrences: 2
+
+severity_modifiers:
+  - if: "n >= 3"
+    then: 1
+
+evidence_template:
+  - "Collapse occurrences: {n}"
+  - "Threshold: post-death CS/min < {ratio_max_pct}% of pre-death"
+
+explanation: |
+  After {n} deaths your CS/min in the next 3 minutes collapsed below 55% of the prior window.
+
+better_alternative: |
+  After a death, take the first safe wave and jungle camp before looking to fight.
+
+false_positives:
+  - "A roam that coincidentally follows a death can drop CS without tilt"
+  - "Support-like roaming mids will show this pattern while playing correctly"
+  - "Frame snapping at minute boundaries can exaggerate a short dip"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: false

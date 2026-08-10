@@ -1,0 +1,57 @@
+id: P-004
+version: 1
+name: "Vision habit"
+concept_id: STRENGTH.VISION_HABIT
+category: STRENGTH
+severity_base: LOW
+data_tier: RIOT_ONLY
+patch_range: ">=12.1"
+
+applicability:
+  roles: [JUNGLE, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [ITEM_PURCHASED]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.positive.vision_habit
+
+params:
+  min_game_time_ms: 480000
+  reset_gap_ms: 12000
+  min_resets: 3
+  ratio_min: 0.8
+
+severity_modifiers:
+  - if: "pct >= 90"
+    then: 0
+
+evidence_template:
+  - "Control ward on {pct}% of {resets} resets after 8:00"
+
+explanation: |
+  Control ward on {pct}% of resets after 8:00.
+
+better_alternative: |
+  Keep buying a control ward every reset.
+
+false_positives:
+  - "A control ward bought mid-map (not on a reset cluster) is missed"
+  - "Item rename across patches is handled via name lookup"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: true

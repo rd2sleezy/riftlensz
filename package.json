@@ -1,0 +1,17 @@
+{
+  "name": "riftlens",
+  "private": true,
+  "version": "0.1.0",
+  "description": "RiftLens monorepo — Electron desktop + Python analysis sidecar",
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "dev": "pnpm --filter @riftlens/desktop dev",
+    "build": "pnpm --filter @riftlens/desktop build",
+    "test": "pnpm --filter @riftlens/desktop test && uv run --project services/analysis pytest services/analysis",
+    "lint": "pnpm --filter @riftlens/desktop lint",
+    "typecheck": "pnpm --filter @riftlens/desktop typecheck"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["electron", "esbuild"]
+  }
+}

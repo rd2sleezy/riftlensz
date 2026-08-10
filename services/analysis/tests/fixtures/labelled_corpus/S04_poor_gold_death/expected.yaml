@@ -1,0 +1,6 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S04_poor_gold_death
+synthetic: true
+subject_pid: 1
+notes: "Death holding 200 gold."
+expected_rule_ids: []

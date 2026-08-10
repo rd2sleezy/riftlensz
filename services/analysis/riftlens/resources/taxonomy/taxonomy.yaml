@@ -1,0 +1,3156 @@
+# Full Phase 1 taxonomy from technical design §3.2.
+# parent_id must resolve; H.4 TaxonomyLoader upserts this file at startup.
+version: 1
+source: RiftLens_Technical_Design.md §3.2
+concepts:
+- id: FUNDAMENTALS
+  parent_id: null
+  domain: FUNDAMENTALS
+  label: Fundamentals
+  description: Mechanical and execution skills.
+  data_tier: RIOT_ONLY
+  teachability: 0.7
+  roles: &id003
+  - TOP
+  - JUNGLE
+  - MIDDLE
+  - BOTTOM
+  - UTILITY
+  phases: &id004
+  - EARLY
+  - MID
+  - LATE
+  rank_relevance: ALL
+- id: FUNDAMENTALS.LAST_HITTING
+  parent_id: FUNDAMENTALS
+  domain: FUNDAMENTALS
+  label: Last hitting
+  description: Last hitting
+  data_tier: CV_REQUIRED
+  teachability: 0.9
+  roles: &id001
+  - TOP
+  - MIDDLE
+  - BOTTOM
+  - UTILITY
+  phases: &id002
+  - EARLY
+  - MID
+  rank_relevance: LOW_ELO
+- id: FUNDAMENTALS.LAST_HITTING.MELEE_LAST_HITS_UNDER_TOWER
+  parent_id: FUNDAMENTALS.LAST_HITTING
+  domain: FUNDAMENTALS
+  label: melee last hits under tower
+  description: melee last hits under tower
+  data_tier: CV_REQUIRED
+  teachability: 0.9
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: FUNDAMENTALS.LAST_HITTING.CASTER_LAST_HITS_UNDER_TOWER
+  parent_id: FUNDAMENTALS.LAST_HITTING
+  domain: FUNDAMENTALS
+  label: caster last hits under tower
+  description: caster last hits under tower
+  data_tier: CV_REQUIRED
+  teachability: 0.9
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: FUNDAMENTALS.LAST_HITTING.LAST_HITTING_UNDER_PRESSURE
+  parent_id: FUNDAMENTALS.LAST_HITTING
+  domain: FUNDAMENTALS
+  label: last hitting under pressure
+  description: last hitting under pressure
+  data_tier: CV_REQUIRED
+  teachability: 0.9
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: FUNDAMENTALS.LAST_HITTING.CANNON_MINION_SECURITY
+  parent_id: FUNDAMENTALS.LAST_HITTING
+  domain: FUNDAMENTALS
+  label: cannon minion security
+  description: cannon minion security
+  data_tier: CV_REQUIRED
+  teachability: 0.9
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: FUNDAMENTALS.LAST_HITTING.LAST_HITTING_WHILE_BEING_POKED
+  parent_id: FUNDAMENTALS.LAST_HITTING
+  domain: FUNDAMENTALS
+  label: last hitting while being poked
+  description: last hitting while being poked
+  data_tier: CV_REQUIRED
+  teachability: 0.9
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: FUNDAMENTALS.ANIMATION
+  parent_id: FUNDAMENTALS
+  domain: FUNDAMENTALS
+  label: Animation
+  description: Animation
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ANIMATION.ATTACK_MOVE_USAGE
+  parent_id: FUNDAMENTALS.ANIMATION
+  domain: FUNDAMENTALS
+  label: attack-move usage
+  description: attack-move usage
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ANIMATION.AUTO_ATTACK_WEAVING_BETWEEN_ABILITIES
+  parent_id: FUNDAMENTALS.ANIMATION
+  domain: FUNDAMENTALS
+  label: auto-attack weaving between abilities
+  description: auto-attack weaving between abilities
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ANIMATION.ANIMATION_CANCELLING
+  parent_id: FUNDAMENTALS.ANIMATION
+  domain: FUNDAMENTALS
+  label: animation cancelling
+  description: animation cancelling
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ANIMATION.KITING_WHILE_RETREATING
+  parent_id: FUNDAMENTALS.ANIMATION
+  domain: FUNDAMENTALS
+  label: kiting while retreating
+  description: kiting while retreating
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ANIMATION.ORB_WALKING_IN_FIGHTS
+  parent_id: FUNDAMENTALS.ANIMATION
+  domain: FUNDAMENTALS
+  label: orb-walking in fights
+  description: orb-walking in fights
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ABILITY_ACCURACY
+  parent_id: FUNDAMENTALS
+  domain: FUNDAMENTALS
+  label: Ability accuracy
+  description: Ability accuracy
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ABILITY_ACCURACY.SKILLSHOT_HIT_RATE
+  parent_id: FUNDAMENTALS.ABILITY_ACCURACY
+  domain: FUNDAMENTALS
+  label: skillshot hit rate
+  description: skillshot hit rate
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ABILITY_ACCURACY.SKILLSHOT_HIT_RATE_ON_IMMOBILE_TARGETS
+  parent_id: FUNDAMENTALS.ABILITY_ACCURACY
+  domain: FUNDAMENTALS
+  label: skillshot hit rate on immobile targets
+  description: skillshot hit rate on immobile targets
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ABILITY_ACCURACY.ABILITY_LANDED_ON_PRIMARY_VS_SECONDARY_TARGET
+  parent_id: FUNDAMENTALS.ABILITY_ACCURACY
+  domain: FUNDAMENTALS
+  label: ability landed on primary vs secondary target
+  description: ability landed on primary vs secondary target
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.ABILITY_ACCURACY.WASTED_AOE
+  parent_id: FUNDAMENTALS.ABILITY_ACCURACY
+  domain: FUNDAMENTALS
+  label: wasted AoE
+  description: wasted AoE
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.DODGING
+  parent_id: FUNDAMENTALS
+  domain: FUNDAMENTALS
+  label: Dodging
+  description: Dodging
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.DODGING.DODGING_TELEGRAPHED_ABILITIES
+  parent_id: FUNDAMENTALS.DODGING
+  domain: FUNDAMENTALS
+  label: dodging telegraphed abilities
+  description: dodging telegraphed abilities
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.DODGING.SIDESTEPPING_WHILE_FARMING
+  parent_id: FUNDAMENTALS.DODGING
+  domain: FUNDAMENTALS
+  label: sidestepping while farming
+  description: sidestepping while farming
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.DODGING.DODGING_UNDER_TOWER
+  parent_id: FUNDAMENTALS.DODGING
+  domain: FUNDAMENTALS
+  label: dodging under tower
+  description: dodging under tower
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.DODGING.MOVEMENT_DURING_CHANNELS
+  parent_id: FUNDAMENTALS.DODGING
+  domain: FUNDAMENTALS
+  label: movement during channels
+  description: movement during channels
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.RESOURCE_MGMT
+  parent_id: FUNDAMENTALS
+  domain: FUNDAMENTALS
+  label: Resource management
+  description: Resource management
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id002
+  rank_relevance: ALL
+- id: FUNDAMENTALS.RESOURCE_MGMT.MANA_EFFICIENCY_IN_LANE
+  parent_id: FUNDAMENTALS.RESOURCE_MGMT
+  domain: FUNDAMENTALS
+  label: mana efficiency in lane
+  description: mana efficiency in lane
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id002
+  rank_relevance: ALL
+- id: FUNDAMENTALS.RESOURCE_MGMT.MANA_FOR_ALL_IN_WINDOWS
+  parent_id: FUNDAMENTALS.RESOURCE_MGMT
+  domain: FUNDAMENTALS
+  label: mana for all-in windows
+  description: mana for all-in windows
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id002
+  rank_relevance: ALL
+- id: FUNDAMENTALS.RESOURCE_MGMT.ENERGY_RAGE_MANAGEMENT
+  parent_id: FUNDAMENTALS.RESOURCE_MGMT
+  domain: FUNDAMENTALS
+  label: energy/rage management
+  description: energy/rage management
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id002
+  rank_relevance: ALL
+- id: FUNDAMENTALS.RESOURCE_MGMT.HP_AS_A_RESOURCE
+  parent_id: FUNDAMENTALS.RESOURCE_MGMT
+  domain: FUNDAMENTALS
+  label: HP as a resource
+  description: HP as a resource
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id002
+  rank_relevance: ALL
+- id: FUNDAMENTALS.SPACING
+  parent_id: FUNDAMENTALS
+  domain: FUNDAMENTALS
+  label: Spacing
+  description: Spacing
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.SPACING.AUTO_ATTACK_RANGE_DISCIPLINE
+  parent_id: FUNDAMENTALS.SPACING
+  domain: FUNDAMENTALS
+  label: auto-attack range discipline
+  description: auto-attack range discipline
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.SPACING.STAYING_OUTSIDE_ENEMY_ENGAGE_RANGE
+  parent_id: FUNDAMENTALS.SPACING
+  domain: FUNDAMENTALS
+  label: staying outside enemy engage range
+  description: staying outside enemy engage range
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.SPACING.MINION_BLOCK_AWARENESS
+  parent_id: FUNDAMENTALS.SPACING
+  domain: FUNDAMENTALS
+  label: minion-block awareness
+  description: minion-block awareness
+  data_tier: CV_REQUIRED
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.COMBO
+  parent_id: FUNDAMENTALS
+  domain: FUNDAMENTALS
+  label: Combo
+  description: Combo
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.COMBO.CORRECT_ABILITY_SEQUENCE
+  parent_id: FUNDAMENTALS.COMBO
+  domain: FUNDAMENTALS
+  label: correct ability sequence
+  description: correct ability sequence
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.COMBO.FULL_COMBO_EXECUTION_UNDER_PRESSURE
+  parent_id: FUNDAMENTALS.COMBO
+  domain: FUNDAMENTALS
+  label: full combo execution under pressure
+  description: full combo execution under pressure
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: FUNDAMENTALS.COMBO.ITEM_ACTIVE_INTEGRATION
+  parent_id: FUNDAMENTALS.COMBO
+  domain: FUNDAMENTALS
+  label: item-active integration
+  description: item-active integration
+  data_tier: CV_REQUIRED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: LANING
+  parent_id: null
+  domain: LANING
+  label: Laning
+  description: Early-game lane play.
+  data_tier: RIOT_ONLY
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: LANING.FARM
+  parent_id: LANING
+  domain: LANING
+  label: Farm
+  description: Farm
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.FARM.CS_AT_5_10_14
+  parent_id: LANING.FARM
+  domain: LANING
+  label: CS at 5/10/14
+  description: CS at 5/10/14
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.FARM.CS_MIN_BY_PHASE
+  parent_id: LANING.FARM
+  domain: LANING
+  label: CS/min by phase
+  description: CS/min by phase
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.FARM.CS_DIFFERENTIAL
+  parent_id: LANING.FARM
+  domain: LANING
+  label: CS differential
+  description: CS differential
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.FARM.CS_LOST_WHILE_RECALLING
+  parent_id: LANING.FARM
+  domain: LANING
+  label: CS lost while recalling
+  description: CS lost while recalling
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.FARM.CS_LOST_WHILE_DEAD
+  parent_id: LANING.FARM
+  domain: LANING
+  label: CS lost while dead
+  description: CS lost while dead
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.FARM.CS_UNDER_TOWER
+  parent_id: LANING.FARM
+  domain: LANING
+  label: CS under tower
+  description: CS under tower
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.FARM.MISSED_CANNONS
+  parent_id: LANING.FARM
+  domain: LANING
+  label: missed cannons
+  description: missed cannons
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.FARM.FARM_DURING_DOWNTIME
+  parent_id: LANING.FARM
+  domain: LANING
+  label: farm during downtime
+  description: farm during downtime
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.TRADING
+  parent_id: LANING
+  domain: LANING
+  label: Trading
+  description: Trading
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: &id005
+  - TOP
+  - MIDDLE
+  - BOTTOM
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.TRADING.TRADE_INITIATION_ON_COOLDOWN_WINDOWS
+  parent_id: LANING.TRADING
+  domain: LANING
+  label: trade initiation on cooldown windows
+  description: trade initiation on cooldown windows
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.TRADING.TRADE_INITIATION_ON_MINION_ADVANTAGE
+  parent_id: LANING.TRADING
+  domain: LANING
+  label: trade initiation on minion advantage
+  description: trade initiation on minion advantage
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.TRADING.TRADING_INTO_A_LOSING_MATCHUP
+  parent_id: LANING.TRADING
+  domain: LANING
+  label: trading into a losing matchup
+  description: trading into a losing matchup
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.TRADING.EXTENDED_VS_SHORT_TRADES
+  parent_id: LANING.TRADING
+  domain: LANING
+  label: extended vs short trades
+  description: extended vs short trades
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.TRADING.TRADING_BEFORE_AFTER_A_LEVEL_SPIKE
+  parent_id: LANING.TRADING
+  domain: LANING
+  label: trading before/after a level spike
+  description: trading before/after a level spike
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.TRADING.DISENGAGING_A_LOSING_TRADE
+  parent_id: LANING.TRADING
+  domain: LANING
+  label: disengaging a losing trade
+  description: disengaging a losing trade
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.TRADING.HP_TO_DAMAGE_EXCHANGE_RATE
+  parent_id: LANING.TRADING
+  domain: LANING
+  label: HP-to-damage exchange rate
+  description: HP-to-damage exchange rate
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.TRADING.TRADING_WITH_THE_WAVE_AGAINST_YOU
+  parent_id: LANING.TRADING
+  domain: LANING
+  label: trading with the wave against you
+  description: trading with the wave against you
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT
+  parent_id: LANING
+  domain: LANING
+  label: Wave management
+  description: Wave management
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.FREEZING
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: freezing
+  description: freezing
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.SLOW_PUSH
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: slow push
+  description: slow push
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.HARD_PUSH_SHOVE
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: hard push (shove)
+  description: hard push (shove)
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.CRASHING_BEFORE_RECALL
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: crashing before recall
+  description: crashing before recall
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.SETTING_UP_A_BOUNCE
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: setting up a bounce
+  description: setting up a bounce
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.WAVE_STATE_AT_RECALL
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: wave state at recall
+  description: wave state at recall
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.WAVE_STATE_BEFORE_A_ROAM
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: wave state before a roam
+  description: wave state before a roam
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.THINNING_THE_WAVE_TO_DENY_A_FREEZE
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: thinning the wave to deny a freeze
+  description: thinning the wave to deny a freeze
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.PUSHING_WITHOUT_A_PLAN
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: pushing without a plan
+  description: pushing without a plan
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.WAVE_STATE_BEFORE_OBJECTIVE_SPAWN
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: wave state before objective spawn
+  description: wave state before objective spawn
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.MATCHING_THE_ENEMY_S_PUSH
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: matching the enemy's push
+  description: matching the enemy's push
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.WAVE_MANAGEMENT.PROXY_WAVES
+  parent_id: LANING.WAVE_MANAGEMENT
+  domain: LANING
+  label: proxy waves
+  description: proxy waves
+  data_tier: RIOT_DERIVED
+  teachability: 0.85
+  roles: *id005
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.LEVEL_SPIKES
+  parent_id: LANING
+  domain: LANING
+  label: Level spikes
+  description: Level spikes
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id005
+  phases: &id006
+  - EARLY
+  rank_relevance: LOW_ELO
+- id: LANING.LEVEL_SPIKES.LEVEL_2_PRIORITY_RACE
+  parent_id: LANING.LEVEL_SPIKES
+  domain: LANING
+  label: level 2 priority race
+  description: level 2 priority race
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id005
+  phases: *id006
+  rank_relevance: LOW_ELO
+- id: LANING.LEVEL_SPIKES.LEVEL_3_ALL_IN_WINDOW
+  parent_id: LANING.LEVEL_SPIKES
+  domain: LANING
+  label: level 3 all-in window
+  description: level 3 all-in window
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id005
+  phases: *id006
+  rank_relevance: LOW_ELO
+- id: LANING.LEVEL_SPIKES.LEVEL_6_SPIKE_USAGE
+  parent_id: LANING.LEVEL_SPIKES
+  domain: LANING
+  label: level 6 spike usage
+  description: level 6 spike usage
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id005
+  phases: *id006
+  rank_relevance: LOW_ELO
+- id: LANING.LEVEL_SPIKES.RESPECTING_THE_ENEMY_S_SPIKE
+  parent_id: LANING.LEVEL_SPIKES
+  domain: LANING
+  label: respecting the enemy's spike
+  description: respecting the enemy's spike
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id005
+  phases: *id006
+  rank_relevance: LOW_ELO
+- id: LANING.LEVEL_SPIKES.FIGHTING_INTO_A_LEVEL_DEFICIT
+  parent_id: LANING.LEVEL_SPIKES
+  domain: LANING
+  label: fighting into a level deficit
+  description: fighting into a level deficit
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id005
+  phases: *id006
+  rank_relevance: LOW_ELO
+- id: LANING.RECALL_TIMING
+  parent_id: LANING
+  domain: LANING
+  label: Recall timing
+  description: Recall timing
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.RECALL_TIMING.RECALL_WITH_WAVE_CRASHED
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: recall with wave crashed
+  description: recall with wave crashed
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.RECALL_TIMING.RECALL_ON_A_FULL_ITEM_COMPONENT
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: recall on a full item component
+  description: recall on a full item component
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.RECALL_TIMING.RECALL_WITH_EXCESS_UNSPENT_GOLD
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: recall with excess unspent gold
+  description: recall with excess unspent gold
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.RECALL_TIMING.RECALL_WHILE_BEHIND_ON_WAVE
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: recall while behind on wave
+  description: recall while behind on wave
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.RECALL_TIMING.GREEDY_RECALL_DELAY
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: greedy recall delay
+  description: greedy recall delay
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.RECALL_TIMING.DOUBLE_BACK_RESET_CHAINING
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: double-back / reset chaining
+  description: double-back / reset chaining
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.RECALL_TIMING.RECALL_WHILE_ENEMY_IS_DEAD
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: recall while enemy is dead
+  description: recall while enemy is dead
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: LANING.JUNGLE_TRACKING
+  parent_id: LANING
+  domain: LANING
+  label: Jungle tracking
+  description: Jungle tracking
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.JUNGLE_TRACKING.POSITIONING_BY_ENEMY_JUNGLER_INFORMATION_AGE
+  parent_id: LANING.JUNGLE_TRACKING
+  domain: LANING
+  label: positioning by enemy jungler information age
+  description: positioning by enemy jungler information age
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.JUNGLE_TRACKING.LANE_POSITION_VS_JUNGLE_PROXIMITY
+  parent_id: LANING.JUNGLE_TRACKING
+  domain: LANING
+  label: lane position vs jungle proximity
+  description: lane position vs jungle proximity
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.JUNGLE_TRACKING.PLAYING_FORWARD_WITH_JUNGLER_TRACKED_FAR
+  parent_id: LANING.JUNGLE_TRACKING
+  domain: LANING
+  label: playing forward with jungler tracked far
+  description: playing forward with jungler tracked far
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.JUNGLE_TRACKING.REACTING_TO_ENEMY_JUNGLER_APPEARING_ON_THE_MAP
+  parent_id: LANING.JUNGLE_TRACKING
+  domain: LANING
+  label: reacting to enemy jungler appearing on the map
+  description: reacting to enemy jungler appearing on the map
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.JUNGLE_TRACKING.USING_OWN_JUNGLER_S_PRESENCE
+  parent_id: LANING.JUNGLE_TRACKING
+  domain: LANING
+  label: using own jungler's presence
+  description: using own jungler's presence
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.JUNGLE_TRACKING.COUNTER_GANKING_SETUP
+  parent_id: LANING.JUNGLE_TRACKING
+  domain: LANING
+  label: counter-ganking setup
+  description: counter-ganking setup
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.LANE_ASSIGNMENT
+  parent_id: LANING
+  domain: LANING
+  label: Lane assignment
+  description: Lane assignment
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id001
+  phases: *id002
+  rank_relevance: HIGH_ELO
+- id: LANING.LANE_ASSIGNMENT.MATCHUP_APPROPRIATE_AGGRESSION
+  parent_id: LANING.LANE_ASSIGNMENT
+  domain: LANING
+  label: matchup-appropriate aggression
+  description: matchup-appropriate aggression
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id001
+  phases: *id002
+  rank_relevance: HIGH_ELO
+- id: LANING.LANE_ASSIGNMENT.PLAYING_TO_A_SCALING_WIN_CONDITION
+  parent_id: LANING.LANE_ASSIGNMENT
+  domain: LANING
+  label: playing to a scaling win condition
+  description: playing to a scaling win condition
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id001
+  phases: *id002
+  rank_relevance: HIGH_ELO
+- id: LANING.LANE_ASSIGNMENT.PLAYING_TO_AN_EARLY_WIN_CONDITION
+  parent_id: LANING.LANE_ASSIGNMENT
+  domain: LANING
+  label: playing to an early win condition
+  description: playing to an early win condition
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id001
+  phases: *id002
+  rank_relevance: HIGH_ELO
+- id: LANING.LANE_ASSIGNMENT.COUNTERPICK_EXPLOITATION
+  parent_id: LANING.LANE_ASSIGNMENT
+  domain: LANING
+  label: counterpick exploitation
+  description: counterpick exploitation
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id001
+  phases: *id002
+  rank_relevance: HIGH_ELO
+- id: LANING.LANE_ASSIGNMENT.ADAPTING_AFTER_A_LOST_EARLY_LANE
+  parent_id: LANING.LANE_ASSIGNMENT
+  domain: LANING
+  label: adapting after a lost early lane
+  description: adapting after a lost early lane
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id001
+  phases: *id002
+  rank_relevance: HIGH_ELO
+- id: LANING.TOWER_PLATES
+  parent_id: LANING
+  domain: LANING
+  label: Tower plates
+  description: Tower plates
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id005
+  phases: *id006
+  rank_relevance: ALL
+- id: LANING.TOWER_PLATES.PLATE_VALUE_VS_RISK
+  parent_id: LANING.TOWER_PLATES
+  domain: LANING
+  label: plate value vs risk
+  description: plate value vs risk
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id005
+  phases: *id006
+  rank_relevance: ALL
+- id: LANING.TOWER_PLATES.PLATE_DIVING
+  parent_id: LANING.TOWER_PLATES
+  domain: LANING
+  label: plate diving
+  description: plate diving
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id005
+  phases: *id006
+  rank_relevance: ALL
+- id: LANING.TOWER_PLATES.GIVING_PLATES_TO_FARM_SAFELY
+  parent_id: LANING.TOWER_PLATES
+  domain: LANING
+  label: giving plates to farm safely
+  description: giving plates to farm safely
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id005
+  phases: *id006
+  rank_relevance: ALL
+- id: LANING.TOWER_PLATES.PLATE_TIMING_BEFORE_14_00
+  parent_id: LANING.TOWER_PLATES
+  domain: LANING
+  label: plate timing (before 14:00)
+  description: plate timing (before 14:00)
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id005
+  phases: *id006
+  rank_relevance: ALL
+- id: LANING.LANE_PRESSURE
+  parent_id: LANING
+  domain: LANING
+  label: Lane pressure
+  description: Lane pressure
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.LANE_PRESSURE.HOLDING_LANE_PRIORITY_FOR_OBJECTIVES
+  parent_id: LANING.LANE_PRESSURE
+  domain: LANING
+  label: holding lane priority for objectives
+  description: holding lane priority for objectives
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.LANE_PRESSURE.GIVING_PRIORITY_INTENTIONALLY
+  parent_id: LANING.LANE_PRESSURE
+  domain: LANING
+  label: giving priority intentionally
+  description: giving priority intentionally
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.LANE_PRESSURE.TURRET_AGGRESSION_MANAGEMENT
+  parent_id: LANING.LANE_PRESSURE
+  domain: LANING
+  label: turret aggression management
+  description: turret aggression management
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: LANING.LANE_PRESSURE.DIVE_SETUP_AND_DIVE_DEFENCE
+  parent_id: LANING.LANE_PRESSURE
+  domain: LANING
+  label: dive setup and dive defence
+  description: dive setup and dive defence
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: MACRO
+  parent_id: null
+  domain: MACRO
+  label: Macro
+  description: Map movement, objectives, and tempo.
+  data_tier: RIOT_ONLY
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT
+  parent_id: MACRO
+  domain: MACRO
+  label: Map movement
+  description: Map movement
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: &id007
+  - MID
+  - LATE
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT.ROTATION_TIMING
+  parent_id: MACRO.MAP_MOVEMENT
+  domain: MACRO
+  label: rotation timing
+  description: rotation timing
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT.ROTATING_WITH_THE_WAVE_CRASHED
+  parent_id: MACRO.MAP_MOVEMENT
+  domain: MACRO
+  label: rotating with the wave crashed
+  description: rotating with the wave crashed
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT.ROTATING_WITHOUT_WAVE_PREP
+  parent_id: MACRO.MAP_MOVEMENT
+  domain: MACRO
+  label: rotating without wave prep
+  description: rotating without wave prep
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT.WALKING_INTO_FOG_UNNECESSARILY
+  parent_id: MACRO.MAP_MOVEMENT
+  domain: MACRO
+  label: walking into fog unnecessarily
+  description: walking into fog unnecessarily
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT.PATHING_THROUGH_SAFE_TERRAIN
+  parent_id: MACRO.MAP_MOVEMENT
+  domain: MACRO
+  label: pathing through safe terrain
+  description: pathing through safe terrain
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT.JOINING_A_FIGHT_TOO_LATE
+  parent_id: MACRO.MAP_MOVEMENT
+  domain: MACRO
+  label: joining a fight too late
+  description: joining a fight too late
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT.JOINING_A_FIGHT_TOO_EARLY
+  parent_id: MACRO.MAP_MOVEMENT
+  domain: MACRO
+  label: joining a fight too early
+  description: joining a fight too early
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: MACRO.MAP_MOVEMENT.OVEREXTENDING_AFTER_A_WON_FIGHT
+  parent_id: MACRO.MAP_MOVEMENT
+  domain: MACRO
+  label: overextending after a won fight
+  description: overextending after a won fight
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: MACRO.ROAMING
+  parent_id: MACRO
+  domain: MACRO
+  label: Roaming
+  description: Roaming
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: &id008
+  - MIDDLE
+  - UTILITY
+  - JUNGLE
+  phases: *id002
+  rank_relevance: ALL
+- id: MACRO.ROAMING.IDENTIFYING_A_ROAM_WINDOW
+  parent_id: MACRO.ROAMING
+  domain: MACRO
+  label: identifying a roam window
+  description: identifying a roam window
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id008
+  phases: *id002
+  rank_relevance: ALL
+- id: MACRO.ROAMING.ROAM_VALUE_VS_CS_COST
+  parent_id: MACRO.ROAMING
+  domain: MACRO
+  label: roam value vs CS cost
+  description: roam value vs CS cost
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id008
+  phases: *id002
+  rank_relevance: ALL
+- id: MACRO.ROAMING.ROAM_WITH_LANE_PRIORITY
+  parent_id: MACRO.ROAMING
+  domain: MACRO
+  label: roam with lane priority
+  description: roam with lane priority
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id008
+  phases: *id002
+  rank_relevance: ALL
+- id: MACRO.ROAMING.ROAM_WITHOUT_VISION
+  parent_id: MACRO.ROAMING
+  domain: MACRO
+  label: roam without vision
+  description: roam without vision
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id008
+  phases: *id002
+  rank_relevance: ALL
+- id: MACRO.ROAMING.RETURNING_TO_LANE_ON_TIME
+  parent_id: MACRO.ROAMING
+  domain: MACRO
+  label: returning to lane on time
+  description: returning to lane on time
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id008
+  phases: *id002
+  rank_relevance: ALL
+- id: MACRO.ROAMING.COUNTER_ROAMING
+  parent_id: MACRO.ROAMING
+  domain: MACRO
+  label: counter-roaming
+  description: counter-roaming
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id008
+  phases: *id002
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES
+  parent_id: MACRO
+  domain: MACRO
+  label: Objectives
+  description: Objectives
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.DRAGON_SETUP
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: dragon setup
+  description: dragon setup
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.BARON_SETUP
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: baron setup
+  description: baron setup
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.HERALD_USAGE
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: herald usage
+  description: herald usage
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.VOIDGRUB_PRIORITY
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: voidgrub priority
+  description: voidgrub priority
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.CONTESTING_VS_TRADING_OBJECTIVES
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: contesting vs trading objectives
+  description: contesting vs trading objectives
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.OBJECTIVE_VS_TOWER_TRADES
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: objective-vs-tower trades
+  description: objective-vs-tower trades
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.OBJECTIVE_BOUNTY_AWARENESS
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: objective bounty awareness
+  description: objective bounty awareness
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.SOUL_POINT_URGENCY
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: soul point urgency
+  description: soul point urgency
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.ELDER_DECISION_MAKING
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: elder decision-making
+  description: elder decision-making
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.OBJECTIVES.GIVING_UP_AN_OBJECTIVE_CORRECTLY
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: giving up an objective correctly
+  description: giving up an objective correctly
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.SIDE_LANING
+  parent_id: MACRO
+  domain: MACRO
+  label: Side laning
+  description: Side laning
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: &id009
+  - TOP
+  - MIDDLE
+  - BOTTOM
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.SIDE_LANING.1_3_1_EXECUTION
+  parent_id: MACRO.SIDE_LANING
+  domain: MACRO
+  label: 1-3-1 execution
+  description: 1-3-1 execution
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id009
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.SIDE_LANING.1_4_EXECUTION
+  parent_id: MACRO.SIDE_LANING
+  domain: MACRO
+  label: 1-4 execution
+  description: 1-4 execution
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id009
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.SIDE_LANING.SIDE_LANE_MATCHUP_SAFETY
+  parent_id: MACRO.SIDE_LANING
+  domain: MACRO
+  label: side-lane matchup safety
+  description: side-lane matchup safety
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id009
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.SIDE_LANING.TP_ESCAPE_AVAILABILITY_WHILE_SIDE_LANING
+  parent_id: MACRO.SIDE_LANING
+  domain: MACRO
+  label: TP/escape availability while side-laning
+  description: TP/escape availability while side-laning
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id009
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.SIDE_LANING.KNOWING_WHEN_TO_GROUP
+  parent_id: MACRO.SIDE_LANING
+  domain: MACRO
+  label: knowing when to group
+  description: knowing when to group
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id009
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.SIDE_LANING.PRESSURE_WITHOUT_DYING
+  parent_id: MACRO.SIDE_LANING
+  domain: MACRO
+  label: pressure without dying
+  description: pressure without dying
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id009
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.TEMPO
+  parent_id: MACRO
+  domain: MACRO
+  label: Tempo
+  description: Tempo
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: MACRO.TEMPO.USING_A_KILL_ADVANTAGE_BEFORE_IT_EXPIRES
+  parent_id: MACRO.TEMPO
+  domain: MACRO
+  label: using a kill advantage before it expires
+  description: using a kill advantage before it expires
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: MACRO.TEMPO.RESETTING_AFTER_A_WON_FIGHT
+  parent_id: MACRO.TEMPO
+  domain: MACRO
+  label: resetting after a won fight
+  description: resetting after a won fight
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: MACRO.TEMPO.NOT_RESETTING_WHEN_TEMPO_WAS_AVAILABLE
+  parent_id: MACRO.TEMPO
+  domain: MACRO
+  label: not resetting when tempo was available
+  description: not resetting when tempo was available
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: MACRO.TEMPO.TRANSLATING_A_JUNGLE_SIDE_ADVANTAGE_INTO_MAP_PRESSURE
+  parent_id: MACRO.TEMPO
+  domain: MACRO
+  label: translating a jungle-side advantage into map pressure
+  description: translating a jungle-side advantage into map pressure
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: MACRO.TEMPO.PICKING_UP_CROSS_MAP_OBJECTIVES
+  parent_id: MACRO.TEMPO
+  domain: MACRO
+  label: picking up cross-map objectives
+  description: picking up cross-map objectives
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: MACRO.WIN_CONDITION
+  parent_id: MACRO
+  domain: MACRO
+  label: Win condition
+  description: Win condition
+  data_tier: RIOT_DERIVED
+  teachability: 0.5
+  roles: *id003
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.WIN_CONDITION.TEAM_COMP_WIN_CONDITION_IDENTIFICATION
+  parent_id: MACRO.WIN_CONDITION
+  domain: MACRO
+  label: team comp win condition identification
+  description: team comp win condition identification
+  data_tier: RIOT_DERIVED
+  teachability: 0.5
+  roles: *id003
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.WIN_CONDITION.PLAYING_TO_COMPOSITION_SIEGE_PICK_TEAMFIGHT_SPLIT
+  parent_id: MACRO.WIN_CONDITION
+  domain: MACRO
+  label: playing to composition (siege/pick/teamfight/split)
+  description: playing to composition (siege/pick/teamfight/split)
+  data_tier: RIOT_DERIVED
+  teachability: 0.5
+  roles: *id003
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.WIN_CONDITION.SCALING_PATIENCE
+  parent_id: MACRO.WIN_CONDITION
+  domain: MACRO
+  label: scaling patience
+  description: scaling patience
+  data_tier: RIOT_DERIVED
+  teachability: 0.5
+  roles: *id003
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.WIN_CONDITION.FORCING_BEFORE_THE_ENEMY_SCALES
+  parent_id: MACRO.WIN_CONDITION
+  domain: MACRO
+  label: forcing before the enemy scales
+  description: forcing before the enemy scales
+  data_tier: RIOT_DERIVED
+  teachability: 0.5
+  roles: *id003
+  phases: *id007
+  rank_relevance: HIGH_ELO
+- id: MACRO.BASE_DEFENCE
+  parent_id: MACRO
+  domain: MACRO
+  label: Base defence
+  description: Base defence
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: &id010
+  - LATE
+  rank_relevance: ALL
+- id: MACRO.BASE_DEFENCE.DEFENDING_WITH_A_NUMBERS_DEFICIT
+  parent_id: MACRO.BASE_DEFENCE
+  domain: MACRO
+  label: defending with a numbers deficit
+  description: defending with a numbers deficit
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: MACRO.BASE_DEFENCE.DEFENDING_INHIBITORS
+  parent_id: MACRO.BASE_DEFENCE
+  domain: MACRO
+  label: defending inhibitors
+  description: defending inhibitors
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: MACRO.BASE_DEFENCE.TRADING_A_BASE_FOR_AN_OBJECTIVE
+  parent_id: MACRO.BASE_DEFENCE
+  domain: MACRO
+  label: trading a base for an objective
+  description: trading a base for an objective
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: MACRO.BASE_DEFENCE.NOT_THROWING_A_WON_GAME
+  parent_id: MACRO.BASE_DEFENCE
+  domain: MACRO
+  label: not throwing a won game
+  description: not throwing a won game
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: MACRO.CLOSING
+  parent_id: MACRO
+  domain: MACRO
+  label: Closing
+  description: Closing
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: MACRO.CLOSING.TAKING_THE_GAME_WHEN_AHEAD
+  parent_id: MACRO.CLOSING
+  domain: MACRO
+  label: taking the game when ahead
+  description: taking the game when ahead
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: MACRO.CLOSING.BARON_SIEGE_CONVERSION
+  parent_id: MACRO.CLOSING
+  domain: MACRO
+  label: baron→siege conversion
+  description: baron→siege conversion
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: MACRO.CLOSING.AVOIDING_UNNECESSARY_FIGHTS_WHILE_AHEAD
+  parent_id: MACRO.CLOSING
+  domain: MACRO
+  label: avoiding unnecessary fights while ahead
+  description: avoiding unnecessary fights while ahead
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: MACRO.CLOSING.CLOSING_BEFORE_ENEMY_SCALING_SPIKES
+  parent_id: MACRO.CLOSING
+  domain: MACRO
+  label: closing before enemy scaling spikes
+  description: closing before enemy scaling spikes
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id010
+  rank_relevance: ALL
+- id: COMBAT
+  parent_id: null
+  domain: COMBAT
+  label: Combat
+  description: Fights, trades, and deaths.
+  data_tier: RIOT_ONLY
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.ENGAGE_DECISION
+  parent_id: COMBAT
+  domain: COMBAT
+  label: Engage decision
+  description: Engage decision
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.ENGAGE_DECISION.FIGHTING_WITH_A_NUMBERS_ADVANTAGE
+  parent_id: COMBAT.ENGAGE_DECISION
+  domain: COMBAT
+  label: fighting with a numbers advantage
+  description: fighting with a numbers advantage
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.ENGAGE_DECISION.FIGHTING_ON_COOLDOWN_ADVANTAGE
+  parent_id: COMBAT.ENGAGE_DECISION
+  domain: COMBAT
+  label: fighting on cooldown advantage
+  description: fighting on cooldown advantage
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.ENGAGE_DECISION.FIGHTING_ON_AN_ITEM_SPIKE
+  parent_id: COMBAT.ENGAGE_DECISION
+  domain: COMBAT
+  label: fighting on an item spike
+  description: fighting on an item spike
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.ENGAGE_DECISION.FIGHTING_INTO_UNKNOWN_ENEMY_POSITIONS
+  parent_id: COMBAT.ENGAGE_DECISION
+  domain: COMBAT
+  label: fighting into unknown enemy positions
+  description: fighting into unknown enemy positions
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.ENGAGE_DECISION.FIGHTING_NEAR_ENEMY_VISION
+  parent_id: COMBAT.ENGAGE_DECISION
+  domain: COMBAT
+  label: fighting near enemy vision
+  description: fighting near enemy vision
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.ENGAGE_DECISION.ENGAGING_WITHOUT_A_FOLLOW_UP
+  parent_id: COMBAT.ENGAGE_DECISION
+  domain: COMBAT
+  label: engaging without a follow-up
+  description: engaging without a follow-up
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.DISENGAGE
+  parent_id: COMBAT
+  domain: COMBAT
+  label: Disengage
+  description: Disengage
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.DISENGAGE.RECOGNIZING_A_LOST_FIGHT
+  parent_id: COMBAT.DISENGAGE
+  domain: COMBAT
+  label: recognizing a lost fight
+  description: recognizing a lost fight
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.DISENGAGE.DISENGAGING_BEFORE_LOSING_A_SECOND_MEMBER
+  parent_id: COMBAT.DISENGAGE
+  domain: COMBAT
+  label: disengaging before losing a second member
+  description: disengaging before losing a second member
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.DISENGAGE.USING_TERRAIN_TO_ESCAPE
+  parent_id: COMBAT.DISENGAGE
+  domain: COMBAT
+  label: using terrain to escape
+  description: using terrain to escape
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.DISENGAGE.ESCAPE_SUMMONER_TIMING
+  parent_id: COMBAT.DISENGAGE
+  domain: COMBAT
+  label: escape-summoner timing
+  description: escape-summoner timing
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING
+  parent_id: COMBAT
+  domain: COMBAT
+  label: Positioning
+  description: Positioning
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING.FRONTLINE_BACKLINE_DISCIPLINE_BY_ROLE
+  parent_id: COMBAT.POSITIONING
+  domain: COMBAT
+  label: frontline/backline discipline by role
+  description: frontline/backline discipline by role
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING.DISTANCE_TO_ENEMY_PRIMARY_ENGAGE_THREAT
+  parent_id: COMBAT.POSITIONING
+  domain: COMBAT
+  label: distance to enemy primary engage threat
+  description: distance to enemy primary engage threat
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING.POSITIONING_RELATIVE_TO_THE_OBJECTIVE_PIT
+  parent_id: COMBAT.POSITIONING
+  domain: COMBAT
+  label: positioning relative to the objective pit
+  description: positioning relative to the objective pit
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING.FLANKING
+  parent_id: COMBAT.POSITIONING
+  domain: COMBAT
+  label: flanking
+  description: flanking
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING.STANDING_IN_CHOKE_POINTS
+  parent_id: COMBAT.POSITIONING
+  domain: COMBAT
+  label: standing in choke points
+  description: standing in choke points
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING.POSITIONING_DURING_SIEGE
+  parent_id: COMBAT.POSITIONING
+  domain: COMBAT
+  label: positioning during siege
+  description: positioning during siege
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.TARGET_SELECTION
+  parent_id: COMBAT
+  domain: COMBAT
+  label: Target selection
+  description: Target selection
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.TARGET_SELECTION.ATTACKING_THE_REACHABLE_TARGET_VS_THE_PRIORITY_TARGET
+  parent_id: COMBAT.TARGET_SELECTION
+  domain: COMBAT
+  label: attacking the reachable target vs the priority target
+  description: attacking the reachable target vs the priority target
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.TARGET_SELECTION.PEELING_VS_DIVING
+  parent_id: COMBAT.TARGET_SELECTION
+  domain: COMBAT
+  label: peeling vs diving
+  description: peeling vs diving
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.TARGET_SELECTION.FOCUSING_THE_CORRECT_TARGET_ON_COOLDOWNS
+  parent_id: COMBAT.TARGET_SELECTION
+  domain: COMBAT
+  label: focusing the correct target on cooldowns
+  description: focusing the correct target on cooldowns
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.TARGET_SELECTION.ABILITY_TARGETING_UNDER_CC
+  parent_id: COMBAT.TARGET_SELECTION
+  domain: COMBAT
+  label: ability targeting under CC
+  description: ability targeting under CC
+  data_tier: CV_REQUIRED
+  teachability: 0.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.COOLDOWN_ECONOMY
+  parent_id: COMBAT
+  domain: COMBAT
+  label: Cooldown economy
+  description: Cooldown economy
+  data_tier: RIOT_DERIVED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: COMBAT.COOLDOWN_ECONOMY.FIGHTING_AFTER_ENEMY_KEY_ABILITIES_ARE_USED
+  parent_id: COMBAT.COOLDOWN_ECONOMY
+  domain: COMBAT
+  label: fighting after enemy key abilities are used
+  description: fighting after enemy key abilities are used
+  data_tier: RIOT_DERIVED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: COMBAT.COOLDOWN_ECONOMY.HOLDING_DEFENSIVE_ABILITIES
+  parent_id: COMBAT.COOLDOWN_ECONOMY
+  domain: COMBAT
+  label: holding defensive abilities
+  description: holding defensive abilities
+  data_tier: RIOT_DERIVED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: COMBAT.COOLDOWN_ECONOMY.BURNING_COOLDOWNS_BEFORE_ENGAGING
+  parent_id: COMBAT.COOLDOWN_ECONOMY
+  domain: COMBAT
+  label: burning cooldowns before engaging
+  description: burning cooldowns before engaging
+  data_tier: RIOT_DERIVED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: COMBAT.COOLDOWN_ECONOMY.ULTIMATE_USAGE_TIMING
+  parent_id: COMBAT.COOLDOWN_ECONOMY
+  domain: COMBAT
+  label: ultimate usage timing
+  description: ultimate usage timing
+  data_tier: RIOT_DERIVED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: COMBAT.COOLDOWN_ECONOMY.ULTIMATE_HELD_TOO_LONG
+  parent_id: COMBAT.COOLDOWN_ECONOMY
+  domain: COMBAT
+  label: ultimate held too long
+  description: ultimate held too long
+  data_tier: RIOT_DERIVED
+  teachability: 0.6
+  roles: *id003
+  phases: *id004
+  rank_relevance: HIGH_ELO
+- id: COMBAT.SUMMONER_SPELLS
+  parent_id: COMBAT
+  domain: COMBAT
+  label: Summoner spells
+  description: Summoner spells
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.FLASH_FOR_OFFENCE_VS_DEFENCE
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: flash for offence vs defence
+  description: flash for offence vs defence
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.FLASH_TRACKING_OF_ENEMIES
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: flash tracking of enemies
+  description: flash tracking of enemies
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.PLAYING_AGGRESSIVELY_INTO_A_FLASH_LESS_ENEMY
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: playing aggressively into a flash-less enemy
+  description: playing aggressively into a flash-less enemy
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.TP_USAGE_VALUE
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: TP usage value
+  description: TP usage value
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.TP_FOR_LANE_VS_FOR_FIGHTS
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: TP for lane vs for fights
+  description: TP for lane vs for fights
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.IGNITE_EXHAUST_TIMING
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: ignite/exhaust timing
+  description: ignite/exhaust timing
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.HEAL_BARRIER_REACTION_TIME
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: heal/barrier reaction time
+  description: heal/barrier reaction time
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.FOCUS_FIRE
+  parent_id: COMBAT
+  domain: COMBAT
+  label: Focus fire
+  description: Focus fire
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: COMBAT.FOCUS_FIRE.TEAM_DAMAGE_CONVERGENCE_ON_ONE_TARGET
+  parent_id: COMBAT.FOCUS_FIRE
+  domain: COMBAT
+  label: team damage convergence on one target
+  description: team damage convergence on one target
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: COMBAT.FOCUS_FIRE.ISOLATING_A_TARGET
+  parent_id: COMBAT.FOCUS_FIRE
+  domain: COMBAT
+  label: isolating a target
+  description: isolating a target
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: COMBAT.FOCUS_FIRE.NOT_SPREADING_DAMAGE
+  parent_id: COMBAT.FOCUS_FIRE
+  domain: COMBAT
+  label: not spreading damage
+  description: not spreading damage
+  data_tier: RIOT_DERIVED
+  teachability: 0.7
+  roles: *id003
+  phases: *id007
+  rank_relevance: ALL
+- id: COMBAT.DIVE
+  parent_id: COMBAT
+  domain: COMBAT
+  label: Dive
+  description: Dive
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.DIVE.EXECUTING_A_DIVE_TOWER_AGGRO_ORDERING
+  parent_id: COMBAT.DIVE
+  domain: COMBAT
+  label: executing a dive (tower aggro, ordering)
+  description: executing a dive (tower aggro, ordering)
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.DIVE.DEFENDING_A_DIVE
+  parent_id: COMBAT.DIVE
+  domain: COMBAT
+  label: defending a dive
+  description: defending a dive
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.DIVE.DIVE_MATH_TURRET_SHOTS_SURVIVABLE
+  parent_id: COMBAT.DIVE
+  domain: COMBAT
+  label: dive math (turret shots survivable)
+  description: dive math (turret shots survivable)
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION
+  parent_id: null
+  domain: VISION
+  label: Vision
+  description: Warding, denial, and using information.
+  data_tier: RIOT_ONLY
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.TIMING
+  parent_id: VISION
+  domain: VISION
+  label: Timing
+  description: Timing
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.TIMING.WARDS_PLACED_BEFORE_OBJECTIVE_SPAWN
+  parent_id: VISION.TIMING
+  domain: VISION
+  label: wards placed before objective spawn
+  description: wards placed before objective spawn
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.TIMING.RE_WARDING_AFTER_WARD_EXPIRY
+  parent_id: VISION.TIMING
+  domain: VISION
+  label: re-warding after ward expiry
+  description: re-warding after ward expiry
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.TIMING.WARDING_BEFORE_A_ROAM
+  parent_id: VISION.TIMING
+  domain: VISION
+  label: warding before a roam
+  description: warding before a roam
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.TIMING.WARDING_ON_THE_RESET
+  parent_id: VISION.TIMING
+  domain: VISION
+  label: warding on the reset
+  description: warding on the reset
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.TIMING.WARDING_WHEN_PLAYING_FORWARD
+  parent_id: VISION.TIMING
+  domain: VISION
+  label: warding when playing forward
+  description: warding when playing forward
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.PLACEMENT
+  parent_id: VISION
+  domain: VISION
+  label: Placement
+  description: Placement
+  data_tier: CV_REQUIRED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.PLACEMENT.DEEP_VS_DEFENSIVE_WARDING_BY_GAME_STATE
+  parent_id: VISION.PLACEMENT
+  domain: VISION
+  label: deep vs defensive warding by game state
+  description: deep vs defensive warding by game state
+  data_tier: CV_REQUIRED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.PLACEMENT.WARDING_ENTRANCES_VS_THE_PIT
+  parent_id: VISION.PLACEMENT
+  domain: VISION
+  label: warding entrances vs the pit
+  description: warding entrances vs the pit
+  data_tier: CV_REQUIRED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.PLACEMENT.WARD_PLACEMENT_MATCHED_TO_TEAM_PLAN
+  parent_id: VISION.PLACEMENT
+  domain: VISION
+  label: ward placement matched to team plan
+  description: ward placement matched to team plan
+  data_tier: CV_REQUIRED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.PLACEMENT.REDUNDANT_WARDING
+  parent_id: VISION.PLACEMENT
+  domain: VISION
+  label: redundant warding
+  description: redundant warding
+  data_tier: CV_REQUIRED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.PLACEMENT.WARDING_INTO_ENEMY_CONTROL_WARD_RANGE
+  parent_id: VISION.PLACEMENT
+  domain: VISION
+  label: warding into enemy control ward range
+  description: warding into enemy control ward range
+  data_tier: CV_REQUIRED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.DENIAL
+  parent_id: VISION
+  domain: VISION
+  label: Denial
+  description: Denial
+  data_tier: RIOT_ONLY
+  teachability: 1.4
+  roles: &id011
+  - JUNGLE
+  - UTILITY
+  - MIDDLE
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.DENIAL.CONTROL_WARD_USAGE_RATE
+  parent_id: VISION.DENIAL
+  domain: VISION
+  label: control ward usage rate
+  description: control ward usage rate
+  data_tier: RIOT_ONLY
+  teachability: 1.4
+  roles: *id011
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.DENIAL.SWEEPER_USAGE_BEFORE_OBJECTIVES
+  parent_id: VISION.DENIAL
+  domain: VISION
+  label: sweeper usage before objectives
+  description: sweeper usage before objectives
+  data_tier: RIOT_ONLY
+  teachability: 1.4
+  roles: *id011
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.DENIAL.CLEARING_VISION_BEFORE_A_PICK_ATTEMPT
+  parent_id: VISION.DENIAL
+  domain: VISION
+  label: clearing vision before a pick attempt
+  description: clearing vision before a pick attempt
+  data_tier: RIOT_ONLY
+  teachability: 1.4
+  roles: *id011
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.DENIAL.CONTROL_WARDS_LEFT_UNBOUGHT_IN_INVENTORY
+  parent_id: VISION.DENIAL
+  domain: VISION
+  label: control wards left unbought in inventory
+  description: control wards left unbought in inventory
+  data_tier: RIOT_ONLY
+  teachability: 1.4
+  roles: *id011
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.UTILIZATION
+  parent_id: VISION
+  domain: VISION
+  label: Utilization
+  description: Utilization
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.UTILIZATION.ACTING_ON_INFORMATION_THE_WARD_PROVIDED
+  parent_id: VISION.UTILIZATION
+  domain: VISION
+  label: acting on information the ward provided
+  description: acting on information the ward provided
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.UTILIZATION.WALKING_INTO_AN_AREA_YOU_HAVE_VISION_DENIED_YOURSELF_IN
+  parent_id: VISION.UTILIZATION
+  domain: VISION
+  label: walking into an area you have vision-denied yourself in
+  description: walking into an area you have vision-denied yourself in
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.UTILIZATION.DYING_IN_AN_AREA_YOU_HAD_VISION_OF
+  parent_id: VISION.UTILIZATION
+  domain: VISION
+  label: dying in an area you had vision of
+  description: dying in an area you had vision of
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.UTILIZATION.TRINKET_UPTIME_UNUSED_CHARGES
+  parent_id: VISION.UTILIZATION
+  domain: VISION
+  label: trinket uptime (unused charges)
+  description: trinket uptime (unused charges)
+  data_tier: RIOT_DERIVED
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.RESPONSIBILITY
+  parent_id: VISION
+  domain: VISION
+  label: Responsibility
+  description: Responsibility
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.RESPONSIBILITY.ROLE_APPROPRIATE_VISION_SHARE
+  parent_id: VISION.RESPONSIBILITY
+  domain: VISION
+  label: role-appropriate vision share
+  description: role-appropriate vision share
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.RESPONSIBILITY.SUPPORT_JUNGLE_VISION_EXPECTATION_VS_ACTUAL
+  parent_id: VISION.RESPONSIBILITY
+  domain: VISION
+  label: support/jungle vision expectation vs actual
+  description: support/jungle vision expectation vs actual
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: VISION.RESPONSIBILITY.VISION_SCORE_RELATIVE_TO_LANE_OPPONENT
+  parent_id: VISION.RESPONSIBILITY
+  domain: VISION
+  label: vision score relative to lane opponent
+  description: vision score relative to lane opponent
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY
+  parent_id: null
+  domain: ECONOMY
+  label: Economy & progression
+  description: Income, spending, builds, and waste.
+  data_tier: RIOT_ONLY
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: ECONOMY.INCOME
+  parent_id: ECONOMY
+  domain: ECONOMY
+  label: Income
+  description: Income
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.INCOME.GOLD_MIN_BY_PHASE
+  parent_id: ECONOMY.INCOME
+  domain: ECONOMY
+  label: gold/min by phase
+  description: gold/min by phase
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.INCOME.GPM_RELATIVE_TO_ROLE_BASELINE
+  parent_id: ECONOMY.INCOME
+  domain: ECONOMY
+  label: GPM relative to role baseline
+  description: GPM relative to role baseline
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.INCOME.INCOME_SOURCES_BALANCE_FARM_KILLS_OBJECTIVES_PLATES
+  parent_id: ECONOMY.INCOME
+  domain: ECONOMY
+  label: income sources balance (farm/kills/objectives/plates)
+  description: income sources balance (farm/kills/objectives/plates)
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.INCOME.JUNGLE_CAMP_UPTIME
+  parent_id: ECONOMY.INCOME
+  domain: ECONOMY
+  label: jungle camp uptime
+  description: jungle camp uptime
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.INCOME.FARMING_DURING_DEAD_TIME
+  parent_id: ECONOMY.INCOME
+  domain: ECONOMY
+  label: farming during dead time
+  description: farming during dead time
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING
+  parent_id: ECONOMY
+  domain: ECONOMY
+  label: Spending
+  description: Spending
+  data_tier: RIOT_DERIVED
+  teachability: 1.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.UNSPENT_GOLD_OVER_TIME
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: unspent gold over time
+  description: unspent gold over time
+  data_tier: RIOT_DERIVED
+  teachability: 1.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.UNSPENT_GOLD_AT_DEATH
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: unspent gold at death
+  description: unspent gold at death
+  data_tier: RIOT_DERIVED
+  teachability: 1.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.SHOPPING_EFFICIENCY_COMPONENT_VS_COMPLETED
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: shopping efficiency (component vs completed)
+  description: shopping efficiency (component vs completed)
+  data_tier: RIOT_DERIVED
+  teachability: 1.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.BUYING_A_CONTROL_WARD_EVERY_RECALL
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: buying a control ward every recall
+  description: buying a control ward every recall
+  data_tier: RIOT_DERIVED
+  teachability: 1.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.ELIXIRS_LATE_GAME
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: elixirs late game
+  description: elixirs late game
+  data_tier: RIOT_DERIVED
+  teachability: 1.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD
+  parent_id: ECONOMY
+  domain: ECONOMY
+  label: Build
+  description: Build
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD.FIRST_ITEM_APPROPRIATENESS
+  parent_id: ECONOMY.BUILD
+  domain: ECONOMY
+  label: first item appropriateness
+  description: first item appropriateness
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD.BUILD_ORDER_VS_MATCHUP
+  parent_id: ECONOMY.BUILD
+  domain: ECONOMY
+  label: build order vs matchup
+  description: build order vs matchup
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD.REACTIVE_ITEMIZING_ARMOR_MR_ANTI_HEAL_QSS
+  parent_id: ECONOMY.BUILD
+  domain: ECONOMY
+  label: reactive itemizing (armor/MR/anti-heal/QSS)
+  description: reactive itemizing (armor/MR/anti-heal/QSS)
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD.ANTI_HEAL_TIMING
+  parent_id: ECONOMY.BUILD
+  domain: ECONOMY
+  label: anti-heal timing
+  description: anti-heal timing
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD.BOOTS_TIMING_AND_CHOICE
+  parent_id: ECONOMY.BUILD
+  domain: ECONOMY
+  label: boots timing and choice
+  description: boots timing and choice
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD.SITUATIONAL_ITEM_OMISSION
+  parent_id: ECONOMY.BUILD
+  domain: ECONOMY
+  label: situational item omission
+  description: situational item omission
+  data_tier: RIOT_ONLY
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.WASTE
+  parent_id: ECONOMY
+  domain: ECONOMY
+  label: Waste
+  description: Waste
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.WASTE.GOLD_LOST_TO_DEATHS_BOUNTY_GIVEN
+  parent_id: ECONOMY.WASTE
+  domain: ECONOMY
+  label: gold lost to deaths (bounty given)
+  description: gold lost to deaths (bounty given)
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.WASTE.GOLD_LOST_TO_TIME_DEAD
+  parent_id: ECONOMY.WASTE
+  domain: ECONOMY
+  label: gold lost to time dead
+  description: gold lost to time dead
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.WASTE.CS_LOST_WHILE_DEAD
+  parent_id: ECONOMY.WASTE
+  domain: ECONOMY
+  label: CS lost while dead
+  description: CS lost while dead
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.WASTE.CS_LOST_WHILE_ROAMING
+  parent_id: ECONOMY.WASTE
+  domain: ECONOMY
+  label: CS lost while roaming
+  description: CS lost while roaming
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.WASTE.UNRECOVERED_SHUTDOWN
+  parent_id: ECONOMY.WASTE
+  domain: ECONOMY
+  label: unrecovered shutdown
+  description: unrecovered shutdown
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPIKES
+  parent_id: ECONOMY
+  domain: ECONOMY
+  label: Spikes
+  description: Spikes
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: ECONOMY.SPIKES.RECOGNIZING_YOUR_OWN_ITEM_SPIKE
+  parent_id: ECONOMY.SPIKES
+  domain: ECONOMY
+  label: recognizing your own item spike
+  description: recognizing your own item spike
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: ECONOMY.SPIKES.FIGHTING_ON_A_SPIKE
+  parent_id: ECONOMY.SPIKES
+  domain: ECONOMY
+  label: fighting on a spike
+  description: fighting on a spike
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: ECONOMY.SPIKES.AVOIDING_FIGHTS_BEFORE_A_SPIKE
+  parent_id: ECONOMY.SPIKES
+  domain: ECONOMY
+  label: avoiding fights before a spike
+  description: avoiding fights before a spike
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: ECONOMY.SPIKES.MATCHING_ENEMY_SPIKES
+  parent_id: ECONOMY.SPIKES
+  domain: ECONOMY
+  label: matching enemy spikes
+  description: matching enemy spikes
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK
+  parent_id: null
+  domain: RISK
+  label: Risk & deaths
+  description: Cross-cutting death causes and exposure.
+  data_tier: RIOT_ONLY
+  teachability: 0.7
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK.DEATH_CAUSE
+  parent_id: RISK
+  domain: RISK
+  label: Death cause
+  description: Death cause
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_TO_UNSEEN_JUNGLER
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death to unseen jungler
+  description: death to unseen jungler
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_TO_A_KNOWN_POSITION_ENEMY
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death to a known-position enemy
+  description: death to a known-position enemy
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_WHILE_OVEREXTENDED_WITHOUT_VISION
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death while overextended without vision
+  description: death while overextended without vision
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_AT_LOW_HP_WITH_A_RECALL_AVAILABLE
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death at low HP with a recall available
+  description: death at low HP with a recall available
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_IN_A_1VN
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death in a 1vN
+  description: death in a 1vN
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_TO_A_DIVE
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death to a dive
+  description: death to a dive
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_WHILE_PUSHING_AFTER_A_FIGHT
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death while pushing after a fight
+  description: death while pushing after a fight
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_CHASING_A_KILL
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death chasing a kill
+  description: death chasing a kill
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.DEATH_WITH_UNSPENT_GOLD
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death with unspent gold
+  description: death with unspent gold
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.REPEAT_DEATH_IN_THE_SAME_LOCATION
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: repeat death in the same location
+  description: repeat death in the same location
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.EXPOSURE
+  parent_id: RISK
+  domain: RISK
+  label: Exposure
+  description: Exposure
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.EXPOSURE.TIME_SPENT_IN_FOG_ADJACENT_ZONES_WITHOUT_VISION
+  parent_id: RISK.EXPOSURE
+  domain: RISK
+  label: time spent in fog-adjacent zones without vision
+  description: time spent in fog-adjacent zones without vision
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.EXPOSURE.TIME_SPENT_PAST_THE_SAFE_LINE_GIVEN_THE_MAP_STATE
+  parent_id: RISK.EXPOSURE
+  domain: RISK
+  label: time spent past the "safe line" given the map state
+  description: time spent past the "safe line" given the map state
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.EXPOSURE.OVEREXTENSION_AFTER_ENEMY_RESPAWN_TIMERS_RESET
+  parent_id: RISK.EXPOSURE
+  domain: RISK
+  label: overextension after enemy respawn timers reset
+  description: overextension after enemy respawn timers reset
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.PRIORITY_ERRORS
+  parent_id: RISK
+  domain: RISK
+  label: Priority errors
+  description: Priority errors
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK.PRIORITY_ERRORS.TAKING_A_FIGHT_FOR_NO_OBJECTIVE
+  parent_id: RISK.PRIORITY_ERRORS
+  domain: RISK
+  label: taking a fight for no objective
+  description: taking a fight for no objective
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK.PRIORITY_ERRORS.CONTESTING_AN_OBJECTIVE_YOU_CANNOT_WIN
+  parent_id: RISK.PRIORITY_ERRORS
+  domain: RISK
+  label: contesting an objective you cannot win
+  description: contesting an objective you cannot win
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK.PRIORITY_ERRORS.GREED_AFTER_A_WON_FIGHT
+  parent_id: RISK.PRIORITY_ERRORS
+  domain: RISK
+  label: greed after a won fight
+  description: greed after a won fight
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+# H.7 Appendix E leaves (short IDs) plus STRENGTH concepts for P-001–P-005.
+- id: RISK.DEATH_CAUSE.UNSEEN_JUNGLER
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: unseen jungler (Appendix E R-001)
+  description: Died to an unseen jungler
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.UNSPENT_AT_DEATH
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: unspent at death (Appendix E R-002)
+  description: Died holding a large gold pile
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK.EXPOSURE.FORWARD_NO_VISION_ATTEMPT
+  parent_id: RISK.EXPOSURE
+  domain: RISK
+  label: forward with no recent ward (Appendix E R-003)
+  description: Died in the enemy half with no recent ward
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: RISK.DEATH_CAUSE.CAUGHT_ALONE
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: caught alone (Appendix E R-004)
+  description: Solo death with no enemy nearby a minute earlier
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: LANING.FARM.CS_COLLAPSE_AFTER_DEATH
+  parent_id: LANING.FARM
+  domain: LANING
+  label: CS collapse after a death (Appendix E R-005)
+  description: CS/min collapses after dying
+  data_tier: RIOT_DERIVED
+  teachability: 1.3
+  roles: *id003
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: ECONOMY.SPENDING.DEAD_GOLD
+  parent_id: ECONOMY.SPENDING
+  domain: ECONOMY
+  label: dead gold (Appendix E R-006)
+  description: Long stretch with unspendable gold
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: LANING.RECALL_TIMING.RECALL_WITH_EXCESS_GOLD
+  parent_id: LANING.RECALL_TIMING
+  domain: LANING
+  label: low HP high gold still in lane (Appendix E R-007)
+  description: Stayed in lane on low HP with a large unspent gold pile
+  data_tier: RIOT_DERIVED
+  teachability: 1.4
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: MACRO.OBJECTIVES.NO_SHOW
+  parent_id: MACRO.OBJECTIVES
+  domain: MACRO
+  label: objective no-show (Appendix E R-008)
+  description: Missed the objective without a trade
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.TIMING.NO_WARD_PRE_OBJECTIVE
+  parent_id: VISION.TIMING
+  domain: VISION
+  label: no ward before objective (Appendix E R-009)
+  description: No ward before a major objective
+  data_tier: RIOT_ONLY
+  teachability: 1.3
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: VISION.DENIAL.NO_CONTROL_WARDS
+  parent_id: VISION.DENIAL
+  domain: VISION
+  label: control wards not bought (Appendix E R-010)
+  description: Control wards not being bought
+  data_tier: RIOT_ONLY
+  teachability: 1.4
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: ECONOMY.BUILD.NO_ANTI_HEAL
+  parent_id: ECONOMY.BUILD
+  domain: ECONOMY
+  label: no anti-heal (Appendix E R-011)
+  description: No anti-heal against a healing comp
+  data_tier: RIOT_DERIVED
+  teachability: 1.5
+  roles: *id003
+  phases: *id004
+  rank_relevance: LOW_ELO
+- id: COMBAT.ENGAGE_DECISION.FIGHT_INTO_UNKNOWN
+  parent_id: COMBAT.ENGAGE_DECISION
+  domain: COMBAT
+  label: fight into unknown (Appendix E R-012)
+  description: Fought into unaccounted-for enemies
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.POSITIONING.DIES_FIRST
+  parent_id: COMBAT.POSITIONING
+  domain: COMBAT
+  label: dies first in fights (Appendix E R-013)
+  description: Died first in fights repeatedly
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: MACRO.TEMPO.NO_CONVERSION
+  parent_id: MACRO.TEMPO
+  domain: MACRO
+  label: tempo not converted (Appendix E R-014)
+  description: Tempo wasted after a won fight
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: RISK.DEATH_CAUSE.DIVED
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: dived (Appendix E R-015)
+  description: Died to a dive under your own tower
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: LANING.LEVEL_SPIKES.DEFICIT_AT_SPIKE
+  parent_id: LANING.LEVEL_SPIKES
+  domain: LANING
+  label: level deficit at a spike (Appendix E R-016)
+  description: Level deficit at a key spike
+  data_tier: RIOT_ONLY
+  teachability: 1.3
+  roles: *id001
+  phases: *id002
+  rank_relevance: LOW_ELO
+- id: MACRO.ROAMING.ROAM_COST_EXCEEDED
+  parent_id: MACRO.ROAMING
+  domain: MACRO
+  label: roam cost exceeded (Appendix E R-017)
+  description: Roamed without lane priority
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: RISK.DEATH_CAUSE.LOCATION_CLUSTER
+  parent_id: RISK.DEATH_CAUSE
+  domain: RISK
+  label: death location cluster (Appendix E R-018)
+  description: Excessive deaths in one map area
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: ECONOMY.INCOME.LOW_CONVERSION
+  parent_id: ECONOMY.INCOME
+  domain: ECONOMY
+  label: low damage conversion (Appendix E R-019)
+  description: Damage share far below gold share
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: COMBAT.SUMMONER_SPELLS.UNUSED_ESCAPE
+  parent_id: COMBAT.SUMMONER_SPELLS
+  domain: COMBAT
+  label: unused escape summoner (Appendix E R-020)
+  description: Died with a summoner spell unused in a losing fight
+  data_tier: RIOT_DERIVED
+  teachability: 1.2
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH
+  parent_id: null
+  domain: STRENGTH
+  label: Strengths
+  description: Positive habits the player should keep
+  data_tier: RIOT_DERIVED
+  teachability: 0.8
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH.CLEAN_LANE_PHASE
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: clean lane phase (Appendix E P-001)
+  description: CS diff ≥ +10 at 14:00 with ≤ 1 death
+  data_tier: RIOT_ONLY
+  teachability: 1.0
+  roles: *id001
+  phases: *id002
+  rank_relevance: ALL
+- id: STRENGTH.EFFICIENT_RESETS
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: efficient resets (Appendix E P-002)
+  description: Resets spend most gold with little CS lost
+  data_tier: RIOT_DERIVED
+  teachability: 1.1
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH.OBJECTIVE_DISCIPLINE
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: objective discipline (Appendix E P-003)
+  description: Contest-weighted objective participation
+  data_tier: RIOT_DERIVED
+  teachability: 1.0
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH.VISION_HABIT
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: vision habit (Appendix E P-004)
+  description: Control ward purchased on most resets
+  data_tier: RIOT_ONLY
+  teachability: 1.3
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL
+- id: STRENGTH.RECOVERED_FROM_BEHIND
+  parent_id: STRENGTH
+  domain: STRENGTH
+  label: recovered from behind (Appendix E P-005)
+  description: Closed a large gold deficit by 25:00
+  data_tier: RIOT_ONLY
+  teachability: 0.9
+  roles: *id003
+  phases: *id004
+  rank_relevance: ALL

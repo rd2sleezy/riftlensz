@@ -1,0 +1,57 @@
+id: R-004
+version: 1
+name: "Solo death with no enemy nearby a minute earlier"
+concept_id: RISK.DEATH_CAUSE.CAUGHT_ALONE
+category: RISK
+severity_base: HIGH
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL, PARTICIPANT_FRAME]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [CHAMPION_KILL]
+  predicate: rules.risk.caught_alone
+
+params:
+  min_game_time_ms: 900000
+  ally_range: 2500
+
+severity_modifiers:
+  - if: "dealer_count >= 3"
+    then: 1
+
+evidence_template:
+  - "Enemy dealers: {dealer_count}"
+  - "Allies within 2500 at nearest frame: {allies_near}"
+
+explanation: |
+  After 15:00 you died alone ({dealer_count} enemies, {allies_near} allies nearby).
+
+better_alternative: |
+  Side-lane only while you can see enough enemies elsewhere, or with an ally in range.
+
+false_positives:
+  - "60s position frames can hide an ally who was actually close"
+  - "A planned 1v1 can look like a catch"
+  - "Teleport arriving mid-collapse is not modelled"
+
+suppressed_by: [R-001, R-015]
+cooldown_ms: 0
+max_findings_per_match: 3
+is_strength: false

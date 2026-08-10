@@ -1,0 +1,57 @@
+id: R-003
+version: 1
+name: "Died in the enemy half with no recent ward"
+concept_id: RISK.EXPOSURE.FORWARD_NO_VISION_ATTEMPT
+category: RISK
+severity_base: HIGH
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [CHAMPION_KILL]
+  predicate: rules.risk.forward_no_ward
+
+params:
+  ward_lookback_ms: 90000
+
+severity_modifiers:
+  - if: "lookback_s > 90"
+    then: 0
+
+evidence_template:
+  - "Death zone: {death_zone} (enemy half)"
+  - "Wards placed in prior {lookback_s}s: 0"
+  - "Trinket modelled available (cooldown from patch constants)"
+
+explanation: |
+  You died on the enemy half at {t_mmss} with no ward placed in the prior {lookback_s}s.
+
+better_alternative: |
+  Drop a trinket before crossing the river when you cannot see the enemy jungler.
+
+false_positives:
+  - "Support/jungle vision we cannot attribute may have covered the area"
+  - "Trinket cooldown is modelled, not observed as a cooldown bar"
+  - "A teammate may have been about to ward"
+
+suppressed_by: [R-001]
+cooldown_ms: 90000
+max_findings_per_match: 3
+is_strength: false

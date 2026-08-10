@@ -1,0 +1,50 @@
+# Patch constants that Data Dragon does not publish (minion gold, respawn timers,
+# passive income, healthRegen units). Metrics and rules must resolve these through
+# PatchDataProvider — never hardcode them beside a threshold.
+#
+# Values are wiki-derived / fixture-calibrated for Season 12 and labelled
+# provisional. Timeline goldPerSecond and healthRegen units are QUARANTINED —
+# no authoritative unit was found in Data Dragon, MATCH-V5 models, fixtures, or
+# the design doc. Do not treat either field as a hard fact in H.6+ analysis.
+
+default:
+  passive_gold_per_second: 2.04
+  passive_gold_start_ms: 110000
+  # QUARANTINED. Observed timeline values are 0 / 20 / 30 (see NA1 fixtures).
+  # Tenths-of-g/s is a plausible guess but is not documented. PatchDataProvider
+  # ignores this key until a cited unit exists.
+  gold_per_second_unit: null
+  average_lane_minion_gold: 19.8
+  jungle_minion_gold: 22.0
+  # QUARANTINED. Data Dragon ``stats.hpregen`` is HP/5 for champion base stats,
+  # but timeline ``championStats.healthRegen`` is a different field with no
+  # schema comment. PatchDataProvider will not convert it.
+  health_regen_period_ms: null
+  respawn:
+    # Commonly cited Summoner's Rift BRW table (seconds by champion level).
+    base_seconds_by_level:
+      [0, 10, 10, 12, 12, 14, 16, 20, 25, 28, 32.5, 35, 37.5, 40, 42.5, 45, 47.5, 50, 52.5]
+    scaling_start_ms: 900000
+    scaling_per_30s: 0.00425
+    scaling_cap: 0.50
+  # Vision / summoner / item *names* (not numeric costs) for H.7 rules. Item gold
+  # still comes from Data Dragon via PatchDataProvider.item_gold / item_ids_named.
+  trinket_ward_cooldown_ms: 240000
+  flash_cooldown_ms: 300000
+  flash_summoner_ids: [4]
+  control_ward_item_names:
+    - Control Ward
+  anti_heal_item_name_needles:
+    - Oblivion Orb
+    - Morellonomicon
+    - Thornmail
+    - Bramble Vest
+    - Executioner
+    - Chempunk
+    - Mortal Reminder
+    - Chemtech Putrifier
+  next_item_gold_threshold: 1300
+  reset_cluster_gap_ms: 12000
+
+patches:
+  "12.4": {}

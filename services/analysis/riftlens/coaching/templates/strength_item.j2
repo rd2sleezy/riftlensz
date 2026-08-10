@@ -1,0 +1,6 @@
+{% if certainty == 'certain' %}Keep this.
+{% elif certainty == 'likely' %}This likely went well — keep the habit.
+{% else %}This looks like a strength, with the usual match-data limits.
+{% endif %}
+{% if explanation %}{{ explanation }}{% endif %}
+Clearest timestamp: {{ exemplar_mmss }} (t_ms={{ exemplar_t_ms }}).

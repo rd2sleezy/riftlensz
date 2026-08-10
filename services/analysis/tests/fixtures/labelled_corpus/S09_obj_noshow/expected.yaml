@@ -1,0 +1,7 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S09_obj_noshow
+synthetic: true
+subject_pid: 1
+notes: "Far from enemy dragon, no plate trade."
+expected_rule_ids:
+  - R-008

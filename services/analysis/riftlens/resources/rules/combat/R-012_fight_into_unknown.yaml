@@ -1,0 +1,59 @@
+id: R-012
+version: 1
+name: "Fought into unaccounted-for enemies"
+concept_id: COMBAT.ENGAGE_DECISION.FIGHT_INTO_UNKNOWN
+category: COMBAT
+severity_base: HIGH
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL]
+  - features: [info_age, segment_fights]
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.fights.subject_fight_starts
+  predicate: rules.combat.fight_into_unknown
+
+params:
+  info_age_min_ms: 30000
+  min_unknown_enemies: 2
+  min_team_deaths: 2
+
+severity_modifiers:
+  - if: "our_deaths >= 3"
+    then: 1
+
+evidence_template:
+  - "Fight at {fight_mmss}"
+  - "Unaccounted enemies: {unknown}"
+  - "Team deaths: {our_deaths}"
+
+explanation: |
+  You took a fight at {fight_mmss} with {unknown} enemies fogged and lost {our_deaths}.
+
+better_alternative: |
+  Reset vision before committing when two or more enemies are unaccounted for.
+
+false_positives:
+  - "Info age cannot see teammate wards or champion fog tricks"
+  - "A pick that turns into a 2-death collapse can look like a chosen fight"
+  - "Fight clustering (20s / 3000u) can merge separate skirmishes"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 3
+is_strength: false

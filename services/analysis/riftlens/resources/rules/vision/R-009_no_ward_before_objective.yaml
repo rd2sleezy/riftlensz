@@ -1,0 +1,58 @@
+# Applicability limited to JUNGLE/UTILITY — firing on every ADC/mid for no pre-dragon ward describes normal play (>50%).
+id: R-009
+version: 1
+name: "No ward before a major objective"
+concept_id: VISION.TIMING.NO_WARD_PRE_OBJECTIVE
+category: VISION
+severity_base: MEDIUM
+data_tier: RIOT_ONLY
+patch_range: ">=12.1"
+
+applicability:
+  roles: [JUNGLE, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [ELITE_MONSTER_KILL]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [ELITE_MONSTER_KILL]
+  predicate: rules.vision.no_ward_pre_objective
+
+params:
+  lookback_ms: 75000
+
+severity_modifiers:
+  - if: "vision_role == 1"
+    then: 1
+
+evidence_template:
+  - "Objective: {monster}"
+  - "Wards in prior {lookback_s}s: 0"
+  - "Role: {role} (SUPPORT/JUNGLE weighted)"
+
+explanation: |
+  No ward in the {lookback_s}s before {monster}.
+
+better_alternative: |
+  Ward the pit approach 60–75s before spawn — location is invisible to us, timing is not.
+
+false_positives:
+  - "We cannot see ward location or whether a teammate already covered the pit"
+  - "Control wards destroyed immediately still count as placed"
+  - "Contest windows after a steal can look unwarned"
+
+suppressed_by: []
+cooldown_ms: 60000
+max_findings_per_match: 4
+is_strength: false

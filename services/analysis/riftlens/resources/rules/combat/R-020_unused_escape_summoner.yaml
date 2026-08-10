@@ -1,0 +1,57 @@
+# Does not mix unpaired match.json summoner1Casts with timeline GST. Requires an explicit DERIVED summoner_loadout fact.
+id: R-020
+version: 1
+name: "Died with a summoner spell unused in a losing fight"
+concept_id: COMBAT.SUMMONER_SPELLS.UNUSED_ESCAPE
+category: COMBAT
+severity_base: MEDIUM
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [CHAMPION_KILL]
+  predicate: rules.combat.unused_escape
+
+params:
+  min_damage_span_ms: 1500
+
+severity_modifiers:
+  - if: "span_s > 3"
+    then: 1
+
+evidence_template:
+  - "Death recap span: {span_s}s"
+  - "Flash modelled unused (match-total casts == 0 on a DERIVED loadout fact)"
+
+explanation: |
+  Flash was never cast this game and the death recap lasted {span_s}s.
+
+better_alternative: |
+  Flash earlier in a losing recap that lasts more than a second.
+
+false_positives:
+  - "Summoner ids/casts are not on unpaired Riot GST — rule skips without a DERIVED loadout fact"
+  - "Match-total casts cannot time a Flash that was used earlier"
+  - "Some deaths lack timestamped victimDamageReceived entries"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 2
+is_strength: false

@@ -1,0 +1,56 @@
+id: R-013
+version: 1
+name: "Died first in fights repeatedly"
+concept_id: COMBAT.POSITIONING.DIES_FIRST
+category: COMBAT
+severity_base: HIGH
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL]
+  - features: [segment_fights]
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.combat.dies_first
+
+params:
+  min_fights: 3
+  ratio_min: 0.5
+
+severity_modifiers:
+  - if: "pct >= 70"
+    then: 1
+
+evidence_template:
+  - "First deaths: {firsts}/{joined} fights ({pct}%)"
+
+explanation: |
+  You were the first death in {firsts} of {joined} fights ({pct}%).
+
+better_alternative: |
+  Enter after the front line; if you are the engage, this rule should not apply to your champ.
+
+false_positives:
+  - "Engage tanks are excluded by a static name list, which can miss new champs"
+  - "Being caught before a fight starts still counts as first death in the cluster"
+  - "Small 2v2s inflate the rate"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: false

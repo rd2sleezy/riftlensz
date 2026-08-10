@@ -1,0 +1,54 @@
+id: P-003
+version: 1
+name: "Objective discipline"
+concept_id: STRENGTH.OBJECTIVE_DISCIPLINE
+category: STRENGTH
+severity_base: LOW
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [ELITE_MONSTER_KILL, PARTICIPANT_FRAME]
+  - features: []
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: WINDOW
+  segmenter: rules.clock.match_end
+  predicate: rules.positive.objective_discipline
+
+params:
+  min_objectives: 4
+
+severity_modifiers:
+  - if: "n >= 6"
+    then: 0
+
+evidence_template:
+  - "Contestable objectives attended: {n}/{n}"
+
+explanation: |
+  You were present for every contestable elite objective ({n}).
+
+better_alternative: |
+  Keep showing to every contestable dragon/baron/herald.
+
+false_positives:
+  - "Near-pit distance uses interpolated frames"
+  - "Uncontestable objectives (team 2+ down) are excluded by design"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 1
+is_strength: true

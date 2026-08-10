@@ -1,0 +1,6 @@
+# SYNTHETIC labelled match — not a real Riot game.
+match_id: S06_cs_stable
+synthetic: true
+subject_pid: 1
+notes: "Deaths without CS collapse."
+expected_rule_ids: []

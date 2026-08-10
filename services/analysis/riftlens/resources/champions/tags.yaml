@@ -1,0 +1,39 @@
+# Champion tags used by H.7 applicability and R-011. Not numeric game constants.
+# Names match GST ParticipantInfo.champion (Data Dragon id / champion name).
+
+HIGH_SUSTAIN:
+  - Aatrox
+  - Briar
+  - DrMundo
+  - Mundo
+  - Garen
+  - Illaoi
+  - Maokai
+  - Mordekaiser
+  - Nasus
+  - Nilah
+  - Olaf
+  - Senna
+  - Sett
+  - Sion
+  - Soraka
+  - Swain
+  - Sylas
+  - TahmKench
+  - Vladimir
+  - Volibear
+  - Warwick
+  - Yuumi
+  - Zac
+
+HEALTHY_SUSTAIN:
+  - Aatrox
+  - DrMundo
+  - Mundo
+  - Garen
+  - Nasus
+  - Olaf
+  - Sett
+  - Vladimir
+  - Warwick
+  - Zac

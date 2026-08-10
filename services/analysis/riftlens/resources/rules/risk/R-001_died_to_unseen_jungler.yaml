@@ -1,0 +1,58 @@
+id: R-001
+version: 1
+name: "Died to an unseen jungler"
+concept_id: RISK.DEATH_CAUSE.UNSEEN_JUNGLER
+category: RISK
+severity_base: CRITICAL
+data_tier: RIOT_DERIVED
+patch_range: ">=12.1"
+
+applicability:
+  roles: [TOP, JUNGLE, MIDDLE, BOTTOM, UTILITY]
+  champions:
+    include: ["*"]
+    exclude: []
+  champion_tags_exclude: []
+  queues: [420, 400, 440, 430]
+  phases: [EARLY, MID, LATE]
+  min_rank: null
+  max_rank: null
+
+required_inputs:
+  - facts: [CHAMPION_KILL, PARTICIPANT_FRAME]
+  - features: [info_age]
+  - min_confidence: {}
+
+trigger:
+  evaluate_on: EVENT
+  fact_kinds: [CHAMPION_KILL]
+  predicate: rules.risk.died_to_unseen_jungler
+
+params:
+  min_game_time_ms: 180000
+  jungler_info_age_min_ms: 45000
+
+severity_modifiers:
+  - if: "jungler_damage_pct > 40"
+    then: 0
+
+evidence_template:
+  - "Death at {t_mmss} in {death_zone}"
+  - "Enemy jungler ({jungler_champion}) damage share: {jungler_damage_pct}%"
+  - "Jungler last seen: {jungler_last_seen_mmss} (info age {info_age_s}s)"
+
+explanation: |
+  At {t_mmss} you died in {death_zone} after the enemy jungler had been unaccounted for.
+
+better_alternative: |
+  With the jungler unseen, hold a safer line and give up a few CS rather than dying.
+
+false_positives:
+  - "A teammate ward we cannot see may have shown the jungler"
+  - "Kill-feed visibility can make a 'seen' jungler look fogged in Phase 1 info-age"
+  - "River skirmishes sometimes include the jungler without a true gank"
+
+suppressed_by: []
+cooldown_ms: 0
+max_findings_per_match: 4
+is_strength: false
