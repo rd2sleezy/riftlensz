@@ -2,22 +2,42 @@ import { contextBridge, ipcRenderer } from 'electron'
 import {
   BuildManualSyncInputSchema,
   BuildManualSyncResultSchema,
+  CloseReplayResultSchema,
+  DesktopPlatformSchema,
+  GameplayEnvironmentResultSchema,
+  GameplayMatchInputSchema,
+  GameplayStatusResultSchema,
   GetReviewResultSchema,
   HealthSchema,
   IPC,
+  ImportReplayInputSchema,
+  ImportReplayResultSchema,
   ListReviewsResultSchema,
   OpenFixtureInputSchema,
+  OpenReplayInputSchema,
+  OpenReplayResultSchema,
+  PickRoflResultSchema,
   PickVodResultSchema,
   ProbeVodInputSchema,
   ProbeVodResultSchema,
+  RevealGameplayInputSchema,
+  RevealGameplayResultSchema,
   SidecarStatusSchema,
   type BuildManualSyncResult,
+  type CloseReplayResult,
+  type DesktopPlatform,
+  type GameplayEnvironmentResult,
+  type GameplayStatusResult,
   type GetReviewResult,
   type HealthPayload,
+  type ImportReplayResult,
   type ListReviewsResult,
   type OpenFixtureInput,
+  type OpenReplayResult,
+  type PickRoflResult,
   type PickVodResult,
   type ProbeVodResult,
+  type RevealGameplayResult,
   type SidecarStatus
 } from '../main/ipc/channels'
 
@@ -71,6 +91,49 @@ const rift = {
     return ipcRenderer
       .invoke(IPC.buildManualSync, BuildManualSyncInputSchema.parse(input))
       .then((value) => BuildManualSyncResultSchema.parse(value))
+  },
+  getDesktopPlatform(): Promise<DesktopPlatform> {
+    return ipcRenderer
+      .invoke(IPC.getDesktopPlatform)
+      .then((value) => DesktopPlatformSchema.parse(value))
+  },
+  pickRofl(): Promise<PickRoflResult> {
+    return ipcRenderer.invoke(IPC.pickRofl).then((value) => PickRoflResultSchema.parse(value))
+  },
+  importReplay(path: string, matchId: string): Promise<ImportReplayResult> {
+    return ipcRenderer
+      .invoke(IPC.importReplay, ImportReplayInputSchema.parse({ path, matchId }))
+      .then((value) => ImportReplayResultSchema.parse(value))
+  },
+  getGameplayStatus(matchId: string, sourceId?: string | null): Promise<GameplayStatusResult> {
+    return ipcRenderer
+      .invoke(IPC.getGameplayStatus, GameplayMatchInputSchema.parse({ matchId, sourceId }))
+      .then((value) => GameplayStatusResultSchema.parse(value))
+  },
+  checkGameplayEnvironment(): Promise<GameplayEnvironmentResult> {
+    return ipcRenderer
+      .invoke(IPC.checkGameplayEnvironment)
+      .then((value) => GameplayEnvironmentResultSchema.parse(value))
+  },
+  openReplay(sourceId: string, matchId: string): Promise<OpenReplayResult> {
+    return ipcRenderer
+      .invoke(IPC.openReplay, OpenReplayInputSchema.parse({ sourceId, matchId }))
+      .then((value) => OpenReplayResultSchema.parse(value))
+  },
+  closeReplay(sourceId: string, matchId: string): Promise<CloseReplayResult> {
+    return ipcRenderer
+      .invoke(IPC.closeReplay, OpenReplayInputSchema.parse({ sourceId, matchId }))
+      .then((value) => CloseReplayResultSchema.parse(value))
+  },
+  revealGameplay(input: {
+    sourceId: string
+    matchId: string
+    gameTMs: number
+    leadInMs?: number
+  }): Promise<RevealGameplayResult> {
+    return ipcRenderer
+      .invoke(IPC.revealGameplay, RevealGameplayInputSchema.parse(input))
+      .then((value) => RevealGameplayResultSchema.parse(value))
   }
 }
 

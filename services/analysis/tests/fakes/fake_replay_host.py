@@ -32,6 +32,7 @@ class FakeReplayHost:
         seek_transport: object | None = None,
         sleep_clock: SleepClock | None = None,
         auto_ready: bool = True,
+        reveal_error: ReplayError | None = None,
     ) -> None:
         self.supported = supported
         self.environment = environment
@@ -41,6 +42,7 @@ class FakeReplayHost:
         self.seek_transport = seek_transport
         self.sleep_clock = sleep_clock
         self.auto_ready = auto_ready
+        self.reveal_error = reveal_error
         self.open_count = 0
         self.calibrate_count = 0
         self.reveal_count = 0
@@ -116,6 +118,17 @@ class FakeReplayHost:
         match_duration_ms: int | None = None,
     ) -> SeekOutcome:
         self.reveal_count += 1
+        if self.reveal_error is not None:
+            return SeekOutcome(
+                ok=False,
+                target_game_ms=int(game_t_ms),
+                target_source_ms=None,
+                landed_source_ms=None,
+                attempts=0,
+                resumed=False,
+                playback=None,
+                error=self.reveal_error,
+            )
         health = self.poll_health()
         if health.error is not None and health.error.code is ReplayErrorCode.SESSION_LOST:
             return SeekOutcome(
@@ -219,3 +232,25 @@ class FakeReplayHost:
     def reset_live_session(self) -> None:
         """Simulate application restart: persisted data remains, live session does not."""
         self._state = ReplaySessionSnapshot(phase=ReplaySessionPhase.IDLE)
+
+    def force_phase(self, phase: ReplaySessionPhase, *, reached_ready: bool = False) -> None:
+        """Test helper: set the in-memory session without launching."""
+        playback = None
+        active = phase in {
+            ReplaySessionPhase.READY,
+            ReplaySessionPhase.PLAYING,
+            ReplaySessionPhase.PAUSED,
+            ReplaySessionPhase.SEEKING,
+        }
+        if active:
+            playback = PlaybackState(
+                t_source_ms=2000,
+                length_ms=1_800_000,
+                paused=phase is ReplaySessionPhase.PAUSED,
+                seeking=phase is ReplaySessionPhase.SEEKING,
+            )
+        self._state = ReplaySessionSnapshot(
+            phase=phase,
+            playback=playback,
+            reached_ready=reached_ready or active,
+        )

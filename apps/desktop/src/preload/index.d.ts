@@ -1,11 +1,19 @@
 import type {
   BuildManualSyncResult,
+  CloseReplayResult,
+  DesktopPlatform,
+  GameplayEnvironmentResult,
+  GameplayStatusResult,
   GetReviewResult,
   HealthPayload,
+  ImportReplayResult,
   ListReviewsResult,
   OpenFixtureInput,
+  OpenReplayResult,
+  PickRoflResult,
   PickVodResult,
   ProbeVodResult,
+  RevealGameplayResult,
   SidecarStatus
 } from '../main/ipc/channels'
 
@@ -26,6 +34,19 @@ export interface RiftApi {
     mediaAssetId?: string
     anchors: { t_video_ms: number; t_game_ms: number }[]
   }) => Promise<BuildManualSyncResult>
+  getDesktopPlatform: () => Promise<DesktopPlatform>
+  pickRofl: () => Promise<PickRoflResult>
+  importReplay: (path: string, matchId: string) => Promise<ImportReplayResult>
+  getGameplayStatus: (matchId: string, sourceId?: string | null) => Promise<GameplayStatusResult>
+  checkGameplayEnvironment: () => Promise<GameplayEnvironmentResult>
+  openReplay: (sourceId: string, matchId: string) => Promise<OpenReplayResult>
+  closeReplay: (sourceId: string, matchId: string) => Promise<CloseReplayResult>
+  revealGameplay: (input: {
+    sourceId: string
+    matchId: string
+    gameTMs: number
+    leadInMs?: number
+  }) => Promise<RevealGameplayResult>
 }
 
 declare global {

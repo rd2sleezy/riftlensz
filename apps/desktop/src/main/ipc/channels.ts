@@ -10,8 +10,37 @@ export const IPC = {
   openFixtureReview: 'rift:reviews:from-fixture',
   pickVod: 'rift:media:pick',
   probeVod: 'rift:media:probe',
-  buildManualSync: 'rift:sync:manual'
+  buildManualSync: 'rift:sync:manual',
+  getDesktopPlatform: 'rift:desktop:platform',
+  pickRofl: 'rift:gameplay:pick-rofl',
+  importReplay: 'rift:gameplay:import',
+  getGameplayStatus: 'rift:gameplay:status',
+  checkGameplayEnvironment: 'rift:gameplay:environment',
+  openReplay: 'rift:gameplay:open',
+  closeReplay: 'rift:gameplay:close',
+  revealGameplay: 'rift:gameplay:reveal'
 } as const
+
+export const IPC_RENDERER_ALLOWLIST = [
+  'getSidecarStatus',
+  'onSidecarStatus',
+  'health',
+  'restartSidecar',
+  'listReviews',
+  'getReview',
+  'openFixtureReview',
+  'pickVod',
+  'probeVod',
+  'buildManualSync',
+  'getDesktopPlatform',
+  'pickRofl',
+  'importReplay',
+  'getGameplayStatus',
+  'checkGameplayEnvironment',
+  'openReplay',
+  'closeReplay',
+  'revealGameplay'
+] as const
 
 export const SidecarStateSchema = z.enum([
   'starting',
@@ -329,3 +358,191 @@ export type ProbeVodResult = z.infer<typeof ProbeVodResultSchema>
 export type PickVodResult = z.infer<typeof PickVodResultSchema>
 export type BuildManualSyncResult = z.infer<typeof BuildManualSyncResultSchema>
 export type OpenFixtureInput = z.infer<typeof OpenFixtureInputSchema>
+
+export const ReplayErrorPayloadSchema = z.object({
+  code: z.string().min(1),
+  message: z.string().min(1),
+  suggested_action: z.string().nullable(),
+  recoverable: z.boolean(),
+  severity: z.string()
+})
+
+export const GameplaySourceSummarySchema = z.object({
+  id: z.string(),
+  display_name: z.string().nullable(),
+  capabilities: z.array(z.string()),
+  status: z.string(),
+  file_present: z.boolean(),
+  declared_patch: z.string().nullable(),
+  duration_ms: z.number().int(),
+  available: z.boolean(),
+  unavailable_error: ReplayErrorPayloadSchema.nullable()
+})
+
+export const GameplayPlaybackSchema = z.object({
+  t_source_ms: z.number().int(),
+  length_ms: z.number().int(),
+  paused: z.boolean(),
+  seeking: z.boolean(),
+  speed_milli: z.number().int(),
+  t_game_ms: z.number().int().nullable()
+})
+
+export const GameplayStatusSchema = z.object({
+  native_replay_supported: z.boolean(),
+  match_id: z.string(),
+  sources: z.array(GameplaySourceSummarySchema),
+  active_source_id: z.string().nullable(),
+  capabilities: z.array(z.string()),
+  source_status: z.string().nullable(),
+  file_present: z.boolean(),
+  display_name: z.string().nullable(),
+  declared_patch: z.string().nullable(),
+  session_phase: z.string(),
+  session_reached_ready: z.boolean(),
+  session_owns_process: z.boolean(),
+  clock_confidence: z.string().nullable(),
+  clock_verified: z.boolean().nullable(),
+  clock_method: z.string().nullable(),
+  offset_ms: z.number().int().nullable(),
+  residual_ms: z.number().nullable(),
+  anchor_count: z.number().int().nullable(),
+  error: ReplayErrorPayloadSchema.nullable(),
+  warnings: z.array(ReplayErrorPayloadSchema),
+  playback: GameplayPlaybackSchema.nullable().optional()
+})
+
+export const DesktopPlatformSchema = z.object({
+  platform: z.string(),
+  nativeReplaySupported: z.boolean()
+})
+
+export const PickRoflResultSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), path: z.string().nullable() }),
+  ErrorResultSchema
+])
+
+export const ImportReplayInputSchema = z.object({
+  path: z.string().min(1),
+  matchId: z.string().min(1)
+})
+
+export const ImportReplayResultSchema = z.discriminatedUnion('ok', [
+  z.object({
+    ok: z.literal(true),
+    source_id: z.string(),
+    match_id: z.string(),
+    identity: z
+      .object({
+        platform_id: z.string().nullable(),
+        game_id: z.number().int().nullable(),
+        declared_patch: z.string().nullable(),
+        declared_length_ms: z.number().int().nullable(),
+        match_id_hint: z.string().nullable(),
+        identify_method: z.string()
+      })
+      .nullable(),
+    warnings: z.array(ReplayErrorPayloadSchema),
+    status: GameplayStatusSchema
+  }),
+  z.object({
+    ok: z.literal(false),
+    code: z.string(),
+    message: z.string(),
+    suggested_action: z.string().nullable(),
+    error: ReplayErrorPayloadSchema.nullable()
+  })
+])
+
+export const GameplayMatchInputSchema = z.object({
+  matchId: z.string().min(1),
+  sourceId: z.string().min(1).nullable().optional()
+})
+
+export const GameplayStatusResultSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), status: GameplayStatusSchema }),
+  ErrorResultSchema
+])
+
+export const GameplayEnvironmentResultSchema = z.discriminatedUnion('ok', [
+  z.object({
+    ok: z.literal(true),
+    native_replay_supported: z.boolean(),
+    install_found: z.boolean(),
+    replay_api_documented: z.boolean(),
+    live_game: z.boolean(),
+    error: ReplayErrorPayloadSchema.nullable(),
+    warnings: z.array(ReplayErrorPayloadSchema)
+  }),
+  ErrorResultSchema
+])
+
+export const OpenReplayInputSchema = z.object({
+  sourceId: z.string().min(1),
+  matchId: z.string().min(1)
+})
+
+export const OpenReplayResultSchema = z.discriminatedUnion('ok', [
+  z.object({
+    ok: z.literal(true),
+    session_phase: z.string(),
+    session_reached_ready: z.literal(true),
+    status: GameplayStatusSchema
+  }),
+  z.object({
+    ok: z.literal(false),
+    code: z.string(),
+    message: z.string(),
+    suggested_action: z.string().nullable(),
+    session_phase: z.string().nullable(),
+    session_reached_ready: z.boolean(),
+    error: ReplayErrorPayloadSchema.nullable(),
+    status: GameplayStatusSchema.nullable()
+  })
+])
+
+export const CloseReplayResultSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), status: GameplayStatusSchema }),
+  ErrorResultSchema
+])
+
+export const RevealGameplayInputSchema = z.object({
+  sourceId: z.string().min(1),
+  matchId: z.string().min(1),
+  gameTMs: z.number().int(),
+  leadInMs: z.number().int().positive().optional()
+})
+
+export const RevealGameplayResultSchema = z.discriminatedUnion('ok', [
+  z.object({
+    ok: z.literal(true),
+    source_id: z.string(),
+    target_game_ms: z.number().int(),
+    lead_in_ms: z.number().int(),
+    landed_source_ms: z.number().int().nullable(),
+    clock_verified: z.boolean(),
+    clock_confidence: z.string().nullable(),
+    playback: GameplayPlaybackSchema.nullable(),
+    warnings: z.array(ReplayErrorPayloadSchema),
+    status: GameplayStatusSchema
+  }),
+  z.object({
+    ok: z.literal(false),
+    code: z.string(),
+    message: z.string(),
+    suggested_action: z.string().nullable(),
+    error: ReplayErrorPayloadSchema.nullable(),
+    status: GameplayStatusSchema.nullable()
+  })
+])
+
+export type ReplayErrorPayload = z.infer<typeof ReplayErrorPayloadSchema>
+export type GameplayStatus = z.infer<typeof GameplayStatusSchema>
+export type DesktopPlatform = z.infer<typeof DesktopPlatformSchema>
+export type PickRoflResult = z.infer<typeof PickRoflResultSchema>
+export type ImportReplayResult = z.infer<typeof ImportReplayResultSchema>
+export type GameplayStatusResult = z.infer<typeof GameplayStatusResultSchema>
+export type GameplayEnvironmentResult = z.infer<typeof GameplayEnvironmentResultSchema>
+export type OpenReplayResult = z.infer<typeof OpenReplayResultSchema>
+export type CloseReplayResult = z.infer<typeof CloseReplayResultSchema>
+export type RevealGameplayResult = z.infer<typeof RevealGameplayResultSchema>

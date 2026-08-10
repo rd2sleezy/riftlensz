@@ -3,20 +3,34 @@ import { z } from 'zod'
 import {
   BuildManualSyncInputSchema,
   BuildManualSyncResultSchema,
+  CloseReplayResultSchema,
+  DesktopPlatformSchema,
   ErrorResultSchema,
+  GameplayEnvironmentResultSchema,
+  GameplayMatchInputSchema,
+  GameplayStatusResultSchema,
+  GameplayStatusSchema,
   GetReviewResultSchema,
   HealthSchema,
   IPC,
+  ImportReplayInputSchema,
+  ImportReplayResultSchema,
   ListReviewsResultSchema,
   OpenFixtureInputSchema,
+  OpenReplayInputSchema,
+  OpenReplayResultSchema,
+  PickRoflResultSchema,
   PickVodResultSchema,
   ProbeVodInputSchema,
   ProbeVodResultSchema,
+  RevealGameplayInputSchema,
+  RevealGameplayResultSchema,
   ReviewPresentationSchema,
   ReviewSummarySchema,
   SidecarStatusSchema,
   SyncMapSchema,
-  type ErrorResult
+  type ErrorResult,
+  type ReplayErrorPayload
 } from './channels'
 import { mediaUrlForPath } from '../media/protocol'
 import { logger } from '../logging'
@@ -97,6 +111,55 @@ export function registerIpcHandlers(supervisor: SidecarSupervisor): void {
       const code = error instanceof SyncAnchorInconsistent ? 'SYNC_INVALID' : 'VALIDATION'
       return BuildManualSyncResultSchema.parse({ ok: false, code, message })
     }
+  })
+
+  ipcMain.handle(IPC.getDesktopPlatform, () => {
+    return DesktopPlatformSchema.parse({
+      platform: process.platform,
+      nativeReplaySupported: process.platform === 'win32'
+    })
+  })
+
+  ipcMain.handle(IPC.pickRofl, async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const options: Electron.OpenDialogOptions = {
+      title: 'Import a League replay',
+      properties: ['openFile'],
+      filters: [{ name: 'League Replay', extensions: ['rofl'] }]
+    }
+    const picked =
+      win === null ? await dialog.showOpenDialog(options) : await dialog.showOpenDialog(win, options)
+    const path = picked.canceled ? null : (picked.filePaths[0] ?? null)
+    return PickRoflResultSchema.parse({ ok: true, path })
+  })
+
+  ipcMain.handle(IPC.importReplay, async (_event, raw: unknown) => {
+    const input = ImportReplayInputSchema.parse(raw)
+    return ImportReplayResultSchema.parse(await importReplay(supervisor, input.path, input.matchId))
+  })
+
+  ipcMain.handle(IPC.getGameplayStatus, async (_event, raw: unknown) => {
+    const input = GameplayMatchInputSchema.parse(raw)
+    return GameplayStatusResultSchema.parse(await getGameplayStatus(supervisor, input))
+  })
+
+  ipcMain.handle(IPC.checkGameplayEnvironment, async () => {
+    return GameplayEnvironmentResultSchema.parse(await checkGameplayEnvironment(supervisor))
+  })
+
+  ipcMain.handle(IPC.openReplay, async (_event, raw: unknown) => {
+    const input = OpenReplayInputSchema.parse(raw)
+    return OpenReplayResultSchema.parse(await openReplay(supervisor, input.sourceId, input.matchId))
+  })
+
+  ipcMain.handle(IPC.closeReplay, async (_event, raw: unknown) => {
+    const input = OpenReplayInputSchema.parse(raw)
+    return CloseReplayResultSchema.parse(await closeReplay(supervisor, input.sourceId, input.matchId))
+  })
+
+  ipcMain.handle(IPC.revealGameplay, async (_event, raw: unknown) => {
+    const input = RevealGameplayInputSchema.parse(raw)
+    return RevealGameplayResultSchema.parse(await revealGameplay(supervisor, input))
   })
 
   supervisor.on('status', (status) => {
@@ -182,6 +245,214 @@ async function probeVod(supervisor: SidecarSupervisor, path: string) {
     }
   } catch (error) {
     return fail(error, 'INVALID_VOD')
+  }
+}
+
+async function importReplay(supervisor: SidecarSupervisor, path: string, matchId: string) {
+  try {
+    const payload = (await supervisor.request('/gameplay/import', {
+      method: 'POST',
+      body: JSON.stringify({ path, match_id: matchId })
+    })) as Record<string, unknown>
+    if (payload['ok'] === true && typeof payload['source_id'] === 'string') {
+      return {
+        ok: true as const,
+        source_id: payload['source_id'],
+        match_id: String(payload['match_id'] ?? matchId),
+        identity: payload['identity'] ?? null,
+        warnings: asErrors(payload['warnings']),
+        status: GameplayStatusSchema.parse(payload['status'])
+      }
+    }
+    const typed = asError(payload['error'])
+    return {
+      ok: false as const,
+      code: typed?.code ?? 'UNKNOWN',
+      message: typed?.message ?? 'Replay import failed.',
+      suggested_action: typed?.suggested_action ?? 'choose_file',
+      error: typed
+    }
+  } catch (error) {
+    return sidecarReplayFail(error)
+  }
+}
+
+async function getGameplayStatus(
+  supervisor: SidecarSupervisor,
+  input: { matchId: string; sourceId?: string | null }
+) {
+  try {
+    const params = new URLSearchParams({ match_id: input.matchId })
+    if (input.sourceId) {
+      params.set('source_id', input.sourceId)
+    }
+    const payload = await supervisor.request(`/gameplay/status?${params.toString()}`)
+    return { ok: true as const, status: GameplayStatusSchema.parse(payload) }
+  } catch (error) {
+    return fail(error)
+  }
+}
+
+async function checkGameplayEnvironment(supervisor: SidecarSupervisor) {
+  try {
+    const payload = (await supervisor.request('/gameplay/environment')) as Record<string, unknown>
+    return {
+      ok: true as const,
+      native_replay_supported: Boolean(payload['native_replay_supported']),
+      install_found: Boolean(payload['install_found']),
+      replay_api_documented: Boolean(payload['replay_api_documented']),
+      live_game: Boolean(payload['live_game']),
+      error: asError(payload['error']),
+      warnings: asErrors(payload['warnings'])
+    }
+  } catch (error) {
+    return fail(error)
+  }
+}
+
+async function openReplay(supervisor: SidecarSupervisor, sourceId: string, matchId: string) {
+  try {
+    const payload = (await supervisor.request(
+      '/gameplay/open',
+      {
+        method: 'POST',
+        body: JSON.stringify({ source_id: sourceId, match_id: matchId })
+      },
+      180_000
+    )) as Record<string, unknown>
+    const status =
+      payload['status'] === undefined || payload['status'] === null
+        ? null
+        : GameplayStatusSchema.parse(payload['status'])
+    if (payload['ok'] === true && payload['session_reached_ready'] === true) {
+      return {
+        ok: true as const,
+        session_phase: String(payload['session_phase'] ?? 'READY'),
+        session_reached_ready: true as const,
+        status: status ?? GameplayStatusSchema.parse(payload['status'])
+      }
+    }
+    const typed = asError(payload['error'])
+    return {
+      ok: false as const,
+      code: typed?.code ?? 'SOURCE_NOT_READY',
+      message: typed?.message ?? 'Replay is not ready yet.',
+      suggested_action: typed?.suggested_action ?? 'retry',
+      session_phase: payload['session_phase'] == null ? null : String(payload['session_phase']),
+      session_reached_ready: payload['session_reached_ready'] === true,
+      error: typed,
+      status
+    }
+  } catch (error) {
+    const failed = sidecarReplayFail(error)
+    return {
+      ...failed,
+      session_phase: null,
+      session_reached_ready: false,
+      status: null
+    }
+  }
+}
+
+async function closeReplay(supervisor: SidecarSupervisor, sourceId: string, matchId: string) {
+  try {
+    const payload = (await supervisor.request('/gameplay/close', {
+      method: 'POST',
+      body: JSON.stringify({ source_id: sourceId, match_id: matchId })
+    })) as Record<string, unknown>
+    return { ok: true as const, status: GameplayStatusSchema.parse(payload['status']) }
+  } catch (error) {
+    return fail(error)
+  }
+}
+
+async function revealGameplay(
+  supervisor: SidecarSupervisor,
+  input: { sourceId: string; matchId: string; gameTMs: number; leadInMs?: number }
+) {
+  try {
+    const payload = (await supervisor.request('/gameplay/reveal', {
+      method: 'POST',
+      body: JSON.stringify({
+        source_id: input.sourceId,
+        match_id: input.matchId,
+        game_t_ms: input.gameTMs,
+        lead_in_ms: input.leadInMs ?? 8_000
+      })
+    })) as Record<string, unknown>
+    if (payload['ok'] === true) {
+      return {
+        ok: true as const,
+        source_id: String(payload['source_id'] ?? input.sourceId),
+        target_game_ms: Number(payload['target_game_ms']),
+        lead_in_ms: Number(payload['lead_in_ms'] ?? 8_000),
+        landed_source_ms:
+          payload['landed_source_ms'] == null ? null : Number(payload['landed_source_ms']),
+        clock_verified: payload['clock_verified'] === true,
+        clock_confidence:
+          payload['clock_confidence'] == null ? null : String(payload['clock_confidence']),
+        playback: payload['playback'] ?? null,
+        warnings: asErrors(payload['warnings']),
+        status: GameplayStatusSchema.parse(payload['status'])
+      }
+    }
+    const typed = asError(payload['error'])
+    return {
+      ok: false as const,
+      code: typed?.code ?? 'SEEK_FAILED',
+      message: typed?.message ?? 'Replay seek failed.',
+      suggested_action: typed?.suggested_action ?? 'retry',
+      error: typed,
+      status:
+        payload['status'] === undefined || payload['status'] === null
+          ? null
+          : GameplayStatusSchema.parse(payload['status'])
+    }
+  } catch (error) {
+    return { ...sidecarReplayFail(error), status: null }
+  }
+}
+
+function asError(value: unknown): ReplayErrorPayload | null {
+  if (typeof value !== 'object' || value === null) {
+    return null
+  }
+  const record = value as Record<string, unknown>
+  if (typeof record['code'] !== 'string' || typeof record['message'] !== 'string') {
+    return null
+  }
+  return {
+    code: record['code'],
+    message: record['message'],
+    suggested_action: typeof record['suggested_action'] === 'string' ? record['suggested_action'] : null,
+    recoverable: record['recoverable'] === true,
+    severity: typeof record['severity'] === 'string' ? record['severity'] : 'fatal'
+  }
+}
+
+function asErrors(value: unknown): ReplayErrorPayload[] {
+  if (!Array.isArray(value)) {
+    return []
+  }
+  return value
+    .map((item) => asError(item))
+    .filter((item): item is ReplayErrorPayload => item !== null)
+}
+
+function sidecarReplayFail(error: unknown): {
+  ok: false
+  code: string
+  message: string
+  suggested_action: string
+  error: ReplayErrorPayload | null
+} {
+  const fallback = fail(error)
+  return {
+    ok: false,
+    code: fallback.code,
+    message: fallback.message,
+    suggested_action: 'retry',
+    error: null
   }
 }
 

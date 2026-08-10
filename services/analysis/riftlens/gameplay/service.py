@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import asyncio
+import time
 from collections.abc import Awaitable, Callable
+from typing import Any
 
 from riftlens.domain.clock_map import ClockConfidence, ClockMap, ClockMode
 from riftlens.domain.clock_store import (
@@ -24,9 +27,10 @@ from riftlens.domain.sync_map import SEEK_LEAD_IN_MS
 from riftlens.gameplay.factory import GameplaySourceFactory
 from riftlens.gameplay.kills import riot_kills_from_match
 from riftlens.gameplay.outcomes import ImportOutcome, ResolvedSource, RevealOutcome
+from riftlens.gameplay.status import compose_gameplay_status, pick_source
 from riftlens.replay_host.clock.anchor_matcher import KillEvent
 from riftlens.replay_host.clock.calibrator import CalibrationResult
-from riftlens.replay_host.port import ReplayHostPort
+from riftlens.replay_host.port import EnvironmentCheck, ReplayHostPort
 from riftlens.replay_host.session import ReplaySessionPhase, ReplaySessionSnapshot
 from riftlens.rofl.identity import RoflIdentity, identify_rofl
 
@@ -266,6 +270,62 @@ class GameplaySourceService:
                 ended_at=now_ms,
             )
         )
+
+    async def open_linked_source(self, source_id: str) -> ReplaySessionSnapshot:
+        """Establish a fresh host session for a persisted source. Does not reveal."""
+        snapshot = await self._gameplay.get_source(source_id)
+        if snapshot is None:
+            return ReplaySessionSnapshot(
+                phase=ReplaySessionPhase.FAILED,
+                error=ReplayError(
+                    ReplayErrorCode.ROFL_MISSING, details={"reason": "unknown_source"}
+                ),
+            )
+        resolved = self._factory.resolve(snapshot)
+        if not resolved.available:
+            return ReplaySessionSnapshot(
+                phase=ReplaySessionPhase.FAILED,
+                error=resolved.reason
+                or ReplayError(ReplayErrorCode.PLATFORM_UNSUPPORTED),
+            )
+        if not snapshot.file_present:
+            return ReplaySessionSnapshot(
+                phase=ReplaySessionPhase.FAILED,
+                error=ReplayError(
+                    ReplayErrorCode.ROFL_MISSING,
+                    details={"reason": "source_file_missing", "source_id": source_id},
+                ),
+            )
+        return await asyncio.to_thread(self._host.open_session, snapshot.source.source_uri)
+
+    async def status_for_match(
+        self,
+        match_id: str,
+        *,
+        source_id: str | None = None,
+        poll: bool = True,
+    ) -> dict[str, Any]:
+        """Compose R.9 status from persisted sources + live session. Never infers READY."""
+        snapshots = list(await self._gameplay.list_sources_for_match(match_id))
+        chosen, resolved = pick_source(snapshots, self._factory, source_id)
+        session = self._host.poll_health() if poll else self._host.get_state()
+        return compose_gameplay_status(
+            match_id=match_id,
+            native_supported=self._host.platform_supported(),
+            snapshots=snapshots,
+            chosen=chosen,
+            resolved=resolved,
+            session=session,
+            factory=self._factory,
+        )
+
+    def check_environment(self) -> EnvironmentCheck:
+        """Delegate install/Replay-API probe. Does not launch."""
+        return self._host.check_environment()
+
+    def now_ms(self) -> int:
+        """Wall-clock milliseconds for persistence timestamps."""
+        return int(time.time() * 1000)
 
     def _ensure_ready(self, rofl_path: str) -> ReplaySessionSnapshot:
         state = self._host.poll_health()

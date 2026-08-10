@@ -1,12 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
-import { useCallback, useEffect, useMemo, useState, type ReactElement } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
 import type {
   CoachingItem,
   Finding,
+  GameplayStatus,
   MediaProbe,
   ReviewPresentation
 } from '../../../main/ipc/channels'
 import { type SyncMapData, formatMmss, seekTarget } from '../../../main/sync/syncMap'
+import { AddGameplayMenu } from './AddGameplayMenu'
+import { GameplayStatusBar } from './GameplayStatusBar'
+import { ImportReplayWizard } from './ImportReplayWizard'
+import { deriveGameplayBar, hasNativeCapabilities, nativeSessionReady } from './gameplayBar'
+import { revealGameplayTimestamp } from './gameplaySeek'
+import type { ReplayActionId } from './replayErrors'
 import { VideoPlayer } from './VideoPlayer'
 
 export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
@@ -22,6 +29,15 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
   const [clockInput, setClockInput] = useState('0:00')
   const [syncMessage, setSyncMessage] = useState<string | null>(null)
   const [rate, setRate] = useState(1)
+  const [gameplayStatus, setGameplayStatus] = useState<GameplayStatus | null>(null)
+  const [nativeReplaySupported, setNativeReplaySupported] = useState(false)
+  const [wizardOpen, setWizardOpen] = useState(false)
+  const [openingReplay, setOpeningReplay] = useState(false)
+  const [seekingMs, setSeekingMs] = useState<number | null>(null)
+  const [playingTargetMs, setPlayingTargetMs] = useState<number | null>(null)
+  const [pendingRevealMs, setPendingRevealMs] = useState<number | null>(null)
+  const [activeMode, setActiveMode] = useState<'auto' | 'replay' | 'video'>('auto')
+  const pendingRevealRef = useRef<number | null>(null)
 
   const reviewQuery = useQuery({
     queryKey: ['review', reviewId],
@@ -40,6 +56,48 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
       setSync(review.sync_map)
     }
   }, [review?.sync_map])
+
+  useEffect(() => {
+    void window.rift.getDesktopPlatform().then((platform) => {
+      setNativeReplaySupported(platform.nativeReplaySupported)
+    })
+  }, [])
+
+  const refreshGameplay = useCallback(async (matchId: string, sourceId?: string | null) => {
+    const result = await window.rift.getGameplayStatus(matchId, sourceId)
+    if (result.ok) {
+      setGameplayStatus(result.status)
+      return result.status
+    }
+    return null
+  }, [])
+
+  useEffect(() => {
+    if (review === undefined) {
+      return
+    }
+    void refreshGameplay(review.match_id)
+  }, [refreshGameplay, review])
+
+  useEffect(() => {
+    if (review === undefined) {
+      return
+    }
+    const phase = gameplayStatus?.session_phase
+    const shouldPoll =
+      openingReplay ||
+      phase === 'LAUNCHING' ||
+      phase === 'CONNECTING' ||
+      phase === 'SEEKING' ||
+      nativeSessionReady(gameplayStatus)
+    if (!shouldPoll) {
+      return
+    }
+    const handle = window.setInterval(() => {
+      void refreshGameplay(review.match_id, gameplayStatus?.active_source_id)
+    }, openingReplay || phase === 'LAUNCHING' || phase === 'CONNECTING' ? 400 : 2_000)
+    return () => window.clearInterval(handle)
+  }, [gameplayStatus, openingReplay, refreshGameplay, review])
 
   const selectedItem = useMemo(() => {
     if (review === undefined) {
@@ -62,8 +120,72 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
     return null
   }, [review, selectedFindingId, selectedItem])
 
+  const preferNative =
+    activeMode !== 'video' && hasNativeCapabilities(gameplayStatus) && nativeReplaySupported
+
+  const openReplay = useCallback(async (): Promise<boolean> => {
+    const sourceId = gameplayStatus?.active_source_id
+    if (!review || sourceId === null || sourceId === undefined) {
+      setSyncMessage('Link a League replay before opening it.')
+      return false
+    }
+    setOpeningReplay(true)
+    setSyncMessage(null)
+    const result = await window.rift.openReplay(sourceId, review.match_id)
+    if (result.status) {
+      setGameplayStatus(result.status)
+    }
+    setOpeningReplay(false)
+    if (!result.ok || !result.session_reached_ready) {
+      setSyncMessage(result.ok ? 'Replay is not ready yet.' : result.message)
+      return false
+    }
+    return true
+  }, [gameplayStatus?.active_source_id, review])
+
+  const revealNative = useCallback(
+    async (tGameMs: number) => {
+      const sourceId = gameplayStatus?.active_source_id
+      if (!review || sourceId === null || sourceId === undefined) {
+        return
+      }
+      setSeekingMs(tGameMs)
+      setPlayingTargetMs(null)
+      const result = await revealGameplayTimestamp(sourceId, review.match_id, tGameMs)
+      if (result.status) {
+        setGameplayStatus(result.status)
+      }
+      setSeekingMs(null)
+      if (!result.ok) {
+        setSyncMessage(result.message)
+        return
+      }
+      setPlayingTargetMs(tGameMs)
+      setSyncMessage(null)
+    },
+    [gameplayStatus?.active_source_id, review]
+  )
+
   const seekToGame = useCallback(
     (tGameMs: number) => {
+      if (preferNative) {
+        if (nativeSessionReady(gameplayStatus)) {
+          void revealNative(tGameMs)
+          return
+        }
+        pendingRevealRef.current = tGameMs
+        setPendingRevealMs(tGameMs)
+        setSyncMessage('Opening replay to jump here…')
+        void openReplay().then((ready) => {
+          const pending = pendingRevealRef.current
+          if (ready && pending !== null) {
+            pendingRevealRef.current = null
+            setPendingRevealMs(null)
+            void revealNative(pending)
+          }
+        })
+        return
+      }
       const target = seekTarget(sync, tGameMs)
       if (!target.covered || target.seek_video_ms === null) {
         setSyncMessage(target.reason ?? 'Cannot seek — sync does not cover this timestamp.')
@@ -72,7 +194,25 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
       setSeekRequestMs(target.seek_video_ms)
       setSyncMessage(target.uncertain ? target.reason : null)
     },
-    [sync]
+    [gameplayStatus, openReplay, preferNative, revealNative, sync]
+  )
+
+  const handleReplayAction = useCallback(
+    (action: ReplayActionId) => {
+      if (action === 'attach_video') {
+        void attachVod(setVodError, setVodWarning, setMediaUrl, setProbe)
+        setActiveMode('video')
+        return
+      }
+      if (action === 'choose_file' || action === 'pick_match') {
+        setWizardOpen(true)
+        return
+      }
+      if (action === 'open_replay' || action === 'reopen_replay' || action === 'retry' || action === 'try_anyway') {
+        void openReplay()
+      }
+    },
+    [openReplay]
   )
 
   useEffect(() => {
@@ -143,15 +283,80 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
             {review.match_id} · rank {review.rank} · {review.engine_version} · LLM {review.llm_provider}
           </p>
         </div>
-        {sync ? (
-          <p className="text-xs text-slate-300" data-testid="sync-status">
-            Sync {sync.quality.verdict}
-            {sync.quality.verdict === 'DEGRADED' || !sync.verified ? ' · uncertain' : ''}
-          </p>
-        ) : (
-          <p className="text-xs text-slate-500">No VOD sync</p>
-        )}
+        <div className="flex flex-col items-end gap-2">
+          <AddGameplayMenu
+            nativeReplaySupported={nativeReplaySupported}
+            onImportReplay={() => setWizardOpen(true)}
+            onAttachVideo={() => {
+              setActiveMode('video')
+              void attachVod(setVodError, setVodWarning, setMediaUrl, setProbe)
+            }}
+          />
+          {sync ? (
+            <p className="text-xs text-slate-300" data-testid="sync-status">
+              Sync {sync.quality.verdict}
+              {sync.quality.verdict === 'DEGRADED' || !sync.verified ? ' · uncertain' : ''}
+            </p>
+          ) : (
+            <p className="text-xs text-slate-500">No VOD sync</p>
+          )}
+        </div>
       </header>
+
+      <GameplayStatusBar
+        view={deriveGameplayBar({
+          status: gameplayStatus,
+          nativeReplaySupported,
+          hasInlineVideo: mediaUrl !== null,
+          videoSynced: sync !== null,
+          opening: openingReplay,
+          seeking: seekingMs !== null
+        })}
+        onOpen={() => {
+          void openReplay()
+        }}
+        onClose={() => {
+          const sourceId = gameplayStatus?.active_source_id
+          if (!review || sourceId === null || sourceId === undefined) {
+            return
+          }
+          void window.rift.closeReplay(sourceId, review.match_id).then((result) => {
+            if (result.ok) {
+              setGameplayStatus(result.status)
+              setPlayingTargetMs(null)
+              setPendingRevealMs(null)
+              pendingRevealRef.current = null
+            } else {
+              setSyncMessage(result.message)
+            }
+          })
+        }}
+        onRetry={() => {
+          void openReplay()
+        }}
+        onAction={handleReplayAction}
+      />
+      {pendingRevealMs !== null ? (
+        <p className="mb-3 text-xs text-sky-200" data-testid="pending-reveal-hint">
+          Open replay to jump to {formatMmss(pendingRevealMs)}
+        </p>
+      ) : null}
+      {seekingMs !== null ? (
+        <p className="mb-3 text-xs text-sky-200" data-testid="seeking-indicator">
+          Seeking…
+        </p>
+      ) : null}
+
+      <ImportReplayWizard
+        open={wizardOpen}
+        matchId={review.match_id}
+        onClose={() => setWizardOpen(false)}
+        onLinked={(sourceId) => {
+          setActiveMode('replay')
+          void refreshGameplay(review.match_id, sourceId)
+        }}
+        onAction={handleReplayAction}
+      />
 
       {review.fixture_warning ? (
         <p
@@ -196,6 +401,7 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
           <MarkerTrack
             review={review}
             sync={sync}
+            nativeReady={preferNative}
             playheadMs={playheadMs}
             onSelect={(tMs, itemId, findingId) => {
               if (itemId !== null) {
@@ -205,7 +411,14 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
               seekToGame(tMs)
             }}
           />
-          <ItemDetail item={selectedItem} finding={selectedFinding} onSeek={seekToGame} />
+          <ItemDetail
+            item={selectedItem}
+            finding={selectedFinding}
+            onSeek={seekToGame}
+            seekingMs={seekingMs}
+            playingTargetMs={playingTargetMs}
+            pendingReveal={preferNative && !nativeSessionReady(gameplayStatus)}
+          />
         </div>
         <aside className="col-span-4 space-y-3">
           <FocusList
@@ -306,6 +519,9 @@ function ItemDetail(props: {
   item: CoachingItem | null
   finding: Finding | null
   onSeek: (tMs: number) => void
+  seekingMs: number | null
+  playingTargetMs: number | null
+  pendingReveal: boolean
 }): ReactElement {
   if (props.item === null) {
     return (
@@ -339,10 +555,18 @@ function ItemDetail(props: {
           <button
             key={tMs}
             type="button"
+            data-testid={`timestamp-${tMs}`}
             className="rounded bg-slate-800 px-2 py-1 text-xs hover:bg-slate-700"
             onClick={() => props.onSeek(tMs)}
           >
             {formatMmss(tMs)}
+            {props.seekingMs === tMs
+              ? ' · seeking…'
+              : props.playingTargetMs === tMs
+                ? ' · playing'
+                : props.pendingReveal
+                  ? ' · open replay'
+                  : ''}
           </button>
         ))}
       </div>
@@ -406,6 +630,7 @@ function StatsPanel({ metrics }: { metrics: ReviewPresentation['metrics'] }): Re
 function MarkerTrack(props: {
   review: ReviewPresentation
   sync: SyncMapData | null
+  nativeReady: boolean
   playheadMs: number
   onSelect: (tMs: number, itemId: string | null, findingId: string | null) => void
 }): ReactElement {
@@ -420,14 +645,15 @@ function MarkerTrack(props: {
         {markers.map((marker, index) => {
           const left = `${(marker.tMs / duration) * 100}%`
           const target = seekTarget(props.sync, marker.tMs)
+          const covered = props.nativeReady || target.covered
           return (
             <button
               key={`${marker.itemId}-${marker.tMs}-${index}`}
               type="button"
-              title={`${formatMmss(marker.tMs)}${target.covered ? '' : ' (no VOD coverage)'}`}
+              title={`${formatMmss(marker.tMs)}${covered ? '' : ' (no VOD coverage)'}`}
               className={`absolute top-1 h-6 w-1.5 -translate-x-1/2 rounded ${
-                target.covered ? 'bg-sky-400' : 'bg-slate-500'
-              } ${target.uncertain ? 'opacity-60' : ''}`}
+                covered ? 'bg-sky-400' : 'bg-slate-500'
+              } ${!props.nativeReady && target.uncertain ? 'opacity-60' : ''}`}
               style={{ left }}
               onClick={() => props.onSelect(marker.tMs, marker.itemId, marker.findingId)}
             />
@@ -449,7 +675,7 @@ function ManualSyncBar(props: {
   onConfirm: () => void
 }): ReactElement {
   return (
-    <section className="rounded-lg border border-slate-800 p-3 text-sm">
+    <section className="rounded-lg border border-slate-800 p-3 text-sm" data-testid="manual-vod-sync">
       <h2 className="text-xs font-semibold uppercase text-slate-400">Manual VOD sync</h2>
       <p className="mt-1 text-xs text-slate-500">
         Pause on a frame, type the in-game clock you see, then confirm. One anchor is approximate.

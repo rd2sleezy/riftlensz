@@ -72,6 +72,7 @@ export function VideoPlayer(props: Props): ReactElement {
           <p>No VOD attached. Data-only review is still valid.</p>
           <button
             type="button"
+            data-testid="attach-vod"
             className="rounded-md bg-slate-700 px-3 py-1.5 hover:bg-slate-600"
             onClick={props.onAttach}
           >
@@ -92,7 +93,12 @@ export function VideoPlayer(props: Props): ReactElement {
       {props.error ? <p className="mt-2 text-sm text-rose-400">{props.error}</p> : null}
       {props.warning ? <p className="mt-2 text-sm text-amber-300">{props.warning}</p> : null}
       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-        <button type="button" className="rounded bg-slate-800 px-2 py-1" onClick={props.onAttach}>
+        <button
+          type="button"
+          data-testid="attach-vod"
+          className="rounded bg-slate-800 px-2 py-1"
+          onClick={props.onAttach}
+        >
           {props.src === null ? 'Attach VOD' : 'Replace VOD'}
         </button>
         {[0.5, 1, 2].map((rate) => (

@@ -16,25 +16,44 @@ from fastapi.responses import JSONResponse
 
 from riftlens import __version__
 from riftlens.adapters.db.engine import init_database, make_session_factory
+from riftlens.adapters.db.repositories import SqlGameplayRepository, SqlMatchRepository
+from riftlens.api.gameplay import router as gameplay_router
 from riftlens.api.health import router as health_router
 from riftlens.api.media import router as media_router
 from riftlens.api.reviews import router as reviews_router
 from riftlens.api.sync import router as sync_router
 from riftlens.config import Settings, get_settings
+from riftlens.gameplay.service import GameplaySourceService
 from riftlens.logging import configure_logging
+from riftlens.replay_host.factory import create_replay_host
+from riftlens.replay_host.port import ReplayHostPort
 
 _UNAUTHORIZED = JSONResponse({"detail": "Unauthorized"}, status_code=401)
 
 
-def create_app(*, settings: Settings | None = None, token: str | None = None) -> FastAPI:
+def create_app(
+    *,
+    settings: Settings | None = None,
+    token: str | None = None,
+    replay_host: ReplayHostPort | None = None,
+) -> FastAPI:
     """Build the FastAPI app. Assumes token is the process bearer secret when serving."""
     resolved = settings or get_settings()
+    injected_host = replay_host
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         engine = init_database(resolved)
         app.state.engine = engine
-        app.state.session_factory = make_session_factory(engine)
+        session_factory = make_session_factory(engine)
+        app.state.session_factory = session_factory
+        host = injected_host if injected_host is not None else create_replay_host()
+        app.state.replay_host = host
+        app.state.gameplay_service = GameplaySourceService(
+            host=host,
+            gameplay=SqlGameplayRepository(session_factory),
+            matches=SqlMatchRepository(session_factory),
+        )
         try:
             yield
         finally:
@@ -68,6 +87,7 @@ def create_app(*, settings: Settings | None = None, token: str | None = None) ->
     app.include_router(reviews_router)
     app.include_router(media_router)
     app.include_router(sync_router)
+    app.include_router(gameplay_router)
     return app
 
 
