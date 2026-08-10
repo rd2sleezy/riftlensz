@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState, type ReactElement } from 'react'
+import { AccountMenu } from '../auth/AccountMenu'
 import { SystemStatus } from '../diagnostics/SystemStatus'
 import { formatMmss } from '../../../main/sync/syncMap'
 import type { OpenFixtureInput, ReviewSummary } from '../../../main/ipc/channels'
@@ -71,7 +72,10 @@ export function Dashboard(): ReactElement {
               Post-game coaching · local fixtures only
             </p>
           </div>
-          <SystemStatus compact />
+          <div className="flex flex-col items-end gap-2">
+            <SystemStatus compact />
+            <AccountMenu />
+          </div>
         </header>
 
         <section
@@ -109,31 +113,40 @@ export function Dashboard(): ReactElement {
             </label>
           </div>
           <div className="mt-4 flex flex-wrap gap-3">
-            {FIXTURES.map((fixture) => (
-              <button
-                key={fixture.id}
-                type="button"
-                data-testid={fixture.id === 'NA1_fixture_b' ? 'open-fixture-b' : undefined}
-                disabled={!ready || openFixture.isPending}
-                className="group flex flex-col items-start rounded-lg border border-rift-edge bg-rift-raised px-4 py-2.5 text-left transition hover:border-rift-accent/50 hover:bg-rift-accent-soft disabled:cursor-not-allowed disabled:opacity-40"
-                onClick={() => {
-                  setError(null)
-                  openFixture.mutate(fixture.id)
-                }}
-              >
-                <span className="text-sm font-medium text-slate-100">
-                  {openFixture.isPending && openFixture.variables === fixture.id
-                    ? 'Analyzing…'
-                    : fixture.label}
-                </span>
-                <span className="font-mono text-[11px] text-slate-500">{fixture.id}</span>
-              </button>
-            ))}
+            {FIXTURES.map((fixture) => {
+              // Fixture B always works: the main process falls back to a placeholder
+              // review for it when the sidecar is unreachable. A/C need a real sidecar.
+              const usableOffline = fixture.id === 'NA1_fixture_b'
+              const disabled = (!ready && !usableOffline) || openFixture.isPending
+              return (
+                <button
+                  key={fixture.id}
+                  type="button"
+                  data-testid={fixture.id === 'NA1_fixture_b' ? 'open-fixture-b' : undefined}
+                  disabled={disabled}
+                  className="group flex flex-col items-start rounded-lg border border-rift-edge bg-rift-raised px-4 py-2.5 text-left transition hover:border-rift-accent/50 hover:bg-rift-accent-soft disabled:cursor-not-allowed disabled:opacity-40"
+                  onClick={() => {
+                    setError(null)
+                    openFixture.mutate(fixture.id)
+                  }}
+                >
+                  <span className="text-sm font-medium text-slate-100">
+                    {openFixture.isPending && openFixture.variables === fixture.id
+                      ? 'Analyzing…'
+                      : fixture.label}
+                  </span>
+                  <span className="font-mono text-[11px] text-slate-500">
+                    {fixture.id}
+                    {!ready && usableOffline ? ' · placeholder (sidecar offline)' : ''}
+                  </span>
+                </button>
+              )
+            })}
           </div>
           {!ready ? (
             <p className="mt-3 flex items-center gap-1.5 text-sm text-slate-500">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-slate-500" />
-              Waiting for sidecar…
+              Waiting for sidecar… Fixture B still works with placeholder data.
             </p>
           ) : null}
           {error ? (
