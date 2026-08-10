@@ -14,6 +14,7 @@ from riftlens.replay_host.clock.anchor_matcher import (
     AnchorMatchResult,
     KillEvent,
     match_kill_anchors,
+    normalize_identity_token,
 )
 
 DURATION_TOLERANCE_MS = 5_000
@@ -46,6 +47,10 @@ class CalibrationResult:
     error: ReplayError | None
     match: AnchorMatchResult | None
     reason: str
+    riot_kill_count: int = 0
+    lcd_kill_count: int = 0
+    unmatched_riot: int = 0
+    unmatched_lcd: int = 0
 
     @property
     def calibrated(self) -> bool:
@@ -149,6 +154,10 @@ def calibrate_replay_clock(
                 error=None,
                 match=match,
                 reason="event_anchor",
+                riot_kill_count=match.riot_count,
+                lcd_kill_count=match.lcd_count,
+                unmatched_riot=match.unmatched_riot,
+                unmatched_lcd=match.unmatched_lcd,
             )
 
     estimated = _estimated_clock(length, match_duration_ms, duration_delta)
@@ -189,6 +198,10 @@ def calibrate_replay_clock(
         error=error,
         match=match,
         reason=estimated.reason,
+        riot_kill_count=0 if match is None else match.riot_count,
+        lcd_kill_count=0 if match is None else match.lcd_count,
+        unmatched_riot=0 if match is None else match.unmatched_riot,
+        unmatched_lcd=0 if match is None else match.unmatched_lcd,
     )
 
 
@@ -217,7 +230,12 @@ def kills_from_eventdata(
     name_to_champion: Mapping[str, str] | None = None,
 ) -> tuple[KillEvent, ...]:
     """Project LCD events into matcher kills. Unobserved kill fields stay None."""
-    mapping = {key.strip().lower(): value for key, value in (name_to_champion or {}).items()}
+    mapping: dict[str, str] = {}
+    for key, value in (name_to_champion or {}).items():
+        mapping[key.strip().lower()] = value
+        token = normalize_identity_token(key, kind="name")
+        if token:
+            mapping[token] = value
     kills: list[KillEvent] = []
     for event in eventdata.Events:
         if not _is_champion_kill(event):
@@ -256,9 +274,32 @@ def name_to_champion_from_playerlist(players: Sequence[PlayerListEntry]) -> dict
             continue
         for key in ("summonerName", "riotIdGameName", "gameName", "riotId"):
             name = _str_field(dumped, key)
-            if name:
-                out[name.strip().lower()] = champ
+            if not name:
+                continue
+            out[name.strip().lower()] = champ
+            token = normalize_identity_token(name, kind="name")
+            if token:
+                out[token] = champ
+            if "#" in name:
+                short = name.split("#", 1)[0].strip().lower()
+                if short:
+                    out[short] = champ
     return out
+
+
+def merge_eventdata(parts: Sequence[EventData]) -> EventData:
+    """Union LCD event snapshots by EventID. Sparse/stale windows are expected."""
+    by_id: dict[int, LiveEvent] = {}
+    anonymous: list[LiveEvent] = []
+    for part in parts:
+        for event in part.Events:
+            if event.EventID is None:
+                anonymous.append(event)
+                continue
+            by_id[int(event.EventID)] = event
+    merged = [by_id[key] for key in sorted(by_id)]
+    merged.extend(anonymous)
+    return EventData(Events=merged)
 
 
 def _estimated_clock(
@@ -384,7 +425,13 @@ def _str_field(payload: Mapping[str, Any], *keys: str) -> str | None:
 def _lookup(mapping: Mapping[str, str], name: str | None) -> str | None:
     if name is None:
         return None
-    return mapping.get(name.strip().lower())
+    direct = mapping.get(name.strip().lower())
+    if direct:
+        return direct
+    token = normalize_identity_token(name, kind="name")
+    if token is None:
+        return None
+    return mapping.get(token)
 
 
 def collect_lcd_kills(

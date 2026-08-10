@@ -6,6 +6,7 @@ from riftlens.replay_host.clock.anchor_matcher import (
     MatchedAnchor,
     RejectedCandidate,
     match_kill_anchors,
+    normalize_identity_token,
 )
 from riftlens.replay_host.clock.calibrator import (
     DURATION_TOLERANCE_MS,
@@ -16,6 +17,7 @@ from riftlens.replay_host.clock.calibrator import (
     kills_from_eventdata,
     kills_from_gst,
     manual_replay_clock,
+    merge_eventdata,
     pause_crosscheck_gamestats,
 )
 
@@ -33,5 +35,7 @@ __all__ = [
     "kills_from_gst",
     "manual_replay_clock",
     "match_kill_anchors",
+    "merge_eventdata",
+    "normalize_identity_token",
     "pause_crosscheck_gamestats",
 ]

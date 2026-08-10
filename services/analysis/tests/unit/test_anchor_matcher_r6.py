@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from riftlens.replay_host.clock.anchor_matcher import KillEvent, match_kill_anchors
+from riftlens.replay_host.clock.anchor_matcher import (
+    KillEvent,
+    match_kill_anchors,
+    normalize_identity_token,
+)
 
 
 def _kill(
@@ -79,7 +83,7 @@ def test_extra_replay_events_are_rejected_not_forced() -> None:
     assert any(item.reason == "no_identity_peer" for item in result.rejected)
 
 
-def test_duplicate_champion_kills_match_fifo_ordinal_within_identity() -> None:
+def test_duplicate_champion_kills_preserve_time_order() -> None:
     riot = (
         _kill(100_000, "Ahri", "Zed"),
         _kill(180_000, "Ahri", "Zed"),
@@ -98,10 +102,10 @@ def test_duplicate_champion_kills_match_fifo_ordinal_within_identity() -> None:
     ahri = [item for item in result.anchors if item.identity_key == ("champ:ahri", "champ:zed")]
     assert len(ahri) == 2
     assert ahri[0].riot_index < ahri[1].riot_index
-    assert ahri[0].lcd_index < ahri[1].lcd_index
+    assert {item.game_t_ms for item in ahri} == {100_000, 180_000}
 
 
-def test_same_killer_victim_reordered_is_ambiguous_or_residual() -> None:
+def test_shuffled_lcd_same_pair_assigns_consistently() -> None:
     riot = (
         _kill(100_000, "Ahri", "Zed"),
         _kill(200_000, "Ahri", "Zed"),
@@ -115,8 +119,12 @@ def test_same_killer_victim_reordered_is_ambiguous_or_residual() -> None:
         _kill(398_000, "Garen", "Darius"),
     )
     result = match_kill_anchors(riot, lcd)
-    assert result.accepted is False
-    assert result.reason in {"residual_too_high", "insufficient_inliers", "ambiguous"}
+    assert result.accepted is True
+    assert result.offset_ms == 2000
+    ahri = [item for item in result.anchors if item.identity_key == ("champ:ahri", "champ:zed")]
+    by_game = {item.game_t_ms: item.source_ms for item in ahri}
+    assert by_game[100_000] == 98_000
+    assert by_game[200_000] == 198_000
 
 
 def test_reordered_distinct_identities_still_match() -> None:
@@ -234,3 +242,124 @@ def test_ordinal_fallback_without_identity_is_deterministic() -> None:
 def test_empty_inputs_insufficient_events() -> None:
     assert match_kill_anchors((), ()).reason == "insufficient_events"
     assert match_kill_anchors((_kill(1, "A", "B"),), ()).reason == "insufficient_events"
+
+
+def test_kaisa_vs_kaisa_apostrophe_normalizes() -> None:
+    assert normalize_identity_token("Kai'Sa") == normalize_identity_token("Kaisa") == "kaisa"
+    assert normalize_identity_token("Lee Sin") == normalize_identity_token("LeeSin") == "leesin"
+    assert normalize_identity_token("Jarvan IV") == "jarvaniv"
+    assert normalize_identity_token("Cho'Gath") == "chogath"
+    assert normalize_identity_token("Wukong") == normalize_identity_token("MonkeyKing")
+    assert normalize_identity_token("Ahri") != normalize_identity_token("Ashe")
+    riot = (
+        _kill(180_942, "Kaisa", "Vayne"),
+        _kill(200_000, "Lux", "Jinx"),
+        _kill(300_000, "Garen", "Darius"),
+        _kill(400_000, "LeeSin", "Graves"),
+    )
+    lcd = (
+        _kill(181_151, "Kai'Sa", "Vayne"),
+        _kill(200_209, "Lux", "Jinx"),
+        _kill(300_209, "Garen", "Darius"),
+        _kill(400_209, "Lee Sin", "Graves"),
+    )
+    result = match_kill_anchors(riot, lcd)
+    assert result.accepted is True
+    assert result.offset_ms == -209
+    assert result.residual_ms is not None and result.residual_ms <= 750
+
+
+def test_sparse_lcd_second_occurrence_of_repeated_pair() -> None:
+    riot = (
+        _kill(122_095, "Vayne", "Kaisa"),
+        _kill(180_942, "Vayne", "Kaisa"),
+        _kill(300_000, "Lux", "Jinx"),
+        _kill(400_000, "Garen", "Darius"),
+        _kill(500_000, "Quinn", "Malzahar"),
+    )
+    lcd = (
+        _kill(181_151, "Vayne", "Kai'Sa"),
+        _kill(300_209, "Lux", "Jinx"),
+        _kill(400_209, "Garen", "Darius"),
+        _kill(500_209, "Quinn", "Malzahar"),
+    )
+    result = match_kill_anchors(riot, lcd)
+    assert result.accepted is True
+    vayne_key = ("champ:vayne", "champ:kaisa")
+    vayne = next(item for item in result.anchors if item.identity_key == vayne_key)
+    assert vayne.game_t_ms == 180_942
+    assert vayne.source_ms == 181_151
+    assert result.riot_count == 5
+    assert result.lcd_count == 4
+    assert result.unmatched_riot >= 1
+
+
+def test_sparse_lcd_first_and_third_occurrence() -> None:
+    riot = (
+        _kill(100_000, "Ahri", "Zed"),
+        _kill(200_000, "Ahri", "Zed"),
+        _kill(300_000, "Ahri", "Zed"),
+        _kill(400_000, "Lux", "Jinx"),
+        _kill(500_000, "Garen", "Darius"),
+    )
+    lcd = (
+        _kill(98_000, "Ahri", "Zed"),
+        _kill(298_000, "Ahri", "Zed"),
+        _kill(398_000, "Lux", "Jinx"),
+        _kill(498_000, "Garen", "Darius"),
+    )
+    result = match_kill_anchors(riot, lcd)
+    assert result.accepted is True
+    ahri = sorted(
+        (item for item in result.anchors if item.identity_key == ("champ:ahri", "champ:zed")),
+        key=lambda item: item.game_t_ms,
+    )
+    assert [item.game_t_ms for item in ahri] == [100_000, 300_000]
+    assert [item.source_ms for item in ahri] == [98_000, 298_000]
+    used_riot = {item.riot_index for item in result.anchors}
+    assert len(used_riot) == len(result.anchors)
+
+
+def test_one_to_one_assignment_never_reuses_event() -> None:
+    riot = (
+        _kill(100_000, "Ahri", "Zed"),
+        _kill(200_000, "Ahri", "Zed"),
+        _kill(300_000, "Lux", "Jinx"),
+        _kill(400_000, "Garen", "Darius"),
+    )
+    lcd = (
+        _kill(98_000, "Ahri", "Zed"),
+        _kill(198_000, "Ahri", "Zed"),
+        _kill(298_000, "Lux", "Jinx"),
+        _kill(398_000, "Garen", "Darius"),
+    )
+    result = match_kill_anchors(riot, lcd)
+    riot_idxs = [item.riot_index for item in result.anchors]
+    lcd_idxs = [item.lcd_index for item in result.anchors]
+    assert len(riot_idxs) == len(set(riot_idxs))
+    assert len(lcd_idxs) == len(set(lcd_idxs))
+
+
+def test_misleading_close_wrong_identity_never_matched() -> None:
+    riot = (
+        _kill(100_000, "Ahri", "Zed"),
+        _kill(200_000, "Lux", "Jinx"),
+        _kill(300_000, "Garen", "Darius"),
+        _kill(400_000, "LeeSin", "Graves"),
+    )
+    lcd = (
+        _kill(100_050, "Yasuo", "Malphite"),
+        _kill(198_000, "Lux", "Jinx"),
+        _kill(298_000, "Garen", "Darius"),
+        _kill(398_000, "LeeSin", "Graves"),
+    )
+    result = match_kill_anchors(riot, lcd)
+    assert result.accepted is True
+    keys = {item.identity_key for item in result.anchors}
+    assert ("champ:ahri", "champ:zed") not in keys
+    assert ("champ:yasuo", "champ:malphite") not in keys
+
+
+def test_punctuation_and_case_do_not_merge_distinct_champions() -> None:
+    assert normalize_identity_token("Kai'Sa") != normalize_identity_token("Katarina")
+    assert normalize_identity_token("Nunu") != normalize_identity_token("Nunu Willump")
