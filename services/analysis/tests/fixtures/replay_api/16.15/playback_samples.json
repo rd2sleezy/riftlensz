@@ -1,0 +1,71 @@
+{
+  "patch": "16.15",
+  "source": "spikes/replay_probe/probe_report.json",
+  "playback_samples": [
+    {
+      "length": 1902.9725341796875,
+      "paused": false,
+      "seeking": false,
+      "speed": 1,
+      "time": 2.2609195709228516
+    },
+    {
+      "length": 1902.9725341796875,
+      "paused": false,
+      "seeking": false,
+      "speed": 1,
+      "time": 3.1183736324310303
+    },
+    {
+      "length": 1902.9725341796875,
+      "paused": true,
+      "seeking": false,
+      "speed": 1,
+      "time": 6.656513690948486
+    },
+    {
+      "length": 1902.9725341796875,
+      "paused": true,
+      "seeking": false,
+      "speed": 1,
+      "time": 60
+    },
+    {
+      "length": 1902.9725341796875,
+      "paused": true,
+      "seeking": false,
+      "speed": 1,
+      "time": 180
+    },
+    {
+      "length": 1902.9725341796875,
+      "paused": true,
+      "seeking": false,
+      "speed": 1,
+      "time": 300
+    }
+  ],
+  "game_sample_keys": ["processID"],
+  "recording_sample_keys": [
+    "codec",
+    "currentTime",
+    "endTime",
+    "enforceFrameRate",
+    "framesPerSecond",
+    "height",
+    "lossless",
+    "path",
+    "recording",
+    "replaySpeed",
+    "startTime",
+    "width"
+  ],
+  "live_http_status": {
+    "/liveclientdata/gamestats": 200,
+    "/liveclientdata/eventdata": 200,
+    "/liveclientdata/playerlist": 200,
+    "/liveclientdata/activeplayername": 200,
+    "/liveclientdata/activeplayer": 400
+  },
+  "gamestats_sample_keys": ["gameMode", "gameTime", "mapName", "mapNumber", "mapTerrain"]
+}

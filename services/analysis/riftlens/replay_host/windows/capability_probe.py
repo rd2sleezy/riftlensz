@@ -5,18 +5,21 @@ import ssl
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
 
 import httpx
 
 from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
+from riftlens.replay_host.api.tls import (
+    DEFAULT_REPLAY_API_ORIGIN,
+    assert_loopback_origin,
+    replay_api_ssl_context,
+)
+from riftlens.replay_host.api.tls import riot_ca_path as riot_ca_path
 
-DEFAULT_REPLAY_API_ORIGIN = "https://127.0.0.1:2999"
 OPENAPI_V3_PATH = "/swagger/v3/openapi.json"
 SWAGGER_V2_PATH = "/swagger/v2/swagger.json"
 REQUIRED_REPLAY_PATH = "/replay/playback"
 MAX_SPEC_BYTES = 2 * 1024 * 1024
-ALLOWED_HOSTS = frozenset({"127.0.0.1"})
 
 
 @dataclass(frozen=True)
@@ -43,26 +46,6 @@ class ReplayApiCapability:
         }
 
 
-def riot_ca_path() -> Path:
-    """Return the vendored Riot Games root certificate shipped with this package."""
-    return Path(__file__).resolve().with_name("riotgames.pem")
-
-
-def replay_api_ssl_context(ca_file: str | Path | None = None) -> ssl.SSLContext:
-    """Build a TLS context that pins Riot's CA and never sets ``verify=False``."""
-    pem = Path(ca_file) if ca_file is not None else riot_ca_path()
-    if not pem.is_file():
-        raise ReplayError(
-            ReplayErrorCode.REPLAY_API_TLS,
-            details={"reason": "ca_missing", "path": str(pem)},
-        )
-    ctx = ssl.create_default_context(cafile=str(pem))
-    ctx.verify_mode = ssl.CERT_REQUIRED
-    # League serves 127.0.0.1 with a cert that is not hostname-issued for loopback.
-    ctx.check_hostname = False
-    return ctx
-
-
 def probe_replay_api_capability(
     *,
     origin: str = DEFAULT_REPLAY_API_ORIGIN,
@@ -71,7 +54,7 @@ def probe_replay_api_capability(
 ) -> ReplayApiCapability:
     """GET OpenAPI and require ``/replay/playback``. Does not call playback itself."""
     try:
-        _assert_loopback_origin(origin)
+        assert_loopback_origin(origin)
         ctx = replay_api_ssl_context(ca_file)
     except ReplayError as exc:
         return ReplayApiCapability(
@@ -114,20 +97,6 @@ def probe_replay_api_capability(
         spec_path=spec_path,
         error=None,
     )
-
-
-def _assert_loopback_origin(origin: str) -> None:
-    """Reject non-loopback or non-HTTPS origins. Assumes ``origin`` is caller-supplied."""
-    parsed = urlparse(origin)
-    if (
-        parsed.scheme != "https"
-        or parsed.hostname not in ALLOWED_HOSTS
-        or parsed.path not in {"", "/"}
-    ):
-        raise ReplayError(
-            ReplayErrorCode.REPLAY_API_UNAVAILABLE,
-            details={"reason": "invalid_origin", "origin": origin},
-        )
 
 
 def _fetch_spec(

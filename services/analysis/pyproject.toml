@@ -102,3 +102,16 @@ forbidden_modules = [
     "riftlens.analysis",
     "riftlens.coaching",
 ]
+
+[[tool.importlinter.contracts]]
+name = "replay api isolation"
+type = "forbidden"
+source_modules = ["riftlens.replay_host.api"]
+forbidden_modules = [
+    "riftlens.replay_host.windows",
+    "riftlens.api",
+    "riftlens.adapters",
+    "riftlens.pipeline",
+    "riftlens.analysis",
+    "riftlens.coaching",
+]

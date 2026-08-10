@@ -1,0 +1,14 @@
+{"ts":"2026-08-09T22:30:01.934Z","kind":"start","message":"R.0 Replay Control Proof of Concept starting","data":{"cwd":"<REPO>\\spikes\\replay_probe","node":"v24.18.0","platform":"win32"}}
+{"ts":"2026-08-09T22:30:01.939Z","kind":"step","message":"Validate .rofl exists and is readable","data":{"roflPath":"C:\\Users\\<user>\\OneDrive\\Documents\\League of Legends\\Replays\\NA1-5617764200.rofl"}}
+{"ts":"2026-08-09T22:30:01.945Z","kind":"check","message":"rofl_readable PASS","data":{"magic":"RIOT","looksLikeRofl":true,"embeddedVersion":"16.15.802.4387","sizeBytes":15708127,"mtime":"2026-08-09T21:28:54.075Z","basename":"NA1-5617764200.rofl","gameIdHint":"5617764200"}}
+{"ts":"2026-08-09T22:30:01.947Z","kind":"step","message":"Locate and validate League installation"}
+{"ts":"2026-08-09T22:30:01.956Z","kind":"check","message":"league_install PASS","data":{"root":"C:\\Riot Games\\League of Legends","gameExe":"C:\\Riot Games\\League of Legends\\Game\\League of Legends.exe","clientExe":"C:\\Riot Games\\League of Legends\\LeagueClient.exe","gameCfg":"C:\\Riot Games\\League of Legends\\Config\\game.cfg","clientVersion":"16.15.8024387+branch.releases-16-15.code.public","cfgVersion":"16.15.801.3452","localeHint":"en_GB","regionHint":"NA"}}
+{"ts":"2026-08-09T22:30:01.958Z","kind":"step","message":"Ensure EnableReplayApi=1 in game.cfg"}
+{"ts":"2026-08-09T22:30:01.965Z","kind":"check","message":"enable_replay_api PASS","data":{"backupPath":"C:\\Riot Games\\League of Legends\\Config\\game.cfg.r0.bak.1786314601962"}}
+{"ts":"2026-08-09T22:30:01.967Z","kind":"step","message":"Launch replay via League of Legends.exe","data":{"exe":"C:\\Riot Games\\League of Legends\\Game\\League of Legends.exe","cwd":"C:\\Riot Games\\League of Legends\\Game","args":["C:\\Users\\<user>\\OneDrive\\Documents\\League of Legends\\Replays\\NA1-5617764200.rofl","-GameBaseDir=C:\\Riot Games\\League of Legends","-Region=NA","-PlatformID=NA1","-Locale=en_US","-SkipBuild","-EnableCrashpad=true"]}}
+{"ts":"2026-08-09T22:30:03.338Z","kind":"check","message":"League of Legends process detected","data":{"pid":14520,"name":"League of Legends"}}
+{"ts":"2026-08-09T22:30:03.341Z","kind":"step","message":"Poll Replay API until available","data":{"base":"https://127.0.0.1:2999","timeoutMs":180000}}
+{"ts":"2026-08-09T22:30:03.396Z","kind":"info","message":"Replay API not ready yet","data":{"status":0,"error":"connect ECONNREFUSED 127.0.0.1:2999","parseError":null}}
+{"ts":"2026-08-09T22:30:20.430Z","kind":"check","message":"replay_api_available PASS","data":{"length":1902.9725341796875,"paused":false,"seeking":false,"speed":1,"time":2.2609195709228516}}
+{"ts":"2026-08-09T22:30:32.454Z","kind":"step","message":"Seek to requested timestamps","data":{"targets":[60,180,300]}}
+{"ts":"2026-08-09T22:30:38.310Z","kind":"end","message":"R.0 result=PASSED","data":{"result":"PASSED","failures":[]}}

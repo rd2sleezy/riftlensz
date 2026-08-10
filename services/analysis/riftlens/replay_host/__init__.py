@@ -2,12 +2,17 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from riftlens.replay_host.windows.capability_probe import (
+from riftlens.replay_host.api import (
     DEFAULT_REPLAY_API_ORIGIN,
-    ReplayApiCapability,
-    probe_replay_api_capability,
+    LiveClientDataClient,
+    ReplayApiClient,
+    ReplayPlayback,
     replay_api_ssl_context,
     riot_ca_path,
+)
+from riftlens.replay_host.windows.capability_probe import (
+    ReplayApiCapability,
+    probe_replay_api_capability,
 )
 from riftlens.replay_host.windows.game_config import (
     BACKUP_SUFFIX,
@@ -35,7 +40,10 @@ __all__ = [
     "InstallDiscoveryMethod",
     "LeagueInstall",
     "LeagueInstallResult",
+    "LiveClientDataClient",
     "ReplayApiCapability",
+    "ReplayApiClient",
+    "ReplayPlayback",
     "backup_path_for",
     "default_well_known_roots",
     "enable_replay_api",
