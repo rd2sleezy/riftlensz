@@ -10,12 +10,14 @@ from riftlens.replay_host.api import (
     replay_api_ssl_context,
     riot_ca_path,
 )
+from riftlens.replay_host.factory import create_replay_host
 from riftlens.replay_host.launch_strategies import (
     STRATEGY_DIRECT_EXE,
     STRATEGY_LCU_WATCH,
     STRATEGY_SHELL_OPEN,
     STRATEGY_USER_ASSISTED,
 )
+from riftlens.replay_host.port import ControlOutcome, EnvironmentCheck
 from riftlens.replay_host.session import (
     IllegalSessionTransition,
     ReplaySessionMachine,
@@ -23,6 +25,7 @@ from riftlens.replay_host.session import (
     ReplaySessionSnapshot,
 )
 from riftlens.replay_host.supervisor import ReplayProcessSupervisor, default_api_transport
+from riftlens.replay_host.unsupported import UnsupportedReplayHost
 from riftlens.replay_host.windows.capability_probe import (
     ReplayApiCapability,
     probe_replay_api_capability,
@@ -47,7 +50,9 @@ from riftlens.replay_host.windows.install_locator import (
 
 __all__ = [
     "BACKUP_SUFFIX",
+    "ControlOutcome",
     "DEFAULT_REPLAY_API_ORIGIN",
+    "EnvironmentCheck",
     "GameConfigState",
     "GameConfigWriteResult",
     "InstallDiscoveryMethod",
@@ -62,10 +67,12 @@ __all__ = [
     "ReplaySessionMachine",
     "ReplaySessionPhase",
     "ReplaySessionSnapshot",
+    "UnsupportedReplayHost",
     "STRATEGY_DIRECT_EXE",
     "STRATEGY_LCU_WATCH",
     "STRATEGY_SHELL_OPEN",
     "STRATEGY_USER_ASSISTED",
+    "create_replay_host",
     "default_api_transport",
     "backup_path_for",
     "default_well_known_roots",

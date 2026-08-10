@@ -76,6 +76,7 @@ forbidden_modules = [
     "riftlens.coaching",
     "riftlens.rofl",
     "riftlens.replay_host",
+    "riftlens.gameplay",
 ]
 
 [[tool.importlinter.contracts]]
@@ -89,6 +90,7 @@ forbidden_modules = [
     "riftlens.analysis",
     "riftlens.coaching",
     "riftlens.replay_host",
+    "riftlens.gameplay",
 ]
 
 [[tool.importlinter.contracts]]
@@ -101,6 +103,15 @@ forbidden_modules = [
     "riftlens.pipeline",
     "riftlens.analysis",
     "riftlens.coaching",
+    "riftlens.gameplay",
+]
+
+[[tool.importlinter.contracts]]
+name = "gameplay windows isolation"
+type = "forbidden"
+source_modules = ["riftlens.gameplay"]
+forbidden_modules = [
+    "riftlens.replay_host.windows",
 ]
 
 [[tool.importlinter.contracts]]

@@ -16,6 +16,7 @@ class ReplayErrorCode(StrEnum):
     ROFL_NOT_RECOGNISED = "ROFL_NOT_RECOGNISED"
     ROFL_METADATA_UNPARSED = "ROFL_METADATA_UNPARSED"
     MATCH_ID_UNRESOLVED = "MATCH_ID_UNRESOLVED"
+    MATCH_NOT_INGESTED = "MATCH_NOT_INGESTED"
     INSTALL_NOT_FOUND = "INSTALL_NOT_FOUND"
     INSTALL_INVALID = "INSTALL_INVALID"
     PATCH_INCOMPATIBLE = "PATCH_INCOMPATIBLE"
@@ -55,6 +56,9 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
     ),
     ReplayErrorCode.MATCH_ID_UNRESOLVED: (
         "Could not determine which match this replay belongs to."
+    ),
+    ReplayErrorCode.MATCH_NOT_INGESTED: (
+        "This replay's match is not in RiftLens yet. Ingest the match first."
     ),
     ReplayErrorCode.INSTALL_NOT_FOUND: "League of Legends installation was not found.",
     ReplayErrorCode.INSTALL_INVALID: "League of Legends installation is incomplete.",
@@ -100,6 +104,7 @@ _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
     ReplayErrorCode.ROFL_NOT_RECOGNISED: "fatal",
     ReplayErrorCode.ROFL_METADATA_UNPARSED: "informational",
     ReplayErrorCode.MATCH_ID_UNRESOLVED: "retryable",
+    ReplayErrorCode.MATCH_NOT_INGESTED: "retryable",
     ReplayErrorCode.INSTALL_NOT_FOUND: "fatal",
     ReplayErrorCode.INSTALL_INVALID: "fatal",
     ReplayErrorCode.PATCH_INCOMPATIBLE: "fatal",

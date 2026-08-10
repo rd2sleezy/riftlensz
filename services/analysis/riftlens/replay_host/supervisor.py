@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import threading
-import time
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -28,6 +27,7 @@ from riftlens.replay_host.session import (
     ReplaySessionPhase,
     ReplaySessionSnapshot,
 )
+from riftlens.replay_host.timing import SleepClock, WallClock
 from riftlens.replay_host.windows.install_locator import LeagueInstall
 from riftlens.rofl.identity import identify_rofl
 
@@ -36,26 +36,6 @@ MIN_POLL_INTERVAL_S = 0.25
 MAX_POLL_INTERVAL_S = 2.0
 ADVANCE_SAMPLE_GAP_S = 1.0
 STARTUP_HTTP_RETRIES = 0
-
-
-class SleepClock(Protocol):
-    """Injected clock so launch polling is deterministic under tests."""
-
-    def monotonic(self) -> float:
-        """Return monotonic seconds."""
-
-    def sleep(self, seconds: float) -> None:
-        """Block or advance fake time by ``seconds``."""
-
-
-class WallClock:
-    """Production clock wrapping ``time.monotonic`` / ``time.sleep``."""
-
-    def monotonic(self) -> float:
-        return time.monotonic()
-
-    def sleep(self, seconds: float) -> None:
-        time.sleep(seconds)
 
 
 class PlaybackTransport(Protocol):
@@ -158,6 +138,11 @@ class ReplayProcessSupervisor:
     def snapshot(self) -> ReplaySessionSnapshot:
         """Return the current session snapshot."""
         return self._machine.snapshot
+
+    @property
+    def machine(self) -> ReplaySessionMachine:
+        """Return the session state machine. Assumes the supervisor still owns it."""
+        return self._machine
 
     @property
     def attempts(self) -> tuple[LaunchAttempt, ...]:

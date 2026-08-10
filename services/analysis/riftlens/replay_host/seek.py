@@ -10,7 +10,7 @@ from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 from riftlens.domain.sync_map import SEEK_LEAD_IN_MS
 from riftlens.replay_host.api.models import ReplayPlayback
 from riftlens.replay_host.session import ReplaySessionMachine, ReplaySessionPhase
-from riftlens.replay_host.supervisor import SleepClock, WallClock
+from riftlens.replay_host.timing import SleepClock, WallClock
 
 LANDING_TOLERANCE_MS = 500
 REAL_SEEK_TOLERANCE_MS = 1_000
