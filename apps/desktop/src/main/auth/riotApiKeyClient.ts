@@ -31,11 +31,20 @@ export async function fetchRiotAccount(
     gameName
   )}/${encodeURIComponent(tagLine)}`
 
-  const response = await fetch(url, { headers: { 'X-Riot-Token': apiKey } })
+  let response: Response
+  try {
+    response = await fetch(url, { headers: { 'X-Riot-Token': apiKey } })
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error)
+    throw new RiotApiKeyError(`Couldn't reach Riot's servers (${detail}). Check your internet connection.`, 'UNKNOWN')
+  }
 
   if (response.status === 401 || response.status === 403) {
+    const detail = await riotErrorDetail(response)
     throw new RiotApiKeyError(
-      'That API key was rejected. Personal keys expire roughly every 24h — get a fresh one from the Riot Developer Portal.',
+      `That API key was rejected by Riot (HTTP ${response.status}${detail ? `, ${detail}` : ''}). ` +
+        'Personal keys expire roughly every 24h — regenerate one on the Riot Developer Portal and make sure ' +
+        'you copied the whole RGAPI-… value with no extra spaces.',
       'INVALID_KEY'
     )
   }
@@ -46,7 +55,8 @@ export async function fetchRiotAccount(
     throw new RiotApiKeyError('Rate limited by Riot — wait a moment and try again.', 'RATE_LIMITED')
   }
   if (!response.ok) {
-    throw new RiotApiKeyError(`Riot API returned ${response.status}.`, 'UNKNOWN')
+    const detail = await riotErrorDetail(response)
+    throw new RiotApiKeyError(`Riot API returned HTTP ${response.status}${detail ? `: ${detail}` : ''}.`, 'UNKNOWN')
   }
 
   const body = (await response.json()) as { puuid?: string; gameName?: string; tagLine?: string }
@@ -54,4 +64,14 @@ export async function fetchRiotAccount(
     throw new RiotApiKeyError('Riot API response was missing a puuid.', 'UNKNOWN')
   }
   return { puuid: body.puuid, gameName: body.gameName ?? gameName, tagLine: body.tagLine ?? tagLine }
+}
+
+/** Best-effort extraction of Riot's { status: { message } } error body for diagnostics. */
+async function riotErrorDetail(response: Response): Promise<string | null> {
+  try {
+    const body = (await response.clone().json()) as { status?: { message?: string } }
+    return body.status?.message ?? null
+  } catch {
+    return null
+  }
 }

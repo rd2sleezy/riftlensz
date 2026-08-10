@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState, type ReactElement } from 'react'
-import { Badge } from '../../components/ui'
+import { Badge, RiotMark } from '../../components/ui'
 import type { SignInResult, SignInWithApiKeyInput } from '../../../main/ipc/channels'
 
 const REGIONS: SignInWithApiKeyInput['region'][] = ['americas', 'europe', 'asia']
@@ -91,17 +91,23 @@ export function AccountMenu(): ReactElement {
     <div className="relative" ref={panelRef}>
       <button
         type="button"
-        className="flex items-center gap-1.5 rounded-md bg-rift-accent px-3 py-1.5 text-xs font-medium text-rift-bg transition hover:bg-rift-accent-strong"
+        className="flex items-center gap-2 rounded-md bg-rift-accent px-3 py-1.5 text-xs font-medium text-rift-bg transition hover:bg-rift-accent-strong"
         onClick={() => setOpen((value) => !value)}
       >
+        <span className="flex h-4 w-4 items-center justify-center rounded-[4px] bg-[#D8232A] text-[10px] font-black leading-none text-white">
+          R
+        </span>
         Sign in with Riot
       </button>
 
       {open ? (
         <div className="absolute right-0 top-full z-10 mt-2 w-80 rounded-xl border border-rift-border bg-rift-surface p-4 shadow-card">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Sign in with your Riot ID
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Sign in with your Riot ID
+            </p>
+            <RiotMark />
+          </div>
           <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
             Verifies your account against Riot&apos;s real API using a personal developer key —{' '}
             <a
@@ -119,6 +125,9 @@ export function AccountMenu(): ReactElement {
             className="mt-3 space-y-2"
             onSubmit={(event) => {
               event.preventDefault()
+              if (isPending) {
+                return
+              }
               const [gameName, tagLine] = riotId.split('#').map((part) => part.trim())
               if (!gameName || !tagLine) {
                 setError('Enter your Riot ID as Name#Tag.')
@@ -132,13 +141,15 @@ export function AccountMenu(): ReactElement {
               value={riotId}
               onChange={(event) => setRiotId(event.target.value)}
               placeholder="Riot ID (Name#Tag)"
-              className="w-full rounded-md border border-rift-edge bg-rift-raised px-2.5 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-rift-accent/50"
+              disabled={isPending}
+              className="w-full rounded-md border border-rift-edge bg-rift-raised px-2.5 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-rift-accent/50 disabled:opacity-50"
             />
             <div className="flex gap-2">
               <select
                 value={region}
                 onChange={(event) => setRegion(event.target.value as SignInWithApiKeyInput['region'])}
-                className="rounded-md border border-rift-edge bg-rift-raised px-2 py-1.5 text-sm text-slate-100 focus:border-rift-accent/50"
+                disabled={isPending}
+                className="rounded-md border border-rift-edge bg-rift-raised px-2 py-1.5 text-sm text-slate-100 focus:border-rift-accent/50 disabled:opacity-50"
               >
                 {REGIONS.map((value) => (
                   <option key={value} value={value}>
@@ -152,9 +163,16 @@ export function AccountMenu(): ReactElement {
                 onChange={(event) => setApiKey(event.target.value)}
                 type="password"
                 placeholder="Personal API key"
-                className="flex-1 rounded-md border border-rift-edge bg-rift-raised px-2.5 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-rift-accent/50"
+                disabled={isPending}
+                autoComplete="off"
+                className="flex-1 rounded-md border border-rift-edge bg-rift-raised px-2.5 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-rift-accent/50 disabled:opacity-50"
               />
             </div>
+            {apiKey.length > 0 && !apiKey.trim().startsWith('RGAPI-') ? (
+              <p className="text-[10px] text-rift-gold">
+                Personal keys normally start with &quot;RGAPI-&quot; — double check you copied the whole key.
+              </p>
+            ) : null}
             <button
               type="submit"
               disabled={isPending || !riotId || !apiKey}

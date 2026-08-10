@@ -73,6 +73,18 @@ export function Disclosure(props: {
   )
 }
 
+/** Simple, clean text-based Riot Games mark (not a reproduction of their crest artwork). */
+export function RiotMark(props: { className?: string }): ReactElement {
+  return (
+    <span className={`inline-flex items-center gap-1.5 ${props.className ?? ''}`}>
+      <span className="flex h-4 w-4 items-center justify-center rounded-[4px] bg-[#D8232A] text-[10px] font-black leading-none text-white">
+        R
+      </span>
+      <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Riot Games</span>
+    </span>
+  )
+}
+
 export function EmptyState(props: {
   title: string
   body?: string
