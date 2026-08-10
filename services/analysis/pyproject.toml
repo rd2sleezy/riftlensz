@@ -75,12 +75,26 @@ forbidden_modules = [
     "riftlens.analysis",
     "riftlens.coaching",
     "riftlens.rofl",
+    "riftlens.replay_host",
 ]
 
 [[tool.importlinter.contracts]]
 name = "rofl sniffer isolation"
 type = "forbidden"
 source_modules = ["riftlens.rofl"]
+forbidden_modules = [
+    "riftlens.api",
+    "riftlens.adapters",
+    "riftlens.pipeline",
+    "riftlens.analysis",
+    "riftlens.coaching",
+    "riftlens.replay_host",
+]
+
+[[tool.importlinter.contracts]]
+name = "replay host isolation"
+type = "forbidden"
+source_modules = ["riftlens.replay_host"]
 forbidden_modules = [
     "riftlens.api",
     "riftlens.adapters",
