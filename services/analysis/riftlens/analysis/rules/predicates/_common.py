@@ -474,6 +474,27 @@ def fight_involves(fight: Fight, pid: int) -> bool:
     return False
 
 
+def died_in_fight(fight: Fight, pid: int) -> bool:
+    """Return True when ``pid`` is a victim in ``fight.deaths_in_order``."""
+    for death in fight.deaths_in_order:
+        if death.payload.get("victimId") == pid:
+            return True
+    return False
+
+
+def subject_actionable_after_fight(
+    gst: GameStateTimeline, pid: int, fight: Fight, patch: PatchData
+) -> bool:
+    """Return True when ``pid`` can act at the start of the post-fight window.
+
+    Kill/assist credit is not sufficient. Death before ``fight.t_end`` suppresses
+    the window; a modelled respawn after ``t_end`` does not restore it.
+    """
+    if died_in_fight(fight, pid):
+        return False
+    return is_alive(gst, pid, fight.t_end, patch)
+
+
 def first_death_pid(fight: Fight) -> int | None:
     """Return the first victim in fight death order."""
     if not fight.deaths_in_order:

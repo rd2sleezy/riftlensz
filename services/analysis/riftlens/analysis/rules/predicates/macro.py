@@ -18,6 +18,7 @@ from riftlens.analysis.rules.predicates._common import (
     pit_point,
     plates_or_towers,
     position_at,
+    subject_actionable_after_fight,
     team_down_count,
     wards_placed,
 )
@@ -102,6 +103,8 @@ def tempo_no_conversion(ctx: RuleContext) -> Finding | None:
         if ctx.gst.participants[victim].team is not team:
             our_kills += 1
     if our_kills < int(ctx.params.min_kills):
+        return None
+    if not subject_actionable_after_fight(ctx.gst, ctx.subject_pid, fight, ctx.patch):
         return None
     window = int(ctx.params.tempo_window_ms)
     if plates_or_towers(ctx.gst, ctx.subject_pid, fight.t_end, fight.t_end + window):

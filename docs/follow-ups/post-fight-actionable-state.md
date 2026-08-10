@@ -1,7 +1,9 @@
 # Follow-up: post-fight coaching must require an alive/actionable player
 
-**Status:** open — do not fix in R.9  
-**Kind:** coaching-quality defect (H.7/H.8), **not** a native-replay or R.9 failure  
+**Status:** fixed — R-014 `tempo_no_conversion` now requires
+`subject_actionable_after_fight` (alive at `fight.t_end`, and not a victim in
+the clustered fight). Kill/assist credit alone is not enough.
+**Kind:** coaching-quality defect (H.7/H.8), **not** a native-replay or R.9 failure
 **Discovered:** 2026-08-09 during R.9 Windows desktop T4 on `NA1_5617764200`
 
 ## Observation

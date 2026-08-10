@@ -50,6 +50,7 @@ false_positives:
   - "Resetting to spend a huge gold pile can be the correct conversion"
   - "An elder/baron already live on the other side of the map is not scored here"
   - "Respawn timers are modelled from patch tables, not observed"
+  - "A posthumous assist does not make a dead player able to convert tempo"
 
 suppressed_by: []
 cooldown_ms: 60000

@@ -359,6 +359,77 @@ def r014_quiet() -> GameStateTimeline:
     return _gst("r014_quiet", extra, duration_ms=1_200_000)
 
 
+def r014_died_before_fight_ended() -> GameStateTimeline:
+    """Subject dies first, then teammates win; posthumous assist is not actionable."""
+    t0 = 960_000
+    extra = [
+        *kill(t0, 1, 6, position=RIVER_ENEMY_FOR_BLUE, dealers={6: 400}),
+        *kill(
+            t0 + 1500,
+            6,
+            2,
+            assists=[1],
+            position=RIVER_ENEMY_FOR_BLUE,
+            dealers={2: 400},
+        ),
+        *kill(t0 + 2500, 8, 3, position=RIVER_ENEMY_FOR_BLUE, dealers={3: 400}),
+    ]
+    return _gst(
+        "r014_died_before_fight_ended", extra, duration_ms=1_200_000, level={1: 11}
+    )
+
+
+def r014_dead_later_assist() -> GameStateTimeline:
+    """Earlier unclustered death, then a later won fight with a dead assist."""
+    t0 = 960_000
+    extra = [
+        *kill(t0 - 30_000, 1, 6, position=RIVER_ENEMY_FOR_BLUE, dealers={6: 400}),
+        *kill(
+            t0,
+            6,
+            2,
+            assists=[1],
+            position=RIVER_ENEMY_FOR_BLUE,
+            dealers={2: 400},
+        ),
+        *kill(t0 + 1000, 8, 3, position=RIVER_ENEMY_FOR_BLUE, dealers={3: 400}),
+    ]
+    return _gst("r014_dead_later_assist", extra, duration_ms=1_200_000, level={1: 11})
+
+
+def r014_respawn_after_window() -> GameStateTimeline:
+    """Die, then get a later-fight assist, respawn after the 25s conversion window."""
+    t0 = 960_000
+    extra = [
+        *kill(t0 - 22_000, 1, 6, position=RIVER_ENEMY_FOR_BLUE, dealers={6: 400}),
+        *kill(
+            t0,
+            6,
+            2,
+            assists=[1],
+            position=RIVER_ENEMY_FOR_BLUE,
+            dealers={2: 400},
+        ),
+        *kill(t0 + 1000, 8, 3, position=RIVER_ENEMY_FOR_BLUE, dealers={3: 400}),
+    ]
+    return _gst("r014_respawn_after_window", extra, duration_ms=1_200_000, level={1: 18})
+
+
+def r014_low_hp_still_fires() -> GameStateTimeline:
+    """Survived the won fight at low HP — existing semantics still fire (no HP gate)."""
+    t0 = 960_000
+    extra = [
+        *kill(t0, 6, 1, assists=[3], position=RIVER_ENEMY_FOR_BLUE, dealers={1: 300, 3: 200}),
+        *kill(t0 + 1000, 8, 2, position=RIVER_ENEMY_FOR_BLUE, dealers={2: 400}),
+    ]
+    return _gst(
+        "r014_low_hp_still_fires",
+        extra,
+        duration_ms=1_200_000,
+        hp={1: (80, 1800)},
+    )
+
+
 def r015_fire() -> GameStateTimeline:
     extra = [
         *kill(
