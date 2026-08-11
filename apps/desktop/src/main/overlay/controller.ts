@@ -1,7 +1,8 @@
 /** Overlay lifecycle: show/hide with League + replay session (R.10.5). */
 
 import { join } from 'node:path'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, screen } from 'electron'
+import { IPC } from '../ipc/channels'
 import { logger } from '../logging'
 import {
   applyOverlayBounds,
@@ -10,17 +11,21 @@ import {
   workAreaForRect
 } from './createOverlayWindow'
 import {
+  classifyDisplayMode,
   findLeagueClientWindow,
+  isExclusiveD3dFullscreen,
   isReplaySessionActive,
+  refreshLeagueClientWindowAsync,
   shouldShowOverlay
 } from './leagueWindow'
 import { resolveOverlayRect } from './placement'
 import { loadOverlayPrefs, mergeOverlayPrefs, saveOverlayPrefs } from './prefs'
 import {
-  COMPACT_HEIGHT,
-  EXPANDED_HEIGHT,
+  EXCLUSIVE_FULLSCREEN_MESSAGE,
   LEAGUE_MISSING_GRACE_POLLS,
+  NAVIGATOR_HEIGHT,
   OVERLAY_POLL_MS,
+  type LeagueDisplayMode,
   type OverlayContext,
   type OverlayPrefs,
   type Rect
@@ -32,13 +37,26 @@ export type OverlaySessionSnapshot = {
   liveGame: boolean
 }
 
+export type OverlayLifecycleEvent = {
+  kind: 'visibility' | 'display_mode' | 'session'
+  visible: boolean
+  reason: string
+  displayMode: LeagueDisplayMode
+  message: string | null
+  sessionPhase: string | null
+  sessionReachedReady: boolean
+}
+
 export class OverlayController {
   private window: BrowserWindow | null = null
+  private mainWindow: BrowserWindow | null = null
   private context: OverlayContext | null = null
   private prefs: OverlayPrefs
   private timer: NodeJS.Timeout | null = null
   private missingPolls = 0
   private lastLeagueBounds: Rect | null = null
+  private displayMode: LeagueDisplayMode = 'unknown'
+  private lastReason = 'idle'
   private session: OverlaySessionSnapshot = {
     sessionPhase: null,
     sessionReachedReady: false,
@@ -47,7 +65,6 @@ export class OverlayController {
   private readonly userDataPath: string
   private readonly preloadPath: string
   private readonly rendererDevUrl: string | null
-  private mainWindow: BrowserWindow | null = null
 
   constructor(options?: {
     userDataPath?: string
@@ -62,8 +79,8 @@ export class OverlayController {
     this.prefs = loadOverlayPrefs(this.userDataPath)
   }
 
-  setMainWindow(win: BrowserWindow | null): void {
-    this.mainWindow = win
+  setMainWindow(_win: BrowserWindow | null): void {
+    this.mainWindow = _win
   }
 
   isOverlayWindow(win: BrowserWindow): boolean {
@@ -76,6 +93,23 @@ export class OverlayController {
 
   getPrefs(): OverlayPrefs {
     return { ...this.prefs }
+  }
+
+  getDisplayMode(): LeagueDisplayMode {
+    return this.displayMode
+  }
+
+  getLifecycleSnapshot(): OverlayLifecycleEvent {
+    return {
+      kind: 'visibility',
+      visible: this.window !== null && !this.window.isDestroyed() && this.window.isVisible(),
+      reason: this.lastReason,
+      displayMode: this.displayMode,
+      message:
+        this.displayMode === 'exclusive_fullscreen' ? EXCLUSIVE_FULLSCREEN_MESSAGE : null,
+      sessionPhase: this.session.sessionPhase,
+      sessionReachedReady: this.session.sessionReachedReady
+    }
   }
 
   setPrefs(patch: Partial<OverlayPrefs>): OverlayPrefs {
@@ -102,6 +136,7 @@ export class OverlayController {
     this.ensureWindow()
     this.startPolling()
     this.tick()
+    void refreshLeagueClientWindowAsync().then(() => this.tick())
     return { ok: true }
   }
 
@@ -109,9 +144,11 @@ export class OverlayController {
     this.session = { ...this.session, ...session }
     if (session.liveGame === true) {
       this.hide('live_game')
+      this.broadcastLifecycle('session')
       return
     }
     this.tick()
+    this.broadcastLifecycle('session')
   }
 
   close(): void {
@@ -123,13 +160,16 @@ export class OverlayController {
     }
     this.stopPolling()
     this.destroyWindow()
+    this.broadcastLifecycle('visibility')
   }
 
   hide(reason = 'manual'): void {
+    this.lastReason = reason
     logger.info({ reason }, 'overlay hide')
     if (this.window !== null && !this.window.isDestroyed() && this.window.isVisible()) {
       this.window.hide()
     }
+    this.broadcastLifecycle('visibility')
   }
 
   setUserBounds(bounds: Rect): OverlayPrefs {
@@ -137,25 +177,24 @@ export class OverlayController {
     const clamped = resolveOverlayRect({
       league: this.lastLeagueBounds ?? workArea,
       workArea,
-      prefs: {
-        compact: this.prefs.compact,
-        position: { x: bounds.x, y: bounds.y },
-        width: bounds.width
-      },
+      prefs: this.prefs,
       height: bounds.height
     })
     this.prefs = saveOverlayPrefs(
       this.userDataPath,
       mergeOverlayPrefs(this.prefs, {
         position: { x: clamped.x, y: clamped.y },
-        width: clamped.width
+        navigatorWidth: this.prefs.navigatorWidth,
+        detailWidth: this.prefs.detailWidth
       })
     )
     if (this.window !== null && !this.window.isDestroyed()) {
-      applyOverlayBounds(this.window, {
-        ...clamped,
-        height: this.prefs.compact ? COMPACT_HEIGHT : EXPANDED_HEIGHT
-      })
+      applyOverlayBounds(this.window, resolveOverlayRect({
+        league: this.lastLeagueBounds ?? workArea,
+        workArea,
+        prefs: this.prefs,
+        height: NAVIGATOR_HEIGHT
+      }))
     }
     return this.getPrefs()
   }
@@ -202,13 +241,35 @@ export class OverlayController {
   }
 
   private tick(): void {
-    const league = findLeagueClientWindow()
-    if (league === null) {
-      this.missingPolls += 1
-    } else {
+    const exclusive = isExclusiveD3dFullscreen()
+    let league = findLeagueClientWindow()
+    if (league !== null) {
       this.missingPolls = 0
       this.lastLeagueBounds = league.bounds
+      const display = screen.getDisplayMatching({
+        x: Math.round(league.bounds.x),
+        y: Math.round(league.bounds.y),
+        width: Math.max(1, Math.round(league.bounds.width)),
+        height: Math.max(1, Math.round(league.bounds.height))
+      })
+      this.displayMode = classifyDisplayMode({
+        exclusiveD3d: exclusive,
+        bounds: league.bounds,
+        displayBounds: {
+          x: display.bounds.x,
+          y: display.bounds.y,
+          width: display.bounds.width,
+          height: display.bounds.height
+        }
+      })
+      league = { ...league, displayMode: this.displayMode }
+    } else {
+      this.missingPolls += 1
+      if (exclusive) {
+        this.displayMode = 'exclusive_fullscreen'
+      }
     }
+
     const decision = shouldShowOverlay({
       prefsEnabled: this.prefs.enabled,
       liveGame: this.session.liveGame,
@@ -219,23 +280,26 @@ export class OverlayController {
       ),
       league,
       missingPolls: this.missingPolls,
-      gracePolls: LEAGUE_MISSING_GRACE_POLLS
+      gracePolls: LEAGUE_MISSING_GRACE_POLLS,
+      exclusiveFullscreen: exclusive
     })
+    this.lastReason = decision.reason
     if (!decision.visible) {
       this.hide(decision.reason)
-      if (decision.reason === 'session_inactive' || decision.reason === 'live_game') {
-        // Keep context for reopen, but stop claiming a live overlay session.
-      }
       return
     }
     this.ensureWindow()
     if (this.window === null || this.window.isDestroyed()) {
       return
     }
+    // Re-assert topmost after fullscreen transitions (borderless).
+    this.window.setAlwaysOnTop(true, 'screen-saver')
+    this.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
     this.relayout()
     if (!this.window.isVisible()) {
       this.window.showInactive()
     }
+    this.broadcastLifecycle('visibility')
   }
 
   private relayout(): void {
@@ -258,8 +322,15 @@ export class OverlayController {
       league,
       workArea,
       prefs: this.prefs,
-      height: this.prefs.compact ? COMPACT_HEIGHT : EXPANDED_HEIGHT
+      height: NAVIGATOR_HEIGHT
     })
+  }
+
+  private broadcastLifecycle(kind: OverlayLifecycleEvent['kind']): void {
+    const payload = { ...this.getLifecycleSnapshot(), kind }
+    for (const win of BrowserWindow.getAllWindows()) {
+      win.webContents.send(IPC.overlayLifecycleEvent, payload)
+    }
   }
 }
 

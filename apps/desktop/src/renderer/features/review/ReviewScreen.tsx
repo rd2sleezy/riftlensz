@@ -37,6 +37,7 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
   const [playingTargetMs, setPlayingTargetMs] = useState<number | null>(null)
   const [pendingRevealMs, setPendingRevealMs] = useState<number | null>(null)
   const [activeMode, setActiveMode] = useState<'auto' | 'replay' | 'video'>('auto')
+  const [overlayNotice, setOverlayNotice] = useState<string | null>(null)
   const pendingRevealRef = useRef<number | null>(null)
 
   const reviewQuery = useQuery({
@@ -282,6 +283,18 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
   }, [reviewId])
 
   useEffect(() => {
+    return window.rift.onOverlayLifecycle((event) => {
+      if (event.reason === 'exclusive_fullscreen' || event.displayMode === 'exclusive_fullscreen') {
+        setOverlayNotice(
+          event.message ?? 'RiftLens overlay requires Borderless or Windowed replay mode.'
+        )
+        return
+      }
+      setOverlayNotice(null)
+    })
+  }, [])
+
+  useEffect(() => {
     const onKey = (event: KeyboardEvent): void => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
         return
@@ -403,6 +416,14 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
         }}
         onAction={handleReplayAction}
       />
+      {overlayNotice !== null ? (
+        <p
+          className="mb-3 rounded border border-amber-700/60 bg-amber-950/50 px-3 py-2 text-xs text-amber-100"
+          data-testid="overlay-exclusive-fs-notice"
+        >
+          {overlayNotice}
+        </p>
+      ) : null}
       {pendingRevealMs !== null ? (
         <p className="mb-3 text-xs text-sky-200" data-testid="pending-reveal-hint">
           Open replay to jump to {formatMmss(pendingRevealMs)}

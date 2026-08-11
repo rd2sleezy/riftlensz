@@ -21,6 +21,7 @@ import {
   OpenReplayResultSchema,
   OverlayBoundsSchema,
   OverlayContextResultSchema,
+  OverlayLifecycleEventSchema,
   OverlayOpenInputSchema,
   OverlayOpenResultSchema,
   OverlayPrefsSchema,
@@ -51,7 +52,7 @@ export function registerIpcHandlers(
   overlay: OverlayController
 ): void {
   for (const channel of Object.values(IPC)) {
-    if (channel !== IPC.sidecarStatusEvent) {
+    if (channel !== IPC.sidecarStatusEvent && channel !== IPC.overlayLifecycleEvent) {
       ipcMain.removeHandler(channel)
     }
   }
@@ -228,6 +229,10 @@ export function registerIpcHandlers(
       liveGame: update.liveGame
     })
     return { ok: true as const }
+  })
+
+  ipcMain.handle(IPC.overlayGetLifecycle, () => {
+    return OverlayLifecycleEventSchema.parse(overlay.getLifecycleSnapshot())
   })
 
   supervisor.on('status', (status) => {

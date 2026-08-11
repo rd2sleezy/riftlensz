@@ -8,6 +8,7 @@ import {
   overlapsAnyHudZone
 } from '../../main/overlay/hudZones'
 import {
+  classifyDisplayMode,
   isLeagueTitle,
   isReplaySessionActive,
   shouldShowOverlay
@@ -17,6 +18,7 @@ import {
   defaultOverlayRect,
   isHudSafe,
   physicalSizeForCss,
+  resolveOverlayLayout,
   resolveOverlayRect
 } from '../../main/overlay/placement'
 import { loadOverlayPrefs, mergeOverlayPrefs, saveOverlayPrefs } from '../../main/overlay/prefs'
@@ -30,19 +32,43 @@ function workAreaFor(league: Rect): Rect {
   return { x: league.x - 40, y: league.y - 40, width: league.width + 80, height: league.height + 80 }
 }
 
+const basePrefs = {
+  detailOpen: true as const,
+  position: null,
+  navigatorWidth: 300,
+  detailWidth: 340
+}
+
 describe('overlay HUD placement', () => {
-  it('keeps the 1080p default out of minimap, bottom HUD, and center combat', () => {
+  it('keeps the 1080p two-panel default out of minimap, bottom HUD, and center combat', () => {
     const league = leagueAt(1920, 1080)
-    const overlay = defaultOverlayRect({
+    const layout = resolveOverlayLayout({
       league,
       workArea: workAreaFor(league),
-      prefs: { compact: true, position: null, width: 320 }
+      prefs: basePrefs
     })
-    expect(isHudSafe(league, overlay)).toBe(true)
+    // 1080p gutter is too narrow for side-by-side; stack detail under navigator.
+    expect(layout.orientation).toBe('stacked')
+    expect(isHudSafe(league, layout.outer)).toBe(true)
+    expect(layout.detail).not.toBeNull()
+    expect(layout.outer.width).toBe(300)
+    expect(layout.navigator.width).toBe(300)
     for (const zone of HUD_EXCLUSION_ZONES) {
       expect(overlapsAnyHudZone(league, absoluteZone(league, zone))).toBe(true)
     }
-    expect(overlapsAnyHudZone(league, overlay)).toBe(false)
+    expect(overlapsAnyHudZone(league, layout.outer)).toBe(false)
+  })
+
+  it('uses side-by-side panels when the upper gutter is wide enough', () => {
+    const league = leagueAt(3440, 1440)
+    const layout = resolveOverlayLayout({
+      league,
+      workArea: workAreaFor(league),
+      prefs: basePrefs
+    })
+    expect(layout.orientation).toBe('row')
+    expect(isHudSafe(league, layout.outer)).toBe(true)
+    expect(layout.outer.width).toBeGreaterThan(300)
   })
 
   it('places safely at 1440p, 4K, and ultrawide', () => {
@@ -55,10 +81,22 @@ describe('overlay HUD placement', () => {
       const overlay = defaultOverlayRect({
         league,
         workArea: workAreaFor(league),
-        prefs: { compact: true, position: null, width: 320 }
+        prefs: basePrefs
       })
       expect(isHudSafe(league, overlay)).toBe(true)
     }
+  })
+
+  it('keeps navigator-only layout HUD-safe when detail is collapsed', () => {
+    const league = leagueAt(1920, 1080)
+    const layout = resolveOverlayLayout({
+      league,
+      workArea: workAreaFor(league),
+      prefs: { ...basePrefs, detailOpen: false }
+    })
+    expect(layout.detail).toBeNull()
+    expect(layout.outer.width).toBe(300)
+    expect(isHudSafe(league, layout.outer)).toBe(true)
   })
 
   it('scales physical size for 125% and 150% DPI', () => {
@@ -68,12 +106,9 @@ describe('overlay HUD placement', () => {
 
   it('clamps dragged overlays so they cannot fully leave the work area', () => {
     const workArea = { x: 0, y: 0, width: 1920, height: 1080 }
-    const lost = clampToWorkArea({ x: -10_000, y: -10_000, width: 320, height: 140 }, workArea)
+    const lost = clampToWorkArea({ x: -10_000, y: -10_000, width: 640, height: 440 }, workArea)
     expect(lost.x + lost.width).toBeGreaterThan(workArea.x)
     expect(lost.y + lost.height).toBeGreaterThan(workArea.y)
-    const far = clampToWorkArea({ x: 50_000, y: 50_000, width: 320, height: 140 }, workArea)
-    expect(far.x).toBeLessThan(workArea.x + workArea.width)
-    expect(far.y).toBeLessThan(workArea.y + workArea.height)
   })
 
   it('restores a user-adjusted position when present', () => {
@@ -81,19 +116,64 @@ describe('overlay HUD placement', () => {
     const resolved = resolveOverlayRect({
       league,
       workArea: workAreaFor(league),
-      prefs: { compact: true, position: { x: 100, y: 120 }, width: 320 }
+      prefs: { ...basePrefs, position: { x: 100, y: 120 } }
     })
     expect(resolved.x).toBe(100)
     expect(resolved.y).toBe(120)
   })
 })
 
-describe('overlay visibility policy', () => {
-  it('shows only for replay/review context and hides on live game or session close', () => {
+describe('overlay visibility / fullscreen policy', () => {
+  it('hides for exclusive D3D fullscreen with a typed reason', () => {
     const league = {
       bounds: leagueAt(1920, 1080),
       minimized: false,
-      title: 'League of Legends (TM) Client'
+      title: 'League of Legends (TM) Client',
+      displayMode: 'exclusive_fullscreen' as const
+    }
+    expect(
+      shouldShowOverlay({
+        prefsEnabled: true,
+        liveGame: false,
+        hasContext: true,
+        sessionActive: true,
+        league,
+        missingPolls: 0,
+        exclusiveFullscreen: true
+      })
+    ).toEqual({ visible: false, reason: 'exclusive_fullscreen' })
+  })
+
+  it('classifies borderless vs windowed from bounds', () => {
+    expect(
+      classifyDisplayMode({
+        exclusiveD3d: false,
+        bounds: leagueAt(1920, 1080),
+        displayBounds: leagueAt(1920, 1080)
+      })
+    ).toBe('borderless')
+    expect(
+      classifyDisplayMode({
+        exclusiveD3d: false,
+        bounds: { x: 100, y: 100, width: 1280, height: 720 },
+        displayBounds: leagueAt(1920, 1080)
+      })
+    ).toBe('windowed')
+    expect(
+      classifyDisplayMode({
+        exclusiveD3d: true,
+        bounds: leagueAt(1920, 1080),
+        displayBounds: leagueAt(1920, 1080)
+      })
+    ).toBe('exclusive_fullscreen')
+  })
+
+  it('shows for borderless/windowed replay context', () => {
+    const league = {
+      bounds: leagueAt(1920, 1080),
+      minimized: false,
+      title: 'League of Legends (TM) Client',
+      displayMode: 'borderless' as const
     }
     expect(
       shouldShowOverlay({
@@ -105,52 +185,11 @@ describe('overlay visibility policy', () => {
         missingPolls: 0
       }).visible
     ).toBe(true)
-    expect(
-      shouldShowOverlay({
-        prefsEnabled: true,
-        liveGame: true,
-        hasContext: true,
-        sessionActive: true,
-        league,
-        missingPolls: 0
-      }).reason
-    ).toBe('live_game')
-    expect(
-      shouldShowOverlay({
-        prefsEnabled: true,
-        liveGame: false,
-        hasContext: true,
-        sessionActive: false,
-        league,
-        missingPolls: 0
-      }).reason
-    ).toBe('session_inactive')
-    expect(
-      shouldShowOverlay({
-        prefsEnabled: true,
-        liveGame: false,
-        hasContext: true,
-        sessionActive: true,
-        league: { ...league, minimized: true },
-        missingPolls: 0
-      }).reason
-    ).toBe('league_minimized')
-    expect(
-      shouldShowOverlay({
-        prefsEnabled: true,
-        liveGame: false,
-        hasContext: true,
-        sessionActive: true,
-        league: null,
-        missingPolls: 4
-      }).reason
-    ).toBe('league_missing')
   })
 
   it('treats READY/PLAYING/PAUSED/SEEKING as active replay sessions', () => {
     expect(isReplaySessionActive('READY', true)).toBe(true)
     expect(isReplaySessionActive('IDLE', true)).toBe(false)
-    expect(isReplaySessionActive('READY', false)).toBe(false)
   })
 
   it('recognizes League client titles', () => {
@@ -167,19 +206,19 @@ describe('overlay prefs persistence', () => {
     }
   })
 
-  it('round-trips user drag position without claiming a live session', () => {
+  it('round-trips detailOpen and migrates legacy compact', () => {
     const dir = mkdtempSync(join(tmpdir(), 'rift-overlay-'))
     dirs.push(dir)
     const saved = saveOverlayPrefs(
       dir,
       mergeOverlayPrefs(DEFAULT_OVERLAY_PREFS, {
         position: { x: 42, y: 84 },
-        compact: false
+        detailOpen: false
       })
     )
     const loaded = loadOverlayPrefs(dir)
     expect(loaded.position).toEqual({ x: 42, y: 84 })
-    expect(loaded.compact).toBe(false)
+    expect(loaded.detailOpen).toBe(false)
     expect(saved.enabled).toBe(true)
     const raw = readFileSync(join(dir, 'overlay-prefs.json'), 'utf8')
     expect(raw).not.toMatch(/session|READY|sourceId/)

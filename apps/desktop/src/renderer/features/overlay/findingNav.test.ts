@@ -101,7 +101,7 @@ describe('overlay finding navigation', () => {
     expect(formatGameMmss(1110000)).toBe('18:30')
   })
 
-  it('maps strength copy without an Instead section', () => {
+  it('maps strength copy without an Instead section and issues with Why it matters', () => {
     const strength = review().strengths[0]!
     const sections = coachingSections(strength)
     expect(sections.map((s) => s.label)).toEqual([
@@ -111,7 +111,11 @@ describe('overlay finding navigation', () => {
       'Next-game goal'
     ])
     const issue = review().focus_items[0]!
-    expect(coachingSections(issue).some((s) => s.label === 'Instead')).toBe(true)
+    const issueLabels = coachingSections(issue).map((s) => s.label)
+    expect(issueLabels).toContain('What happened')
+    expect(issueLabels).toContain('Why it matters')
+    expect(issueLabels).toContain('What to do instead')
+    expect(issueLabels).not.toContain('Instead')
   })
 })
 
@@ -123,8 +127,10 @@ describe('overlay reveal contract', () => {
     const { join } = await import('node:path')
     const source = readFileSync(join(__dirname, 'OverlayApp.tsx'), 'utf8')
     expect(source).toContain('revealGameplayTimestamp')
+    expect(source).toContain('onActivate')
     expect(source).not.toMatch(/game_to_source|ClockMap|seekTarget\(/)
     expect(source).not.toMatch(/globalShortcut\.(register|registerAll)/)
     expect(source).not.toMatch(/from 'electron'/)
+    expect(source).not.toMatch(/findLeagueClientWindow|powershell/i)
   })
 })

@@ -1,26 +1,48 @@
 /**
  * League client window discovery (R.10.5).
- * Win32 FindWindowW via koffi, with a PowerShell EnumWindows fallback.
- * No process injection.
+ * Fast FindWindowW path + rare PowerShell fallback. Detects exclusive D3D fullscreen
+ * via SHQueryUserNotificationState (no process injection).
  */
 
-import { execFileSync } from 'node:child_process'
-import type { LeagueWindowInfo, Rect } from './types'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+import type { LeagueDisplayMode, LeagueWindowInfo, Rect } from './types'
+import { LEAGUE_CACHE_MS, POWERSHELL_FALLBACK_COOLDOWN_MS } from './types'
+
+const execFileAsync = promisify(execFile)
 
 const LEAGUE_TITLES = [
   'League of Legends (TM) Client',
   'League of Legends'
 ] as const
 
+/** QUNS_RUNNING_D3D_FULL_SCREEN — exclusive Direct3D fullscreen. */
+const QUNS_RUNNING_D3D_FULL_SCREEN = 3
+
 export type LeagueWindowProbe = () => LeagueWindowInfo | null
 
 let cachedProbe: LeagueWindowProbe | null = null
+let cache: { at: number; value: LeagueWindowInfo | null } | null = null
+let lastPowerShellAt = 0
+let powerShellInFlight: Promise<LeagueWindowInfo | null> | null = null
 
 /** Test seam: inject a fake bounds provider. */
 export function setLeagueWindowProbeForTests(probe: LeagueWindowProbe | null): void {
   cachedProbe = probe
+  cache = null
 }
 
+/** Clear caches (tests). */
+export function resetLeagueWindowCache(): void {
+  cache = null
+  lastPowerShellAt = 0
+  powerShellInFlight = null
+}
+
+/**
+ * Synchronous lookup for the controller tick. Uses FindWindowW + short TTL cache.
+ * Never runs PowerShell on the hot path (that was a major lag source).
+ */
 export function findLeagueClientWindow(): LeagueWindowInfo | null {
   if (cachedProbe !== null) {
     return cachedProbe()
@@ -28,15 +50,84 @@ export function findLeagueClientWindow(): LeagueWindowInfo | null {
   if (process.platform !== 'win32') {
     return null
   }
-  try {
-    return findViaFindWindow() ?? findViaPowerShell()
-  } catch {
-    try {
-      return findViaPowerShell()
-    } catch {
-      return null
-    }
+  const now = Date.now()
+  if (cache !== null && now - cache.at < LEAGUE_CACHE_MS) {
+    return cache.value
   }
+  let value: LeagueWindowInfo | null = null
+  try {
+    value = findViaFindWindow()
+  } catch {
+    value = null
+  }
+  cache = { at: now, value }
+  if (value === null) {
+    schedulePowerShellFallback()
+  }
+  return value
+}
+
+/** Async refresh used when FindWindow misses; never awaited on UI clicks. */
+export async function refreshLeagueClientWindowAsync(): Promise<LeagueWindowInfo | null> {
+  if (cachedProbe !== null) {
+    return cachedProbe()
+  }
+  if (process.platform !== 'win32') {
+    return null
+  }
+  try {
+    const viaFind = findViaFindWindow()
+    if (viaFind !== null) {
+      cache = { at: Date.now(), value: viaFind }
+      return viaFind
+    }
+  } catch {
+    // fall through
+  }
+  const viaPs = await runPowerShellFallback()
+  cache = { at: Date.now(), value: viaPs }
+  return viaPs
+}
+
+export function isExclusiveD3dFullscreen(): boolean {
+  if (process.platform !== 'win32') {
+    return false
+  }
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const koffi = require('koffi') as typeof import('koffi')
+    const shell32 = koffi.load('shell32.dll')
+    const SHQueryUserNotificationState = shell32.func(
+      'long __stdcall SHQueryUserNotificationState(_Out_ int *pquns)'
+    )
+    const state = [0]
+    const hr = SHQueryUserNotificationState(state)
+    if (hr !== 0) {
+      return false
+    }
+    return state[0] === QUNS_RUNNING_D3D_FULL_SCREEN
+  } catch {
+    return false
+  }
+}
+
+export function classifyDisplayMode(input: {
+  exclusiveD3d: boolean
+  bounds: Rect
+  displayBounds: Rect | null
+}): LeagueDisplayMode {
+  if (input.exclusiveD3d) {
+    return 'exclusive_fullscreen'
+  }
+  if (input.displayBounds === null) {
+    return 'unknown'
+  }
+  const covers =
+    Math.abs(input.bounds.width - input.displayBounds.width) <= 2 &&
+    Math.abs(input.bounds.height - input.displayBounds.height) <= 48 &&
+    Math.abs(input.bounds.x - input.displayBounds.x) <= 2 &&
+    Math.abs(input.bounds.y - input.displayBounds.y) <= 2
+  return covers ? 'borderless' : 'windowed'
 }
 
 function findViaFindWindow(): LeagueWindowInfo | null {
@@ -53,6 +144,7 @@ function findViaFindWindow(): LeagueWindowInfo | null {
   const IsWindowVisible = user32.func('bool __stdcall IsWindowVisible(void *hWnd)')
   const IsIconic = user32.func('bool __stdcall IsIconic(void *hWnd)')
   const GetWindowRect = user32.func('bool __stdcall GetWindowRect(void *hWnd, _Out_ RECT *lpRect)')
+  const exclusive = isExclusiveD3dFullscreen()
 
   for (const title of LEAGUE_TITLES) {
     const hWnd = FindWindowW(null, title)
@@ -70,13 +162,33 @@ function findViaFindWindow(): LeagueWindowInfo | null {
     return {
       bounds,
       minimized: Boolean(IsIconic(hWnd)),
-      title
+      title,
+      displayMode: exclusive ? 'exclusive_fullscreen' : 'unknown'
     }
   }
   return null
 }
 
-function findViaPowerShell(): LeagueWindowInfo | null {
+function schedulePowerShellFallback(): void {
+  const now = Date.now()
+  if (now - lastPowerShellAt < POWERSHELL_FALLBACK_COOLDOWN_MS) {
+    return
+  }
+  if (powerShellInFlight !== null) {
+    return
+  }
+  lastPowerShellAt = now
+  powerShellInFlight = runPowerShellFallback().finally(() => {
+    powerShellInFlight = null
+  })
+  void powerShellInFlight.then((value) => {
+    if (value !== null) {
+      cache = { at: Date.now(), value }
+    }
+  })
+}
+
+async function runPowerShellFallback(): Promise<LeagueWindowInfo | null> {
   const script = `
 Add-Type @"
 using System;
@@ -116,31 +228,38 @@ $found = $null
 }, [IntPtr]::Zero) | Out-Null
 if ($null -eq $found) { '' } else { $found | ConvertTo-Json -Compress }
 `
-  const stdout = execFileSync(
-    'powershell.exe',
-    ['-NoProfile', '-NonInteractive', '-Command', script],
-    { encoding: 'utf8', windowsHide: true, timeout: 8_000 }
-  ).trim()
-  if (!stdout) {
-    return null
-  }
-  const parsed = JSON.parse(stdout) as {
-    title: string
-    minimized: boolean
-    x: number
-    y: number
-    width: number
-    height: number
-  }
-  return {
-    title: parsed.title,
-    minimized: parsed.minimized,
-    bounds: {
-      x: parsed.x,
-      y: parsed.y,
-      width: parsed.width,
-      height: parsed.height
+  try {
+    const { stdout } = await execFileAsync(
+      'powershell.exe',
+      ['-NoProfile', '-NonInteractive', '-Command', script],
+      { encoding: 'utf8', windowsHide: true, timeout: 8_000 }
+    )
+    const trimmed = stdout.trim()
+    if (!trimmed) {
+      return null
     }
+    const parsed = JSON.parse(trimmed) as {
+      title: string
+      minimized: boolean
+      x: number
+      y: number
+      width: number
+      height: number
+    }
+    const exclusive = isExclusiveD3dFullscreen()
+    return {
+      title: parsed.title,
+      minimized: parsed.minimized,
+      bounds: {
+        x: parsed.x,
+        y: parsed.y,
+        width: parsed.width,
+        height: parsed.height
+      },
+      displayMode: exclusive ? 'exclusive_fullscreen' : 'unknown'
+    }
+  } catch {
+    return null
   }
 }
 
@@ -173,6 +292,7 @@ export function shouldShowOverlay(input: {
   league: LeagueWindowInfo | null
   missingPolls: number
   gracePolls?: number
+  exclusiveFullscreen?: boolean
 }): { visible: boolean; reason: string } {
   if (!input.prefsEnabled) {
     return { visible: false, reason: 'prefs_disabled' }
@@ -185,6 +305,12 @@ export function shouldShowOverlay(input: {
   }
   if (!input.sessionActive) {
     return { visible: false, reason: 'session_inactive' }
+  }
+  if (
+    input.exclusiveFullscreen === true ||
+    input.league?.displayMode === 'exclusive_fullscreen'
+  ) {
+    return { visible: false, reason: 'exclusive_fullscreen' }
   }
   if (input.league === null) {
     const grace = input.gracePolls ?? 3

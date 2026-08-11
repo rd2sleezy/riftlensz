@@ -26,7 +26,9 @@ export const IPC = {
   overlaySetPrefs: 'rift:overlay:set-prefs',
   overlayGetContext: 'rift:overlay:get-context',
   overlaySetBounds: 'rift:overlay:set-bounds',
-  overlayUpdateSession: 'rift:overlay:update-session'
+  overlayUpdateSession: 'rift:overlay:update-session',
+  overlayGetLifecycle: 'rift:overlay:get-lifecycle',
+  overlayLifecycleEvent: 'rift:overlay:lifecycle'
 } as const
 
 export const IPC_RENDERER_ALLOWLIST = [
@@ -55,7 +57,9 @@ export const IPC_RENDERER_ALLOWLIST = [
   'overlaySetPrefs',
   'overlayGetContext',
   'overlaySetBounds',
-  'overlayUpdateSession'
+  'overlayUpdateSession',
+  'overlayGetLifecycle',
+  'onOverlayLifecycle'
 ] as const
 
 export const SidecarStateSchema = z.enum([
@@ -571,7 +575,7 @@ export const OverlayContextSchema = z.object({
 
 export const OverlayPrefsSchema = z.object({
   enabled: z.boolean(),
-  compact: z.boolean(),
+  detailOpen: z.boolean(),
   opacity: z.number().min(0.4).max(1),
   position: z
     .object({
@@ -579,7 +583,8 @@ export const OverlayPrefsSchema = z.object({
       y: z.number()
     })
     .nullable(),
-  width: z.number().int().min(240).max(640),
+  navigatorWidth: z.number().int().min(240).max(480),
+  detailWidth: z.number().int().min(280).max(520),
   displayId: z.number().int().nullable()
 })
 
@@ -612,7 +617,18 @@ export const OverlayContextResultSchema = z.object({
   prefs: OverlayPrefsSchema
 })
 
+export const OverlayLifecycleEventSchema = z.object({
+  kind: z.enum(['visibility', 'display_mode', 'session']),
+  visible: z.boolean(),
+  reason: z.string(),
+  displayMode: z.enum(['windowed', 'borderless', 'exclusive_fullscreen', 'unknown']),
+  message: z.string().nullable(),
+  sessionPhase: z.string().nullable(),
+  sessionReachedReady: z.boolean()
+})
+
 export type OverlayContextPayload = z.infer<typeof OverlayContextSchema>
 export type OverlayPrefsPayload = z.infer<typeof OverlayPrefsSchema>
 export type OverlayOpenResult = z.infer<typeof OverlayOpenResultSchema>
 export type OverlayContextResult = z.infer<typeof OverlayContextResultSchema>
+export type OverlayLifecycleEventPayload = z.infer<typeof OverlayLifecycleEventSchema>

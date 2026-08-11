@@ -3,7 +3,7 @@
 import { join } from 'node:path'
 import { BrowserWindow, screen } from 'electron'
 import { logger } from '../logging'
-import { COMPACT_HEIGHT, type Rect } from './types'
+import { NAVIGATOR_HEIGHT, type Rect } from './types'
 
 export type CreateOverlayWindowOptions = {
   preloadPath: string
@@ -58,8 +58,8 @@ export function createOverlayWindow(options: CreateOverlayWindowOptions): Browse
     options.onMoved({
       x: position[0] ?? 0,
       y: position[1] ?? 0,
-      width: size[0] ?? COMPACT_HEIGHT,
-      height: size[1] ?? COMPACT_HEIGHT
+      width: size[0] ?? NAVIGATOR_HEIGHT,
+      height: size[1] ?? NAVIGATOR_HEIGHT
     })
   })
 
@@ -115,4 +115,4 @@ export function primaryWorkArea(): Rect {
   }
 }
 
-export { COMPACT_HEIGHT }
+export { NAVIGATOR_HEIGHT }

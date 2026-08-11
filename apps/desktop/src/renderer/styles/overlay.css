@@ -12,10 +12,34 @@ body.overlay-body {
   padding: 4px;
   box-sizing: border-box;
   font-family: 'Segoe UI', 'IBM Plex Sans', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
+.overlay-banner {
+  background: rgba(120, 53, 15, 0.95);
+  color: #ffedd5;
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  -webkit-app-region: no-drag;
+}
+
+.overlay-chrome {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  flex: 1;
+}
+
+.overlay-navigator,
+.overlay-detail,
 .overlay-panel {
-  background: rgba(12, 18, 28, 0.92);
+  background: rgba(12, 18, 28, 0.94);
   color: #e8eef7;
   border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 10px;
@@ -24,7 +48,18 @@ body.overlay-body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: calc(100vh - 8px);
+  min-height: 0;
+}
+
+.overlay-navigator {
+  width: 100%;
+  flex: 1 1 54%;
+}
+
+.overlay-detail {
+  width: 100%;
+  flex: 1 1 46%;
+  min-width: 0;
   overflow: auto;
 }
 
@@ -33,11 +68,13 @@ body.overlay-body {
   cursor: grab;
 }
 
-.overlay-controls,
 .overlay-footer,
-.overlay-expanded,
+.overlay-nav-scroll,
 .overlay-btn,
-.overlay-item-list button {
+.overlay-row,
+.overlay-item-list button,
+.overlay-copy,
+.overlay-detail {
   -webkit-app-region: no-drag;
 }
 
@@ -96,7 +133,77 @@ body.overlay-body {
   font-size: 12px;
 }
 
-.overlay-controls,
+.overlay-nav-scroll {
+  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 2px;
+}
+
+.overlay-nav-section h2 {
+  margin: 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.overlay-item-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.overlay-row {
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: rgba(30, 41, 59, 0.55);
+  color: #e2e8f0;
+  padding: 8px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.overlay-row:hover {
+  background: rgba(51, 65, 85, 0.9);
+}
+
+.overlay-row.is-selected {
+  border-color: rgba(56, 189, 248, 0.55);
+  background: rgba(14, 116, 144, 0.35);
+}
+
+.overlay-row.is-seeking {
+  border-color: rgba(251, 191, 36, 0.55);
+}
+
+.overlay-row-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.overlay-row-title {
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
 .overlay-footer {
   display: flex;
   flex-wrap: wrap;
@@ -114,13 +221,15 @@ body.overlay-body {
   cursor: pointer;
 }
 
-.overlay-btn:hover {
-  background: rgba(51, 65, 85, 0.95);
+.overlay-btn-tiny {
+  min-height: 22px;
+  padding: 2px 8px;
+  font-size: 11px;
+  margin-top: 2px;
 }
 
-.overlay-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
+.overlay-btn:hover {
+  background: rgba(51, 65, 85, 0.95);
 }
 
 .overlay-btn-primary {
@@ -132,48 +241,6 @@ body.overlay-body {
   margin: 0;
   font-size: 12px;
   color: #fde68a;
-}
-
-.overlay-expanded {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-top: 1px solid rgba(148, 163, 184, 0.25);
-  padding-top: 8px;
-}
-
-.overlay-expanded h2 {
-  margin: 0;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #94a3b8;
-}
-
-.overlay-item-list {
-  list-style: none;
-  margin: 4px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.overlay-item-list button {
-  width: 100%;
-  text-align: left;
-  border: 0;
-  background: transparent;
-  color: #e2e8f0;
-  padding: 4px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.overlay-item-list button.is-selected,
-.overlay-item-list button:hover {
-  background: rgba(14, 116, 144, 0.35);
 }
 
 .overlay-copy h3 {

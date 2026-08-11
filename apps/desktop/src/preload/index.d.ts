@@ -11,6 +11,7 @@ import type {
   OpenFixtureInput,
   OpenReplayResult,
   OverlayContextResult,
+  OverlayLifecycleEventPayload,
   OverlayOpenResult,
   OverlayPrefsPayload,
   PickRoflResult,
@@ -74,6 +75,8 @@ export interface RiftApi {
     sessionReachedReady?: boolean
     liveGame?: boolean
   }) => Promise<{ ok: true }>
+  overlayGetLifecycle: () => Promise<OverlayLifecycleEventPayload>
+  onOverlayLifecycle: (cb: (event: OverlayLifecycleEventPayload) => void) => () => void
 }
 
 declare global {

@@ -5,19 +5,38 @@ import { dirname, join } from 'node:path'
 import { z } from 'zod'
 import { DEFAULT_OVERLAY_PREFS, type OverlayPrefs } from './types'
 
-const OverlayPrefsSchema = z.object({
-  enabled: z.boolean(),
-  compact: z.boolean(),
-  opacity: z.number().min(0.4).max(1),
-  position: z
-    .object({
-      x: z.number(),
-      y: z.number()
-    })
-    .nullable(),
-  width: z.number().int().min(240).max(640),
-  displayId: z.number().int().nullable()
-})
+const OverlayPrefsSchema = z
+  .object({
+    enabled: z.boolean(),
+    detailOpen: z.boolean().optional(),
+    /** Legacy R.10.5 field — maps to !detailOpen when detailOpen absent. */
+    compact: z.boolean().optional(),
+    opacity: z.number().min(0.4).max(1),
+    position: z
+      .object({
+        x: z.number(),
+        y: z.number()
+      })
+      .nullable(),
+    navigatorWidth: z.number().int().min(240).max(480).optional(),
+    detailWidth: z.number().int().min(280).max(520).optional(),
+    /** Legacy single width. */
+    width: z.number().int().min(240).max(640).optional(),
+    displayId: z.number().int().nullable()
+  })
+  .transform((raw): OverlayPrefs => {
+    const detailOpen =
+      raw.detailOpen ?? (raw.compact === undefined ? true : !raw.compact)
+    return {
+      enabled: raw.enabled,
+      detailOpen,
+      opacity: raw.opacity,
+      position: raw.position,
+      navigatorWidth: raw.navigatorWidth ?? raw.width ?? DEFAULT_OVERLAY_PREFS.navigatorWidth,
+      detailWidth: raw.detailWidth ?? DEFAULT_OVERLAY_PREFS.detailWidth,
+      displayId: raw.displayId
+    }
+  })
 
 export function prefsPath(userDataPath: string): string {
   return join(userDataPath, 'overlay-prefs.json')

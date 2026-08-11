@@ -24,6 +24,7 @@ import {
   RevealGameplayResultSchema,
   OverlayBoundsSchema,
   OverlayContextResultSchema,
+  OverlayLifecycleEventSchema,
   OverlayOpenInputSchema,
   OverlayOpenResultSchema,
   OverlayPrefsSchema,
@@ -41,6 +42,7 @@ import {
   type OpenFixtureInput,
   type OpenReplayResult,
   type OverlayContextResult,
+  type OverlayLifecycleEventPayload,
   type OverlayOpenResult,
   type OverlayPrefsPayload,
   type PickRoflResult,
@@ -196,6 +198,20 @@ const rift = {
       IPC.overlayUpdateSession,
       OverlaySessionUpdateSchema.parse(update)
     )
+  },
+  overlayGetLifecycle(): Promise<OverlayLifecycleEventPayload> {
+    return ipcRenderer
+      .invoke(IPC.overlayGetLifecycle)
+      .then((value) => OverlayLifecycleEventSchema.parse(value))
+  },
+  onOverlayLifecycle(cb: (event: OverlayLifecycleEventPayload) => void): () => void {
+    const listener = (_event: Electron.IpcRendererEvent, value: unknown): void => {
+      cb(OverlayLifecycleEventSchema.parse(value))
+    }
+    ipcRenderer.on(IPC.overlayLifecycleEvent, listener)
+    return () => {
+      ipcRenderer.removeListener(IPC.overlayLifecycleEvent, listener)
+    }
   }
 }
 

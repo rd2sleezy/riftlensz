@@ -102,11 +102,27 @@ export function coachingSections(
   const sections: { label: string; body: string }[] = [
     { label: 'What happened', body: item.body }
   ]
+  if (item.cost_summary.trim().length > 0) {
+    sections.push({ label: 'Why it matters', body: item.cost_summary })
+  }
   if (item.the_fix) {
-    sections.push({ label: 'Instead', body: item.the_fix })
+    sections.push({ label: 'What to do instead', body: item.the_fix })
   }
   if (item.next_game_check) {
-    sections.push({ label: 'Next-game check', body: item.next_game_check })
+    sections.push({ label: 'Next-game goal', body: item.next_game_check })
   }
   return sections
+}
+
+/** Group flat nav into section buckets for the scrollable navigator. */
+export function groupNavSections(nav: OverlayNavItem[]): {
+  focus: OverlayNavItem[]
+  secondary: OverlayNavItem[]
+  strengths: OverlayNavItem[]
+} {
+  return {
+    focus: nav.filter((row) => row.category === 'focus'),
+    secondary: nav.filter((row) => row.category === 'secondary'),
+    strengths: nav.filter((row) => row.category === 'strength')
+  }
 }

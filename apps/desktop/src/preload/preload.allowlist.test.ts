@@ -12,7 +12,7 @@ describe('preload IPC allowlist', () => {
     expect(source).not.toMatch(/shell\.exec/)
     expect(source).not.toMatch(/child_process/)
     for (const name of IPC_RENDERER_ALLOWLIST) {
-      if (name === 'onSidecarStatus') {
+      if (name === 'onSidecarStatus' || name === 'onOverlayLifecycle') {
         continue
       }
       expect(source).toContain(`${name}(`)
