@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState, type ReactElement } from 'react'
-import { Badge, RiotMark } from '../../components/ui'
+import { Badge, RiotIcon, RiotMark } from '../../components/ui'
 import type { SignInResult, SignInWithApiKeyInput } from '../../../main/ipc/channels'
 
 const REGIONS: SignInWithApiKeyInput['region'][] = ['americas', 'europe', 'asia']
@@ -94,9 +94,7 @@ export function AccountMenu(): ReactElement {
         className="flex items-center gap-2 rounded-md bg-rift-accent px-3 py-1.5 text-xs font-medium text-rift-bg transition hover:bg-rift-accent-strong"
         onClick={() => setOpen((value) => !value)}
       >
-        <span className="flex h-4 w-4 items-center justify-center rounded-[4px] bg-[#D8232A] text-[10px] font-black leading-none text-white">
-          R
-        </span>
+        <RiotIcon />
         Sign in with Riot
       </button>
 

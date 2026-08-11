@@ -73,13 +73,25 @@ export function Disclosure(props: {
   )
 }
 
-/** Simple, clean text-based Riot Games mark (not a reproduction of their crest artwork). */
+/** Riot Games' angular fist/crest icon on their brand red, stylized in SVG. */
+export function RiotIcon(props: { className?: string }): ReactElement {
+  return (
+    <span
+      className={`flex items-center justify-center rounded-[5px] bg-[#E2001C] ${props.className ?? 'h-4 w-4'}`}
+    >
+      <svg viewBox="0 0 100 100" className="h-[68%] w-[68%]" fill="#ffffff" aria-hidden="true">
+        <path d="M50 12 22 40 27 66 33 66 33 46 40 66 46 66 46 42 53 66 60 66 60 40 66 60 82 30Z" />
+        <path d="M67 62 90 70 90 90 68 82Z" />
+      </svg>
+    </span>
+  )
+}
+
+/** Riot Games attribution mark for the sign-in surface (icon + wordmark). */
 export function RiotMark(props: { className?: string }): ReactElement {
   return (
     <span className={`inline-flex items-center gap-1.5 ${props.className ?? ''}`}>
-      <span className="flex h-4 w-4 items-center justify-center rounded-[4px] bg-[#D8232A] text-[10px] font-black leading-none text-white">
-        R
-      </span>
+      <RiotIcon />
       <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Riot Games</span>
     </span>
   )
