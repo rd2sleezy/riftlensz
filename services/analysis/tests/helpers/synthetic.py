@@ -23,6 +23,13 @@ DRAGON_PIT = Point(9866.0, 4414.0)
 FAR_FROM_DRAGON = Point(800.0, 800.0)
 BLUE_MID_TURRET = Point(5846.0, 6396.0)
 BLUE_BASE = Point(500.0, 500.0)
+RED_BASE = Point(14000.0, 14000.0)
+# Near red mid outer turret (8955, 8510) for failed-dive synthetics.
+ENEMY_TURRET_DIVE_FOR_BLUE = Point(9000.0, 8600.0)
+# Single-linkage chain landmarks matching real mid→jg→bot merge geometry.
+CLUSTER_MID = Point(9383.0, 8964.0)
+CLUSTER_JG = Point(10979.0, 6454.0)
+CLUSTER_BOT = Point(11659.0, 4217.0)
 
 _LANE_POS = {
     1: BLUE_MID,

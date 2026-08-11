@@ -7,6 +7,7 @@ from riftlens.analysis.rules.predicates._common import (
     assisting_ids,
     combine_conf,
     cs_at,
+    cs_at_window_end,
     cs_rate,
     elite_monster_type,
     emit,
@@ -21,6 +22,7 @@ from riftlens.analysis.rules.predicates._common import (
     subject_actionable_after_fight,
     team_down_count,
     wards_placed,
+    zone_matches_lane,
 )
 from riftlens.analysis.rules.registry import register_rule
 from riftlens.domain.enums import FactKind
@@ -146,7 +148,7 @@ def tempo_no_conversion(ctx: RuleContext) -> Finding | None:
 
 @register_rule("rules.macro.roam_cost_exceeded")
 def roam_cost_exceeded(ctx: RuleContext) -> Finding | None:
-    """R-017: left lane, lost ≥12 CS, gained no kill/assist/objective/ward."""
+    """R-017: left an established lane, lost ≥12 CS, gained no kill/assist/objective/ward."""
     pos = position_at(ctx.gst, ctx.subject_pid, ctx.t_ms)
     if pos is None:
         return None
@@ -158,10 +160,10 @@ def roam_cost_exceeded(ctx: RuleContext) -> Finding | None:
         return None
     lookback = int(ctx.params.roam_window_ms)
     earlier = position_at(ctx.gst, ctx.subject_pid, max(0, ctx.t_ms - lookback))
-    if earlier is None or _off_lane(zone_of(earlier.value)):
+    if earlier is None or not zone_matches_lane(zone_of(earlier.value), lane):
         return None
     cs0, c0 = cs_at(ctx.gst, ctx.subject_pid, ctx.t_ms - lookback)
-    cs1, c1 = cs_at(ctx.gst, ctx.subject_pid, ctx.t_ms)
+    cs1, c1 = cs_at_window_end(ctx.gst, ctx.subject_pid, ctx.t_ms)
     cs_lost = int(ctx.params.expected_cs_in_window) - (cs1 - cs0)
     if cs_lost < int(ctx.params.min_cs_lost):
         return None

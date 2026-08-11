@@ -50,6 +50,7 @@ false_positives:
   - "60s position frames can hide an ally who was actually close"
   - "A planned 1v1 can look like a catch"
   - "Teleport arriving mid-collapse is not modelled"
+  - "A failed enemy-tower dive or mutual trade is not coached as a catch"
 
 suppressed_by: [R-001, R-015]
 cooldown_ms: 0

@@ -52,6 +52,7 @@ false_positives:
   - "Info age cannot see teammate wards or champion fog tricks"
   - "A pick that turns into a 2-death collapse can look like a chosen fight"
   - "Fight clustering (20s / 3000u) can merge separate skirmishes"
+  - "Late joiners in a chained cluster are not coached for the opening fog decision"
 
 suppressed_by: []
 cooldown_ms: 0

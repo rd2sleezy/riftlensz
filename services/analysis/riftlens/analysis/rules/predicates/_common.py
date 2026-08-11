@@ -7,7 +7,7 @@ from riftlens.analysis.features._query import allies_of, cs_total, enemies_of, f
 from riftlens.analysis.features.fights import Fight, opposing_team
 from riftlens.analysis.rules.context import RuleContext, evidence_fact
 from riftlens.analysis.rules.explain import render_rule_template, render_string
-from riftlens.domain.enums import EvidenceKind, FactKind, Source
+from riftlens.domain.enums import EvidenceKind, FactKind, Lane, Source
 from riftlens.domain.estimate import Estimate, combine
 from riftlens.domain.fact import Fact
 from riftlens.domain.finding import Finding
@@ -264,6 +264,30 @@ def cs_at(gst: GameStateTimeline, pid: int, t_ms: int) -> tuple[int, float]:
     return cs_total(fact.payload), fact.confidence
 
 
+# Allow a CS frame just after a periodic tick to count for the window end.
+_CS_END_SLACK_MS = 2_000
+
+
+def cs_at_window_end(
+    gst: GameStateTimeline, pid: int, t_ms: int, *, slack_ms: int = _CS_END_SLACK_MS
+) -> tuple[int, float]:
+    """Return CS at ``t_ms``, accepting a frame within ``slack_ms`` after the tick.
+
+    Periodic roam checks land on exact 60s boundaries; Riot CS frames often land a
+    few hundred ms later. Prefer that nearby after-frame when it is closer than the
+    previous before-frame.
+    """
+    before = gst.nearest(FactKind.CS, t_ms, "before", subject=subject(pid))
+    after = gst.nearest(FactKind.CS, t_ms, "after", subject=subject(pid))
+    chosen = before
+    if after is not None and 0 <= after.t_ms - t_ms <= slack_ms:
+        if before is None or (after.t_ms - t_ms) <= (t_ms - before.t_ms):
+            chosen = after
+    if chosen is None:
+        return 0, 0.0
+    return cs_total(chosen.payload), chosen.confidence
+
+
 def cs_rate(gst: GameStateTimeline, pid: int, start_ms: int, end_ms: int) -> Estimate[float]:
     """Return CS/min on ``[start_ms, end_ms]`` from bracketing CS frames."""
     if end_ms <= start_ms:
@@ -495,6 +519,106 @@ def subject_actionable_after_fight(
     return is_alive(gst, pid, fight.t_end, patch)
 
 
+# Opening of a clustered fight for decision attribution. Shorter than FIGHT_GAP_MS
+# (20s) so single-linkage cannot pull a later skirmish into the subject's decision.
+SUBJECT_FIGHT_DECISION_MS = 5_000
+
+
+def kill_involves_pid(kill: Fact, pid: int) -> bool:
+    """Return True when ``pid`` is killer, victim, assist, or a damage dealer on ``kill``."""
+    if kill.payload.get("victimId") == pid or kill.payload.get("killerId") == pid:
+        return True
+    if pid in assisting_ids(kill):
+        return True
+    received = kill.payload.get("victimDamageReceived")
+    if isinstance(received, list):
+        for entry in received:
+            if isinstance(entry, dict) and entry.get("participantId") == pid:
+                return True
+    return False
+
+
+def subject_involved_near_fight_start(
+    fight: Fight, pid: int, *, window_ms: int = SUBJECT_FIGHT_DECISION_MS
+) -> bool:
+    """Return True when ``pid`` fights in the opening of ``fight``, not only later.
+
+    Cluster membership alone is not enough: single-linkage can merge a distant
+    later skirmish. Decision-time coaching requires involvement on a death within
+    ``window_ms`` of ``fight.t_start``.
+    """
+    for death in fight.deaths_in_order:
+        if death.t_ms - fight.t_start > window_ms:
+            break
+        if kill_involves_pid(death, pid):
+            return True
+    return False
+
+
+def zone_matches_lane(zone: Zone, lane: Lane) -> bool:
+    """Return True when ``zone`` is the assigned laner's lane corridor."""
+    if lane is Lane.TOP:
+        return zone is Zone.TOP_LANE
+    if lane is Lane.MIDDLE:
+        return zone is Zone.MID_LANE
+    if lane is Lane.BOTTOM:
+        return zone is Zone.BOT_LANE
+    return False
+
+
+# Mutual-trade / dive window: same brief combat, not a later unrelated catch.
+FAILED_DIVE_TRADE_MS = 5_000
+
+
+def subject_champion_kill_in_window(
+    gst: GameStateTimeline, pid: int, start_ms: int, end_ms: int
+) -> bool:
+    """Return True when ``pid`` is the killer of a champion kill in the window."""
+    for fact in gst.facts(kind=FactKind.CHAMPION_KILL, window=(start_ms, end_ms)):
+        if fact.payload.get("killerId") == pid:
+            return True
+    return False
+
+
+def subject_dealt_to_killer(kill: Fact, killer_id: int) -> bool:
+    """Return True when the victim dealt damage to ``killer_id`` before dying."""
+    dealt = kill.payload.get("victimDamageDealt")
+    if not isinstance(dealt, list):
+        return False
+    for entry in dealt:
+        if isinstance(entry, dict) and entry.get("participantId") == killer_id:
+            return True
+    return False
+
+
+def failed_enemy_tower_dive_trade(
+    gst: GameStateTimeline, pid: int, death: Fact, t_ms: int
+) -> bool:
+    """Return True when death looks like a failed enemy-tower dive/trade, not a catch.
+
+    Requires enemy-turret context plus aggressive evidence (recent kill by the
+    subject, or damage dealt to the killer while taking turret damage). Does not
+    suppress every isolated death merely near an enemy turret.
+    """
+    point = kill_point(death)
+    if point is None or pid not in gst.participants:
+        return False
+    team = gst.participants[pid].team
+    turret_ctx = near_enemy_turret(point, team) or turret_damage_present(death)
+    if not turret_ctx:
+        return False
+    if subject_champion_kill_in_window(gst, pid, max(0, t_ms - FAILED_DIVE_TRADE_MS), t_ms):
+        return True
+    killer = death.payload.get("killerId")
+    if (
+        isinstance(killer, int)
+        and turret_damage_present(death)
+        and subject_dealt_to_killer(death, killer)
+    ):
+        return True
+    return False
+
+
 def first_death_pid(fight: Fight) -> int | None:
     """Return the first victim in fight death order."""
     if not fight.deaths_in_order:
@@ -522,7 +646,7 @@ def position_at(gst: GameStateTimeline, pid: int, t_ms: int) -> Estimate[Point] 
 
 
 def turret_damage_present(kill: Fact) -> bool:
-    """Return True when victimDamageReceived cites a turret."""
+    """Return True when victimDamageReceived cites a turret/tower."""
     received = kill.payload.get("victimDamageReceived")
     if not isinstance(received, list):
         return False
@@ -531,7 +655,10 @@ def turret_damage_present(kill: Fact) -> bool:
             continue
         name = str(entry.get("name") or "")
         kind = str(entry.get("type") or "").upper()
+        spell = str(entry.get("spellName") or "").lower()
         if name.startswith("Turret") or "TOWER" in kind or kind == "TOWER":
+            return True
+        if "turret" in spell or "tower" in spell:
             return True
     return False
 
@@ -539,6 +666,11 @@ def turret_damage_present(kill: Fact) -> bool:
 def near_own_turret(point: Point, team: Any) -> bool:
     """Return True when ``point`` is within static own-turret radius."""
     return near_turret(point, team) is not None
+
+
+def near_enemy_turret(point: Point, team: Any) -> bool:
+    """Return True when ``point`` is within static enemy-turret radius."""
+    return near_turret(point, opposing_team(team)) is not None
 
 
 def combine_conf(*values: float) -> float:

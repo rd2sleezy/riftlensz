@@ -12,6 +12,7 @@ from riftlens.analysis.rules.predicates._common import (
     first_death_pid,
     iter_enemies,
     mmss,
+    subject_involved_near_fight_start,
     summoner_loadout,
     team_of_pid,
 )
@@ -27,7 +28,7 @@ _ENGAGE_TANKS = frozenset(
 def fight_into_unknown(ctx: RuleContext) -> Finding | None:
     """R-012: joined a fight with ≥2 enemies fogged, no numbers lead, lost ≥2."""
     fight = _fight_starting_at(ctx, ctx.t_ms)
-    if fight is None or not fight_involves(fight, ctx.subject_pid):
+    if fight is None or not subject_involved_near_fight_start(fight, ctx.subject_pid):
         return None
     team = team_of_pid(ctx.gst, ctx.subject_pid)
     ours = fight.participants_by_team.get(team, frozenset())

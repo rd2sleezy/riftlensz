@@ -6,9 +6,14 @@ from riftlens.domain.enums import FactKind, Role, Team
 from riftlens.domain.geometry import Point
 from riftlens.domain.timeline import GameStateTimeline, ParticipantInfo
 from tests.helpers.synthetic import (
+    BLUE_BASE,
     BLUE_MID,
     BLUE_MID_TURRET,
+    CLUSTER_BOT,
+    CLUSTER_JG,
+    CLUSTER_MID,
     DRAGON_PIT,
+    ENEMY_TURRET_DIVE_FOR_BLUE,
     FAR_FROM_DRAGON,
     RIVER_ENEMY_FOR_BLUE,
     buy,
@@ -183,6 +188,20 @@ def r012_fire() -> GameStateTimeline:
     return _gst("S13_fight_unknown", extra, duration_ms=1_320_000)
 
 
+def r012_late_cluster_join() -> GameStateTimeline:
+    """Mid/jg chain merges a later bot kill; subject only joins ~27s after t_start."""
+    t0 = 1_080_000
+    extra = [
+        seen(t0 - 40_000, 7),
+        seen(t0 - 40_000, 10),
+        *kill(t0, 2, 6, position=CLUSTER_MID, dealers={6: 400}),
+        *kill(t0 + 15_000, 3, 8, assists=[6], position=CLUSTER_JG, dealers={8: 400}),
+        *kill(t0 + 27_000, 9, 1, assists=[5], position=CLUSTER_BOT, dealers={1: 400}),
+        *kill(t0 + 27_050, 1, 9, assists=[8], position=CLUSTER_BOT, dealers={9: 400}),
+    ]
+    return _gst("r012_late_cluster_join", extra, duration_ms=1_320_000)
+
+
 def p001_fire() -> GameStateTimeline:
     return _gst(
         "S14_clean_lane",
@@ -255,6 +274,18 @@ def r004_quiet() -> GameStateTimeline:
         duration_ms=1_200_000,
         positions={1: RIVER_ENEMY_FOR_BLUE, 2: RIVER_ENEMY_FOR_BLUE, 3: RIVER_ENEMY_FOR_BLUE},
     )
+
+
+def r004_failed_dive_trade() -> GameStateTimeline:
+    """Kill under enemy turret, then die to that foe seconds later with turret damage."""
+    death = 960_000
+    dive = ENEMY_TURRET_DIVE_FOR_BLUE
+    extra = [
+        *kill(death - 2_000, 6, 1, position=dive, dealers={1: 500}),
+        *kill(death, 1, 6, position=dive, dealers={6: 500}, turret=True),
+    ]
+    stacked = {2: BLUE_MID, 3: BLUE_MID, 4: BLUE_MID, 5: BLUE_MID}
+    return _gst("r004_failed_dive_trade", extra, duration_ms=1_200_000, positions=stacked)
 
 
 def r006_fire() -> GameStateTimeline:
@@ -502,6 +533,25 @@ def r017_fire() -> GameStateTimeline:
 
 def r017_quiet() -> GameStateTimeline:
     return _gst("r017_quiet", [], duration_ms=480_000, positions={1: BLUE_MID}, cs={1: 80})
+
+
+def r017_return_from_base() -> GameStateTimeline:
+    """Post-death base → river walk with CS frame just after the 60s tick — not a roam."""
+    extra = [
+        *kill(180_000, 1, 6, position=BLUE_MID, dealers={6: 400}),
+        fact(240_000, FactKind.CS, 1, {"minionsKilled": 50, "jungleMinionsKilled": 0}),
+        # Periodic evaluate_at 300000 would miss this frame under nearest-before CS.
+        fact(300_361, FactKind.CS, 1, {"minionsKilled": 64, "jungleMinionsKilled": 0}),
+    ]
+    return _gst(
+        "r017_return_from_base",
+        extra,
+        duration_ms=480_000,
+        position_at={
+            (240_000, 1): BLUE_BASE,
+            (300_000, 1): Point(7400.0, 11000.0),
+        },
+    )
 
 
 def r018_fire() -> GameStateTimeline:

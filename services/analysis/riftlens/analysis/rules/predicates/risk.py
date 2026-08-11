@@ -11,6 +11,7 @@ from riftlens.analysis.rules.predicates._common import (
     enemy_dealers,
     enemy_jungler,
     fact_ev,
+    failed_enemy_tower_dive_trade,
     hp_below_max,
     kill_point,
     mmss,
@@ -148,6 +149,8 @@ def caught_alone(ctx: RuleContext) -> Finding | None:
         return None
     point = kill_point(kill)
     if point is None:
+        return None
+    if failed_enemy_tower_dive_trade(ctx.gst, ctx.subject_pid, kill, ctx.t_ms):
         return None
     dealers = enemy_dealers(ctx.gst, kill, ctx.subject_pid)
     allies = nearest_ally_distances(ctx.gst, ctx.subject_pid, ctx.t_ms, point)

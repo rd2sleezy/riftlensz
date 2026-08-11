@@ -52,6 +52,7 @@ false_positives:
   - "60s frames make roam detection coarse — this is inferred"
   - "A successful roam that only drew a Flash is still a payoff we cannot see"
   - "Expected CS/min is a param, not a live wave estimator"
+  - "Base or respawn paths through river toward the assigned lane are not roams"
 
 suppressed_by: []
 cooldown_ms: 120000
