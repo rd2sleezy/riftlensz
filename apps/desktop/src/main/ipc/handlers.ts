@@ -19,6 +19,12 @@ import {
   OpenFixtureInputSchema,
   OpenReplayInputSchema,
   OpenReplayResultSchema,
+  OverlayBoundsSchema,
+  OverlayContextResultSchema,
+  OverlayOpenInputSchema,
+  OverlayOpenResultSchema,
+  OverlayPrefsSchema,
+  OverlaySessionUpdateSchema,
   PickRoflResultSchema,
   PickVodResultSchema,
   ProbeVodInputSchema,
@@ -34,12 +40,16 @@ import {
 } from './channels'
 import { mediaUrlForPath } from '../media/protocol'
 import { logger } from '../logging'
+import type { OverlayController } from '../overlay'
 import { SidecarRequestError } from '../sidecar/client'
 import type { SidecarSupervisor } from '../sidecar/supervisor'
 import { SyncAnchorInconsistent, buildManualSync } from '../sync/syncMap'
 
 /** Register IPC handlers. Assumes supervisor.start() will run around the same time. */
-export function registerIpcHandlers(supervisor: SidecarSupervisor): void {
+export function registerIpcHandlers(
+  supervisor: SidecarSupervisor,
+  overlay: OverlayController
+): void {
   for (const channel of Object.values(IPC)) {
     if (channel !== IPC.sidecarStatusEvent) {
       ipcMain.removeHandler(channel)
@@ -160,6 +170,64 @@ export function registerIpcHandlers(supervisor: SidecarSupervisor): void {
   ipcMain.handle(IPC.revealGameplay, async (_event, raw: unknown) => {
     const input = RevealGameplayInputSchema.parse(raw)
     return RevealGameplayResultSchema.parse(await revealGameplay(supervisor, input))
+  })
+
+  ipcMain.handle(IPC.overlayOpen, (_event, raw: unknown) => {
+    const input = OverlayOpenInputSchema.parse(raw)
+    const result = overlay.open(
+      {
+        reviewId: input.reviewId,
+        matchId: input.matchId,
+        sourceId: input.sourceId
+      },
+      {
+        sessionPhase: input.sessionPhase ?? null,
+        sessionReachedReady: input.sessionReachedReady ?? true,
+        liveGame: input.liveGame ?? false
+      }
+    )
+    return OverlayOpenResultSchema.parse(result)
+  })
+
+  ipcMain.handle(IPC.overlayClose, () => {
+    overlay.close()
+    return { ok: true as const }
+  })
+
+  ipcMain.handle(IPC.overlayHide, () => {
+    overlay.hide('manual')
+    return { ok: true as const }
+  })
+
+  ipcMain.handle(IPC.overlayGetPrefs, () => {
+    return OverlayPrefsSchema.parse(overlay.getPrefs())
+  })
+
+  ipcMain.handle(IPC.overlaySetPrefs, (_event, raw: unknown) => {
+    const patch = OverlayPrefsSchema.partial().parse(raw)
+    return OverlayPrefsSchema.parse(overlay.setPrefs(patch))
+  })
+
+  ipcMain.handle(IPC.overlayGetContext, () => {
+    return OverlayContextResultSchema.parse({
+      context: overlay.getContext(),
+      prefs: overlay.getPrefs()
+    })
+  })
+
+  ipcMain.handle(IPC.overlaySetBounds, (_event, raw: unknown) => {
+    const bounds = OverlayBoundsSchema.parse(raw)
+    return OverlayPrefsSchema.parse(overlay.setUserBounds(bounds))
+  })
+
+  ipcMain.handle(IPC.overlayUpdateSession, (_event, raw: unknown) => {
+    const update = OverlaySessionUpdateSchema.parse(raw)
+    overlay.updateSession({
+      sessionPhase: update.sessionPhase ?? undefined,
+      sessionReachedReady: update.sessionReachedReady,
+      liveGame: update.liveGame
+    })
+    return { ok: true as const }
   })
 
   supervisor.on('status', (status) => {

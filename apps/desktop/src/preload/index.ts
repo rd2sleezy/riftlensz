@@ -22,6 +22,12 @@ import {
   ProbeVodResultSchema,
   RevealGameplayInputSchema,
   RevealGameplayResultSchema,
+  OverlayBoundsSchema,
+  OverlayContextResultSchema,
+  OverlayOpenInputSchema,
+  OverlayOpenResultSchema,
+  OverlayPrefsSchema,
+  OverlaySessionUpdateSchema,
   SidecarStatusSchema,
   type BuildManualSyncResult,
   type CloseReplayResult,
@@ -34,6 +40,9 @@ import {
   type ListReviewsResult,
   type OpenFixtureInput,
   type OpenReplayResult,
+  type OverlayContextResult,
+  type OverlayOpenResult,
+  type OverlayPrefsPayload,
   type PickRoflResult,
   type PickVodResult,
   type ProbeVodResult,
@@ -134,6 +143,59 @@ const rift = {
     return ipcRenderer
       .invoke(IPC.revealGameplay, RevealGameplayInputSchema.parse(input))
       .then((value) => RevealGameplayResultSchema.parse(value))
+  },
+  overlayOpen(input: {
+    reviewId: string
+    matchId: string
+    sourceId: string
+    sessionPhase?: string | null
+    sessionReachedReady?: boolean
+    liveGame?: boolean
+  }): Promise<OverlayOpenResult> {
+    return ipcRenderer
+      .invoke(IPC.overlayOpen, OverlayOpenInputSchema.parse(input))
+      .then((value) => OverlayOpenResultSchema.parse(value))
+  },
+  overlayClose(): Promise<{ ok: true }> {
+    return ipcRenderer.invoke(IPC.overlayClose)
+  },
+  overlayHide(): Promise<{ ok: true }> {
+    return ipcRenderer.invoke(IPC.overlayHide)
+  },
+  overlayGetPrefs(): Promise<OverlayPrefsPayload> {
+    return ipcRenderer
+      .invoke(IPC.overlayGetPrefs)
+      .then((value) => OverlayPrefsSchema.parse(value))
+  },
+  overlaySetPrefs(patch: Partial<OverlayPrefsPayload>): Promise<OverlayPrefsPayload> {
+    return ipcRenderer
+      .invoke(IPC.overlaySetPrefs, OverlayPrefsSchema.partial().parse(patch))
+      .then((value) => OverlayPrefsSchema.parse(value))
+  },
+  overlayGetContext(): Promise<OverlayContextResult> {
+    return ipcRenderer
+      .invoke(IPC.overlayGetContext)
+      .then((value) => OverlayContextResultSchema.parse(value))
+  },
+  overlaySetBounds(bounds: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }): Promise<OverlayPrefsPayload> {
+    return ipcRenderer
+      .invoke(IPC.overlaySetBounds, OverlayBoundsSchema.parse(bounds))
+      .then((value) => OverlayPrefsSchema.parse(value))
+  },
+  overlayUpdateSession(update: {
+    sessionPhase?: string | null
+    sessionReachedReady?: boolean
+    liveGame?: boolean
+  }): Promise<{ ok: true }> {
+    return ipcRenderer.invoke(
+      IPC.overlayUpdateSession,
+      OverlaySessionUpdateSchema.parse(update)
+    )
   }
 }
 

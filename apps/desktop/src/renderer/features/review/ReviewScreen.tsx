@@ -216,6 +216,72 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
   )
 
   useEffect(() => {
+    if (review === undefined) {
+      return
+    }
+    const ready = nativeSessionReady(gameplayStatus)
+    const sourceId = gameplayStatus?.active_source_id
+    if (!ready || sourceId === null || sourceId === undefined || !preferNative) {
+      return
+    }
+    let cancelled = false
+    void (async () => {
+      const env = await window.rift.checkGameplayEnvironment()
+      if (cancelled) {
+        return
+      }
+      if (env.ok && env.live_game) {
+        void window.rift.overlayClose()
+        return
+      }
+      void window.rift.overlayOpen({
+        reviewId,
+        matchId: review.match_id,
+        sourceId,
+        sessionPhase: gameplayStatus?.session_phase ?? null,
+        sessionReachedReady: true,
+        liveGame: false
+      })
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [
+    gameplayStatus?.active_source_id,
+    gameplayStatus?.session_phase,
+    gameplayStatus,
+    preferNative,
+    review,
+    reviewId
+  ])
+
+  useEffect(() => {
+    const phase = gameplayStatus?.session_phase
+    const lost =
+      gameplayStatus?.error?.code === 'SESSION_LOST' ||
+      phase === 'CLOSED' ||
+      phase === 'FAILED' ||
+      phase === 'IDLE'
+    if (lost && !openingReplay) {
+      void window.rift.overlayUpdateSession({
+        sessionPhase: phase ?? null,
+        sessionReachedReady: false
+      })
+    } else if (gameplayStatus !== null) {
+      void window.rift.overlayUpdateSession({
+        sessionPhase: gameplayStatus.session_phase,
+        sessionReachedReady: gameplayStatus.session_reached_ready
+      })
+    }
+  }, [gameplayStatus, openingReplay])
+
+  useEffect(() => {
+    return () => {
+      void window.rift.overlayClose()
+    }
+  }, [reviewId])
+
+  useEffect(() => {
     const onKey = (event: KeyboardEvent): void => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
         return
@@ -326,6 +392,7 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
               setPlayingTargetMs(null)
               setPendingRevealMs(null)
               pendingRevealRef.current = null
+              void window.rift.overlayClose()
             } else {
               setSyncMessage(result.message)
             }

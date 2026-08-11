@@ -3,11 +3,13 @@ import { app, BrowserWindow, shell } from 'electron'
 import { registerIpcHandlers } from './ipc/handlers'
 import { logger } from './logging'
 import { handleMediaProtocol, registerMediaScheme } from './media/protocol'
+import { OverlayController, onlyOverlayWindowsRemain } from './overlay'
 import { SidecarSupervisor } from './sidecar/supervisor'
 
 registerMediaScheme()
 
 const supervisor = new SidecarSupervisor()
+const overlay = new OverlayController()
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -39,17 +41,25 @@ function createWindow(): BrowserWindow {
     void mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
+  overlay.setMainWindow(mainWindow)
+  mainWindow.on('closed', () => {
+    overlay.setMainWindow(null)
+    // Companion overlay must not outlive the main review app.
+    overlay.close()
+  })
+
   return mainWindow
 }
 
 app.whenReady().then(() => {
   handleMediaProtocol()
-  registerIpcHandlers(supervisor)
+  registerIpcHandlers(supervisor, overlay)
   supervisor.start()
   createWindow()
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
+    const windows = BrowserWindow.getAllWindows().filter((win) => !overlay.isOverlayWindow(win))
+    if (windows.length === 0) {
       createWindow()
     }
   })
@@ -57,6 +67,7 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    overlay.close()
     app.quit()
   }
 })
@@ -64,3 +75,5 @@ app.on('window-all-closed', () => {
 process.on('uncaughtException', (error) => {
   logger.error({ err: error }, 'uncaught exception')
 })
+
+export { onlyOverlayWindowsRemain }

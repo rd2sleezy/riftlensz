@@ -10,6 +10,9 @@ import type {
   ListReviewsResult,
   OpenFixtureInput,
   OpenReplayResult,
+  OverlayContextResult,
+  OverlayOpenResult,
+  OverlayPrefsPayload,
   PickRoflResult,
   PickVodResult,
   ProbeVodResult,
@@ -47,6 +50,30 @@ export interface RiftApi {
     gameTMs: number
     leadInMs?: number
   }) => Promise<RevealGameplayResult>
+  overlayOpen: (input: {
+    reviewId: string
+    matchId: string
+    sourceId: string
+    sessionPhase?: string | null
+    sessionReachedReady?: boolean
+    liveGame?: boolean
+  }) => Promise<OverlayOpenResult>
+  overlayClose: () => Promise<{ ok: true }>
+  overlayHide: () => Promise<{ ok: true }>
+  overlayGetPrefs: () => Promise<OverlayPrefsPayload>
+  overlaySetPrefs: (patch: Partial<OverlayPrefsPayload>) => Promise<OverlayPrefsPayload>
+  overlayGetContext: () => Promise<OverlayContextResult>
+  overlaySetBounds: (bounds: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }) => Promise<OverlayPrefsPayload>
+  overlayUpdateSession: (update: {
+    sessionPhase?: string | null
+    sessionReachedReady?: boolean
+    liveGame?: boolean
+  }) => Promise<{ ok: true }>
 }
 
 declare global {

@@ -18,7 +18,15 @@ export const IPC = {
   checkGameplayEnvironment: 'rift:gameplay:environment',
   openReplay: 'rift:gameplay:open',
   closeReplay: 'rift:gameplay:close',
-  revealGameplay: 'rift:gameplay:reveal'
+  revealGameplay: 'rift:gameplay:reveal',
+  overlayOpen: 'rift:overlay:open',
+  overlayClose: 'rift:overlay:close',
+  overlayHide: 'rift:overlay:hide',
+  overlayGetPrefs: 'rift:overlay:get-prefs',
+  overlaySetPrefs: 'rift:overlay:set-prefs',
+  overlayGetContext: 'rift:overlay:get-context',
+  overlaySetBounds: 'rift:overlay:set-bounds',
+  overlayUpdateSession: 'rift:overlay:update-session'
 } as const
 
 export const IPC_RENDERER_ALLOWLIST = [
@@ -39,7 +47,15 @@ export const IPC_RENDERER_ALLOWLIST = [
   'checkGameplayEnvironment',
   'openReplay',
   'closeReplay',
-  'revealGameplay'
+  'revealGameplay',
+  'overlayOpen',
+  'overlayClose',
+  'overlayHide',
+  'overlayGetPrefs',
+  'overlaySetPrefs',
+  'overlayGetContext',
+  'overlaySetBounds',
+  'overlayUpdateSession'
 ] as const
 
 export const SidecarStateSchema = z.enum([
@@ -546,3 +562,57 @@ export type GameplayEnvironmentResult = z.infer<typeof GameplayEnvironmentResult
 export type OpenReplayResult = z.infer<typeof OpenReplayResultSchema>
 export type CloseReplayResult = z.infer<typeof CloseReplayResultSchema>
 export type RevealGameplayResult = z.infer<typeof RevealGameplayResultSchema>
+
+export const OverlayContextSchema = z.object({
+  reviewId: z.string().min(1),
+  matchId: z.string().min(1),
+  sourceId: z.string().min(1)
+})
+
+export const OverlayPrefsSchema = z.object({
+  enabled: z.boolean(),
+  compact: z.boolean(),
+  opacity: z.number().min(0.4).max(1),
+  position: z
+    .object({
+      x: z.number(),
+      y: z.number()
+    })
+    .nullable(),
+  width: z.number().int().min(240).max(640),
+  displayId: z.number().int().nullable()
+})
+
+export const OverlayOpenInputSchema = OverlayContextSchema.extend({
+  sessionPhase: z.string().nullable().optional(),
+  sessionReachedReady: z.boolean().optional(),
+  liveGame: z.boolean().optional()
+})
+
+export const OverlayOpenResultSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true) }),
+  z.object({ ok: z.literal(false), reason: z.string() })
+])
+
+export const OverlaySessionUpdateSchema = z.object({
+  sessionPhase: z.string().nullable().optional(),
+  sessionReachedReady: z.boolean().optional(),
+  liveGame: z.boolean().optional()
+})
+
+export const OverlayBoundsSchema = z.object({
+  x: z.number(),
+  y: z.number(),
+  width: z.number().positive(),
+  height: z.number().positive()
+})
+
+export const OverlayContextResultSchema = z.object({
+  context: OverlayContextSchema.nullable(),
+  prefs: OverlayPrefsSchema
+})
+
+export type OverlayContextPayload = z.infer<typeof OverlayContextSchema>
+export type OverlayPrefsPayload = z.infer<typeof OverlayPrefsSchema>
+export type OverlayOpenResult = z.infer<typeof OverlayOpenResultSchema>
+export type OverlayContextResult = z.infer<typeof OverlayContextResultSchema>
