@@ -77,6 +77,15 @@ class FakeReplayBehavior:
         }
     )
     activeplayername: Any = ""
+    recording_instant: bool = False
+    recording_poll_steps: int = 2
+    recording_wall_s: float = 0.0
+    recording_write_output: bool = True
+    recording_reject: bool = False
+    recording_frame_payload: bytes = b"\x89PNG\r\n\x1a\nriftlens-fake-frame"
+    recording_clip_payload: bytes = b"riftlens-fake-clip"
+    recording_max_frames: int = 64
+    recording_steps_done: int = 0
     status_overrides: dict[str, int] = field(default_factory=dict)
     malformed_paths: set[str] = field(default_factory=set)
     slow_paths: dict[str, float] = field(default_factory=dict)
@@ -228,7 +237,12 @@ class _ReplayHandler(BaseHTTPRequestHandler):
             behavior.render.update(body)
             return
         if path == "/replay/recording" and isinstance(body, dict):
+            behavior.post_log.append((path, dict(body)))
             behavior.recording.update(body)
+            if body.get("recording"):
+                _begin_recording(behavior)
+            elif "recording" in body:
+                behavior.recording["recording"] = False
             return
         if path == "/replay/sequence" and isinstance(body, dict):
             behavior.sequence.update(body)
@@ -250,6 +264,8 @@ class _ReplayHandler(BaseHTTPRequestHandler):
         if path == "/replay/render":
             return dict(behavior.render)
         if path == "/replay/recording":
+            if behavior.recording.get("recording") and behavior.recording_wall_s <= 0:
+                _advance_recording(behavior)
             return dict(behavior.recording)
         if path == "/replay/sequence":
             return dict(behavior.sequence)
@@ -297,3 +313,74 @@ class _ReplayHandler(BaseHTTPRequestHandler):
 
 
 _MISSING = object()
+
+
+def _begin_recording(behavior: FakeReplayBehavior) -> None:
+    """Apply the League recording start: currentTime resets, then progress is simulated."""
+    behavior.recording_steps_done = 0
+    behavior.recording["currentTime"] = float(behavior.recording.get("startTime") or 0.0)
+    if behavior.recording_reject:
+        behavior.recording["recording"] = False
+        return
+    behavior.recording["recording"] = True
+    if behavior.recording_instant:
+        _finish_recording(behavior)
+        return
+    if behavior.recording_wall_s > 0:
+        thread = threading.Thread(
+            target=_advance_over_wall_clock, args=(behavior,), daemon=True
+        )
+        thread.start()
+
+
+def _advance_recording(behavior: FakeReplayBehavior) -> None:
+    """Step ``currentTime`` one poll closer to ``endTime``. Finishes on the last step."""
+    steps = max(1, behavior.recording_poll_steps)
+    behavior.recording_steps_done += 1
+    start = float(behavior.recording.get("startTime") or 0.0)
+    end = float(behavior.recording.get("endTime") or 0.0)
+    if behavior.recording_steps_done >= steps:
+        _finish_recording(behavior)
+        return
+    fraction = behavior.recording_steps_done / float(steps)
+    behavior.recording["currentTime"] = start + (end - start) * fraction
+
+
+def _advance_over_wall_clock(behavior: FakeReplayBehavior) -> None:
+    steps = max(1, behavior.recording_poll_steps)
+    start = float(behavior.recording.get("startTime") or 0.0)
+    end = float(behavior.recording.get("endTime") or 0.0)
+    for step in range(1, steps + 1):
+        time.sleep(behavior.recording_wall_s / steps)
+        behavior.recording["currentTime"] = start + (end - start) * (step / float(steps))
+    _finish_recording(behavior)
+
+
+def _finish_recording(behavior: FakeReplayBehavior) -> None:
+    behavior.recording["currentTime"] = float(behavior.recording.get("endTime") or 0.0)
+    behavior.recording["recording"] = False
+    _write_recording_output(behavior)
+
+
+def _write_recording_output(behavior: FakeReplayBehavior) -> None:
+    """Write placeholder artifacts where League would have written real ones."""
+    raw_path = str(behavior.recording.get("path") or "")
+    if not raw_path or not behavior.recording_write_output:
+        return
+    target = Path(raw_path)
+    codec = str(behavior.recording.get("codec") or "webm")
+    if codec == "png":
+        target.mkdir(parents=True, exist_ok=True)
+        for index in range(_frame_count(behavior)):
+            (target / f"{index:04d}.png").write_bytes(behavior.recording_frame_payload)
+        return
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(behavior.recording_clip_payload)
+
+
+def _frame_count(behavior: FakeReplayBehavior) -> int:
+    start = float(behavior.recording.get("startTime") or 0.0)
+    end = float(behavior.recording.get("endTime") or 0.0)
+    fps = float(behavior.recording.get("framesPerSecond") or 1.0)
+    span = max(0.0, end - start)
+    return max(1, min(behavior.recording_max_frames, int(round(span * fps)) + 1))

@@ -1,13 +1,25 @@
 from __future__ import annotations
 
+import threading
 from collections.abc import Callable, Sequence
+from pathlib import Path
 
+from riftlens.domain.capture import (
+    DEFAULT_CAPTURE_POLL_S,
+    DEFAULT_CAPTURE_TIMEOUT_S,
+    DEFAULT_MAX_ARTIFACTS,
+    CaptureMode,
+    CaptureResult,
+    CaptureStatus,
+)
 from riftlens.domain.clock_map import ClockConfidence, ClockMap, ClockMode
 from riftlens.domain.gameplay_source import NATIVE_REPLAY_CAPABILITIES, SourceCapability
 from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 from riftlens.domain.sync_map import SEEK_LEAD_IN_MS
 from riftlens.replay_host.api.live_client import LiveClientDataClient
 from riftlens.replay_host.api.models import EventData, PlayerListEntry
+from riftlens.replay_host.api.replay_client import ReplayApiClient
+from riftlens.replay_host.capture.recording import run_capture
 from riftlens.replay_host.clock.anchor_matcher import KillEvent
 from riftlens.replay_host.clock.calibrator import (
     CalibrationResult,
@@ -17,7 +29,7 @@ from riftlens.replay_host.clock.calibrator import (
     pause_crosscheck_gamestats,
 )
 from riftlens.replay_host.lcu.port import LcuReplayPort, NullLcuReplayPort, is_live_gameflow_phase
-from riftlens.replay_host.port import ControlOutcome, EnvironmentCheck
+from riftlens.replay_host.port import CaptureProgressSink, ControlOutcome, EnvironmentCheck
 from riftlens.replay_host.seek import REAL_SEEK_TOLERANCE_MS, SeekOutcome, verified_seek
 from riftlens.replay_host.session import ReplaySessionPhase, ReplaySessionSnapshot
 from riftlens.replay_host.supervisor import (
@@ -293,15 +305,84 @@ class WindowsReplayHost:
     def set_speed(self, speed: float) -> ControlOutcome:
         return self._set_playback(speed=float(speed))
 
-    def capture_interval(self, start_game_ms: int, end_game_ms: int) -> ControlOutcome:
-        del start_game_ms, end_game_ms
-        return ControlOutcome(
-            ok=False,
-            error=ReplayError(
-                ReplayErrorCode.CAPABILITY_UNSUPPORTED,
-                details={"reason": "capture_deferred_r10"},
-            ),
+    def capture_interval(
+        self,
+        start_game_ms: int,
+        end_game_ms: int,
+        clock: ClockMap,
+        *,
+        output_dir: str,
+        capture_id: str,
+        mode: CaptureMode = CaptureMode.CLIP,
+        fps: float | None = None,
+        max_artifacts: int = DEFAULT_MAX_ARTIFACTS,
+        timeout_s: float = DEFAULT_CAPTURE_TIMEOUT_S,
+        poll_s: float = DEFAULT_CAPTURE_POLL_S,
+        cancel: threading.Event | None = None,
+        on_progress: CaptureProgressSink | None = None,
+    ) -> CaptureResult:
+        """Record the interval through ``/replay/recording`` (R.10). Blocks the calling thread."""
+        health = self.poll_health()
+        if not health.is_active:
+            if cancel is not None and cancel.is_set():
+                return CaptureResult(
+                    ok=False,
+                    capture_id=capture_id,
+                    status=CaptureStatus.CANCELLED,
+                    error=ReplayError(
+                        ReplayErrorCode.CAPTURE_CANCELLED,
+                        details={"reason": "cancelled_while_session_inactive"},
+                    ),
+                )
+            return _failed_capture(
+                capture_id,
+                ReplayError(
+                    ReplayErrorCode.SOURCE_NOT_READY,
+                    details={"phase": health.phase.value},
+                ),
+            )
+        client = self.recording_client()
+        if client is None:
+            if cancel is not None and cancel.is_set():
+                return CaptureResult(
+                    ok=False,
+                    capture_id=capture_id,
+                    status=CaptureStatus.CANCELLED,
+                    error=ReplayError(
+                        ReplayErrorCode.CAPTURE_CANCELLED,
+                        details={"reason": "cancelled_before_recording_client"},
+                    ),
+                )
+            return _failed_capture(
+                capture_id,
+                ReplayError(
+                    ReplayErrorCode.REPLAY_API_UNAVAILABLE,
+                    details={"reason": "recording_client_missing"},
+                ),
+            )
+        return run_capture(
+            client=client,
+            clock=clock,
+            capture_id=capture_id,
+            start_game_ms=start_game_ms,
+            end_game_ms=end_game_ms,
+            directory=Path(output_dir),
+            mode=mode,
+            fps=fps,
+            max_artifacts=max_artifacts,
+            timeout_s=timeout_s,
+            poll_s=poll_s,
+            cancel=cancel,
+            on_progress=on_progress,
+            sleep_clock=self._clock,
         )
+
+    def recording_client(self) -> ReplayApiClient | None:
+        """Return the Replay API client backing captures, or None when no transport exists."""
+        transport = self._transport
+        if isinstance(transport, ReplayApiTransport):
+            return transport.replay
+        return None
 
     def _set_playback(
         self,
@@ -357,3 +438,9 @@ class WindowsReplayHost:
         if isinstance(transport, ReplayApiTransport):
             return transport.live
         return None
+
+
+def _failed_capture(capture_id: str, error: ReplayError) -> CaptureResult:
+    return CaptureResult(
+        ok=False, capture_id=capture_id, status=CaptureStatus.FAILED, error=error
+    )

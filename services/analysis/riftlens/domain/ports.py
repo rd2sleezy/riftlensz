@@ -231,6 +231,53 @@ class ReplaySessionAuditRecord:
 
 
 @dataclass(frozen=True)
+class CaptureIntervalRecord:
+    """One R.10 capture row. Game times are canonical ms; source times are Replay API ms."""
+
+    id: str
+    gameplay_source_id: str
+    match_id: str | None
+    clock_map_id: str | None
+    t_start_ms: int
+    t_end_ms: int
+    reason: str
+    mode: str
+    fps: float | None
+    status: str
+    progress: float
+    retention_class: str
+    created_at: int
+    t_start_source_ms: int | None = None
+    t_end_source_ms: int | None = None
+    review_id: str | None = None
+    error_code: str | None = None
+    artifact_count: int = 0
+    total_bytes: int = 0
+    completed_at: int | None = None
+    manifest_json: str | None = None
+
+
+@dataclass(frozen=True)
+class MediaArtifactRecord:
+    """One captured file on disk. ``path`` is absolute; ``game_t_ms`` is authoritative."""
+
+    id: str
+    capture_interval_id: str
+    kind: str
+    path: str
+    content_hash: str | None
+    created_at: int
+    game_t_ms: int | None = None
+    source_t_ms: int | None = None
+    frame_index: int | None = None
+    retention_class: str = "review"
+    bytes: int | None = None
+    width: int | None = None
+    height: int | None = None
+    expires_at: int | None = None
+
+
+@dataclass(frozen=True)
 class GameplaySourceSnapshot:
     source: GameplaySourceRecord
     rofl: RoflSourceDetailRecord | None
@@ -544,6 +591,62 @@ class GameplayRepository(Protocol):
 
     async def list_sessions(self, source_id: str) -> Sequence[ReplaySessionAuditRecord]:
         """Return audit rows for a source, newest first. Missing sources yield []."""
+
+
+class CaptureRepository(Protocol):
+    """R.10 capture_interval/media_artifact persistence. Never deletes files itself."""
+
+    async def upsert_interval(self, row: CaptureIntervalRecord) -> None:
+        """Insert or replace a capture row. Assumes the gameplay source exists."""
+
+    async def get_interval(self, capture_id: str) -> CaptureIntervalRecord | None:
+        """Return one capture row or None. Assumes ``capture_id`` is a ULID."""
+
+    async def list_for_source(self, source_id: str) -> Sequence[CaptureIntervalRecord]:
+        """Return captures for a source, newest first. Missing sources yield []."""
+
+    async def list_for_review(self, review_id: str) -> Sequence[CaptureIntervalRecord]:
+        """Return captures charged to a review, newest first. Missing reviews yield []."""
+
+    async def list_by_retention(self, retention_class: str) -> Sequence[CaptureIntervalRecord]:
+        """Return captures in one retention class, oldest first (LRU order)."""
+
+    async def list_ephemeral(self) -> Sequence[CaptureIntervalRecord]:
+        """Return EPHEMERAL captures, oldest first. Deleted at session teardown."""
+
+    async def list_by_status(self, statuses: Sequence[str]) -> Sequence[CaptureIntervalRecord]:
+        """Return captures in any of ``statuses``, oldest first."""
+
+    async def list_all(self) -> Sequence[CaptureIntervalRecord]:
+        """Return every capture row, oldest first. Used by startup GC."""
+
+    async def update_status(
+        self,
+        capture_id: str,
+        status: str,
+        *,
+        progress: float | None = None,
+        error_code: str | None = None,
+        completed_at: int | None = None,
+        artifact_count: int | None = None,
+        total_bytes: int | None = None,
+        manifest_json: str | None = None,
+    ) -> None:
+        """Patch lifecycle fields. Omitted arguments leave the stored value unchanged."""
+
+    async def replace_artifacts(
+        self, capture_id: str, rows: Sequence[MediaArtifactRecord]
+    ) -> None:
+        """Delete then insert artifact rows so re-runs stay idempotent."""
+
+    async def list_artifacts(self, capture_id: str) -> Sequence[MediaArtifactRecord]:
+        """Return artifacts ordered by frame index then id. Missing captures yield []."""
+
+    async def sum_usage_for_review(self, review_id: str) -> tuple[float, int, int]:
+        """Return ``(seconds, artifacts, bytes)`` already charged to ``review_id``."""
+
+    async def delete_interval(self, capture_id: str) -> None:
+        """Delete a capture row; artifacts cascade. Callers delete the files."""
 
 
 class ReviewRepository(Protocol):

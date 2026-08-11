@@ -47,6 +47,15 @@ _DEFAULT_ACTION: dict[ReplayErrorCode, str] = {
     ReplayErrorCode.PLATFORM_UNSUPPORTED: "attach_video",
     ReplayErrorCode.SOURCE_NOT_READY: "open_replay",
     ReplayErrorCode.SESSION_LOST: "reopen_replay",
+    ReplayErrorCode.CAPTURE_INVALID_INTERVAL: "adjust_capture_interval",
+    ReplayErrorCode.CAPTURE_BUDGET_EXCEEDED: "free_capture_budget",
+    ReplayErrorCode.CAPTURE_IN_PROGRESS: "wait_for_capture",
+    ReplayErrorCode.CAPTURE_CANCELLED: "retry",
+    ReplayErrorCode.CAPTURE_TIMEOUT: "retry",
+    ReplayErrorCode.CAPTURE_OUTPUT_MISSING: "retry",
+    ReplayErrorCode.CAPTURE_OUTPUT_EMPTY: "retry",
+    ReplayErrorCode.CAPTURE_RECORDING_FAILED: "retry",
+    ReplayErrorCode.CAPTURE_DISK_FAILED: "free_disk_space",
 }
 
 

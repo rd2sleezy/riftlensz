@@ -1,14 +1,23 @@
 from __future__ import annotations
 
+import threading
 from collections.abc import Sequence
 
+from riftlens.domain.capture import (
+    DEFAULT_CAPTURE_POLL_S,
+    DEFAULT_CAPTURE_TIMEOUT_S,
+    DEFAULT_MAX_ARTIFACTS,
+    CaptureMode,
+    CaptureResult,
+    CaptureStatus,
+)
 from riftlens.domain.clock_map import ClockMap
 from riftlens.domain.gameplay_source import SourceCapability
 from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 from riftlens.domain.sync_map import SEEK_LEAD_IN_MS
 from riftlens.replay_host.clock.anchor_matcher import KillEvent
 from riftlens.replay_host.clock.calibrator import CalibrationResult, calibrate_replay_clock
-from riftlens.replay_host.port import ControlOutcome, EnvironmentCheck
+from riftlens.replay_host.port import CaptureProgressSink, ControlOutcome, EnvironmentCheck
 from riftlens.replay_host.seek import SeekOutcome
 from riftlens.replay_host.session import ReplaySessionPhase, ReplaySessionSnapshot
 
@@ -110,6 +119,27 @@ class UnsupportedReplayHost:
         del speed
         return ControlOutcome(ok=False, error=_unsupported())
 
-    def capture_interval(self, start_game_ms: int, end_game_ms: int) -> ControlOutcome:
-        del start_game_ms, end_game_ms
-        return ControlOutcome(ok=False, error=_unsupported())
+    def capture_interval(
+        self,
+        start_game_ms: int,
+        end_game_ms: int,
+        clock: ClockMap,
+        *,
+        output_dir: str,
+        capture_id: str,
+        mode: CaptureMode = CaptureMode.CLIP,
+        fps: float | None = None,
+        max_artifacts: int = DEFAULT_MAX_ARTIFACTS,
+        timeout_s: float = DEFAULT_CAPTURE_TIMEOUT_S,
+        poll_s: float = DEFAULT_CAPTURE_POLL_S,
+        cancel: threading.Event | None = None,
+        on_progress: CaptureProgressSink | None = None,
+    ) -> CaptureResult:
+        del start_game_ms, end_game_ms, clock, output_dir, mode, fps, max_artifacts
+        del timeout_s, poll_s, cancel, on_progress
+        return CaptureResult(
+            ok=False,
+            capture_id=capture_id,
+            status=CaptureStatus.FAILED,
+            error=_unsupported(),
+        )

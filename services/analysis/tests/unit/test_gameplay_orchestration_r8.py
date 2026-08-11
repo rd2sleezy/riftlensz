@@ -480,7 +480,15 @@ def test_create_replay_host_non_windows() -> None:
     assert check.supported is False
     assert check.error is not None
     assert check.error.code is ReplayErrorCode.PLATFORM_UNSUPPORTED
-    assert host.capture_interval(0, 1).error is not None
+    capture = host.capture_interval(
+        0,
+        1,
+        ClockMap.identity(duration_ms=1_800_000),
+        output_dir=".",
+        capture_id="cap_unsupported",
+    )
+    assert capture.ok is False
+    assert capture.error is not None
 
 
 def test_windows_imports_stay_inside_windows_package() -> None:

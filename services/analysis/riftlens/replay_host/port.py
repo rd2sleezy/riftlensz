@@ -2,10 +2,19 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+import threading
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Protocol
 
+from riftlens.domain.capture import (
+    DEFAULT_CAPTURE_POLL_S,
+    DEFAULT_CAPTURE_TIMEOUT_S,
+    DEFAULT_MAX_ARTIFACTS,
+    CaptureMode,
+    CaptureProgress,
+    CaptureResult,
+)
 from riftlens.domain.clock_map import ClockMap
 from riftlens.domain.gameplay_source import PlaybackState, SourceCapability
 from riftlens.domain.replay_errors import ReplayError
@@ -14,6 +23,8 @@ from riftlens.replay_host.clock.anchor_matcher import KillEvent
 from riftlens.replay_host.clock.calibrator import CalibrationResult
 from riftlens.replay_host.seek import SeekOutcome
 from riftlens.replay_host.session import ReplaySessionSnapshot
+
+CaptureProgressSink = Callable[[CaptureProgress], None]
 
 
 @dataclass(frozen=True)
@@ -88,5 +99,20 @@ class ReplayHostPort(Protocol):
     def set_speed(self, speed: float) -> ControlOutcome:
         """Set playback speed when a session is active."""
 
-    def capture_interval(self, start_game_ms: int, end_game_ms: int) -> ControlOutcome:
-        """Reserved for R.10. Must return a typed unsupported result until then."""
+    def capture_interval(
+        self,
+        start_game_ms: int,
+        end_game_ms: int,
+        clock: ClockMap,
+        *,
+        output_dir: str,
+        capture_id: str,
+        mode: CaptureMode = CaptureMode.CLIP,
+        fps: float | None = None,
+        max_artifacts: int = DEFAULT_MAX_ARTIFACTS,
+        timeout_s: float = DEFAULT_CAPTURE_TIMEOUT_S,
+        poll_s: float = DEFAULT_CAPTURE_POLL_S,
+        cancel: threading.Event | None = None,
+        on_progress: CaptureProgressSink | None = None,
+    ) -> CaptureResult:
+        """Record ``[start, end)`` game ms into ``output_dir`` (R.10). Blocks; never persists."""

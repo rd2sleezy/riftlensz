@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from riftlens.adapters.db.repositories.capture import SqlCaptureRepository
 from riftlens.adapters.db.repositories.coaching import SqlCoachingRepository
 from riftlens.adapters.db.repositories.finding import SqlFindingRepository
 from riftlens.adapters.db.repositories.gameplay import SqlGameplayRepository
@@ -11,6 +12,7 @@ from riftlens.adapters.db.repositories.review import SqlReviewRepository
 from riftlens.adapters.db.repositories.sync import SqlSyncRepository
 
 __all__ = [
+    "SqlCaptureRepository",
     "SqlCoachingRepository",
     "SqlFindingRepository",
     "SqlGameplayRepository",

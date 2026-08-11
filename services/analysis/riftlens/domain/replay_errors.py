@@ -44,6 +44,15 @@ class ReplayErrorCode(StrEnum):
     PLATFORM_UNSUPPORTED = "PLATFORM_UNSUPPORTED"
     SOURCE_NOT_READY = "SOURCE_NOT_READY"
     SESSION_LOST = "SESSION_LOST"
+    CAPTURE_INVALID_INTERVAL = "CAPTURE_INVALID_INTERVAL"
+    CAPTURE_BUDGET_EXCEEDED = "CAPTURE_BUDGET_EXCEEDED"
+    CAPTURE_IN_PROGRESS = "CAPTURE_IN_PROGRESS"
+    CAPTURE_CANCELLED = "CAPTURE_CANCELLED"
+    CAPTURE_TIMEOUT = "CAPTURE_TIMEOUT"
+    CAPTURE_OUTPUT_MISSING = "CAPTURE_OUTPUT_MISSING"
+    CAPTURE_OUTPUT_EMPTY = "CAPTURE_OUTPUT_EMPTY"
+    CAPTURE_RECORDING_FAILED = "CAPTURE_RECORDING_FAILED"
+    CAPTURE_DISK_FAILED = "CAPTURE_DISK_FAILED"
 
 
 _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
@@ -95,6 +104,19 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
     ReplayErrorCode.PLATFORM_UNSUPPORTED: "This gameplay source is not supported on this platform.",
     ReplayErrorCode.SOURCE_NOT_READY: "Gameplay source is not ready.",
     ReplayErrorCode.SESSION_LOST: "Replay window was closed. Reopen the replay to continue.",
+    ReplayErrorCode.CAPTURE_INVALID_INTERVAL: (
+        "Capture interval must start at or after 00:00 and end after it starts."
+    ),
+    ReplayErrorCode.CAPTURE_BUDGET_EXCEEDED: (
+        "This review has reached its capture budget. Delete some captures and try again."
+    ),
+    ReplayErrorCode.CAPTURE_IN_PROGRESS: "Another capture is already running for this source.",
+    ReplayErrorCode.CAPTURE_CANCELLED: "Capture was cancelled.",
+    ReplayErrorCode.CAPTURE_TIMEOUT: "The replay client did not finish recording in time.",
+    ReplayErrorCode.CAPTURE_OUTPUT_MISSING: "The replay client wrote no capture output.",
+    ReplayErrorCode.CAPTURE_OUTPUT_EMPTY: "Capture output exists but contains no usable frames.",
+    ReplayErrorCode.CAPTURE_RECORDING_FAILED: "The replay client refused or aborted the recording.",
+    ReplayErrorCode.CAPTURE_DISK_FAILED: "Capture files could not be written to disk.",
 }
 
 _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
@@ -132,6 +154,15 @@ _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
     ReplayErrorCode.PLATFORM_UNSUPPORTED: "fatal",
     ReplayErrorCode.SOURCE_NOT_READY: "retryable",
     ReplayErrorCode.SESSION_LOST: "retryable",
+    ReplayErrorCode.CAPTURE_INVALID_INTERVAL: "fatal",
+    ReplayErrorCode.CAPTURE_BUDGET_EXCEEDED: "fatal",
+    ReplayErrorCode.CAPTURE_IN_PROGRESS: "retryable",
+    ReplayErrorCode.CAPTURE_CANCELLED: "informational",
+    ReplayErrorCode.CAPTURE_TIMEOUT: "retryable",
+    ReplayErrorCode.CAPTURE_OUTPUT_MISSING: "retryable",
+    ReplayErrorCode.CAPTURE_OUTPUT_EMPTY: "retryable",
+    ReplayErrorCode.CAPTURE_RECORDING_FAILED: "retryable",
+    ReplayErrorCode.CAPTURE_DISK_FAILED: "fatal",
 }
 
 

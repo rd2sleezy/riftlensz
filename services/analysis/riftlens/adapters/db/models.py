@@ -530,7 +530,12 @@ class ReplaySessionRow(Base):
 
 class CaptureIntervalRow(Base):
     __tablename__ = "capture_interval"
-    __table_args__ = (Index("ix_capture_interval_source_t", "gameplay_source_id", "t_start_ms"),)
+    __table_args__ = (
+        Index("ix_capture_interval_source_t", "gameplay_source_id", "t_start_ms"),
+        Index("ix_capture_interval_status", "status"),
+        Index("ix_capture_interval_review", "review_id"),
+        Index("ix_capture_interval_retention", "retention_class"),
+    )
 
     id: Mapped[str] = mapped_column(Text, primary_key=True)
     gameplay_source_id: Mapped[str] = mapped_column(
@@ -540,10 +545,26 @@ class CaptureIntervalRow(Base):
     t_end_ms: Mapped[int] = mapped_column(Integer, nullable=False)
     reason: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[int] = mapped_column(Integer, nullable=False)
+    clock_map_id: Mapped[str | None] = mapped_column(Text, ForeignKey("clock_map.id"))
+    match_id: Mapped[str | None] = mapped_column(Text)
+    mode: Mapped[str] = mapped_column(Text, nullable=False, default="CLIP")
+    fps: Mapped[float | None] = mapped_column(Float)
+    status: Mapped[str] = mapped_column(Text, nullable=False, default="requested")
+    progress: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    t_start_source_ms: Mapped[int | None] = mapped_column(Integer)
+    t_end_source_ms: Mapped[int | None] = mapped_column(Integer)
+    retention_class: Mapped[str] = mapped_column(Text, nullable=False, default="review")
+    review_id: Mapped[str | None] = mapped_column(Text)
+    error_code: Mapped[str | None] = mapped_column(Text)
+    artifact_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    total_bytes: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    completed_at: Mapped[int | None] = mapped_column(Integer)
+    manifest_json: Mapped[str | None] = mapped_column(Text)
 
 
 class MediaArtifactRow(Base):
     __tablename__ = "media_artifact"
+    __table_args__ = (Index("ix_media_artifact_capture", "capture_interval_id"),)
 
     id: Mapped[str] = mapped_column(Text, primary_key=True)
     capture_interval_id: Mapped[str] = mapped_column(
@@ -555,3 +576,9 @@ class MediaArtifactRow(Base):
     width: Mapped[int | None] = mapped_column(Integer)
     height: Mapped[int | None] = mapped_column(Integer)
     created_at: Mapped[int] = mapped_column(Integer, nullable=False)
+    game_t_ms: Mapped[int | None] = mapped_column(Integer)
+    source_t_ms: Mapped[int | None] = mapped_column(Integer)
+    frame_index: Mapped[int | None] = mapped_column(Integer)
+    retention_class: Mapped[str] = mapped_column(Text, nullable=False, default="review")
+    bytes: Mapped[int | None] = mapped_column(Integer)
+    expires_at: Mapped[int | None] = mapped_column(Integer)

@@ -1,7 +1,17 @@
 from __future__ import annotations
 
+import threading
 from collections.abc import Sequence
+from pathlib import Path
 
+from riftlens.domain.capture import (
+    DEFAULT_CAPTURE_POLL_S,
+    DEFAULT_CAPTURE_TIMEOUT_S,
+    DEFAULT_MAX_ARTIFACTS,
+    CaptureMode,
+    CaptureResult,
+    CaptureStatus,
+)
 from riftlens.domain.clock_map import ClockMap
 from riftlens.domain.gameplay_source import (
     NATIVE_REPLAY_CAPABILITIES,
@@ -10,9 +20,10 @@ from riftlens.domain.gameplay_source import (
 )
 from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 from riftlens.domain.sync_map import SEEK_LEAD_IN_MS
+from riftlens.replay_host.capture.recording import RecordingClient, run_capture
 from riftlens.replay_host.clock.anchor_matcher import KillEvent
 from riftlens.replay_host.clock.calibrator import CalibrationResult, calibrate_replay_clock
-from riftlens.replay_host.port import ControlOutcome, EnvironmentCheck
+from riftlens.replay_host.port import CaptureProgressSink, ControlOutcome, EnvironmentCheck
 from riftlens.replay_host.seek import SeekOutcome, clamp_game_ms, verified_seek
 from riftlens.replay_host.session import ReplaySessionPhase, ReplaySessionSnapshot
 from riftlens.replay_host.timing import SleepClock
@@ -33,6 +44,7 @@ class FakeReplayHost:
         sleep_clock: SleepClock | None = None,
         auto_ready: bool = True,
         reveal_error: ReplayError | None = None,
+        recording_client: RecordingClient | None = None,
     ) -> None:
         self.supported = supported
         self.environment = environment
@@ -43,10 +55,12 @@ class FakeReplayHost:
         self.sleep_clock = sleep_clock
         self.auto_ready = auto_ready
         self.reveal_error = reveal_error
+        self.recording_client = recording_client
         self.open_count = 0
         self.calibrate_count = 0
         self.reveal_count = 0
         self.close_count = 0
+        self.capture_count = 0
         self._state = ReplaySessionSnapshot(phase=ReplaySessionPhase.IDLE)
 
     def platform_supported(self) -> bool:
@@ -222,11 +236,56 @@ class FakeReplayHost:
         del speed
         return ControlOutcome(ok=self._state.is_active)
 
-    def capture_interval(self, start_game_ms: int, end_game_ms: int) -> ControlOutcome:
-        del start_game_ms, end_game_ms
-        return ControlOutcome(
-            ok=False,
-            error=ReplayError(ReplayErrorCode.CAPABILITY_UNSUPPORTED),
+    def capture_interval(
+        self,
+        start_game_ms: int,
+        end_game_ms: int,
+        clock: ClockMap,
+        *,
+        output_dir: str,
+        capture_id: str,
+        mode: CaptureMode = CaptureMode.CLIP,
+        fps: float | None = None,
+        max_artifacts: int = DEFAULT_MAX_ARTIFACTS,
+        timeout_s: float = DEFAULT_CAPTURE_TIMEOUT_S,
+        poll_s: float = DEFAULT_CAPTURE_POLL_S,
+        cancel: threading.Event | None = None,
+        on_progress: CaptureProgressSink | None = None,
+    ) -> CaptureResult:
+        """Run the real R.10 engine when a recording client was injected, else refuse."""
+        self.capture_count += 1
+        if self.recording_client is None:
+            return CaptureResult(
+                ok=False,
+                capture_id=capture_id,
+                status=CaptureStatus.FAILED,
+                error=ReplayError(ReplayErrorCode.CAPABILITY_UNSUPPORTED),
+            )
+        health = self.poll_health()
+        if not health.is_active:
+            return CaptureResult(
+                ok=False,
+                capture_id=capture_id,
+                status=CaptureStatus.FAILED,
+                error=ReplayError(
+                    ReplayErrorCode.SOURCE_NOT_READY, details={"phase": health.phase.value}
+                ),
+            )
+        return run_capture(
+            client=self.recording_client,
+            clock=clock,
+            capture_id=capture_id,
+            start_game_ms=start_game_ms,
+            end_game_ms=end_game_ms,
+            directory=Path(output_dir),
+            mode=mode,
+            fps=fps,
+            max_artifacts=max_artifacts,
+            timeout_s=timeout_s,
+            poll_s=poll_s,
+            cancel=cancel,
+            on_progress=on_progress,
+            sleep_clock=self.sleep_clock,
         )
 
     def reset_live_session(self) -> None:

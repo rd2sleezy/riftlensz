@@ -5,6 +5,12 @@ import time
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from riftlens.domain.capture import (
+    CaptureProgress,
+    CaptureRequest,
+    CaptureResult,
+    CaptureStatus,
+)
 from riftlens.domain.clock_map import ClockConfidence, ClockMap, ClockMode
 from riftlens.domain.clock_store import (
     CALIBRATION_METHOD_EVENT_ANCHOR_V1,
@@ -28,6 +34,7 @@ from riftlens.gameplay.factory import GameplaySourceFactory
 from riftlens.gameplay.kills import riot_kills_from_match
 from riftlens.gameplay.outcomes import ImportOutcome, ResolvedSource, RevealOutcome
 from riftlens.gameplay.status import compose_gameplay_status, pick_source
+from riftlens.replay_host.capture.capture_service import CaptureService
 from riftlens.replay_host.clock.anchor_matcher import KillEvent
 from riftlens.replay_host.clock.calibrator import CalibrationResult
 from riftlens.replay_host.port import EnvironmentCheck, ReplayHostPort
@@ -48,12 +55,14 @@ class GameplaySourceService:
         matches: MatchRepository,
         factory: GameplaySourceFactory | None = None,
         kill_loader: KillLoader | None = None,
+        captures: CaptureService | None = None,
     ) -> None:
         self._host = host
         self._gameplay = gameplay
         self._matches = matches
         self._factory = factory if factory is not None else GameplaySourceFactory(host)
         self._kill_loader = kill_loader
+        self._captures = captures
 
     async def import_rofl(
         self,
@@ -255,6 +264,96 @@ class GameplaySourceService:
             native_seek=seek,
         )
 
+    async def request_capture(
+        self, request: CaptureRequest, *, now_ms: int = 0
+    ) -> CaptureResult:
+        """Ensure session + clock, then start an explicit R.10 capture. Never called by reveal."""
+        captures = self._require_captures()
+        if captures is None:
+            return _failed_capture(
+                ReplayError(
+                    ReplayErrorCode.CAPABILITY_UNSUPPORTED,
+                    details={"reason": "capture_service_unavailable"},
+                )
+            )
+        stamp = now_ms or self.now_ms()
+        snapshot = await self._gameplay.get_source(request.source_id)
+        if snapshot is None:
+            return _failed_capture(
+                ReplayError(ReplayErrorCode.ROFL_MISSING, details={"reason": "unknown_source"})
+            )
+        resolved = self._factory.resolve(snapshot)
+        if resolved.source.kind is SourceKind.VIDEO:
+            return _failed_capture(
+                ReplayError(
+                    ReplayErrorCode.CAPABILITY_UNSUPPORTED,
+                    details={"reason": "video_sources_cannot_capture"},
+                )
+            )
+        if not resolved.available:
+            return _failed_capture(
+                resolved.reason or ReplayError(ReplayErrorCode.PLATFORM_UNSUPPORTED)
+            )
+        if not snapshot.file_present:
+            await self._gameplay.revalidate_source(request.source_id, updated_at=stamp)
+            return _failed_capture(
+                ReplayError(
+                    ReplayErrorCode.ROFL_MISSING,
+                    details={"reason": "source_file_missing", "source_id": request.source_id},
+                )
+            )
+        session = self._ensure_ready(snapshot.source.source_uri)
+        if not session.is_active:
+            return _failed_capture(
+                session.error
+                or ReplayError(
+                    ReplayErrorCode.SOURCE_NOT_READY, details={"phase": session.phase.value}
+                )
+            )
+        clock, _warnings = await self._obtain_clock(
+            request.source_id,
+            snapshot,
+            match_id=snapshot.source.match_id,
+            now_ms=stamp,
+        )
+        if clock.mode is ClockMode.UNMAPPED:
+            return _failed_capture(ReplayError(ReplayErrorCode.CLOCK_UNMAPPED))
+        return await captures.start_capture(request, now_ms=stamp)
+
+    async def get_capture(self, capture_id: str) -> CaptureResult:
+        """Return the persisted capture view. Unknown ids yield a typed failure result."""
+        captures = self._require_captures()
+        if captures is None:
+            return _failed_capture(
+                ReplayError(
+                    ReplayErrorCode.CAPABILITY_UNSUPPORTED,
+                    details={"reason": "capture_service_unavailable"},
+                )
+            )
+        return await captures.get_result(capture_id)
+
+    async def cancel_capture(self, capture_id: str) -> CaptureResult:
+        """Cancel a running capture and remove its partials."""
+        captures = self._require_captures()
+        if captures is None:
+            return _failed_capture(
+                ReplayError(
+                    ReplayErrorCode.CAPABILITY_UNSUPPORTED,
+                    details={"reason": "capture_service_unavailable"},
+                )
+            )
+        return await captures.cancel(capture_id)
+
+    async def capture_progress(self, capture_id: str) -> CaptureProgress | None:
+        """Return live progress for a capture, or None when the service is not wired."""
+        captures = self._require_captures()
+        if captures is None:
+            return None
+        try:
+            return await captures.get_progress(capture_id)
+        except ReplayError:
+            return None
+
     async def close_session(self, source_id: str, *, now_ms: int) -> None:
         """Close the live host session and append an audit row. ClockMap stays persisted."""
         snap = self._host.close_session()
@@ -326,6 +425,9 @@ class GameplaySourceService:
     def now_ms(self) -> int:
         """Wall-clock milliseconds for persistence timestamps."""
         return int(time.time() * 1000)
+
+    def _require_captures(self) -> CaptureService | None:
+        return self._captures
 
     def _ensure_ready(self, rofl_path: str) -> ReplaySessionSnapshot:
         state = self._host.poll_health()
@@ -417,6 +519,10 @@ class GameplaySourceService:
             error=error,
             video_seek=target,
         )
+
+
+def _failed_capture(error: ReplayError) -> CaptureResult:
+    return CaptureResult(ok=False, capture_id="", status=CaptureStatus.FAILED, error=error)
 
 
 def _reusable_verified(clock: ClockMap) -> bool:
