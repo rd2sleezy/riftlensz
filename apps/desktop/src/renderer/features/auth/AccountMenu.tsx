@@ -1,9 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState, type ReactElement } from 'react'
-import { Badge, RiotIcon, RiotMark } from '../../components/ui'
+import { Badge, Disclosure, RiotIcon, RiotMark } from '../../components/ui'
 import type { SignInResult, SignInWithApiKeyInput } from '../../../main/ipc/channels'
 
 const REGIONS: SignInWithApiKeyInput['region'][] = ['americas', 'europe', 'asia']
+
+const REGION_LABELS: Record<SignInWithApiKeyInput['region'], string> = {
+  americas: 'Americas (NA, BR, LAN, LAS, OCE)',
+  europe: 'Europe (EUW, EUNE, TR, RU)',
+  asia: 'Asia (KR, JP)'
+}
 
 export function AccountMenu(): ReactElement {
   const queryClient = useQueryClient()
@@ -99,7 +105,7 @@ export function AccountMenu(): ReactElement {
       </button>
 
       {open ? (
-        <div className="absolute right-0 top-full z-10 mt-2 w-80 rounded-xl border border-rift-border bg-rift-surface p-4 shadow-card">
+        <div className="absolute right-0 top-full z-10 mt-2 w-96 rounded-xl border border-rift-border bg-rift-surface p-4 shadow-card">
           <div className="flex items-center justify-between">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Sign in with your Riot ID
@@ -107,16 +113,7 @@ export function AccountMenu(): ReactElement {
             <RiotMark />
           </div>
           <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
-            Verifies your account against Riot&apos;s real API using a personal developer key —{' '}
-            <a
-              href="https://developer.riotgames.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="text-rift-accent-strong hover:underline"
-            >
-              get an instant one here
-            </a>
-            . Personal keys expire roughly every 24h.
+            Connect your real Riot account to pull match history automatically. Takes about a minute.
           </p>
 
           <form
@@ -135,27 +132,29 @@ export function AccountMenu(): ReactElement {
               signInApiKey.mutate({ apiKey, gameName, tagLine, region })
             }}
           >
-            <input
-              value={riotId}
-              onChange={(event) => setRiotId(event.target.value)}
-              placeholder="Riot ID (Name#Tag)"
-              disabled={isPending}
-              className="w-full rounded-md border border-rift-edge bg-rift-raised px-2.5 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-rift-accent/50 disabled:opacity-50"
-            />
-            <div className="flex gap-2">
-              <select
-                value={region}
-                onChange={(event) => setRegion(event.target.value as SignInWithApiKeyInput['region'])}
+            <div>
+              <input
+                value={riotId}
+                onChange={(event) => setRiotId(event.target.value)}
+                placeholder="Riot ID (Name#Tag)"
                 disabled={isPending}
-                className="rounded-md border border-rift-edge bg-rift-raised px-2 py-1.5 text-sm text-slate-100 focus:border-rift-accent/50 disabled:opacity-50"
-              >
-                {REGIONS.map((value) => (
-                  <option key={value} value={value}>
-                    {value[0]?.toUpperCase()}
-                    {value.slice(1)}
-                  </option>
-                ))}
-              </select>
+                className="w-full rounded-md border border-rift-edge bg-rift-raised px-2.5 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-rift-accent/50 disabled:opacity-50"
+              />
+              <p className="mt-1 text-[10px] text-slate-600">Found in-client under your profile, top right</p>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-medium text-slate-400">Riot API key</label>
+                <a
+                  href="https://developer.riotgames.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] font-medium text-rift-accent-strong hover:underline"
+                >
+                  Get a key →
+                </a>
+              </div>
               <input
                 value={apiKey}
                 onChange={(event) => setApiKey(event.target.value)}
@@ -163,14 +162,29 @@ export function AccountMenu(): ReactElement {
                 placeholder="Personal API key"
                 disabled={isPending}
                 autoComplete="off"
-                className="flex-1 rounded-md border border-rift-edge bg-rift-raised px-2.5 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-rift-accent/50 disabled:opacity-50"
+                className="mt-1 w-full rounded-md border border-rift-edge bg-rift-raised px-2.5 py-1.5 text-sm text-slate-100 placeholder:text-slate-600 focus:border-rift-accent/50 disabled:opacity-50"
               />
+              <p className="mt-1 text-[10px] text-slate-600">Starts with RGAPI- · expires roughly every 24h</p>
+              {apiKey.length > 0 && !apiKey.trim().startsWith('RGAPI-') ? (
+                <p className="mt-1 text-[10px] text-rift-gold">
+                  Personal keys normally start with &quot;RGAPI-&quot; — double check you copied the whole key.
+                </p>
+              ) : null}
             </div>
-            {apiKey.length > 0 && !apiKey.trim().startsWith('RGAPI-') ? (
-              <p className="text-[10px] text-rift-gold">
-                Personal keys normally start with &quot;RGAPI-&quot; — double check you copied the whole key.
-              </p>
-            ) : null}
+
+            <select
+              value={region}
+              onChange={(event) => setRegion(event.target.value as SignInWithApiKeyInput['region'])}
+              disabled={isPending}
+              className="w-full rounded-md border border-rift-edge bg-rift-raised px-2 py-1.5 text-sm text-slate-100 focus:border-rift-accent/50 disabled:opacity-50"
+            >
+              {REGIONS.map((value) => (
+                <option key={value} value={value}>
+                  {REGION_LABELS[value]}
+                </option>
+              ))}
+            </select>
+
             <button
               type="submit"
               disabled={isPending || !riotId || !apiKey}
@@ -180,17 +194,25 @@ export function AccountMenu(): ReactElement {
             </button>
           </form>
 
-          <button
-            type="button"
-            disabled={isPending}
-            className="mt-3 w-full text-center text-[11px] text-slate-500 hover:text-slate-300 disabled:cursor-not-allowed"
-            onClick={() => {
-              setError(null)
-              signInRso.mutate()
-            }}
-          >
-            {signInRso.isPending ? 'Waiting for Riot…' : 'Or use full Riot sign-on (needs an approved app)'}
-          </button>
+          <div className="mt-3 border-t border-rift-border pt-3">
+            <Disclosure summary="Advanced: full Riot sign-on">
+              <p className="mb-2 text-[11px] leading-relaxed text-slate-500">
+                Uses Riot&apos;s official account login flow instead of a personal API key. Requires an
+                approved Riot developer app, which this build doesn&apos;t have yet.
+              </p>
+              <button
+                type="button"
+                disabled={isPending}
+                className="w-full rounded-md border border-rift-edge px-3 py-1.5 text-xs text-slate-300 transition hover:border-rift-accent/40 disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => {
+                  setError(null)
+                  signInRso.mutate()
+                }}
+              >
+                {signInRso.isPending ? 'Waiting for Riot…' : 'Sign in with Riot account'}
+              </button>
+            </Disclosure>
+          </div>
 
           {error ? <p className="mt-2 text-[11px] text-rift-danger">{error}</p> : null}
         </div>

@@ -79,9 +79,9 @@ export function RiotIcon(props: { className?: string }): ReactElement {
     <span
       className={`flex items-center justify-center rounded-[5px] bg-[#E2001C] ${props.className ?? 'h-4 w-4'}`}
     >
-      <svg viewBox="0 0 100 100" className="h-[68%] w-[68%]" fill="#ffffff" aria-hidden="true">
-        <path d="M50 12 22 40 27 66 33 66 33 46 40 66 46 66 46 42 53 66 60 66 60 40 66 60 82 30Z" />
-        <path d="M67 62 90 70 90 90 68 82Z" />
+      <svg viewBox="0 0 100 100" className="h-[70%] w-[70%]" fill="#ffffff" aria-hidden="true">
+        <path d="M50 14 26 38 34 74 42 44 50 78 58 44 66 74 74 38Z" />
+        <path d="M70 62 92 72 92 92 70 82Z" />
       </svg>
     </span>
   )

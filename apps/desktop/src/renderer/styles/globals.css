@@ -10,9 +10,9 @@ body,
 
 body {
   margin: 0;
-  background-color: #0a0e17;
+  background-color: #0a0a0b;
   background-image:
-    radial-gradient(ellipse 900px 500px at 12% -10%, rgb(79 209 197 / 0.08), transparent 60%),
+    radial-gradient(ellipse 900px 500px at 12% -10%, rgb(240 49 61 / 0.06), transparent 60%),
     radial-gradient(ellipse 700px 500px at 100% 0%, rgb(232 185 92 / 0.05), transparent 55%);
   background-attachment: fixed;
   color-scheme: dark;
@@ -21,7 +21,7 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2d3752 transparent;
+  scrollbar-color: #3a3a3d transparent;
 }
 
 *::-webkit-scrollbar {
@@ -30,7 +30,7 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #2d3752;
+  background-color: #3a3a3d;
   border-radius: 999px;
 }
 
@@ -39,6 +39,6 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid #4fd1c5;
+  outline: 2px solid #F0313D;
   outline-offset: 2px;
 }

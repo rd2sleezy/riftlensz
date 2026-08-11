@@ -174,7 +174,7 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
             </div>
           </div>
           {sync ? (
-            <Badge variant={sync.quality.verdict === 'DEGRADED' || !sync.verified ? 'gold' : 'accent'}>
+            <Badge variant={sync.quality.verdict === 'DEGRADED' || !sync.verified ? 'gold' : 'win'}>
               <span data-testid="sync-status">
                 Sync {sync.quality.verdict}
                 {sync.quality.verdict === 'DEGRADED' || !sync.verified ? ' · uncertain' : ''}

@@ -6,23 +6,23 @@ const config: Config = {
     extend: {
       colors: {
         rift: {
-          bg: '#0a0e17',
-          surface: '#10151f',
-          raised: '#161c29',
-          border: '#232b3d',
-          edge: '#2d3752',
+          bg: '#0a0a0b',
+          surface: '#141415',
+          raised: '#1c1c1e',
+          border: '#2a2a2c',
+          edge: '#3a3a3d',
           accent: {
-            DEFAULT: '#4fd1c5',
-            soft: '#4fd1c522',
-            strong: '#7ee8de'
+            DEFAULT: '#F0313D',
+            soft: '#F0313D22',
+            strong: '#FF6B74'
           },
           gold: {
             DEFAULT: '#e8b95c',
             soft: '#e8b95c1f'
           },
           danger: {
-            DEFAULT: '#f2596b',
-            soft: '#f2596b1f'
+            DEFAULT: '#EF705D',
+            soft: '#EF705D1f'
           },
           win: '#3fc98a',
           loss: '#e2596b'
@@ -32,7 +32,7 @@ const config: Config = {
         display: ['"Segoe UI Semibold"', '"Segoe UI"', 'system-ui', 'sans-serif']
       },
       boxShadow: {
-        glow: '0 0 0 1px rgb(79 209 197 / 0.15), 0 8px 30px -8px rgb(79 209 197 / 0.25)',
+        glow: '0 0 0 1px rgb(240 49 61 / 0.18), 0 8px 30px -8px rgb(240 49 61 / 0.28)',
         card: '0 1px 0 0 rgb(255 255 255 / 0.03) inset, 0 12px 24px -12px rgb(0 0 0 / 0.5)'
       },
       keyframes: {
