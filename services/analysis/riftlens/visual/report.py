@@ -7,6 +7,9 @@ from typing import Any
 
 from riftlens.domain.observation import KnowledgeState
 from riftlens.visual.analyze import VisualAnalysisResult
+from riftlens.visual.correlate import CorrelationStatus
+from riftlens.visual.track import CandidateKind, TrackLifecycle
+from riftlens.visual.v1_analyze import V1AnalysisResult
 
 
 class VisualRuleDiagnostic(StrEnum):
@@ -94,6 +97,83 @@ def classify_against_claim(
     if rising and result.peak_entity_count >= 2:
         return VisualRuleDiagnostic.PARTIALLY_SUPPORTED
     if result.peak_entity_count >= 1:
+        return VisualRuleDiagnostic.PARTIALLY_SUPPORTED
+    return VisualRuleDiagnostic.INSUFFICIENT_VISUAL_EVIDENCE
+
+
+def format_v1_timeline(result: V1AnalysisResult) -> str:
+    """Return a research timeline of stable tracks. Not coaching advice."""
+    lines = [
+        f"V.1 timeline ({result.sequence.detector_id} {result.sequence.detector_version})",
+        f"match={result.sequence.match_id} capture={result.sequence.capture_interval_id}",
+        (
+            f"GAME {format_mmss(result.sequence.start_game_ms)}–"
+            f"{format_mmss(result.sequence.end_game_ms)} @ {result.sample_fps:g} fps"
+        ),
+        f"camera: {result.camera_note}",
+        f"subject visibility: {result.subject_visibility.value}",
+        (
+            f"subject correlation: {result.correlation.status.value} "
+            f"track={result.correlation.track_id} method={result.correlation.method} "
+            f"conf={result.correlation.confidence:.2f}"
+        ),
+        (
+            "stable_tracks="
+            f"{sum(1 for item in result.tracks if item.kind is CandidateKind.CHAMPION_LIKE)}"
+        ),
+        "",
+    ]
+    for event in result.events:
+        if event.kind is TrackLifecycle.PRESENT:
+            continue
+        lines.append(
+            f"{format_mmss(event.game_t_ms)} {event.kind.value} {event.track_id}"
+        )
+    if result.alignment.kills:
+        lines.append("")
+        lines.append("GST kills in window (not visual truth):")
+        for kill in result.alignment.kills:
+            lines.append(
+                f"  {format_mmss(kill.game_t_ms)} killer={kill.killer_id} "
+                f"victim={kill.victim_id} subject_role={kill.subject_role}"
+            )
+    return "\n".join(lines) + "\n"
+
+
+def classify_v1_against_claim(
+    result: V1AnalysisResult, claim: StructuredClaim
+) -> VisualRuleDiagnostic:
+    """Compare tracked viewport occupancy to a structured R-012 claim.
+
+    Does not mutate the finding. Cannot prove fog-of-war or a bad engage.
+    """
+    if result.informative_frames == 0:
+        return VisualRuleDiagnostic.INSUFFICIENT_VISUAL_EVIDENCE
+    if claim.t_ms is not None:
+        start = result.sequence.start_game_ms
+        end = result.sequence.end_game_ms
+        if claim.t_ms < start - 5_000 or claim.t_ms > end + 5_000:
+            return VisualRuleDiagnostic.INSUFFICIENT_VISUAL_EVIDENCE
+    champion_tracks = [
+        item for item in result.tracks if item.kind is CandidateKind.CHAMPION_LIKE
+    ]
+    if not champion_tracks:
+        return VisualRuleDiagnostic.INSUFFICIENT_VISUAL_EVIDENCE
+    entered = [item for item in result.events if item.kind is TrackLifecycle.ENTERED_VIEW]
+    later_entries = 0
+    if claim.t_ms is not None:
+        later_entries = sum(1 for item in entered if item.game_t_ms > claim.t_ms)
+    else:
+        later_entries = max(0, len(entered) - 1)
+    subject_stayed = (
+        result.correlation.status is not CorrelationStatus.UNKNOWN
+        and result.correlation.track_id is not None
+    )
+    if later_entries >= 1 and result.peak_stable_tracks >= 2:
+        return VisualRuleDiagnostic.PARTIALLY_SUPPORTED
+    if subject_stayed and result.peak_stable_tracks >= 1:
+        return VisualRuleDiagnostic.PARTIALLY_SUPPORTED
+    if result.peak_stable_tracks >= 1:
         return VisualRuleDiagnostic.PARTIALLY_SUPPORTED
     return VisualRuleDiagnostic.INSUFFICIENT_VISUAL_EVIDENCE
 

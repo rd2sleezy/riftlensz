@@ -9,19 +9,25 @@ from riftlens.visual.analyze import DEFAULT_SAMPLE_FPS, analyze_capture_dir
 from riftlens.visual.report import (
     StructuredClaim,
     classify_against_claim,
+    classify_v1_against_claim,
     format_timeline,
+    format_v1_timeline,
     temporal_change_notes,
 )
+from riftlens.visual.v1_analyze import DEFAULT_V1_SAMPLE_FPS, analyze_capture_dir_v1
 
 
 def main() -> None:
-    """Run the V.0 spike against an R.10 capture directory. Local only."""
-    parser = argparse.ArgumentParser(description="V.0 visual clip analysis spike")
+    """Run V.0 or V.1 against an R.10 capture directory. Local only."""
+    parser = argparse.ArgumentParser(description="Visual clip analysis spike")
     parser.add_argument("--capture-dir", type=Path, help="Directory containing manifest.json")
     parser.add_argument("--capture-id", help="Lookup capture_id under the capture root")
     parser.add_argument("--capture-root", type=Path, default=None)
-    parser.add_argument("--fps", type=float, default=DEFAULT_SAMPLE_FPS)
+    parser.add_argument("--mode", choices=("v0", "v1"), default="v0")
+    parser.add_argument("--fps", type=float, default=None)
     parser.add_argument("--max-frames", type=int, default=None)
+    parser.add_argument("--subject-pid", type=int, default=None)
+    parser.add_argument("--subject-champion", default=None)
     parser.add_argument("--claim-rule", default="R-012")
     parser.add_argument("--claim-t-ms", type=int, default=None)
     parser.add_argument(
@@ -31,22 +37,47 @@ def main() -> None:
     parser.add_argument("--json-out", type=Path, default=None)
     args = parser.parse_args()
     capture_dir = _resolve_dir(args.capture_dir, args.capture_id, args.capture_root)
-    result = analyze_capture_dir(capture_dir, fps=args.fps, max_frames=args.max_frames)
-    print(format_timeline(result), end="")
-    print("temporal changes:")
-    for note in temporal_change_notes(result):
-        print(f"  {note}")
     claim = StructuredClaim(
         rule_id=args.claim_rule, t_ms=args.claim_t_ms, summary=args.claim_summary
     )
-    diagnostic = classify_against_claim(result, claim)
+    if args.mode == "v1":
+        fps = DEFAULT_V1_SAMPLE_FPS if args.fps is None else args.fps
+        result = analyze_capture_dir_v1(
+            capture_dir,
+            fps=fps,
+            max_frames=args.max_frames,
+            subject_pid=args.subject_pid,
+            subject_champion=args.subject_champion,
+            capture_review_pid=args.subject_pid,
+        )
+        print(format_v1_timeline(result), end="")
+        diagnostic = classify_v1_against_claim(result, claim)
+        print(f"visual-vs-rule diagnostic: {diagnostic.value} for {claim.rule_id}")
+        print(
+            f"perf total={result.timing.total_ms:.0f}ms extract={result.timing.extract_ms:.0f}ms "
+            f"detect={result.timing.detect_ms:.0f}ms track={result.timing.track_ms:.0f}ms "
+            f"align={result.timing.align_ms:.0f}ms "
+            f"frames={result.timing.analyzed_frames}/{result.sequence.expected_sample_count}"
+        )
+        if args.json_out is not None:
+            args.json_out.write_text(
+                json.dumps(result.to_dict(), indent=2) + "\n", encoding="utf-8"
+            )
+        return
+    fps = DEFAULT_SAMPLE_FPS if args.fps is None else args.fps
+    v0 = analyze_capture_dir(capture_dir, fps=fps, max_frames=args.max_frames)
+    print(format_timeline(v0), end="")
+    print("temporal changes:")
+    for note in temporal_change_notes(v0):
+        print(f"  {note}")
+    diagnostic = classify_against_claim(v0, claim)
     print(f"visual-vs-rule diagnostic: {diagnostic.value} for {claim.rule_id}")
     print(
-        f"perf extract={result.extract_ms:.0f}ms analyze={result.analyze_ms:.0f}ms "
-        f"frames={result.sequence.sample_count}/{result.sequence.expected_sample_count}"
+        f"perf extract={v0.extract_ms:.0f}ms analyze={v0.analyze_ms:.0f}ms "
+        f"frames={v0.sequence.sample_count}/{v0.sequence.expected_sample_count}"
     )
     if args.json_out is not None:
-        args.json_out.write_text(json.dumps(result.to_dict(), indent=2) + "\n", encoding="utf-8")
+        args.json_out.write_text(json.dumps(v0.to_dict(), indent=2) + "\n", encoding="utf-8")
 
 
 def _resolve_dir(

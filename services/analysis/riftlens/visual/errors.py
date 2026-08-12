@@ -15,3 +15,11 @@ class MalformedVideo(VisualSpikeError):
 
 class EmptyClip(VisualSpikeError):
     """The artifact decodes but contains no usable video frames."""
+
+
+class CaptureWindowError(VisualSpikeError):
+    """The requested finding-window capture interval is invalid or unusable."""
+
+
+class CaptureNotRequested(CaptureWindowError):
+    """V.1 will not auto-capture; an explicit research capture action is required."""

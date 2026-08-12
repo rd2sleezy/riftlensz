@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import StrEnum
 
 import numpy as np
 from numpy.typing import NDArray
@@ -18,6 +19,19 @@ _RED_HIGH_A = np.array([10, 255, 255], dtype=np.uint8)
 _RED_LOW_B = np.array([170, 140, 140], dtype=np.uint8)
 _RED_HIGH_B = np.array([180, 255, 255], dtype=np.uint8)
 MAX_PLAUSIBLE_CHAMPIONS = 10
+
+
+class ViewportCoverage(StrEnum):
+    """Whether the captured viewport is usable for entity detection.
+
+    Off-camera is not fog-of-war. UNCONTROLLED camera + empty detections
+    does not mean the player lacked vision.
+    """
+
+    USEFUL = "USEFUL"
+    OBSTRUCTED = "OBSTRUCTED"
+    TRANSITION = "TRANSITION"
+    UNKNOWN = "UNKNOWN"
 
 
 @dataclass(frozen=True)
@@ -61,11 +75,26 @@ def detect_champion_like_bars(pixels: RgbImage) -> tuple[DetectedBar, ...]:
 
 def viewport_is_informative(pixels: RgbImage) -> bool:
     """Return False when the sampled frame has too little texture to trust counts."""
-    if pixels.size == 0:
-        return False
+    return classify_viewport(pixels) is ViewportCoverage.USEFUL
+
+
+def classify_viewport(pixels: RgbImage) -> ViewportCoverage:
+    """Classify captured-frame coverage. Does not claim player vision or fog."""
+    if pixels.size == 0 or pixels.ndim != 3:
+        return ViewportCoverage.UNKNOWN
     crop, _, _ = _viewport_crop(pixels)
+    if crop.size == 0:
+        return ViewportCoverage.UNKNOWN
     luma = crop.astype(np.float32).mean(axis=2)
-    return float(luma.std()) >= 12.0 and float(luma.mean()) >= 8.0
+    mean = float(luma.mean())
+    std = float(luma.std())
+    if std >= 12.0 and mean >= 8.0:
+        return ViewportCoverage.USEFUL
+    if mean < 8.0:
+        return ViewportCoverage.OBSTRUCTED
+    if std < 12.0:
+        return ViewportCoverage.TRANSITION
+    return ViewportCoverage.UNKNOWN
 
 
 def _viewport_crop(pixels: RgbImage) -> tuple[RgbImage, int, int]:
