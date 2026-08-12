@@ -104,7 +104,7 @@ def classify_against_claim(
 def format_v1_timeline(result: V1AnalysisResult) -> str:
     """Return a research timeline of stable tracks. Not coaching advice."""
     lines = [
-        f"V.1 timeline ({result.sequence.detector_id} {result.sequence.detector_version})",
+        f"timeline ({result.sequence.detector_id} {result.sequence.detector_version})",
         f"match={result.sequence.match_id} capture={result.sequence.capture_interval_id}",
         (
             f"GAME {format_mmss(result.sequence.start_game_ms)}–"
@@ -137,6 +137,17 @@ def format_v1_timeline(result: V1AnalysisResult) -> str:
                 f"  {format_mmss(kill.game_t_ms)} killer={kill.killer_id} "
                 f"victim={kill.victim_id} subject_role={kill.subject_role}"
             )
+    metrics = getattr(result, "metrics", None)
+    if metrics is not None:
+        lines.append("")
+        lines.append(
+            "metrics "
+            f"tracks={metrics.total_tracks} stable={metrics.stable_tracks} "
+            f"one_frame={metrics.one_frame_tracks} ge1s={metrics.tracks_ge_1s} "
+            f"frag={metrics.fragmented_tracks} "
+            f"avg_obs={metrics.avg_observations} "
+            f"median_ms={metrics.median_duration_ms}"
+        )
     return "\n".join(lines) + "\n"
 
 
@@ -202,3 +213,7 @@ def temporal_change_notes(result: VisualAnalysisResult) -> tuple[str, ...]:
     if not notes:
         notes.append("no sampled frames")
     return tuple(notes)
+
+
+format_v2_timeline = format_v1_timeline
+classify_v2_against_claim = classify_v1_against_claim

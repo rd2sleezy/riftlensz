@@ -1,4 +1,4 @@
-"""Visual clip-analysis spike (V.0 baseline + V.1 tracking). Isolated from coaching.
+"""Visual clip-analysis spike (V.0–V.2). Isolated from coaching.
 
 Depends on the R.11 observation contract. The observation contract does not
 depend on this package. Do not import this module from H.6/H.7/H.8.
@@ -36,8 +36,10 @@ from riftlens.visual.report import (
     VisualRuleDiagnostic,
     classify_against_claim,
     classify_v1_against_claim,
+    classify_v2_against_claim,
     format_timeline,
     format_v1_timeline,
+    format_v2_timeline,
 )
 from riftlens.visual.sampling import SampledFrame, sample_clip
 from riftlens.visual.track import (
@@ -55,6 +57,14 @@ from riftlens.visual.v1_analyze import (
     analyze_capture_dir_v1,
     analyze_manifest_v1,
 )
+from riftlens.visual.v2_analyze import (
+    DEFAULT_V2_SAMPLE_FPS,
+    V2_ANALYZER_ID,
+    V2_ANALYZER_VERSION,
+    V2AnalysisResult,
+    analyze_capture_dir_v2,
+    analyze_manifest_v2,
+)
 from riftlens.visual.window import (
     FindingStamp,
     PlannedCapture,
@@ -68,6 +78,7 @@ __all__ = [
     "ANALYZER_VERSION",
     "DEFAULT_SAMPLE_FPS",
     "DEFAULT_V1_SAMPLE_FPS",
+    "DEFAULT_V2_SAMPLE_FPS",
     "ArtifactMissing",
     "MAX_PLAUSIBLE_CHAMPIONS",
     "CandidateKind",
@@ -89,6 +100,9 @@ __all__ = [
     "V1_ANALYZER_ID",
     "V1_ANALYZER_VERSION",
     "V1AnalysisResult",
+    "V2_ANALYZER_ID",
+    "V2_ANALYZER_VERSION",
+    "V2AnalysisResult",
     "ViewportCoverage",
     "VisualAnalysisResult",
     "VisualRuleDiagnostic",
@@ -96,17 +110,21 @@ __all__ = [
     "align_gst",
     "analyze_capture_dir",
     "analyze_capture_dir_v1",
+    "analyze_capture_dir_v2",
     "analyze_manifest",
     "analyze_manifest_v1",
+    "analyze_manifest_v2",
     "capture_request_for_window",
     "capture_window_for_finding",
     "classify_against_claim",
     "classify_v1_against_claim",
+    "classify_v2_against_claim",
     "classify_viewport",
     "correlate_subject",
     "detect_champion_like_bars",
     "format_timeline",
     "format_v1_timeline",
+    "format_v2_timeline",
     "sample_clip",
     "select_finding",
     "track_candidates",

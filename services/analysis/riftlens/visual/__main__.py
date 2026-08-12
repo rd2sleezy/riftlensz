@@ -15,15 +15,16 @@ from riftlens.visual.report import (
     temporal_change_notes,
 )
 from riftlens.visual.v1_analyze import DEFAULT_V1_SAMPLE_FPS, analyze_capture_dir_v1
+from riftlens.visual.v2_analyze import DEFAULT_V2_SAMPLE_FPS, analyze_capture_dir_v2
 
 
 def main() -> None:
-    """Run V.0 or V.1 against an R.10 capture directory. Local only."""
+    """Run V.0, V.1, or V.2 against an R.10 capture directory. Local only."""
     parser = argparse.ArgumentParser(description="Visual clip analysis spike")
     parser.add_argument("--capture-dir", type=Path, help="Directory containing manifest.json")
     parser.add_argument("--capture-id", help="Lookup capture_id under the capture root")
     parser.add_argument("--capture-root", type=Path, default=None)
-    parser.add_argument("--mode", choices=("v0", "v1"), default="v0")
+    parser.add_argument("--mode", choices=("v0", "v1", "v2"), default="v0")
     parser.add_argument("--fps", type=float, default=None)
     parser.add_argument("--max-frames", type=int, default=None)
     parser.add_argument("--subject-pid", type=int, default=None)
@@ -40,9 +41,14 @@ def main() -> None:
     claim = StructuredClaim(
         rule_id=args.claim_rule, t_ms=args.claim_t_ms, summary=args.claim_summary
     )
-    if args.mode == "v1":
-        fps = DEFAULT_V1_SAMPLE_FPS if args.fps is None else args.fps
-        result = analyze_capture_dir_v1(
+    if args.mode in {"v1", "v2"}:
+        fps = (
+            (DEFAULT_V2_SAMPLE_FPS if args.mode == "v2" else DEFAULT_V1_SAMPLE_FPS)
+            if args.fps is None
+            else args.fps
+        )
+        analyze = analyze_capture_dir_v2 if args.mode == "v2" else analyze_capture_dir_v1
+        result = analyze(
             capture_dir,
             fps=fps,
             max_frames=args.max_frames,
