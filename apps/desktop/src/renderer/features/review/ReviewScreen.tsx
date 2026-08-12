@@ -231,7 +231,7 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
       if (cancelled) {
         return
       }
-      if (env.ok && env.live_game) {
+      if (env.ok && env.live_game && !nativeSessionReady(gameplayStatus)) {
         void window.rift.overlayClose()
         return
       }

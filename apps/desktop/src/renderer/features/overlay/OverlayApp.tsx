@@ -38,6 +38,8 @@ export function OverlayApp(): ReactElement {
   const seekInFlight = useRef(false)
   const navScrollRef = useRef<HTMLDivElement | null>(null)
   const navScrollTop = useRef(0)
+  const statusRef = useRef(status)
+  statusRef.current = status
 
   const detailOpen = prefs?.detailOpen ?? true
   const needsCompat = lifecycle?.needsCompat === true
@@ -116,7 +118,7 @@ export function OverlayApp(): ReactElement {
         }
       })
       void window.rift.checkGameplayEnvironment().then((env) => {
-        if (env.ok && env.live_game) {
+        if (env.ok && env.live_game && !nativeSessionReady(statusRef.current)) {
           void window.rift.overlayUpdateSession({ liveGame: true })
         }
       })

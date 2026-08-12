@@ -34,6 +34,16 @@ describe('overlay interaction performance contracts', () => {
     expect(overlay).not.toMatch(/overlayHide\(\)/)
   })
 
+  it('does not reset user presentation from poll or League-miss reconciliation', () => {
+    const controller = readFileSync(path.join(__dirname, 'controller.ts'), 'utf8')
+    expect(controller).toContain('nextUserIntent')
+    expect(controller).toContain('isTerminalReplaySession')
+    expect(controller).toContain('sameContext')
+    const applyStart = controller.indexOf('private applyDecision')
+    const applyEnd = controller.indexOf('private relayout')
+    expect(controller.slice(applyStart, applyEnd)).not.toMatch(/userIntent/)
+  })
+
   it('keeps PowerShell enumeration off the synchronous FindWindow hot path', () => {
     const source = readFileSync(path.join(__dirname, 'leagueWindow.ts'), 'utf8')
     expect(source).toContain('findViaFindWindow')

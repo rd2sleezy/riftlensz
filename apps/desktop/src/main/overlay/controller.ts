@@ -30,7 +30,8 @@ import {
   type Rect
 } from './types'
 import {
-  intentAfterSessionReset,
+  isTerminalReplaySession,
+  nextUserIntent,
   resolveOverlayPresentation,
   type OverlayPresentation,
   type OverlayUserIntent,
@@ -74,6 +75,7 @@ export class OverlayController {
   private needsCompat = false
   private lastAppliedBounds: Rect | null = null
   private lastBroadcastKey = ''
+  private lastLeagueSeenAt = 0
   private session: OverlaySessionSnapshot = {
     sessionPhase: null,
     sessionReachedReady: false,
@@ -151,13 +153,19 @@ export class OverlayController {
       this.hide('live_game')
       return { ok: false, reason: 'live_game' }
     }
-    const firstOpen = this.context === null
+    const sameContext =
+      this.context !== null &&
+      this.context.reviewId === context.reviewId &&
+      this.context.matchId === context.matchId &&
+      this.context.sourceId === context.sourceId
+    this.userIntent = nextUserIntent({
+      current: this.userIntent,
+      action: 'open',
+      sameContext
+    })
     this.context = context
     if (session !== undefined) {
       this.session = { ...this.session, ...session }
-    }
-    if (firstOpen) {
-      this.userIntent = intentAfterSessionReset()
     }
     this.ensureWindow()
     this.startPolling()
@@ -169,17 +177,17 @@ export class OverlayController {
   updateSession(session: Partial<OverlaySessionSnapshot>): void {
     this.session = { ...this.session, ...session }
     if (session.liveGame === true) {
+      this.userIntent = nextUserIntent({ current: this.userIntent, action: 'live_game' })
       this.hide('live_game')
       this.broadcastLifecycle('session')
       return
     }
-    const active = isReplaySessionActive(
-      this.session.sessionPhase,
-      this.session.sessionReachedReady
-    )
-    if (!active) {
-      this.userIntent = intentAfterSessionReset()
-    }
+    this.userIntent = nextUserIntent({
+      current: this.userIntent,
+      action: 'status',
+      sameContext: true,
+      terminalSession: isTerminalReplaySession(this.session.sessionPhase)
+    })
     this.tick()
     this.broadcastLifecycle('session')
   }
@@ -191,7 +199,7 @@ export class OverlayController {
       sessionReachedReady: false,
       liveGame: false
     }
-    this.userIntent = intentAfterSessionReset()
+    this.userIntent = nextUserIntent({ current: this.userIntent, action: 'close' })
     this.presentation = 'HIDDEN_NO_SESSION'
     this.needsCompat = false
     this.stopPolling()
@@ -203,7 +211,10 @@ export class OverlayController {
   hide(reason = 'manual'): void {
     this.lastReason = reason
     this.presentation = 'HIDDEN_NO_SESSION'
-    this.userIntent = intentAfterSessionReset()
+    this.userIntent = nextUserIntent({
+      current: this.userIntent,
+      action: reason === 'live_game' ? 'live_game' : 'close'
+    })
     this.needsCompat = false
     logger.info({ reason }, 'overlay hide')
     if (this.window !== null && !this.window.isDestroyed() && this.window.isVisible()) {
@@ -214,14 +225,14 @@ export class OverlayController {
 
   /** Explicit minimize → Access Overlay launcher. Does not touch replay/session. */
   minimize(): OverlayLifecycleEvent {
-    this.userIntent = 'launcher'
+    this.userIntent = nextUserIntent({ current: this.userIntent, action: 'minimize' })
     this.applyDecision(this.evaluate(), { forceLayout: true, kind: 'presentation' })
     return this.getLifecycleSnapshot()
   }
 
   /** Explicit Access Overlay → full coaching (or compat guide). */
   expand(): OverlayLifecycleEvent {
-    this.userIntent = 'overlay'
+    this.userIntent = nextUserIntent({ current: this.userIntent, action: 'expand' })
     this.applyDecision(this.evaluate(), { forceLayout: true, kind: 'presentation' })
     return this.getLifecycleSnapshot()
   }
@@ -342,6 +353,7 @@ export class OverlayController {
     let leagueMinimized = false
     if (league !== null) {
       this.missingPolls = 0
+      this.lastLeagueSeenAt = Date.now()
       this.lastLeagueBounds = league.bounds
       leagueMinimized = league.minimized
       const display = screen.getDisplayMatching({
@@ -362,11 +374,21 @@ export class OverlayController {
       })
       league = { ...league, displayMode: this.displayMode }
     } else {
-      this.missingPolls += 1
+      const graceMs = LEAGUE_MISSING_GRACE_POLLS * OVERLAY_POLL_MS
+      const recentlySeen =
+        this.lastLeagueBounds !== null && Date.now() - this.lastLeagueSeenAt <= graceMs
+      if (!recentlySeen) {
+        this.missingPolls += 1
+      }
       if (exclusive) {
         this.displayMode = 'exclusive_fullscreen'
       }
     }
+
+    const graceMs = LEAGUE_MISSING_GRACE_POLLS * OVERLAY_POLL_MS
+    const leaguePresent =
+      league !== null ||
+      (this.lastLeagueBounds !== null && Date.now() - this.lastLeagueSeenAt <= graceMs)
 
     const decision = resolveOverlayPresentation({
       prefsEnabled: this.prefs.enabled,
@@ -376,7 +398,7 @@ export class OverlayController {
         this.session.sessionPhase,
         this.session.sessionReachedReady
       ),
-      leaguePresent: league !== null,
+      leaguePresent,
       leagueMinimized,
       missingPolls: this.missingPolls,
       gracePolls: LEAGUE_MISSING_GRACE_POLLS,
@@ -394,15 +416,6 @@ export class OverlayController {
     this.needsCompat = decision.needsCompat
     this.presentation = decision.presentation
     if (!decision.showWindow) {
-      if (
-        decision.reason === 'league_missing' ||
-        decision.reason === 'session_inactive' ||
-        decision.reason === 'live_game' ||
-        decision.reason === 'no_context' ||
-        decision.reason === 'prefs_disabled'
-      ) {
-        this.userIntent = intentAfterSessionReset()
-      }
       if (this.window !== null && !this.window.isDestroyed() && this.window.isVisible()) {
         this.window.hide()
       }

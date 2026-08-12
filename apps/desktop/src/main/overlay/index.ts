@@ -40,6 +40,8 @@ export {
   BORDERLESS_REQUIRED_MESSAGE
 } from './displayModeAssist'
 export {
+  effectiveOverlayPresentation,
+  nextUserIntent,
   resolveOverlayPresentation,
   type OverlayPresentation,
   type OverlayUserIntent
