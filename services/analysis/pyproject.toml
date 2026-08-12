@@ -63,6 +63,7 @@ packages = ["riftlens"]
 
 [tool.importlinter]
 root_packages = ["riftlens"]
+include_external_packages = true
 
 [[tool.importlinter.contracts]]
 name = "domain isolation"
@@ -77,6 +78,20 @@ forbidden_modules = [
     "riftlens.rofl",
     "riftlens.replay_host",
     "riftlens.gameplay",
+]
+
+[[tool.importlinter.contracts]]
+name = "observation has no vision stack"
+type = "forbidden"
+source_modules = ["riftlens.domain.observation"]
+forbidden_modules = [
+    "cv2",
+    "torch",
+    "onnxruntime",
+    "tensorflow",
+    "openai",
+    "anthropic",
+    "electron",
 ]
 
 [[tool.importlinter.contracts]]

@@ -1,0 +1,12 @@
+{
+  "match_id": "NA1_5617764200",
+  "capture_interval_id": "01KZQPZFMMZDR9DB4Y3NQ2ADSV",
+  "media_artifact_id": "clip_g1110000.webm",
+  "artifact_relative_path": "clip_g1110000.webm",
+  "clock_map_id": "01KZMY2BN0GGHK7T6BCGH8Q6XS",
+  "gameplay_source_id": "01JZ000000R11STRVCT0000001",
+  "game_t_ms": 1110000,
+  "source_t_ms": null,
+  "camera_controlled": false,
+  "note": "EMPTY/UNKNOWN FrameObservation only. Do not invent visual contents. gameplay_source_id is a synthetic stand-in; the live capture record was not in-repo."
+}

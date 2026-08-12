@@ -1,0 +1,68 @@
+{
+  "analyzer_id": "riftlens.observation.contract",
+  "analyzer_version": "r11.1",
+  "artifact_relative_path": null,
+  "artifact_sha256": null,
+  "camera": {
+    "confidence": 0.0,
+    "control": "UNKNOWN",
+    "crop": null,
+    "mode": null,
+    "target_knowledge": "UNKNOWN",
+    "target_participant_id": null,
+    "viewport_height": null,
+    "viewport_width": null
+  },
+  "capture_interval_id": "01JZ000000R11CAP0000000001",
+  "claim_kind": "OBSERVED",
+  "clock_map_id": "01JZ000000R11CLK0000000001",
+  "confidence": 0.3,
+  "detector_id": "riftlens.observation.contract",
+  "detector_version": "r11.1",
+  "entities": [
+    {
+      "champion_id": null,
+      "confidence": 0.3,
+      "correlation_method": "NONE",
+      "entity_observation_id": "01JZ000000R11ENTTY00000001",
+      "identity_knowledge": "UNKNOWN",
+      "occluded": null,
+      "participant_id": null,
+      "participant_knowledge": "UNKNOWN",
+      "screen_region": {
+        "height": 80,
+        "width": 60,
+        "x": 100,
+        "y": 40
+      },
+      "team": null,
+      "visibility": "VISIBLE"
+    }
+  ],
+  "game_t_ms": 1110000,
+  "gameplay_source_id": "01JZ000000R11SRC0000000001",
+  "hud": {
+    "fields": {},
+    "hud_visible": "UNKNOWN"
+  },
+  "match_id": "NA1_SYNTHETIC",
+  "media_artifact_id": "01JZ000000R11ART0000000001",
+  "observation_id": "01JZ000000R11FRAME00000001",
+  "observation_type": "frame",
+  "payload": {},
+  "schema_version": "r11.1",
+  "source": "VISUAL",
+  "source_t_ms": null,
+  "spatial": {
+    "grouping": "UNKNOWN",
+    "knowledge": "UNKNOWN",
+    "labels": [],
+    "minimap_visible": "UNKNOWN",
+    "movement_direction": null,
+    "objective_presence": "UNKNOWN",
+    "region": null,
+    "relative_screen_position": null,
+    "turret_presence": "UNKNOWN",
+    "ward_indicators": "UNKNOWN"
+  }
+}

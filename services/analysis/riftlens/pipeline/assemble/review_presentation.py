@@ -7,6 +7,7 @@ from typing import Any
 
 from riftlens.domain.evidence import Evidence
 from riftlens.domain.finding import Finding
+from riftlens.domain.observation.to_evidence import evidence_origin_label
 from riftlens.domain.review import CoachingItem, MetricSnapshot, Review, format_mmss
 from riftlens.domain.sync_map import SyncMap, seek_target
 
@@ -200,6 +201,7 @@ def _evidence_json(item: Evidence) -> dict[str, Any]:
         "label": item.label,
         "value": item.value,
         "source": item.source.value,
+        "origin_label": evidence_origin_label(item.source),
         "t_ms": item.t_ms,
         "confidence": item.confidence,
         "provenance": provenance,

@@ -55,6 +55,8 @@ class Source(StrEnum):
     CV = "CV"
     DERIVED = "DERIVED"
     USER = "USER"
+    VISUAL = "VISUAL"
+    VISUAL_INFERRED = "VISUAL_INFERRED"
 
 
 class Severity(StrEnum):

@@ -121,6 +121,7 @@ class RuleDefinition(BaseModel):
     cooldown_ms: int = 0
     max_findings_per_match: int | None = None
     is_strength: bool = False
+    requires_visual: bool = False
 
     @field_validator("false_positives")
     @classmethod
@@ -214,6 +215,8 @@ def _applies(
     if queue not in app.queues:
         return False
     if rule.data_tier not in available_tiers:
+        return False
+    if rule.requires_visual and DataTier.CV_REQUIRED not in available_tiers:
         return False
     if not patch_in_range(rule.patch_range, patch):
         return False

@@ -3,6 +3,16 @@
     "Applicability": {
       "additionalProperties": false,
       "properties": {
+        "roles": {
+          "items": {
+            "$ref": "#/$defs/Role"
+          },
+          "title": "Roles",
+          "type": "array"
+        },
+        "champions": {
+          "$ref": "#/$defs/ChampionFilter"
+        },
         "champion_tags_exclude": {
           "items": {
             "type": "string"
@@ -10,20 +20,19 @@
           "title": "Champion Tags Exclude",
           "type": "array"
         },
-        "champions": {
-          "$ref": "#/$defs/ChampionFilter"
+        "queues": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Queues",
+          "type": "array"
         },
-        "max_rank": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Max Rank"
+        "phases": {
+          "items": {
+            "$ref": "#/$defs/GamePhase"
+          },
+          "title": "Phases",
+          "type": "array"
         },
         "min_rank": {
           "anyOf": [
@@ -37,26 +46,17 @@
           "default": null,
           "title": "Min Rank"
         },
-        "phases": {
-          "items": {
-            "$ref": "#/$defs/GamePhase"
-          },
-          "title": "Phases",
-          "type": "array"
-        },
-        "queues": {
-          "items": {
-            "type": "integer"
-          },
-          "title": "Queues",
-          "type": "array"
-        },
-        "roles": {
-          "items": {
-            "$ref": "#/$defs/Role"
-          },
-          "title": "Roles",
-          "type": "array"
+        "max_rank": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Rank"
         }
       },
       "required": [
@@ -70,18 +70,18 @@
     "ChampionFilter": {
       "additionalProperties": false,
       "properties": {
-        "exclude": {
-          "items": {
-            "type": "string"
-          },
-          "title": "Exclude",
-          "type": "array"
-        },
         "include": {
           "items": {
             "type": "string"
           },
           "title": "Include",
+          "type": "array"
+        },
+        "exclude": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Exclude",
           "type": "array"
         }
       },
@@ -216,12 +216,9 @@
           "title": "Evaluate On",
           "type": "string"
         },
-        "fact_kinds": {
-          "items": {
-            "$ref": "#/$defs/FactKind"
-          },
-          "title": "Fact Kinds",
-          "type": "array"
+        "predicate": {
+          "title": "Predicate",
+          "type": "string"
         },
         "period_ms": {
           "anyOf": [
@@ -235,9 +232,12 @@
           "default": null,
           "title": "Period Ms"
         },
-        "predicate": {
-          "title": "Predicate",
-          "type": "string"
+        "fact_kinds": {
+          "items": {
+            "$ref": "#/$defs/FactKind"
+          },
+          "title": "Fact Kinds",
+          "type": "array"
         },
         "segmenter": {
           "anyOf": [
@@ -263,78 +263,31 @@
   "additionalProperties": false,
   "description": "YAML rule shape from the technical design \u00a74.1.",
   "properties": {
-    "applicability": {
-      "$ref": "#/$defs/Applicability"
-    },
-    "better_alternative": {
-      "default": "",
-      "title": "Better Alternative",
+    "id": {
+      "title": "Id",
       "type": "string"
     },
-    "category": {
-      "title": "Category",
+    "version": {
+      "title": "Version",
+      "type": "integer"
+    },
+    "name": {
+      "title": "Name",
       "type": "string"
     },
     "concept_id": {
       "title": "Concept Id",
       "type": "string"
     },
-    "cooldown_ms": {
-      "default": 0,
-      "title": "Cooldown Ms",
-      "type": "integer"
+    "category": {
+      "title": "Category",
+      "type": "string"
+    },
+    "severity_base": {
+      "$ref": "#/$defs/Severity"
     },
     "data_tier": {
       "$ref": "#/$defs/DataTier"
-    },
-    "evidence_template": {
-      "items": {
-        "type": "string"
-      },
-      "title": "Evidence Template",
-      "type": "array"
-    },
-    "explanation": {
-      "default": "",
-      "title": "Explanation",
-      "type": "string"
-    },
-    "false_positives": {
-      "items": {
-        "type": "string"
-      },
-      "title": "False Positives",
-      "type": "array"
-    },
-    "id": {
-      "title": "Id",
-      "type": "string"
-    },
-    "is_strength": {
-      "default": false,
-      "title": "Is Strength",
-      "type": "boolean"
-    },
-    "max_findings_per_match": {
-      "anyOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Max Findings Per Match"
-    },
-    "name": {
-      "title": "Name",
-      "type": "string"
-    },
-    "params": {
-      "additionalProperties": true,
-      "title": "Params",
-      "type": "object"
     },
     "patch_range": {
       "anyOf": [
@@ -348,6 +301,9 @@
       "default": null,
       "title": "Patch Range"
     },
+    "applicability": {
+      "$ref": "#/$defs/Applicability"
+    },
     "required_inputs": {
       "items": {
         "$ref": "#/$defs/RequiredInputsItem"
@@ -355,14 +311,43 @@
       "title": "Required Inputs",
       "type": "array"
     },
-    "severity_base": {
-      "$ref": "#/$defs/Severity"
+    "trigger": {
+      "$ref": "#/$defs/Trigger"
+    },
+    "params": {
+      "additionalProperties": true,
+      "title": "Params",
+      "type": "object"
     },
     "severity_modifiers": {
       "items": {
         "$ref": "#/$defs/SeverityModifier"
       },
       "title": "Severity Modifiers",
+      "type": "array"
+    },
+    "evidence_template": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence Template",
+      "type": "array"
+    },
+    "explanation": {
+      "default": "",
+      "title": "Explanation",
+      "type": "string"
+    },
+    "better_alternative": {
+      "default": "",
+      "title": "Better Alternative",
+      "type": "string"
+    },
+    "false_positives": {
+      "items": {
+        "type": "string"
+      },
+      "title": "False Positives",
       "type": "array"
     },
     "suppressed_by": {
@@ -372,12 +357,32 @@
       "title": "Suppressed By",
       "type": "array"
     },
-    "trigger": {
-      "$ref": "#/$defs/Trigger"
-    },
-    "version": {
-      "title": "Version",
+    "cooldown_ms": {
+      "default": 0,
+      "title": "Cooldown Ms",
       "type": "integer"
+    },
+    "max_findings_per_match": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Max Findings Per Match"
+    },
+    "is_strength": {
+      "default": false,
+      "title": "Is Strength",
+      "type": "boolean"
+    },
+    "requires_visual": {
+      "default": false,
+      "title": "Requires Visual",
+      "type": "boolean"
     }
   },
   "required": [
