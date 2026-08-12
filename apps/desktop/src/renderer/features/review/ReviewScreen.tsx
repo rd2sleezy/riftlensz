@@ -284,9 +284,9 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
 
   useEffect(() => {
     return window.rift.onOverlayLifecycle((event) => {
-      if (event.reason === 'exclusive_fullscreen' || event.displayMode === 'exclusive_fullscreen') {
+      if (event.needsCompat || event.displayMode === 'exclusive_fullscreen') {
         setOverlayNotice(
-          event.message ?? 'RiftLens overlay requires Borderless or Windowed replay mode.'
+          event.message ?? 'RiftLens Overlay requires Borderless display mode.'
         )
         return
       }
@@ -417,12 +417,25 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
         onAction={handleReplayAction}
       />
       {overlayNotice !== null ? (
-        <p
+        <div
           className="mb-3 rounded border border-amber-700/60 bg-amber-950/50 px-3 py-2 text-xs text-amber-100"
           data-testid="overlay-exclusive-fs-notice"
         >
-          {overlayNotice}
-        </p>
+          <p className="font-medium">{overlayNotice}</p>
+          <ol className="mt-1 list-decimal pl-4 text-amber-50/90">
+            <li>Open League video settings.</li>
+            <li>Change Window Mode to Borderless.</li>
+            <li>Return to the replay.</li>
+          </ol>
+          <button
+            type="button"
+            className="mt-2 rounded bg-amber-800 px-2 py-1 text-xs text-amber-50 hover:bg-amber-700"
+            data-testid="overlay-recheck-main"
+            onClick={() => void window.rift.overlayRecheckDisplay()}
+          >
+            Recheck
+          </button>
+        </div>
       ) : null}
       {pendingRevealMs !== null ? (
         <p className="mb-3 text-xs text-sky-200" data-testid="pending-reveal-hint">

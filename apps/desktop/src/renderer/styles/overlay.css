@@ -17,6 +17,72 @@ body.overlay-body {
   gap: 6px;
 }
 
+.overlay-launcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  box-sizing: border-box;
+  background: rgba(12, 18, 28, 0.96);
+  color: #e8eef7;
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  border-radius: 999px;
+  padding: 4px 6px 4px 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  -webkit-app-region: drag;
+}
+
+.overlay-launcher-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(14, 116, 144, 0.95);
+  color: #ecfeff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.overlay-launcher-btn {
+  -webkit-app-region: no-drag;
+  border: 0;
+  background: transparent;
+  color: #e0f2fe;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.overlay-launcher-btn:hover {
+  color: #ffffff;
+}
+
+.overlay-compat {
+  background: rgba(12, 18, 28, 0.96);
+  color: #e8eef7;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  flex: 1;
+}
+
+.overlay-steps {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #e2e8f0;
+}
+
 .overlay-banner {
   background: rgba(120, 53, 15, 0.95);
   color: #ffedd5;

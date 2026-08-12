@@ -26,6 +26,7 @@ import {
   OverlayOpenResultSchema,
   OverlayPrefsSchema,
   OverlaySessionUpdateSchema,
+  OverlayUserIntentSchema,
   PickRoflResultSchema,
   PickVodResultSchema,
   ProbeVodInputSchema,
@@ -196,8 +197,17 @@ export function registerIpcHandlers(
   })
 
   ipcMain.handle(IPC.overlayHide, () => {
-    overlay.hide('manual')
-    return { ok: true as const }
+    // Minimize to launcher — never a hover/idle hide, never closes the replay.
+    return OverlayLifecycleEventSchema.parse(overlay.minimize())
+  })
+
+  ipcMain.handle(IPC.overlaySetPresentation, (_event, raw: unknown) => {
+    const intent = OverlayUserIntentSchema.parse(raw)
+    return OverlayLifecycleEventSchema.parse(overlay.setPresentation(intent))
+  })
+
+  ipcMain.handle(IPC.overlayRecheckDisplay, () => {
+    return OverlayLifecycleEventSchema.parse(overlay.recheckDisplay())
   })
 
   ipcMain.handle(IPC.overlayGetPrefs, () => {

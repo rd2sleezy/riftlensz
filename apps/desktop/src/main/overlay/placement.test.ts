@@ -18,9 +18,13 @@ import {
   defaultOverlayRect,
   isHudSafe,
   physicalSizeForCss,
+  resolveCompatRect,
+  resolveLauncherRect,
   resolveOverlayLayout,
   resolveOverlayRect
 } from '../../main/overlay/placement'
+import { resolveOverlayPresentation } from '../../main/overlay/visibilityState'
+import { LAUNCHER_HEIGHT, LAUNCHER_WIDTH } from '../../main/overlay/types'
 import { loadOverlayPrefs, mergeOverlayPrefs, saveOverlayPrefs } from '../../main/overlay/prefs'
 import { DEFAULT_OVERLAY_PREFS, type Rect } from '../../main/overlay/types'
 
@@ -121,10 +125,34 @@ describe('overlay HUD placement', () => {
     expect(resolved.x).toBe(100)
     expect(resolved.y).toBe(120)
   })
+
+  it('keeps the Access Overlay launcher HUD-safe at 1080p, 1440p, and 4K', () => {
+    for (const size of [
+      [1920, 1080],
+      [2560, 1440],
+      [3840, 2160]
+    ] as const) {
+      const league = leagueAt(size[0], size[1])
+      const launcher = resolveLauncherRect({
+        league,
+        workArea: workAreaFor(league),
+        launcherPosition: null
+      })
+      expect(launcher.width).toBe(LAUNCHER_WIDTH)
+      expect(launcher.height).toBe(LAUNCHER_HEIGHT)
+      expect(isHudSafe(league, launcher)).toBe(true)
+      const compat = resolveCompatRect({
+        league,
+        workArea: workAreaFor(league),
+        position: null
+      })
+      expect(isHudSafe(league, compat)).toBe(true)
+    }
+  })
 })
 
 describe('overlay visibility / fullscreen policy', () => {
-  it('hides for exclusive D3D fullscreen with a typed reason', () => {
+  it('keeps a companion surface in exclusive fullscreen (no silent hide)', () => {
     const league = {
       bounds: leagueAt(1920, 1080),
       minimized: false,
@@ -140,8 +168,26 @@ describe('overlay visibility / fullscreen policy', () => {
         league,
         missingPolls: 0,
         exclusiveFullscreen: true
+      }).visible
+    ).toBe(true)
+    expect(
+      resolveOverlayPresentation({
+        prefsEnabled: true,
+        liveGame: false,
+        hasContext: true,
+        sessionActive: true,
+        leaguePresent: true,
+        leagueMinimized: false,
+        missingPolls: 0,
+        exclusiveFullscreen: true,
+        userIntent: 'overlay'
       })
-    ).toEqual({ visible: false, reason: 'exclusive_fullscreen' })
+    ).toMatchObject({
+      presentation: 'OVERLAY_OPEN',
+      showWindow: true,
+      needsCompat: true,
+      reason: 'exclusive_fullscreen'
+    })
   })
 
   it('classifies borderless vs windowed from bounds', () => {
@@ -218,6 +264,7 @@ describe('overlay prefs persistence', () => {
     )
     const loaded = loadOverlayPrefs(dir)
     expect(loaded.position).toEqual({ x: 42, y: 84 })
+    expect(loaded.launcherPosition).toBeNull()
     expect(loaded.detailOpen).toBe(false)
     expect(saved.enabled).toBe(true)
     const raw = readFileSync(join(dir, 'overlay-prefs.json'), 'utf8')

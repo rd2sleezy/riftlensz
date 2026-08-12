@@ -306,12 +306,6 @@ export function shouldShowOverlay(input: {
   if (!input.sessionActive) {
     return { visible: false, reason: 'session_inactive' }
   }
-  if (
-    input.exclusiveFullscreen === true ||
-    input.league?.displayMode === 'exclusive_fullscreen'
-  ) {
-    return { visible: false, reason: 'exclusive_fullscreen' }
-  }
   if (input.league === null) {
     const grace = input.gracePolls ?? 3
     if (input.missingPolls > grace) {
@@ -321,6 +315,12 @@ export function shouldShowOverlay(input: {
   }
   if (input.league.minimized) {
     return { visible: false, reason: 'league_minimized' }
+  }
+  if (
+    input.exclusiveFullscreen === true ||
+    input.league.displayMode === 'exclusive_fullscreen'
+  ) {
+    return { visible: true, reason: 'exclusive_fullscreen' }
   }
   return { visible: true, reason: 'ok' }
 }

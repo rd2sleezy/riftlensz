@@ -8,9 +8,30 @@ describe('overlay interaction performance contracts', () => {
     expect(source).toContain('setSelectedItemId(item.id)')
     expect(source).toContain('revealGameplayTimestamp')
     expect(source).not.toMatch(/await\s+.*findLeague|execFileSync|powershell/i)
-    // Row click activates seek directly — no separate Jump gate.
     expect(source).toContain('onActivate={onRowActivate}')
     expect(source).not.toMatch(/data-testid="overlay-jump"/)
+  })
+
+  it('opens and minimizes without waiting for poll, PowerShell, or sidecar', () => {
+    const source = readFileSync(path.join(__dirname, '../../renderer/features/overlay/OverlayApp.tsx'), 'utf8')
+    expect(source).toContain("setPresentation('OVERLAY_OPEN')")
+    expect(source).toContain("setPresentation('LAUNCHER')")
+    expect(source).toContain("overlaySetPresentation('overlay')")
+    expect(source).toContain("overlaySetPresentation('launcher')")
+    expect(source).not.toMatch(/await window\.rift\.overlaySetPresentation/)
+  })
+
+  it('does not hide on mouseleave, blur, or inactivity timers', () => {
+    const overlay = readFileSync(
+      path.join(__dirname, '../../renderer/features/overlay/OverlayApp.tsx'),
+      'utf8'
+    )
+    const controller = readFileSync(path.join(__dirname, 'controller.ts'), 'utf8')
+    expect(overlay).not.toMatch(/onMouseLeave|onMouseOut|onBlur=/)
+    expect(controller).not.toMatch(/\.on\(['"]blur['"]/)
+    expect(controller).not.toMatch(/idleHide|hoverHide/)
+    expect(controller).not.toMatch(/setTimeout\([^)]*hide\(/)
+    expect(overlay).not.toMatch(/overlayHide\(\)/)
   })
 
   it('keeps PowerShell enumeration off the synchronous FindWindow hot path', () => {

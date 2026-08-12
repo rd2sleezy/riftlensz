@@ -14,6 +14,7 @@ import type {
   OverlayLifecycleEventPayload,
   OverlayOpenResult,
   OverlayPrefsPayload,
+  OverlayUserIntentPayload,
   PickRoflResult,
   PickVodResult,
   ProbeVodResult,
@@ -60,7 +61,9 @@ export interface RiftApi {
     liveGame?: boolean
   }) => Promise<OverlayOpenResult>
   overlayClose: () => Promise<{ ok: true }>
-  overlayHide: () => Promise<{ ok: true }>
+  overlayHide: () => Promise<OverlayLifecycleEventPayload>
+  overlaySetPresentation: (intent: OverlayUserIntentPayload) => Promise<OverlayLifecycleEventPayload>
+  overlayRecheckDisplay: () => Promise<OverlayLifecycleEventPayload>
   overlayGetPrefs: () => Promise<OverlayPrefsPayload>
   overlaySetPrefs: (patch: Partial<OverlayPrefsPayload>) => Promise<OverlayPrefsPayload>
   overlayGetContext: () => Promise<OverlayContextResult>

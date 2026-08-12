@@ -4,6 +4,7 @@ import type {
   GameplayStatus,
   OverlayLifecycleEventPayload,
   OverlayPrefsPayload,
+  OverlayPresentationPayload,
   ReviewPresentation
 } from '../../../main/ipc/channels'
 import { deriveGameplayBar, nativeSessionReady } from '../review/gameplayBar'
@@ -33,9 +34,20 @@ export function OverlayApp(): ReactElement {
   const [techOpen, setTechOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [lifecycle, setLifecycle] = useState<OverlayLifecycleEventPayload | null>(null)
+  const [presentation, setPresentation] = useState<OverlayPresentationPayload>('LAUNCHER')
   const seekInFlight = useRef(false)
+  const navScrollRef = useRef<HTMLDivElement | null>(null)
+  const navScrollTop = useRef(0)
 
   const detailOpen = prefs?.detailOpen ?? true
+  const needsCompat = lifecycle?.needsCompat === true
+
+  const applyLifecycle = useCallback((event: OverlayLifecycleEventPayload): void => {
+    setLifecycle(event)
+    if (event.presentation !== 'HIDDEN_NO_SESSION') {
+      setPresentation(event.presentation)
+    }
+  }, [])
 
   const bootstrap = useCallback(async () => {
     const [ctx, life] = await Promise.all([
@@ -43,7 +55,7 @@ export function OverlayApp(): ReactElement {
       window.rift.overlayGetLifecycle()
     ])
     setPrefs(ctx.prefs)
-    setLifecycle(life)
+    applyLifecycle(life)
     if (ctx.context === null) {
       setError('No active replay coaching context.')
       return
@@ -56,7 +68,7 @@ export function OverlayApp(): ReactElement {
       return
     }
     setReview(reviewResult.review)
-    setSelectedItemId(reviewResult.review.focus_items[0]?.id ?? null)
+    setSelectedItemId((prev) => prev ?? reviewResult.review.focus_items[0]?.id ?? null)
     const statusResult = await window.rift.getGameplayStatus(
       ctx.context.matchId,
       ctx.context.sourceId
@@ -65,7 +77,7 @@ export function OverlayApp(): ReactElement {
       setStatus(statusResult.status)
     }
     setError(null)
-  }, [])
+  }, [applyLifecycle])
 
   useEffect(() => {
     void bootstrap()
@@ -73,11 +85,21 @@ export function OverlayApp(): ReactElement {
 
   useEffect(() => {
     return window.rift.onOverlayLifecycle((event) => {
-      setLifecycle(event)
+      applyLifecycle(event)
     })
-  }, [])
+  }, [applyLifecycle])
 
-  // Low-frequency health poll only — never blocks selection/seek.
+  useEffect(() => {
+    if (presentation !== 'OVERLAY_OPEN' || needsCompat) {
+      return
+    }
+    const el = navScrollRef.current
+    if (el !== null) {
+      el.scrollTop = navScrollTop.current
+    }
+  }, [presentation, needsCompat])
+
+  // Low-frequency health poll only — never blocks selection/seek/open/minimize.
   useEffect(() => {
     if (matchId === null) {
       return
@@ -98,7 +120,6 @@ export function OverlayApp(): ReactElement {
           void window.rift.overlayUpdateSession({ liveGame: true })
         }
       })
-      void window.rift.overlayGetLifecycle().then(setLifecycle)
     }, 3_000)
     return () => window.clearInterval(handle)
   }, [matchId, sourceId])
@@ -128,7 +149,6 @@ export function OverlayApp(): ReactElement {
 
   const seekTo = useCallback(
     (item: CoachingItem, gameTMs: number): void => {
-      // Optimistic local UI — do not wait for sidecar or status poll.
       setSelectedItemId(item.id)
       if (sourceId === null || matchId === null) {
         setSeekMessage('Replay source missing.')
@@ -189,10 +209,27 @@ export function OverlayApp(): ReactElement {
   }
 
   const setDetailOpen = async (next: boolean): Promise<void> => {
-    // Optimistic prefs for instant layout feel.
     setPrefs((prev) => (prev === null ? prev : { ...prev, detailOpen: next }))
     const updated = await window.rift.overlaySetPrefs({ detailOpen: next })
     setPrefs(updated)
+  }
+
+  const expandOverlay = (): void => {
+    setPresentation('OVERLAY_OPEN')
+    void window.rift.overlaySetPresentation('overlay').then(applyLifecycle)
+  }
+
+  const minimizeOverlay = (): void => {
+    const el = navScrollRef.current
+    if (el !== null) {
+      navScrollTop.current = el.scrollTop
+    }
+    setPresentation('LAUNCHER')
+    void window.rift.overlaySetPresentation('launcher').then(applyLifecycle)
+  }
+
+  const recheckDisplay = (): void => {
+    void window.rift.overlayRecheckDisplay().then(applyLifecycle)
   }
 
   if (error !== null) {
@@ -200,15 +237,15 @@ export function OverlayApp(): ReactElement {
       <div className="overlay-shell" data-testid="overlay-error">
         <div className="overlay-panel">
           <p className="overlay-muted">{error}</p>
-          <button type="button" className="overlay-btn" onClick={() => void window.rift.overlayHide()}>
-            Hide
+          <button type="button" className="overlay-btn" onClick={minimizeOverlay}>
+            Minimize
           </button>
         </div>
       </div>
     )
   }
 
-  if (review === null) {
+  if (review === null && presentation !== 'LAUNCHER') {
     return (
       <div className="overlay-shell">
         <div className="overlay-panel overlay-muted">Loading coaching…</div>
@@ -216,15 +253,68 @@ export function OverlayApp(): ReactElement {
     )
   }
 
+  if (presentation === 'LAUNCHER') {
+    return (
+      <div className="overlay-shell" data-testid="overlay-launcher-root">
+        <div
+          className="overlay-launcher"
+          data-testid="overlay-launcher"
+          style={{ opacity: prefs?.opacity ?? 0.94 }}
+        >
+          <span className="overlay-launcher-mark" aria-hidden="true">
+            RL
+          </span>
+          <button
+            type="button"
+            className="overlay-launcher-btn"
+            data-testid="overlay-access"
+            onClick={expandOverlay}
+          >
+            Access Overlay
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (needsCompat) {
+    return (
+      <div className="overlay-shell" data-testid="overlay-compat-root">
+        <section className="overlay-compat" data-testid="overlay-compat">
+          <header className="overlay-drag">
+            <span className="overlay-badge">RiftLens</span>
+          </header>
+          <h1 className="overlay-heading">RiftLens Overlay requires Borderless display mode.</h1>
+          <ol className="overlay-steps" data-testid="overlay-compat-steps">
+            <li>Open League video settings.</li>
+            <li>Change Window Mode to Borderless.</li>
+            <li>Return to the replay.</li>
+          </ol>
+          <div className="overlay-footer">
+            <button
+              type="button"
+              className="overlay-btn overlay-btn-primary"
+              data-testid="overlay-recheck"
+              onClick={recheckDisplay}
+            >
+              Recheck
+            </button>
+            <button
+              type="button"
+              className="overlay-btn"
+              data-testid="overlay-minimize"
+              onClick={minimizeOverlay}
+            >
+              Minimize
+            </button>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
   return (
     <div className="overlay-shell" data-testid="overlay-root">
-      {lifecycle?.displayMode === 'exclusive_fullscreen' || lifecycle?.reason === 'exclusive_fullscreen' ? (
-        <div className="overlay-banner" data-testid="overlay-exclusive-fs">
-          {lifecycle.message ??
-            'RiftLens overlay requires Borderless or Windowed replay mode.'}
-        </div>
-      ) : null}
-
       <div className="overlay-chrome" style={{ opacity: prefs?.opacity ?? 0.94 }}>
         <aside className="overlay-navigator" data-testid="overlay-navigator">
           <header className="overlay-drag" data-testid="overlay-drag">
@@ -236,7 +326,14 @@ export function OverlayApp(): ReactElement {
             </div>
           </header>
 
-          <div className="overlay-nav-scroll" data-testid="overlay-nav-scroll">
+          <div
+            className="overlay-nav-scroll"
+            data-testid="overlay-nav-scroll"
+            ref={navScrollRef}
+            onScroll={(event) => {
+              navScrollTop.current = event.currentTarget.scrollTop
+            }}
+          >
             <NavSection
               title="Focus"
               rows={sections.focus}
@@ -310,10 +407,10 @@ export function OverlayApp(): ReactElement {
             <button
               type="button"
               className="overlay-btn"
-              data-testid="overlay-hide"
-              onClick={() => void window.rift.overlayHide()}
+              data-testid="overlay-minimize"
+              onClick={minimizeOverlay}
             >
-              Hide
+              Minimize
             </button>
           </footer>
         </aside>

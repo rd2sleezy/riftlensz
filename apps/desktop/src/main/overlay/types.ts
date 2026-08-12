@@ -12,8 +12,10 @@ export type OverlayPrefs = {
   /** When false, detail panel is collapsed; navigator remains. */
   detailOpen: boolean
   opacity: number
-  /** User-adjusted top-left of the combined overlay chrome. */
+  /** User-adjusted top-left of the full coaching overlay. */
   position: { x: number; y: number } | null
+  /** User-adjusted top-left of the Access Overlay launcher. */
+  launcherPosition: { x: number; y: number } | null
   navigatorWidth: number
   detailWidth: number
   displayId: number | null
@@ -24,6 +26,7 @@ export const DEFAULT_OVERLAY_PREFS: OverlayPrefs = {
   detailOpen: true,
   opacity: 0.94,
   position: null,
+  launcherPosition: null,
   navigatorWidth: 300,
   detailWidth: 340,
   displayId: null
@@ -46,6 +49,10 @@ export type LeagueWindowInfo = {
 
 /** Combined chrome sizes (navigator + optional detail). */
 export const NAVIGATOR_HEIGHT = 440
+export const LAUNCHER_WIDTH = 178
+export const LAUNCHER_HEIGHT = 42
+export const COMPAT_WIDTH = 320
+export const COMPAT_HEIGHT = 252
 export const OVERLAY_POLL_MS = 3_000
 export const LEAGUE_MISSING_GRACE_POLLS = 3
 export const LEAGUE_CACHE_MS = 750
@@ -56,4 +63,4 @@ export const COMPACT_HEIGHT = 140
 export const EXPANDED_HEIGHT = 420
 
 export const EXCLUSIVE_FULLSCREEN_MESSAGE =
-  'RiftLens overlay requires Borderless or Windowed replay mode.'
+  'RiftLens Overlay requires Borderless display mode.'

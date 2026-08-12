@@ -18,6 +18,13 @@ const OverlayPrefsSchema = z
         y: z.number()
       })
       .nullable(),
+    launcherPosition: z
+      .object({
+        x: z.number(),
+        y: z.number()
+      })
+      .nullable()
+      .optional(),
     navigatorWidth: z.number().int().min(240).max(480).optional(),
     detailWidth: z.number().int().min(280).max(520).optional(),
     /** Legacy single width. */
@@ -32,6 +39,7 @@ const OverlayPrefsSchema = z
       detailOpen,
       opacity: raw.opacity,
       position: raw.position,
+      launcherPosition: raw.launcherPosition ?? null,
       navigatorWidth: raw.navigatorWidth ?? raw.width ?? DEFAULT_OVERLAY_PREFS.navigatorWidth,
       detailWidth: raw.detailWidth ?? DEFAULT_OVERLAY_PREFS.detailWidth,
       displayId: raw.displayId

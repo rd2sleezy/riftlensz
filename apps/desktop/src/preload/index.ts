@@ -29,6 +29,7 @@ import {
   OverlayOpenResultSchema,
   OverlayPrefsSchema,
   OverlaySessionUpdateSchema,
+  OverlayUserIntentSchema,
   SidecarStatusSchema,
   type BuildManualSyncResult,
   type CloseReplayResult,
@@ -45,6 +46,7 @@ import {
   type OverlayLifecycleEventPayload,
   type OverlayOpenResult,
   type OverlayPrefsPayload,
+  type OverlayUserIntentPayload,
   type PickRoflResult,
   type PickVodResult,
   type ProbeVodResult,
@@ -161,8 +163,20 @@ const rift = {
   overlayClose(): Promise<{ ok: true }> {
     return ipcRenderer.invoke(IPC.overlayClose)
   },
-  overlayHide(): Promise<{ ok: true }> {
-    return ipcRenderer.invoke(IPC.overlayHide)
+  overlayHide(): Promise<OverlayLifecycleEventPayload> {
+    return ipcRenderer
+      .invoke(IPC.overlayHide)
+      .then((value) => OverlayLifecycleEventSchema.parse(value))
+  },
+  overlaySetPresentation(intent: OverlayUserIntentPayload): Promise<OverlayLifecycleEventPayload> {
+    return ipcRenderer
+      .invoke(IPC.overlaySetPresentation, OverlayUserIntentSchema.parse(intent))
+      .then((value) => OverlayLifecycleEventSchema.parse(value))
+  },
+  overlayRecheckDisplay(): Promise<OverlayLifecycleEventPayload> {
+    return ipcRenderer
+      .invoke(IPC.overlayRecheckDisplay)
+      .then((value) => OverlayLifecycleEventSchema.parse(value))
   },
   overlayGetPrefs(): Promise<OverlayPrefsPayload> {
     return ipcRenderer

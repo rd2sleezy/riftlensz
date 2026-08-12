@@ -132,5 +132,8 @@ describe('overlay reveal contract', () => {
     expect(source).not.toMatch(/globalShortcut\.(register|registerAll)/)
     expect(source).not.toMatch(/from 'electron'/)
     expect(source).not.toMatch(/findLeagueClientWindow|powershell/i)
+    expect(source).not.toMatch(/onMouseLeave|mouseleave/)
+    expect(source).toContain('overlay-minimize')
+    expect(source).toContain('overlay-access')
   })
 })

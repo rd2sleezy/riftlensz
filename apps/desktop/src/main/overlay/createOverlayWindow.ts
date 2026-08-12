@@ -10,7 +10,6 @@ export type CreateOverlayWindowOptions = {
   /** Dev server origin for the main renderer (electron-vite). Overlay loads `/overlay.html`. */
   rendererDevUrl: string | null
   initialBounds: Rect
-  opacity: number
   onMoved: (bounds: Rect) => void
 }
 
@@ -23,6 +22,7 @@ export function createOverlayWindow(options: CreateOverlayWindowOptions): Browse
     show: false,
     frame: false,
     transparent: true,
+    backgroundColor: '#00000000',
     resizable: false,
     maximizable: false,
     minimizable: false,
@@ -42,7 +42,8 @@ export function createOverlayWindow(options: CreateOverlayWindowOptions): Browse
 
   win.setAlwaysOnTop(true, 'screen-saver')
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-  win.setOpacity(options.opacity)
+  // Never click-through the chrome; empty transparent pixels still pass through on Windows.
+  win.setIgnoreMouseEvents(false)
 
   let dragMoved = false
   win.on('move', () => {

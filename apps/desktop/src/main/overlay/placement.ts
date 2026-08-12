@@ -1,7 +1,15 @@
 /** HUD-safe two-panel overlay placement (R.10.5). Pure — no Electron imports. */
 
 import { overlapsAnyHudZone } from './hudZones'
-import { NAVIGATOR_HEIGHT, type OverlayPrefs, type Rect } from './types'
+import {
+  COMPAT_HEIGHT,
+  COMPAT_WIDTH,
+  LAUNCHER_HEIGHT,
+  LAUNCHER_WIDTH,
+  NAVIGATOR_HEIGHT,
+  type OverlayPrefs,
+  type Rect
+} from './types'
 
 export type WorkArea = Rect & { scaleFactor?: number }
 
@@ -18,6 +26,74 @@ const MIN_GUTTER = 40
 const TOP_FRACTION = 0.09
 const MAX_BOTTOM_FRACTION = 0.62
 const PANEL_GAP = 8
+
+function gutterCandidate(
+  league: Rect,
+  size: { width: number; height: number },
+  corner: 'right' | 'left'
+): Rect {
+  const y = league.y + league.height * TOP_FRACTION
+  if (corner === 'right') {
+    return {
+      x: league.x + league.width - size.width - MARGIN,
+      y,
+      width: size.width,
+      height: size.height
+    }
+  }
+  return {
+    x: league.x + MARGIN,
+    y,
+    width: size.width,
+    height: size.height
+  }
+}
+
+function placeInUpperGutter(
+  league: Rect,
+  workArea: WorkArea,
+  size: { width: number; height: number },
+  saved: { x: number; y: number } | null
+): Rect {
+  if (saved !== null) {
+    return clampToWorkArea({ ...saved, width: size.width, height: size.height }, workArea)
+  }
+  const primary = gutterCandidate(league, size, 'right')
+  const secondary = gutterCandidate(league, size, 'left')
+  const chosen = overlapsAnyHudZone(league, primary) ? secondary : primary
+  const safe = overlapsAnyHudZone(league, chosen)
+    ? { ...chosen, x: league.x + MARGIN, y: league.y + league.height * TOP_FRACTION }
+    : chosen
+  return clampToWorkArea(safe, workArea)
+}
+
+/** Small Access Overlay pill — independent of the full coaching chrome. */
+export function resolveLauncherRect(input: {
+  league: Rect
+  workArea: WorkArea
+  launcherPosition: { x: number; y: number } | null
+}): Rect {
+  return placeInUpperGutter(
+    input.league,
+    input.workArea,
+    { width: LAUNCHER_WIDTH, height: LAUNCHER_HEIGHT },
+    input.launcherPosition
+  )
+}
+
+/** Guided Borderless card shown when exclusive fullscreen is detected. */
+export function resolveCompatRect(input: {
+  league: Rect
+  workArea: WorkArea
+  position: { x: number; y: number } | null
+}): Rect {
+  return placeInUpperGutter(
+    input.league,
+    input.workArea,
+    { width: COMPAT_WIDTH, height: COMPAT_HEIGHT },
+    input.position
+  )
+}
 
 export type OverlayLayout = {
   /** Combined BrowserWindow bounds. */

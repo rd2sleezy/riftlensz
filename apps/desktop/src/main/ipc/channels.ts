@@ -28,7 +28,9 @@ export const IPC = {
   overlaySetBounds: 'rift:overlay:set-bounds',
   overlayUpdateSession: 'rift:overlay:update-session',
   overlayGetLifecycle: 'rift:overlay:get-lifecycle',
-  overlayLifecycleEvent: 'rift:overlay:lifecycle'
+  overlayLifecycleEvent: 'rift:overlay:lifecycle',
+  overlaySetPresentation: 'rift:overlay:set-presentation',
+  overlayRecheckDisplay: 'rift:overlay:recheck-display'
 } as const
 
 export const IPC_RENDERER_ALLOWLIST = [
@@ -59,7 +61,9 @@ export const IPC_RENDERER_ALLOWLIST = [
   'overlaySetBounds',
   'overlayUpdateSession',
   'overlayGetLifecycle',
-  'onOverlayLifecycle'
+  'onOverlayLifecycle',
+  'overlaySetPresentation',
+  'overlayRecheckDisplay'
 ] as const
 
 export const SidecarStateSchema = z.enum([
@@ -583,10 +587,19 @@ export const OverlayPrefsSchema = z.object({
       y: z.number()
     })
     .nullable(),
+  launcherPosition: z
+    .object({
+      x: z.number(),
+      y: z.number()
+    })
+    .nullable(),
   navigatorWidth: z.number().int().min(240).max(480),
   detailWidth: z.number().int().min(280).max(520),
   displayId: z.number().int().nullable()
 })
+
+export const OverlayPresentationSchema = z.enum(['HIDDEN_NO_SESSION', 'LAUNCHER', 'OVERLAY_OPEN'])
+export const OverlayUserIntentSchema = z.enum(['launcher', 'overlay'])
 
 export const OverlayOpenInputSchema = OverlayContextSchema.extend({
   sessionPhase: z.string().nullable().optional(),
@@ -618,13 +631,15 @@ export const OverlayContextResultSchema = z.object({
 })
 
 export const OverlayLifecycleEventSchema = z.object({
-  kind: z.enum(['visibility', 'display_mode', 'session']),
+  kind: z.enum(['visibility', 'display_mode', 'session', 'presentation']),
   visible: z.boolean(),
   reason: z.string(),
   displayMode: z.enum(['windowed', 'borderless', 'exclusive_fullscreen', 'unknown']),
   message: z.string().nullable(),
   sessionPhase: z.string().nullable(),
-  sessionReachedReady: z.boolean()
+  sessionReachedReady: z.boolean(),
+  presentation: OverlayPresentationSchema,
+  needsCompat: z.boolean()
 })
 
 export type OverlayContextPayload = z.infer<typeof OverlayContextSchema>
@@ -632,3 +647,5 @@ export type OverlayPrefsPayload = z.infer<typeof OverlayPrefsSchema>
 export type OverlayOpenResult = z.infer<typeof OverlayOpenResultSchema>
 export type OverlayContextResult = z.infer<typeof OverlayContextResultSchema>
 export type OverlayLifecycleEventPayload = z.infer<typeof OverlayLifecycleEventSchema>
+export type OverlayPresentationPayload = z.infer<typeof OverlayPresentationSchema>
+export type OverlayUserIntentPayload = z.infer<typeof OverlayUserIntentSchema>

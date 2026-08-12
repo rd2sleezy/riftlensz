@@ -8,7 +8,10 @@ describe('overlay input safety policy', () => {
       path.join(__dirname, 'controller.ts'),
       path.join(__dirname, 'createOverlayWindow.ts'),
       path.join(__dirname, 'leagueWindow.ts'),
-      path.join(__dirname, '../index.ts')
+      path.join(__dirname, 'visibilityState.ts'),
+      path.join(__dirname, 'displayModeAssist.ts'),
+      path.join(__dirname, '../index.ts'),
+      path.join(__dirname, '../../renderer/features/overlay/OverlayApp.tsx')
     ]
     for (const file of roots) {
       const source = readFileSync(file, 'utf8')
