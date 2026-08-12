@@ -1,4 +1,4 @@
-"""Visual clip-analysis spike (V.0–V.2). Isolated from coaching.
+"""Visual clip-analysis spike (V.0–V.4). Isolated from coaching.
 
 Depends on the R.11 observation contract. The observation contract does not
 depend on this package. Do not import this module from H.6/H.7/H.8.
@@ -42,6 +42,7 @@ from riftlens.visual.report import (
     format_v2_timeline,
 )
 from riftlens.visual.sampling import SampledFrame, sample_clip
+from riftlens.visual.team_calibrate import CalibrationConfidence, TeamCalibration
 from riftlens.visual.track import (
     CandidateKind,
     EntityTrack,
@@ -65,6 +66,14 @@ from riftlens.visual.v2_analyze import (
     analyze_capture_dir_v2,
     analyze_manifest_v2,
 )
+from riftlens.visual.v4_analyze import (
+    DEFAULT_V4_SAMPLE_FPS,
+    V4_ANALYZER_ID,
+    V4_ANALYZER_VERSION,
+    V4AnalysisResult,
+    analyze_capture_dir_v4,
+    analyze_manifest_v4,
+)
 from riftlens.visual.window import (
     FindingStamp,
     PlannedCapture,
@@ -79,8 +88,10 @@ __all__ = [
     "DEFAULT_SAMPLE_FPS",
     "DEFAULT_V1_SAMPLE_FPS",
     "DEFAULT_V2_SAMPLE_FPS",
+    "DEFAULT_V4_SAMPLE_FPS",
     "ArtifactMissing",
     "MAX_PLAUSIBLE_CHAMPIONS",
+    "CalibrationConfidence",
     "CandidateKind",
     "CaptureNotRequested",
     "CaptureWindowError",
@@ -95,6 +106,7 @@ __all__ = [
     "SampledFrame",
     "StructuredClaim",
     "SubjectCorrelation",
+    "TeamCalibration",
     "TeamEstimate",
     "TrackLifecycle",
     "V1_ANALYZER_ID",
@@ -103,6 +115,9 @@ __all__ = [
     "V2_ANALYZER_ID",
     "V2_ANALYZER_VERSION",
     "V2AnalysisResult",
+    "V4_ANALYZER_ID",
+    "V4_ANALYZER_VERSION",
+    "V4AnalysisResult",
     "ViewportCoverage",
     "VisualAnalysisResult",
     "VisualRuleDiagnostic",
@@ -111,9 +126,11 @@ __all__ = [
     "analyze_capture_dir",
     "analyze_capture_dir_v1",
     "analyze_capture_dir_v2",
+    "analyze_capture_dir_v4",
     "analyze_manifest",
     "analyze_manifest_v1",
     "analyze_manifest_v2",
+    "analyze_manifest_v4",
     "capture_request_for_window",
     "capture_window_for_finding",
     "classify_against_claim",

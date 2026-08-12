@@ -16,15 +16,16 @@ from riftlens.visual.report import (
 )
 from riftlens.visual.v1_analyze import DEFAULT_V1_SAMPLE_FPS, analyze_capture_dir_v1
 from riftlens.visual.v2_analyze import DEFAULT_V2_SAMPLE_FPS, analyze_capture_dir_v2
+from riftlens.visual.v4_analyze import DEFAULT_V4_SAMPLE_FPS, analyze_capture_dir_v4
 
 
 def main() -> None:
-    """Run V.0, V.1, or V.2 against an R.10 capture directory. Local only."""
+    """Run V.0–V.4 against an R.10 capture directory. Local only."""
     parser = argparse.ArgumentParser(description="Visual clip analysis spike")
     parser.add_argument("--capture-dir", type=Path, help="Directory containing manifest.json")
     parser.add_argument("--capture-id", help="Lookup capture_id under the capture root")
     parser.add_argument("--capture-root", type=Path, default=None)
-    parser.add_argument("--mode", choices=("v0", "v1", "v2"), default="v0")
+    parser.add_argument("--mode", choices=("v0", "v1", "v2", "v4"), default="v0")
     parser.add_argument("--fps", type=float, default=None)
     parser.add_argument("--max-frames", type=int, default=None)
     parser.add_argument("--subject-pid", type=int, default=None)
@@ -41,13 +42,18 @@ def main() -> None:
     claim = StructuredClaim(
         rule_id=args.claim_rule, t_ms=args.claim_t_ms, summary=args.claim_summary
     )
-    if args.mode in {"v1", "v2"}:
-        fps = (
-            (DEFAULT_V2_SAMPLE_FPS if args.mode == "v2" else DEFAULT_V1_SAMPLE_FPS)
-            if args.fps is None
-            else args.fps
-        )
-        analyze = analyze_capture_dir_v2 if args.mode == "v2" else analyze_capture_dir_v1
+    if args.mode in {"v1", "v2", "v4"}:
+        defaults = {
+            "v1": DEFAULT_V1_SAMPLE_FPS,
+            "v2": DEFAULT_V2_SAMPLE_FPS,
+            "v4": DEFAULT_V4_SAMPLE_FPS,
+        }
+        fps = defaults[args.mode] if args.fps is None else args.fps
+        analyze = {
+            "v1": analyze_capture_dir_v1,
+            "v2": analyze_capture_dir_v2,
+            "v4": analyze_capture_dir_v4,
+        }[args.mode]
         result = analyze(
             capture_dir,
             fps=fps,
@@ -59,6 +65,12 @@ def main() -> None:
         print(format_v1_timeline(result), end="")
         diagnostic = classify_v1_against_claim(result, claim)
         print(f"visual-vs-rule diagnostic: {diagnostic.value} for {claim.rule_id}")
+        calib = getattr(result, "calibration", None)
+        if calib is not None:
+            print(
+                f"calibration {calib.confidence.value} anchors={len(calib.anchors)} "
+                f"version={calib.version}"
+            )
         print(
             f"perf total={result.timing.total_ms:.0f}ms extract={result.timing.extract_ms:.0f}ms "
             f"detect={result.timing.detect_ms:.0f}ms track={result.timing.track_ms:.0f}ms "

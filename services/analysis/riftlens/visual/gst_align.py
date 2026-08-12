@@ -111,10 +111,15 @@ def disappearing_near(
     *,
     window_ms: int = DEATH_ALIGN_MS,
 ) -> tuple[EntityTrack, ...]:
-    """Champion-like tracks that cease being observed near ``game_t_ms``."""
+    """Champion-like tracks that cease being observed near ``game_t_ms``.
+
+    Tracks that only appear after ``game_t_ms`` are not disappearances.
+    """
     out: list[EntityTrack] = []
     for track in tracks:
         if track.kind is not CandidateKind.CHAMPION_LIKE:
+            continue
+        if track.first_seen_game_t_ms > game_t_ms:
             continue
         if track.closed_reason in {TrackLifecycle.LEFT_VIEW, TrackLifecycle.LOST_TRACK, None}:
             if abs(track.last_seen_game_t_ms - game_t_ms) <= window_ms:
