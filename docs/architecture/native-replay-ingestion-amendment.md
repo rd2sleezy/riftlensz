@@ -1001,6 +1001,16 @@ H.9 ──┬── H.10, H.11 …  (existing product roadmap, unblocked)
 
 ---
 
+#### **R.10.5 — Replay coaching overlay (v1)**
+
+**Objective.** External Electron companion overlay for native replay review: Access Overlay launcher, explicit Minimize, HUD-safe navigator + detail, click-to-seek via existing R.8/R.9 reveal. No injection, no live-game coaching, no global League hotkeys.
+
+**T4 (2026-08-11).** Windows desktop manual demo on `NA1_5617764200` **PASSED** for v1. Report: `docs/architecture/r105-overlay-t4-report.md`. Exclusive Direct3D fullscreen cannot composite this overlay; Borderless/Windowed is the accepted v1 path. Further overlay polish is post-v1.
+
+**Do NOT implement.** R.11. H.10. CV. Automatic League display-mode switching. Global shortcuts.
+
+---
+
 #### **R.11 — `FrameObservation` contract (schema only)**
 
 **Objective.** Land the §8.1 type, the `Provenance.VISUAL` enum value, the evidence-labelling path, and the `requires_visual` rule flag — with **zero detectors**.
@@ -1258,6 +1268,7 @@ R.7   Persistence + H.9 backfill migration               macOS ok
 R.8   RoflGameplaySource orchestration                   macOS ok + Windows T4
 R.9   Desktop integration (Add Gameplay, click-to-replay) macOS ok + Windows T4
 R.10  Frame capture intervals                            Windows
+R.10.5 Replay coaching overlay (v1)                      Windows T4 passed 2026-08-11
 R.11  FrameObservation contract (schema only)            macOS ok
 R.12  Remote Replay Host                                 DEFERRED
 
