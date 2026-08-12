@@ -78,6 +78,7 @@ forbidden_modules = [
     "riftlens.rofl",
     "riftlens.replay_host",
     "riftlens.gameplay",
+    "riftlens.visual",
 ]
 
 [[tool.importlinter.contracts]]
@@ -92,6 +93,22 @@ forbidden_modules = [
     "openai",
     "anthropic",
     "electron",
+    "riftlens.visual",
+]
+
+[[tool.importlinter.contracts]]
+name = "visual spike isolation"
+type = "forbidden"
+source_modules = ["riftlens.visual"]
+forbidden_modules = [
+    "riftlens.analysis",
+    "riftlens.coaching",
+    "riftlens.pipeline",
+    "riftlens.api",
+    "riftlens.replay_host",
+    "riftlens.gameplay",
+    "openai",
+    "anthropic",
 ]
 
 [[tool.importlinter.contracts]]
