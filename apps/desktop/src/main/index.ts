@@ -1,5 +1,6 @@
 import { join } from 'node:path'
 import { app, BrowserWindow, shell } from 'electron'
+import { AuthService } from './auth/authService'
 import { registerIpcHandlers } from './ipc/handlers'
 import { logger } from './logging'
 import { handleMediaProtocol, registerMediaScheme } from './media/protocol'
@@ -10,6 +11,7 @@ registerMediaScheme()
 
 const supervisor = new SidecarSupervisor()
 const overlay = new OverlayController()
+const authService = new AuthService()
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -53,7 +55,8 @@ function createWindow(): BrowserWindow {
 
 app.whenReady().then(() => {
   handleMediaProtocol()
-  registerIpcHandlers(supervisor, overlay)
+  authService.start()
+  registerIpcHandlers(supervisor, overlay, authService)
   supervisor.start()
   createWindow()
 

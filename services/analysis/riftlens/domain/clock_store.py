@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import ntpath
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
@@ -35,8 +36,14 @@ CALIBRATION_METHOD_MANUAL = "manual"
 
 
 def local_display_name(source_uri: str) -> str:
-    """Return the basename only. Full local paths stay in ``source_uri``."""
-    name = Path(source_uri).name.strip()
+    """Return the basename only. Full local paths stay in ``source_uri``.
+
+    Uses ``ntpath`` for Windows-style paths so basename works on any host OS.
+    """
+    if "\\" in source_uri or (len(source_uri) >= 2 and source_uri[1] == ":"):
+        name = ntpath.basename(source_uri).strip()
+    else:
+        name = Path(source_uri).name.strip()
     return name or "source"
 
 

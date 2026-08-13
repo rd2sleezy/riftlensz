@@ -11,6 +11,11 @@ export const IPC = {
   pickVod: 'rift:media:pick',
   probeVod: 'rift:media:probe',
   buildManualSync: 'rift:sync:manual',
+  getAuthSession: 'rift:auth:get-session',
+  authSessionEvent: 'rift:auth:session',
+  signIn: 'rift:auth:sign-in',
+  signInWithApiKey: 'rift:auth:sign-in-api-key',
+  signOut: 'rift:auth:sign-out',
   getDesktopPlatform: 'rift:desktop:platform',
   pickRofl: 'rift:gameplay:pick-rofl',
   importReplay: 'rift:gameplay:import',
@@ -44,6 +49,11 @@ export const IPC_RENDERER_ALLOWLIST = [
   'pickVod',
   'probeVod',
   'buildManualSync',
+  'getAuthSession',
+  'onAuthSession',
+  'signIn',
+  'signInWithApiKey',
+  'signOut',
   'getDesktopPlatform',
   'pickRofl',
   'importReplay',
@@ -100,9 +110,33 @@ export const ErrorResultSchema = z.object({
     'UNSUPPORTED_CODEC',
     'SYNC_INVALID',
     'VALIDATION',
+    'AUTH_NOT_CONFIGURED',
+    'AUTH_CANCELLED',
+    'AUTH_FAILED',
     'UNKNOWN'
   ]),
   message: z.string()
+})
+
+/** Public-safe account session. Never carries tokens across the IPC boundary. */
+export const AuthSessionSchema = z.object({
+  signedIn: z.boolean(),
+  puuid: z.string().nullable(),
+  gameName: z.string().nullable(),
+  tagLine: z.string().nullable(),
+  signedInAt: z.number().int().nullable()
+})
+
+export const SignInResultSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), session: AuthSessionSchema }),
+  ErrorResultSchema
+])
+
+export const SignInWithApiKeyInputSchema = z.object({
+  apiKey: z.string().min(1),
+  gameName: z.string().min(1),
+  tagLine: z.string().min(1),
+  region: z.enum(['americas', 'asia', 'europe'])
 })
 
 export const ProvenanceSchema = z.object({
@@ -649,3 +683,6 @@ export type OverlayContextResult = z.infer<typeof OverlayContextResultSchema>
 export type OverlayLifecycleEventPayload = z.infer<typeof OverlayLifecycleEventSchema>
 export type OverlayPresentationPayload = z.infer<typeof OverlayPresentationSchema>
 export type OverlayUserIntentPayload = z.infer<typeof OverlayUserIntentSchema>
+export type AuthSession = z.infer<typeof AuthSessionSchema>
+export type SignInResult = z.infer<typeof SignInResultSchema>
+export type SignInWithApiKeyInput = z.infer<typeof SignInWithApiKeyInputSchema>

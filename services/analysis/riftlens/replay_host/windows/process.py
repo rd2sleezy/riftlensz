@@ -176,7 +176,7 @@ def _win_pid_running(pid: int) -> bool:
     """Query a Windows pid without depending on psutil."""
     import ctypes
 
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)  # type: ignore[attr-defined]
     process_query_limited = 0x1000
     handle = kernel32.OpenProcess(process_query_limited, False, pid)
     if not handle:
@@ -194,7 +194,7 @@ def _win_terminate(pid: int) -> None:
     """TerminateProcess on one pid. Assumes the caller owns that process."""
     import ctypes
 
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)  # type: ignore[attr-defined]
     process_terminate = 0x0001
     handle = kernel32.OpenProcess(process_terminate, False, pid)
     if not handle:

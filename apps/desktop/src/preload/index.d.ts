@@ -1,4 +1,5 @@
 import type {
+  AuthSession,
   BuildManualSyncResult,
   CloseReplayResult,
   DesktopPlatform,
@@ -19,7 +20,9 @@ import type {
   PickVodResult,
   ProbeVodResult,
   RevealGameplayResult,
-  SidecarStatus
+  SidecarStatus,
+  SignInResult,
+  SignInWithApiKeyInput
 } from '../main/ipc/channels'
 
 export interface RiftApi {
@@ -39,6 +42,11 @@ export interface RiftApi {
     mediaAssetId?: string
     anchors: { t_video_ms: number; t_game_ms: number }[]
   }) => Promise<BuildManualSyncResult>
+  getAuthSession: () => Promise<AuthSession>
+  signIn: () => Promise<SignInResult>
+  signInWithApiKey: (input: SignInWithApiKeyInput) => Promise<SignInResult>
+  signOut: () => Promise<AuthSession>
+  onAuthSession: (cb: (session: AuthSession) => void) => () => void
   getDesktopPlatform: () => Promise<DesktopPlatform>
   pickRofl: () => Promise<PickRoflResult>
   importReplay: (path: string, matchId: string) => Promise<ImportReplayResult>

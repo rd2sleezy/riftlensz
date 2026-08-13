@@ -7,6 +7,8 @@ export const logger = pino({
     paths: [
       'token',
       '*.token',
+      'apiKey',
+      '*.apiKey',
       'SIDECAR_TOKEN',
       'req.headers.authorization',
       'headers.authorization'
