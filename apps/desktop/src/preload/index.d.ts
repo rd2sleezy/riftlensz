@@ -9,8 +9,11 @@ import type {
   GetReviewResult,
   HealthPayload,
   ImportReplayResult,
+  IngestMatchResult,
   ListReviewsResult,
+  MatchParticipantsResult,
   OpenFixtureInput,
+  OpenRealMatchReviewInput,
   OpenReplayResult,
   OverlayContextResult,
   OverlayLifecycleEventPayload,
@@ -34,6 +37,9 @@ export interface RiftApi {
   listReviews: () => Promise<ListReviewsResult>
   getReview: (reviewId: string) => Promise<GetReviewResult>
   openFixtureReview: (input: OpenFixtureInput) => Promise<GetReviewResult>
+  openRealMatchReview: (input: OpenRealMatchReviewInput) => Promise<GetReviewResult>
+  listMatchParticipants: (matchId: string) => Promise<MatchParticipantsResult>
+  ingestMatch: (matchId: string) => Promise<IngestMatchResult>
   pickVod: () => Promise<PickVodResult>
   probeVod: (path: string) => Promise<ProbeVodResult>
   buildManualSync: (input: {
@@ -50,7 +56,7 @@ export interface RiftApi {
   onAuthSession: (cb: (session: AuthSession) => void) => () => void
   getDesktopPlatform: () => Promise<DesktopPlatform>
   pickRofl: () => Promise<PickRoflResult>
-  importReplay: (path: string, matchId: string) => Promise<ImportReplayResult>
+  importReplay: (path: string, matchId?: string | null) => Promise<ImportReplayResult>
   getGameplayStatus: (matchId: string, sourceId?: string | null) => Promise<GameplayStatusResult>
   checkGameplayEnvironment: () => Promise<GameplayEnvironmentResult>
   enableReplayApi: () => Promise<EnableReplayApiResult>

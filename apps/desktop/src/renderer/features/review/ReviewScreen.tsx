@@ -605,9 +605,13 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
         open={wizardOpen}
         matchId={review.match_id}
         onClose={() => setWizardOpen(false)}
-        onLinked={(sourceId) => {
+        onLinked={(sourceId, linkedMatchId) => {
           setActiveMode('replay')
-          void refreshGameplay(review.match_id, sourceId)
+          void refreshGameplay(linkedMatchId, sourceId)
+        }}
+        onOpenReview={(nextReviewId) => {
+          setWizardOpen(false)
+          window.location.hash = `#/review/${encodeURIComponent(nextReviewId)}`
         }}
         onAction={handleReplayAction}
       />

@@ -1,0 +1,49 @@
+{
+  "rofl": "/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5620410094.rofl",
+  "started_at": "2026-08-13T05:06:47Z",
+  "identity": {
+    "platform_id": "NA1",
+    "game_id": 5620410094,
+    "match_id_hint": "NA1_5620410094",
+    "error": null
+  },
+  "fixture_mismatch": [
+    {
+      "open_match_id": "NA1_fixture_a",
+      "ok": false,
+      "code": "MATCH_IDENTITY_MISMATCH",
+      "replay_match_id": "NA1_5620410094",
+      "sources_on_fixture": 0
+    },
+    {
+      "open_match_id": "NA1_fixture_b",
+      "ok": false,
+      "code": "MATCH_IDENTITY_MISMATCH",
+      "replay_match_id": "NA1_5620410094",
+      "sources_on_fixture": 0
+    },
+    {
+      "open_match_id": "NA1_fixture_c",
+      "ok": false,
+      "code": "MATCH_IDENTITY_MISMATCH",
+      "replay_match_id": "NA1_5620410094",
+      "sources_on_fixture": 0
+    }
+  ],
+  "matching_bind": {
+    "ok": true,
+    "match_id": "NA1_5620410094",
+    "source_id": "01KZWR7PX96C6J39WD5WXN2BDP"
+  },
+  "credential_boundary": {
+    "code": "RIOT_CREDENTIAL_MISSING",
+    "message": "A Riot API key is required to download this match. Sign in with a developer key first."
+  },
+  "env_key_present": false,
+  "ok": true,
+  "real_match_coaching_seeks": {
+    "completed": false,
+    "blocked_by": "RIOT_CREDENTIAL_MISSING",
+    "note": "Sign in with a Riot developer API key in the desktop app, then re-run the real-match ingest \u2192 participant \u2192 review \u2192 MacReplayHost seek flow."
+  }
+}

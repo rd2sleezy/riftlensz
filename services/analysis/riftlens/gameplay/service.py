@@ -85,8 +85,8 @@ class GameplaySourceService:
                 warnings=warnings,
             )
         identity = identified.identity
-        resolved_match = match_id or identity.match_id_hint
-        if resolved_match is None:
+        hint = identity.match_id_hint
+        if hint is None:
             return ImportOutcome(
                 ok=False,
                 source_id=None,
@@ -99,18 +99,36 @@ class GameplaySourceService:
                 ),
                 warnings=warnings,
             )
-        match = await self._matches.get_match(resolved_match)
+        # Open-review match_id is validation-only. Binding always uses ROFL identity.
+        if match_id is not None and match_id != hint:
+            return ImportOutcome(
+                ok=False,
+                source_id=None,
+                match_id=hint,
+                identity=identity,
+                snapshot=None,
+                error=ReplayError(
+                    ReplayErrorCode.MATCH_IDENTITY_MISMATCH,
+                    details={
+                        "open_match_id": match_id,
+                        "replay_match_id": hint,
+                        "suggested_action": "open_replay_match",
+                    },
+                ),
+                warnings=warnings,
+            )
+        match = await self._matches.get_match(hint)
         if match is None:
             return ImportOutcome(
                 ok=False,
                 source_id=None,
-                match_id=resolved_match,
+                match_id=hint,
                 identity=identity,
                 snapshot=None,
                 error=ReplayError(
                     ReplayErrorCode.MATCH_NOT_INGESTED,
                     details={
-                        "match_id": resolved_match,
+                        "match_id": hint,
                         "suggested_action": "ingest_match",
                     },
                 ),
@@ -130,7 +148,7 @@ class GameplaySourceService:
                 display_name=local_display_name(path),
                 duration_ms=int(duration),
                 status=SOURCE_STATUS_LINKED,
-                platform_scope="windows",
+                platform_scope="any",
                 created_at=now_ms,
                 updated_at=now_ms,
             ),

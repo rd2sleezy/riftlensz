@@ -15,8 +15,13 @@ import {
   IPC,
   ImportReplayInputSchema,
   ImportReplayResultSchema,
+  IngestMatchInputSchema,
+  IngestMatchResultSchema,
   ListReviewsResultSchema,
+  MatchParticipantsInputSchema,
+  MatchParticipantsResultSchema,
   OpenFixtureInputSchema,
+  OpenRealMatchReviewInputSchema,
   OpenReplayInputSchema,
   OpenReplayResultSchema,
   PickRoflResultSchema,
@@ -46,8 +51,11 @@ import {
   type GetReviewResult,
   type HealthPayload,
   type ImportReplayResult,
+  type IngestMatchResult,
   type ListReviewsResult,
+  type MatchParticipantsResult,
   type OpenFixtureInput,
+  type OpenRealMatchReviewInput,
   type OpenReplayResult,
   type OverlayContextResult,
   type OverlayLifecycleEventPayload,
@@ -94,6 +102,21 @@ const rift = {
     return ipcRenderer
       .invoke(IPC.openFixtureReview, OpenFixtureInputSchema.parse(input))
       .then((value) => GetReviewResultSchema.parse(value))
+  },
+  openRealMatchReview(input: OpenRealMatchReviewInput): Promise<GetReviewResult> {
+    return ipcRenderer
+      .invoke(IPC.openRealMatchReview, OpenRealMatchReviewInputSchema.parse(input))
+      .then((value) => GetReviewResultSchema.parse(value))
+  },
+  listMatchParticipants(matchId: string): Promise<MatchParticipantsResult> {
+    return ipcRenderer
+      .invoke(IPC.listMatchParticipants, MatchParticipantsInputSchema.parse({ matchId }))
+      .then((value) => MatchParticipantsResultSchema.parse(value))
+  },
+  ingestMatch(matchId: string): Promise<IngestMatchResult> {
+    return ipcRenderer
+      .invoke(IPC.ingestMatch, IngestMatchInputSchema.parse({ matchId }))
+      .then((value) => IngestMatchResultSchema.parse(value))
   },
   pickVod(): Promise<PickVodResult> {
     return ipcRenderer.invoke(IPC.pickVod).then((value) => PickVodResultSchema.parse(value))
@@ -146,9 +169,9 @@ const rift = {
   pickRofl(): Promise<PickRoflResult> {
     return ipcRenderer.invoke(IPC.pickRofl).then((value) => PickRoflResultSchema.parse(value))
   },
-  importReplay(path: string, matchId: string): Promise<ImportReplayResult> {
+  importReplay(path: string, matchId?: string | null): Promise<ImportReplayResult> {
     return ipcRenderer
-      .invoke(IPC.importReplay, ImportReplayInputSchema.parse({ path, matchId }))
+      .invoke(IPC.importReplay, ImportReplayInputSchema.parse({ path, matchId: matchId ?? null }))
       .then((value) => ImportReplayResultSchema.parse(value))
   },
   getGameplayStatus(matchId: string, sourceId?: string | null): Promise<GameplayStatusResult> {

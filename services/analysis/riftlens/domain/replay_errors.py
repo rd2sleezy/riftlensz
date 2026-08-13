@@ -17,6 +17,9 @@ class ReplayErrorCode(StrEnum):
     ROFL_METADATA_UNPARSED = "ROFL_METADATA_UNPARSED"
     MATCH_ID_UNRESOLVED = "MATCH_ID_UNRESOLVED"
     MATCH_NOT_INGESTED = "MATCH_NOT_INGESTED"
+    MATCH_IDENTITY_MISMATCH = "MATCH_IDENTITY_MISMATCH"
+    RIOT_CREDENTIAL_MISSING = "RIOT_CREDENTIAL_MISSING"
+    PARTICIPANT_REQUIRED = "PARTICIPANT_REQUIRED"
     INSTALL_NOT_FOUND = "INSTALL_NOT_FOUND"
     INSTALL_INVALID = "INSTALL_INVALID"
     PATCH_INCOMPATIBLE = "PATCH_INCOMPATIBLE"
@@ -68,6 +71,15 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
     ),
     ReplayErrorCode.MATCH_NOT_INGESTED: (
         "This replay's match is not in RiftLens yet. Ingest the match first."
+    ),
+    ReplayErrorCode.MATCH_IDENTITY_MISMATCH: (
+        "This replay belongs to a different match than the open review."
+    ),
+    ReplayErrorCode.RIOT_CREDENTIAL_MISSING: (
+        "A Riot API key is required to download this match. Sign in with a developer key first."
+    ),
+    ReplayErrorCode.PARTICIPANT_REQUIRED: (
+        "Choose which participant this review should coach."
     ),
     ReplayErrorCode.INSTALL_NOT_FOUND: "League of Legends installation was not found.",
     ReplayErrorCode.INSTALL_INVALID: "League of Legends installation is incomplete.",
@@ -127,6 +139,9 @@ _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
     ReplayErrorCode.ROFL_METADATA_UNPARSED: "informational",
     ReplayErrorCode.MATCH_ID_UNRESOLVED: "retryable",
     ReplayErrorCode.MATCH_NOT_INGESTED: "retryable",
+    ReplayErrorCode.MATCH_IDENTITY_MISMATCH: "retryable",
+    ReplayErrorCode.RIOT_CREDENTIAL_MISSING: "retryable",
+    ReplayErrorCode.PARTICIPANT_REQUIRED: "retryable",
     ReplayErrorCode.INSTALL_NOT_FOUND: "fatal",
     ReplayErrorCode.INSTALL_INVALID: "fatal",
     ReplayErrorCode.PATCH_INCOMPATIBLE: "fatal",

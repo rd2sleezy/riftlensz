@@ -14,7 +14,7 @@ router = APIRouter()
 
 class ImportReplayRequest(BaseModel):
     path: str = Field(min_length=1)
-    match_id: str = Field(min_length=1)
+    match_id: str | None = None
 
 
 class SourceIdRequest(BaseModel):
@@ -60,16 +60,23 @@ async def gameplay_environment(request: Request) -> dict[str, Any]:
 
 @router.post("/gameplay/import")
 async def import_replay(body: ImportReplayRequest, request: Request) -> dict[str, Any]:
-    """Validate, identify, and persist a .rofl. Does not launch League."""
+    """Validate, identify, and persist a .rofl. Does not launch League.
+
+    ``match_id`` is the open-review match used only for mismatch validation. Binding
+    always uses the ROFL identity hint.
+    """
     service = _service(request)
     outcome = await service.import_rofl(
         body.path, now_ms=service.now_ms(), match_id=body.match_id
     )
-    status = await service.status_for_match(
-        body.match_id,
-        source_id=outcome.source_id,
-        poll=False,
-    )
+    status_match = outcome.match_id or body.match_id
+    status = None
+    if status_match:
+        status = await service.status_for_match(
+            status_match,
+            source_id=outcome.source_id,
+            poll=False,
+        )
     identity = None
     if outcome.identity is not None:
         identity = {

@@ -8,6 +8,9 @@ export const IPC = {
   listReviews: 'rift:reviews:list',
   getReview: 'rift:reviews:get',
   openFixtureReview: 'rift:reviews:from-fixture',
+  openRealMatchReview: 'rift:reviews:from-match',
+  listMatchParticipants: 'rift:matches:participants',
+  ingestMatch: 'rift:matches:ingest',
   pickVod: 'rift:media:pick',
   probeVod: 'rift:media:probe',
   buildManualSync: 'rift:sync:manual',
@@ -47,6 +50,9 @@ export const IPC_RENDERER_ALLOWLIST = [
   'listReviews',
   'getReview',
   'openFixtureReview',
+  'openRealMatchReview',
+  'listMatchParticipants',
+  'ingestMatch',
   'pickVod',
   'probeVod',
   'buildManualSync',
@@ -115,6 +121,7 @@ export const ErrorResultSchema = z.object({
     'AUTH_NOT_CONFIGURED',
     'AUTH_CANCELLED',
     'AUTH_FAILED',
+    'RIOT_CREDENTIAL_MISSING',
     'UNKNOWN'
   ]),
   message: z.string()
@@ -424,7 +431,8 @@ export const ReplayErrorPayloadSchema = z.object({
   message: z.string().min(1),
   suggested_action: z.string().nullable(),
   recoverable: z.boolean(),
-  severity: z.string()
+  severity: z.string(),
+  details: z.record(z.unknown()).optional()
 })
 
 export const GameplaySourceSummarySchema = z.object({
@@ -484,24 +492,26 @@ export const PickRoflResultSchema = z.discriminatedUnion('ok', [
 
 export const ImportReplayInputSchema = z.object({
   path: z.string().min(1),
-  matchId: z.string().min(1)
+  matchId: z.string().min(1).nullable().optional()
 })
+
+const RoflIdentitySchema = z
+  .object({
+    platform_id: z.string().nullable(),
+    game_id: z.number().int().nullable(),
+    declared_patch: z.string().nullable(),
+    declared_length_ms: z.number().int().nullable(),
+    match_id_hint: z.string().nullable(),
+    identify_method: z.string()
+  })
+  .nullable()
 
 export const ImportReplayResultSchema = z.discriminatedUnion('ok', [
   z.object({
     ok: z.literal(true),
     source_id: z.string(),
     match_id: z.string(),
-    identity: z
-      .object({
-        platform_id: z.string().nullable(),
-        game_id: z.number().int().nullable(),
-        declared_patch: z.string().nullable(),
-        declared_length_ms: z.number().int().nullable(),
-        match_id_hint: z.string().nullable(),
-        identify_method: z.string()
-      })
-      .nullable(),
+    identity: RoflIdentitySchema,
     warnings: z.array(ReplayErrorPayloadSchema),
     status: GameplayStatusSchema
   }),
@@ -510,7 +520,60 @@ export const ImportReplayResultSchema = z.discriminatedUnion('ok', [
     code: z.string(),
     message: z.string(),
     suggested_action: z.string().nullable(),
+    match_id: z.string().nullable(),
+    identity: RoflIdentitySchema,
     error: ReplayErrorPayloadSchema.nullable()
+  })
+])
+
+export const OpenRealMatchReviewInputSchema = z.object({
+  matchId: z.string().min(1),
+  participantId: z.number().int().min(1).max(10),
+  rank: z.string().optional()
+})
+
+export const MatchParticipantsInputSchema = z.object({
+  matchId: z.string().min(1)
+})
+
+export const MatchParticipantSchema = z.object({
+  participant_id: z.number().int(),
+  champion_name: z.string(),
+  champion_id: z.number().int().nullable().optional(),
+  team_id: z.number().int(),
+  riot_id_game_name: z.string().nullable().optional(),
+  riot_id_tagline: z.string().nullable().optional(),
+  individual_position: z.string().nullable().optional(),
+  win: z.boolean().optional()
+})
+
+export const MatchParticipantsResultSchema = z.discriminatedUnion('ok', [
+  z.object({
+    ok: z.literal(true),
+    match_id: z.string(),
+    participants: z.array(MatchParticipantSchema)
+  }),
+  z.object({
+    ok: z.literal(false),
+    code: z.string(),
+    message: z.string()
+  })
+])
+
+export const IngestMatchInputSchema = z.object({
+  matchId: z.string().min(1)
+})
+
+export const IngestMatchResultSchema = z.discriminatedUnion('ok', [
+  z.object({
+    ok: z.literal(true),
+    match_id: z.string(),
+    fetched: z.boolean()
+  }),
+  z.object({
+    ok: z.literal(false),
+    code: z.string(),
+    message: z.string()
   })
 ])
 
@@ -615,6 +678,9 @@ export type GameplayStatus = z.infer<typeof GameplayStatusSchema>
 export type DesktopPlatform = z.infer<typeof DesktopPlatformSchema>
 export type PickRoflResult = z.infer<typeof PickRoflResultSchema>
 export type ImportReplayResult = z.infer<typeof ImportReplayResultSchema>
+export type OpenRealMatchReviewInput = z.infer<typeof OpenRealMatchReviewInputSchema>
+export type MatchParticipantsResult = z.infer<typeof MatchParticipantsResultSchema>
+export type IngestMatchResult = z.infer<typeof IngestMatchResultSchema>
 export type GameplayStatusResult = z.infer<typeof GameplayStatusResultSchema>
 export type GameplayEnvironmentResult = z.infer<typeof GameplayEnvironmentResultSchema>
 export type EnableReplayApiResult = z.infer<typeof EnableReplayApiResultSchema>

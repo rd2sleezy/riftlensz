@@ -71,6 +71,27 @@ async def test_import_success_does_not_launch(settings, tmp_path: Path) -> None:
     assert host.open_count == 0
 
 
+async def test_import_rejects_fixture_mismatch(settings, tmp_path: Path) -> None:
+    host = FakeReplayHost()
+    rofl = write_tiny_rofl(tmp_path / "NA1-5620410094.rofl")
+    with _client(settings, host) as client:
+        await _seed_match(client, "NA1_5620410094")
+        await _seed_match(client, "NA1_fixture_a")
+        response = client.post(
+            "/gameplay/import",
+            headers=_AUTH,
+            json={"path": str(rofl), "match_id": "NA1_fixture_a"},
+        )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ok"] is False
+    assert body["match_id"] == "NA1_5620410094"
+    assert body["error"]["code"] == "MATCH_IDENTITY_MISMATCH"
+    assert body["error"]["details"]["replay_match_id"] == "NA1_5620410094"
+    assert body["error"]["suggested_action"] == "open_replay_match"
+    assert host.open_count == 0
+
+
 async def test_import_invalid_rofl(settings, tmp_path: Path) -> None:
     host = FakeReplayHost()
     bad = tmp_path / "NA1-5617764200.rofl"

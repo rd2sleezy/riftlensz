@@ -9,6 +9,9 @@ export type ReplayActionId =
   | 'open_replay'
   | 'try_anyway'
   | 'ingest_match'
+  | 'open_replay_match'
+  | 'sign_in_api_key'
+  | 'choose_participant'
   | 'retry_after_live_game'
   | 'pick_match'
 
@@ -29,7 +32,10 @@ const ACTION_LABELS: Record<ReplayActionId, string> = {
   reopen_replay: 'Reopen replay',
   open_replay: 'Open Replay',
   try_anyway: 'Try anyway',
-  ingest_match: 'Ingest this match first',
+  ingest_match: 'Ingest this match',
+  open_replay_match: 'Open its review?',
+  sign_in_api_key: 'Sign in with API key',
+  choose_participant: 'Choose participant',
   retry_after_live_game: 'Retry after the live game',
   pick_match: 'Choose another file'
 }
@@ -62,6 +68,18 @@ const CODE_DEFAULTS: Record<string, { message: string; actionId: ReplayActionId 
   MATCH_NOT_INGESTED: {
     message: "This replay's match is not in RiftLens yet. Ingest the match first.",
     actionId: 'ingest_match'
+  },
+  MATCH_IDENTITY_MISMATCH: {
+    message: 'This replay belongs to a different match. Open its review?',
+    actionId: 'open_replay_match'
+  },
+  RIOT_CREDENTIAL_MISSING: {
+    message: 'A Riot API key is required to download this match. Sign in with a developer key first.',
+    actionId: 'sign_in_api_key'
+  },
+  PARTICIPANT_REQUIRED: {
+    message: 'Choose which participant this review should coach.',
+    actionId: 'choose_participant'
   },
   INSTALL_NOT_FOUND: {
     message: 'League of Legends installation was not found.',
@@ -126,6 +144,9 @@ const ACTION_ALIASES: Record<string, ReplayActionId> = {
   open_replay: 'open_replay',
   try_anyway: 'try_anyway',
   ingest_match: 'ingest_match',
+  open_replay_match: 'open_replay_match',
+  sign_in_api_key: 'sign_in_api_key',
+  choose_participant: 'choose_participant',
   retry_after_live_game: 'retry_after_live_game',
   pick_match: 'pick_match',
   ask_user_to_pick_match: 'pick_match'

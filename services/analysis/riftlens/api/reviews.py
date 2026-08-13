@@ -8,6 +8,13 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
+from riftlens.domain.replay_errors import ReplayError
+from riftlens.gameplay.status import serialize_replay_error
+from riftlens.pipeline.assemble.real_match import (
+    build_real_match_review,
+    ensure_match_ingested,
+    list_match_participants,
+)
 from riftlens.pipeline.assemble.review_builder import build_review_from_dtos
 from riftlens.pipeline.assemble.review_presentation import (
     list_review_presentations,
@@ -26,6 +33,26 @@ class FixtureReviewRequest(BaseModel):
     fixture_id: str = Field(min_length=1)
     participant_id: int = Field(ge=1, le=10)
     rank: str = "UNRANKED"
+
+
+class RealMatchReviewRequest(BaseModel):
+    match_id: str = Field(min_length=1)
+    participant_id: int = Field(ge=1, le=10)
+    rank: str = "UNRANKED"
+    api_key: str | None = None
+    region: str | None = None
+
+
+class IngestMatchRequest(BaseModel):
+    match_id: str = Field(min_length=1)
+    api_key: str | None = None
+    region: str | None = None
+
+
+class MatchParticipantsRequest(BaseModel):
+    match_id: str = Field(min_length=1)
+    api_key: str | None = None
+    region: str | None = None
 
 
 @router.get("/reviews")
@@ -81,3 +108,61 @@ async def review_from_fixture(body: FixtureReviewRequest, request: Request) -> d
         return payload
 
     return await asyncio.to_thread(work)
+
+
+@router.post("/matches/ingest")
+async def ingest_match(body: IngestMatchRequest, request: Request) -> dict[str, Any]:
+    """Fetch MATCH-V5 + timeline when missing, persist via existing H.2 repositories."""
+    settings = request.app.state.settings
+    try:
+        result = await ensure_match_ingested(
+            body.match_id,
+            api_key=body.api_key,
+            region=body.region,
+            settings=settings,
+        )
+    except ReplayError as exc:
+        return {"ok": False, "error": serialize_replay_error(exc)}
+    return {
+        "ok": True,
+        "match_id": result.match_id,
+        "fetched": result.fetched,
+        "error": None,
+    }
+
+
+@router.post("/matches/participants")
+async def match_participants(body: MatchParticipantsRequest, request: Request) -> dict[str, Any]:
+    """Return the ten participants for a match (ingesting first when needed)."""
+    settings = request.app.state.settings
+    try:
+        rows = await list_match_participants(
+            body.match_id,
+            api_key=body.api_key,
+            region=body.region,
+            settings=settings,
+        )
+    except ReplayError as exc:
+        return {"ok": False, "participants": [], "error": serialize_replay_error(exc)}
+    return {"ok": True, "match_id": body.match_id, "participants": rows, "error": None}
+
+
+@router.post("/reviews/from-match")
+async def review_from_match(body: RealMatchReviewRequest, request: Request) -> dict[str, Any]:
+    """Ingest real MATCH-V5 if needed, then build/persist an H.8 review for one participant."""
+    settings = request.app.state.settings
+    try:
+        result = await build_real_match_review(
+            body.match_id,
+            body.participant_id,
+            api_key=body.api_key,
+            region=body.region,
+            rank=body.rank,
+            settings=settings,
+        )
+    except ReplayError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=serialize_replay_error(exc) or {"message": str(exc)},
+        ) from exc
+    return result.presentation

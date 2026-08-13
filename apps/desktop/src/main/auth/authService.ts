@@ -112,6 +112,18 @@ export class AuthService extends EventEmitter<AuthServiceEvents> {
     this.emit('session', SIGNED_OUT)
     return SIGNED_OUT
   }
+
+  /**
+   * Return the developer API key for main-process sidecar calls only.
+   * Never expose this to the renderer. RSO sessions have no developer key.
+   */
+  public getApiKeyForMain(): string | null {
+    if (this.stored === null || this.stored.method !== 'apikey') {
+      return null
+    }
+    const key = this.stored.apiKey.trim()
+    return key.length > 0 ? key : null
+  }
 }
 
 function toPublicSession(stored: StoredSession): AuthSession {

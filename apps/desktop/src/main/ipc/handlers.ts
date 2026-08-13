@@ -17,8 +17,13 @@ import {
   IPC,
   ImportReplayInputSchema,
   ImportReplayResultSchema,
+  IngestMatchInputSchema,
+  IngestMatchResultSchema,
   ListReviewsResultSchema,
+  MatchParticipantsInputSchema,
+  MatchParticipantsResultSchema,
   OpenFixtureInputSchema,
+  OpenRealMatchReviewInputSchema,
   OpenReplayInputSchema,
   OpenReplayResultSchema,
   OverlayBoundsSchema,
@@ -123,6 +128,25 @@ export function registerIpcHandlers(
   ipcMain.handle(IPC.openFixtureReview, async (_event, raw: unknown) => {
     const input = OpenFixtureInputSchema.parse(raw)
     return GetReviewResultSchema.parse(await openFixtureReview(supervisor, input))
+  })
+
+  ipcMain.handle(IPC.openRealMatchReview, async (_event, raw: unknown) => {
+    const input = OpenRealMatchReviewInputSchema.parse(raw)
+    return GetReviewResultSchema.parse(
+      await openRealMatchReview(supervisor, authService, input)
+    )
+  })
+
+  ipcMain.handle(IPC.listMatchParticipants, async (_event, raw: unknown) => {
+    const input = MatchParticipantsInputSchema.parse(raw)
+    return MatchParticipantsResultSchema.parse(
+      await listMatchParticipants(supervisor, authService, input.matchId)
+    )
+  })
+
+  ipcMain.handle(IPC.ingestMatch, async (_event, raw: unknown) => {
+    const input = IngestMatchInputSchema.parse(raw)
+    return IngestMatchResultSchema.parse(await ingestMatch(supervisor, authService, input.matchId))
   })
 
   ipcMain.handle(IPC.pickVod, async (event) => {
@@ -349,6 +373,137 @@ async function openFixtureReview(
   }
 }
 
+async function openRealMatchReview(
+  supervisor: SidecarSupervisor,
+  authService: AuthService,
+  input: { matchId: string; participantId: number; rank?: string }
+) {
+  const apiKey = authService.getApiKeyForMain()
+  try {
+    const payload = await supervisor.request(
+      '/reviews/from-match',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          match_id: input.matchId,
+          participant_id: input.participantId,
+          rank: input.rank ?? 'UNRANKED',
+          api_key: apiKey
+        })
+      },
+      180_000
+    )
+    return { ok: true as const, review: ReviewPresentationSchema.parse(payload) }
+  } catch (error) {
+    if (apiKey === null) {
+      return ErrorResultSchema.parse({
+        ok: false,
+        code: 'RIOT_CREDENTIAL_MISSING',
+        message:
+          'A Riot API key is required to download this match. Sign in with a developer key first.'
+      })
+    }
+    return fail(error)
+  }
+}
+
+async function listMatchParticipants(
+  supervisor: SidecarSupervisor,
+  authService: AuthService,
+  matchId: string
+) {
+  const apiKey = authService.getApiKeyForMain()
+  try {
+    const payload = (await supervisor.request(
+      '/matches/participants',
+      {
+        method: 'POST',
+        body: JSON.stringify({ match_id: matchId, api_key: apiKey })
+      },
+      180_000
+    )) as Record<string, unknown>
+    if (payload['ok'] === true && Array.isArray(payload['participants'])) {
+      return {
+        ok: true as const,
+        match_id: String(payload['match_id'] ?? matchId),
+        participants: payload['participants']
+      }
+    }
+    const typed = asError(payload['error'])
+    if (typed?.code === 'RIOT_CREDENTIAL_MISSING' || apiKey === null) {
+      return {
+        ok: false as const,
+        code: 'RIOT_CREDENTIAL_MISSING',
+        message:
+          typed?.message ??
+          'A Riot API key is required to download this match. Sign in with a developer key first.'
+      }
+    }
+    return {
+      ok: false as const,
+      code: typed?.code ?? 'UNKNOWN',
+      message: typed?.message ?? 'Could not list match participants.'
+    }
+  } catch (error) {
+    if (apiKey === null) {
+      return {
+        ok: false as const,
+        code: 'RIOT_CREDENTIAL_MISSING',
+        message:
+          'A Riot API key is required to download this match. Sign in with a developer key first.'
+      }
+    }
+    const fallback = fail(error)
+    return { ok: false as const, code: fallback.code, message: fallback.message }
+  }
+}
+
+async function ingestMatch(
+  supervisor: SidecarSupervisor,
+  authService: AuthService,
+  matchId: string
+) {
+  const apiKey = authService.getApiKeyForMain()
+  try {
+    const payload = (await supervisor.request(
+      '/matches/ingest',
+      {
+        method: 'POST',
+        body: JSON.stringify({ match_id: matchId, api_key: apiKey })
+      },
+      180_000
+    )) as Record<string, unknown>
+    if (payload['ok'] === true) {
+      return {
+        ok: true as const,
+        match_id: String(payload['match_id'] ?? matchId),
+        fetched: Boolean(payload['fetched'])
+      }
+    }
+    const typed = asError(payload['error'])
+    return {
+      ok: false as const,
+      code: typed?.code ?? (apiKey === null ? 'RIOT_CREDENTIAL_MISSING' : 'UNKNOWN'),
+      message:
+        typed?.message ??
+        (apiKey === null
+          ? 'A Riot API key is required to download this match. Sign in with a developer key first.'
+          : 'Match ingest failed.')
+    }
+  } catch (error) {
+    if (apiKey === null) {
+      return {
+        ok: false as const,
+        code: 'RIOT_CREDENTIAL_MISSING',
+        message:
+          'A Riot API key is required to download this match. Sign in with a developer key first.'
+      }
+    }
+    const fallback = fail(error)
+    return { ok: false as const, code: fallback.code, message: fallback.message }
+  }
+}
+
 async function probeVod(supervisor: SidecarSupervisor, path: string) {
   try {
     const payload = await supervisor.request('/media/probe', {
@@ -384,17 +539,21 @@ async function probeVod(supervisor: SidecarSupervisor, path: string) {
   }
 }
 
-async function importReplay(supervisor: SidecarSupervisor, path: string, matchId: string) {
+async function importReplay(
+  supervisor: SidecarSupervisor,
+  path: string,
+  matchId: string | null | undefined
+) {
   try {
     const payload = (await supervisor.request('/gameplay/import', {
       method: 'POST',
-      body: JSON.stringify({ path, match_id: matchId })
+      body: JSON.stringify({ path, match_id: matchId ?? null })
     })) as Record<string, unknown>
     if (payload['ok'] === true && typeof payload['source_id'] === 'string') {
       return {
         ok: true as const,
         source_id: payload['source_id'],
-        match_id: String(payload['match_id'] ?? matchId),
+        match_id: String(payload['match_id'] ?? matchId ?? ''),
         identity: payload['identity'] ?? null,
         warnings: asErrors(payload['warnings']),
         status: GameplayStatusSchema.parse(payload['status'])
@@ -406,10 +565,16 @@ async function importReplay(supervisor: SidecarSupervisor, path: string, matchId
       code: typed?.code ?? 'UNKNOWN',
       message: typed?.message ?? 'Replay import failed.',
       suggested_action: typed?.suggested_action ?? 'choose_file',
+      match_id: typeof payload['match_id'] === 'string' ? payload['match_id'] : null,
+      identity: payload['identity'] ?? null,
       error: typed
     }
   } catch (error) {
-    return sidecarReplayFail(error)
+    return {
+      ...sidecarReplayFail(error),
+      match_id: null,
+      identity: null
+    }
   }
 }
 
@@ -596,7 +761,11 @@ function asError(value: unknown): ReplayErrorPayload | null {
     message: record['message'],
     suggested_action: typeof record['suggested_action'] === 'string' ? record['suggested_action'] : null,
     recoverable: record['recoverable'] === true,
-    severity: typeof record['severity'] === 'string' ? record['severity'] : 'fatal'
+    severity: typeof record['severity'] === 'string' ? record['severity'] : 'fatal',
+    details:
+      typeof record['details'] === 'object' && record['details'] !== null
+        ? (record['details'] as Record<string, unknown>)
+        : {}
   }
 }
 

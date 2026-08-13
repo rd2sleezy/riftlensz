@@ -20,6 +20,9 @@ _DEFAULT_ACTION: dict[ReplayErrorCode, str] = {
     ReplayErrorCode.ROFL_METADATA_UNPARSED: "continue_without_replay",
     ReplayErrorCode.MATCH_ID_UNRESOLVED: "choose_file",
     ReplayErrorCode.MATCH_NOT_INGESTED: "ingest_match",
+    ReplayErrorCode.MATCH_IDENTITY_MISMATCH: "open_replay_match",
+    ReplayErrorCode.RIOT_CREDENTIAL_MISSING: "sign_in_api_key",
+    ReplayErrorCode.PARTICIPANT_REQUIRED: "choose_participant",
     ReplayErrorCode.INSTALL_NOT_FOUND: "find_league_install",
     ReplayErrorCode.INSTALL_INVALID: "find_league_install",
     ReplayErrorCode.PATCH_INCOMPATIBLE: "try_anyway",
@@ -79,6 +82,7 @@ def serialize_replay_error(error: ReplayError | None) -> dict[str, Any] | None:
         "suggested_action": suggested_action_for(error.code, error.details),
         "recoverable": error.is_retryable() or error.is_informational(),
         "severity": error.severity,
+        "details": dict(error.details) if error.details else {},
     }
 
 

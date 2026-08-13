@@ -99,6 +99,8 @@ describe('IPC zod schemas', () => {
       code: 'ROFL_NOT_RECOGNISED',
       message: "This file doesn't look like a League replay.",
       suggested_action: 'choose_file',
+      match_id: null,
+      identity: null,
       error: {
         code: 'ROFL_NOT_RECOGNISED',
         message: "This file doesn't look like a League replay.",
