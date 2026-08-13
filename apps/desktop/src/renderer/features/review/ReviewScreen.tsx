@@ -219,6 +219,14 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
         setWizardOpen(true)
         return
       }
+      if (action === 'sign_in_api_key') {
+        setOverlayNotice(
+          'Sign in with a Riot developer API key from the home Account menu, then import the replay again.'
+        )
+        setWizardOpen(false)
+        window.location.hash = '#/'
+        return
+      }
       if (action === 'enable_replay_api') {
         void (async () => {
           const result = await window.rift.enableReplayApi()

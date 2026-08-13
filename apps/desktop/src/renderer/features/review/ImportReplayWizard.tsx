@@ -11,6 +11,7 @@ type Step =
   | 'failed'
   | 'participants'
   | 'building'
+  | 'switching'
 
 type ParticipantRow = {
   participant_id: number
@@ -33,6 +34,7 @@ type Props = {
 export function ImportReplayWizard(props: Props): ReactElement | null {
   const [step, setStep] = useState<Step>('choose')
   const [errorLabel, setErrorLabel] = useState<string | null>(null)
+  const [infoLabel, setInfoLabel] = useState<string | null>(null)
   const [actionId, setActionId] = useState<ReplayActionId | null>(null)
   const [actionLabel, setActionLabel] = useState<string | null>(null)
   const [patch, setPatch] = useState<string | null>(null)
@@ -48,6 +50,7 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
   const reset = (): void => {
     setStep('choose')
     setErrorLabel(null)
+    setInfoLabel(null)
     setActionId(null)
     setActionLabel(null)
     setPatch(null)
@@ -60,25 +63,27 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
   const failWith = (code: string, message?: string | null, suggested?: string | null): void => {
     const view = replayErrorView({ code, message, suggestedAction: suggested })
     setStep('failed')
+    setInfoLabel(null)
     setErrorLabel(view.message)
     setActionId(view.actionId)
     setActionLabel(view.actionLabel)
     setBusy(false)
   }
 
-  const loadParticipants = async (matchId: string, path: string): Promise<void> => {
-    setBusy(true)
-    setErrorLabel(null)
-    setStep('participants')
-    const listed = await window.rift.listMatchParticipants(matchId)
-    if (!listed.ok) {
-      failWith(listed.code, listed.message)
-      return
-    }
-    setPendingPath(path)
-    setReplayMatchId(matchId)
-    setParticipants(listed.participants)
+  const finishLinked = async (
+    sourceId: string,
+    matchId: string,
+    reviewId: string | null
+  ): Promise<void> => {
+    setStep('checking_league')
+    await window.rift.checkGameplayEnvironment()
+    setStep('linked')
+    setInfoLabel(null)
     setBusy(false)
+    props.onLinked(sourceId, matchId)
+    if (reviewId !== null && reviewId.length > 0) {
+      props.onOpenReview(reviewId)
+    }
   }
 
   const bindAndFinish = async (
@@ -87,20 +92,62 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     reviewId: string | null
   ): Promise<void> => {
     setStep('matching')
+    setInfoLabel(`Linking replay to ${matchId}…`)
+    // Pass the replay's own match id so binding never uses an unrelated open review.
     const imported = await window.rift.importReplay(path, matchId)
     if (!imported.ok) {
       failWith(imported.code, imported.message, imported.suggested_action)
       return
     }
-    setStep('checking_league')
-    await window.rift.checkGameplayEnvironment()
-    setStep('linked')
     setPatch(imported.identity?.declared_patch ?? imported.status.declared_patch)
-    setBusy(false)
-    props.onLinked(imported.source_id, imported.match_id)
-    if (reviewId !== null) {
-      props.onOpenReview(reviewId)
+    await finishLinked(imported.source_id, imported.match_id, reviewId)
+  }
+
+  const ensureReviewThenFinish = async (
+    path: string,
+    matchId: string,
+    alreadySourceId: string | null
+  ): Promise<void> => {
+    const reviews = await window.rift.listReviews()
+    if (reviews.ok) {
+      const existing = reviews.reviews.find((row) => row.match_id === matchId)
+      if (existing !== undefined) {
+        if (alreadySourceId !== null) {
+          await finishLinked(alreadySourceId, matchId, existing.id)
+          return
+        }
+        await bindAndFinish(path, matchId, existing.id)
+        return
+      }
     }
+    await loadParticipants(matchId, path)
+  }
+
+  const loadParticipants = async (matchId: string, path: string): Promise<void> => {
+    setBusy(true)
+    setErrorLabel(null)
+    setPendingPath(path)
+    setReplayMatchId(matchId)
+    setStep('participants')
+    setInfoLabel(`Loading players for ${matchId}…`)
+    const listed = await window.rift.listMatchParticipants(matchId)
+    if (!listed.ok) {
+      failWith(listed.code, listed.message)
+      return
+    }
+    setParticipants(listed.participants)
+    setInfoLabel(`Choose your champion for ${matchId}.`)
+    setBusy(false)
+  }
+
+  const openReplayMatchFlow = async (path: string, matchId: string): Promise<void> => {
+    setBusy(true)
+    setErrorLabel(null)
+    setPendingPath(path)
+    setReplayMatchId(matchId)
+    setStep('switching')
+    setInfoLabel(`Replay match is ${matchId}. Opening that review…`)
+    await ensureReviewThenFinish(path, matchId, null)
   }
 
   const buildForParticipant = async (participantId: number): Promise<void> => {
@@ -110,6 +157,7 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     setBusy(true)
     setStep('building')
     setErrorLabel(null)
+    setInfoLabel(`Building review for participant ${participantId}…`)
     const built = await window.rift.openRealMatchReview({
       matchId: replayMatchId,
       participantId,
@@ -122,16 +170,10 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     await bindAndFinish(pendingPath, replayMatchId, built.review.id)
   }
 
-  const resolveReplayMatch = async (): Promise<void> => {
-    if (pendingPath === null || replayMatchId === null) {
-      return
-    }
-    await loadParticipants(replayMatchId, pendingPath)
-  }
-
   const runImport = async (): Promise<void> => {
     setBusy(true)
     setErrorLabel(null)
+    setInfoLabel(null)
     setStep('choose')
     const picked = await window.rift.pickRofl()
     if (!picked.ok) {
@@ -144,7 +186,9 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     }
     setPendingPath(picked.path)
     setStep('validating')
-    const imported = await window.rift.importReplay(picked.path, props.matchId)
+    // Never bind using the open review id — that caused fixture/wrong-match attachment.
+    // Identify + bind against the ROFL's own match only.
+    const imported = await window.rift.importReplay(picked.path, null)
     if (!imported.ok) {
       const hint =
         imported.match_id ??
@@ -154,14 +198,10 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
           : null)
       setReplayMatchId(hint)
       if (
-        (imported.code === 'MATCH_IDENTITY_MISMATCH' || imported.code === 'MATCH_NOT_INGESTED') &&
+        (imported.code === 'MATCH_NOT_INGESTED' || imported.code === 'MATCH_IDENTITY_MISMATCH') &&
         hint !== null
       ) {
-        failWith(imported.code, imported.message, imported.suggested_action)
-        return
-      }
-      if (imported.code === 'MATCH_ID_UNRESOLVED') {
-        failWith(imported.code, imported.message, imported.suggested_action)
+        await openReplayMatchFlow(picked.path, hint)
         return
       }
       failWith(imported.code, imported.message, imported.suggested_action)
@@ -169,17 +209,29 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     }
     setStep('identifying')
     setPatch(imported.identity?.declared_patch ?? imported.status.declared_patch)
+    setReplayMatchId(imported.match_id)
+    if (imported.match_id !== props.matchId) {
+      setInfoLabel(`Replay belongs to ${imported.match_id}. Opening that review…`)
+      await ensureReviewThenFinish(picked.path, imported.match_id, imported.source_id)
+      return
+    }
     setStep('matching')
-    setStep('checking_league')
-    await window.rift.checkGameplayEnvironment()
-    setStep('linked')
-    setBusy(false)
-    props.onLinked(imported.source_id, imported.match_id)
+    await finishLinked(imported.source_id, imported.match_id, null)
   }
 
   const handlePrimaryAction = (): void => {
-    if (actionId === 'open_replay_match' || actionId === 'ingest_match' || actionId === 'choose_participant') {
-      void resolveReplayMatch()
+    if (
+      (actionId === 'open_replay_match' ||
+        actionId === 'ingest_match' ||
+        actionId === 'choose_participant') &&
+      pendingPath !== null &&
+      replayMatchId !== null
+    ) {
+      void openReplayMatchFlow(pendingPath, replayMatchId)
+      return
+    }
+    if (actionId === 'sign_in_api_key') {
+      props.onAction(actionId)
       return
     }
     props.onAction(actionId ?? 'choose_file')
@@ -235,7 +287,7 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
             <StepRow done={past(step, 'validating')} current={step === 'validating'} label="Validating replay" />
             <StepRow
               done={past(step, 'identifying')}
-              current={step === 'identifying'}
+              current={step === 'identifying' || step === 'switching'}
               label="Identifying replay"
             />
             <StepRow
@@ -256,13 +308,21 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
             Replay linked{patch ? ` · patch ${patch}` : ''}. Ready to open.
           </p>
         ) : null}
+        {infoLabel && step !== 'failed' ? (
+          <p className="mt-3 text-sm text-sky-200" data-testid="import-info">
+            {infoLabel}
+          </p>
+        ) : null}
         {step === 'failed' && errorLabel ? (
           <p className="mt-3 text-sm text-rose-300" data-testid="import-error">
             {errorLabel}
           </p>
         ) : null}
         <div className="mt-4 flex flex-wrap gap-2">
-          {step !== 'linked' && step !== 'participants' && step !== 'building' ? (
+          {step !== 'linked' &&
+          step !== 'participants' &&
+          step !== 'building' &&
+          step !== 'switching' ? (
             <button
               type="button"
               data-testid="import-choose-file"
@@ -310,7 +370,7 @@ function past(step: Step, target: Step): boolean {
     'checking_league',
     'linked'
   ]
-  if (step === 'failed' || step === 'participants' || step === 'building') {
+  if (step === 'failed' || step === 'participants' || step === 'building' || step === 'switching') {
     return false
   }
   return order.indexOf(step) > order.indexOf(target)
