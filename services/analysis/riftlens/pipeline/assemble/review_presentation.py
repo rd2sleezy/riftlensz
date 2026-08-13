@@ -106,11 +106,15 @@ def load_review_presentation(data_dir: Path, review_id: str) -> dict[str, Any] |
     return parsed
 
 
-def list_review_presentations(data_dir: Path) -> list[dict[str, Any]]:
+def list_review_presentations(
+    data_dir: Path,
+    *,
+    include_fixtures: bool = False,
+) -> list[dict[str, Any]]:
     """Return summaries for saved presentations, newest first.
 
-    Fixture trial reviews (NA1_fixture_*) are excluded so they cannot reappear in the
-    desktop home list after being deleted.
+    Fixture trial reviews (NA1_fixture_*) are excluded from the normal production list
+    unless ``include_fixtures`` is True (developer/E2E tooling).
     """
     folder = Path(data_dir) / "reviews"
     if not folder.is_dir():
@@ -123,7 +127,7 @@ def list_review_presentations(data_dir: Path) -> list[dict[str, Any]]:
             continue
         if not isinstance(parsed, dict) or "id" not in parsed:
             continue
-        if _is_fixture_trial_presentation(parsed):
+        if not include_fixtures and _is_fixture_trial_presentation(parsed):
             continue
         summaries.append(review_summary(parsed))
     summaries.sort(key=lambda item: int(item.get("created_at") or 0), reverse=True)
@@ -131,7 +135,10 @@ def list_review_presentations(data_dir: Path) -> list[dict[str, Any]]:
 
 
 def purge_fixture_trial_presentations(data_dir: Path) -> int:
-    """Delete on-disk fixture trial review JSON. Returns the number removed."""
+    """Delete on-disk fixture trial review JSON only. Returns the number removed.
+
+    Safe for developers clearing old demo clutter. Never deletes non-fixture reviews.
+    """
     folder = Path(data_dir) / "reviews"
     if not folder.is_dir():
         return 0
@@ -145,6 +152,11 @@ def purge_fixture_trial_presentations(data_dir: Path) -> int:
             path.unlink(missing_ok=True)
             removed += 1
     return removed
+
+
+def is_fixture_trial_presentation(payload: Mapping[str, Any]) -> bool:
+    """Public helper: True for NA1_fixture_* trial/demo reviews."""
+    return _is_fixture_trial_presentation(payload)
 
 
 def _is_fixture_trial_presentation(payload: Mapping[str, Any]) -> bool:

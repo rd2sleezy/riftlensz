@@ -61,13 +61,18 @@ export function Dashboard(): ReactElement {
 
   const handleReplayAction = (action: ReplayActionId): void => {
     if (action === 'sign_in_api_key') {
-      setError('Sign in with a Riot developer API key above, then import the replay again.')
+      setError('Riot access is required to download this match. Sign in above, then import again.')
       setWizardOpen(false)
     }
   }
 
+  const openImport = (): void => {
+    setError(null)
+    setWizardOpen(true)
+  }
+
   return (
-    <main className="min-h-screen px-6 py-8 text-slate-100 sm:px-10 lg:px-16">
+    <main className="min-h-screen px-6 py-8 text-slate-100 sm:px-10 lg:px-16" data-testid="home-dashboard">
       <div className="mx-auto max-w-5xl">
         <header className="flex items-start justify-between gap-8">
           <div>
@@ -93,13 +98,14 @@ export function Dashboard(): ReactElement {
           </div>
         </header>
 
-        <Card className="mt-8 p-5">
+        <Card className="mt-8 p-5" data-testid="home-import-card">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <h2 className="text-base font-semibold">Import a League replay</h2>
+              <h2 className="text-base font-semibold">Import League Replay</h2>
               <p className="mt-1 text-sm text-slate-500">
-                Choose a <span className="font-mono text-slate-300">.rofl</span> file. RiftLens identifies
-                the match, builds coaching for your champion, and links the replay.
+                Start from a <span className="font-mono text-slate-300">.rofl</span> file — no existing
+                review required. RiftLens identifies the match, builds coaching for your champion, and
+                links the replay.
               </p>
             </div>
             <button
@@ -107,12 +113,9 @@ export function Dashboard(): ReactElement {
               data-testid="home-import-replay"
               disabled={!ready || !nativeReplaySupported}
               className="rounded-lg bg-sky-700 px-4 py-2.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40"
-              onClick={() => {
-                setError(null)
-                setWizardOpen(true)
-              }}
+              onClick={openImport}
             >
-              Import .rofl
+              Import League Replay
             </button>
           </div>
           {!nativeReplaySupported ? (
@@ -137,9 +140,10 @@ export function Dashboard(): ReactElement {
           <Card className="mt-6 p-5" data-testid="dev-fixtures">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-base font-semibold">Dev fixtures (E2E only)</h2>
+                <h2 className="text-base font-semibold">Developer fixtures</h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  Hidden in normal use. Pyke fixture trials are not saved to the home list.
+                  Visible only when <span className="font-mono">RIFTLENS_E2E=1</span>. Fixture reviews
+                  stay out of the production saved list.
                 </p>
               </div>
               <label className="flex items-center gap-2 text-sm text-slate-400">
@@ -183,14 +187,25 @@ export function Dashboard(): ReactElement {
           </Card>
         ) : null}
 
-        <section className="mt-10">
-          <SectionLabel>Saved reviews</SectionLabel>
+        <section className="mt-10" data-testid="saved-reviews">
+          <SectionLabel>Reviewed matches</SectionLabel>
           {listError ? <p className="mt-2 text-sm text-rift-danger">{listError}</p> : null}
           {reviews.length === 0 && listError === null ? (
-            <div className="mt-3">
+            <div className="mt-3" data-testid="home-empty-state">
               <EmptyState
-                title="No saved reviews yet"
-                body="Import a .rofl replay to generate your first coaching review."
+                title="No matches reviewed yet."
+                body="Import a League replay to build your first real coaching review."
+                action={
+                  <button
+                    type="button"
+                    data-testid="home-empty-import"
+                    disabled={!ready || !nativeReplaySupported}
+                    className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40"
+                    onClick={openImport}
+                  >
+                    Import League Replay
+                  </button>
+                }
               />
             </div>
           ) : (

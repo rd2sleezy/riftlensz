@@ -62,6 +62,26 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
   })
 
   const review = reviewQuery.data
+  const platformQuery = useQuery({
+    queryKey: ['desktop-platform'],
+    queryFn: () => window.rift.getDesktopPlatform()
+  })
+  const e2eMode = platformQuery.data?.e2eMode === true
+
+  useEffect(() => {
+    if (review === undefined) {
+      return
+    }
+    const fixtureId = review.fixture_id
+    const matchId = review.match_id
+    const isFixture =
+      (typeof fixtureId === 'string' && fixtureId.startsWith('NA1_fixture_')) ||
+      (typeof matchId === 'string' && matchId.startsWith('NA1_fixture_'))
+    if (isFixture && !e2eMode) {
+      window.location.hash = '#/'
+    }
+  }, [e2eMode, review])
+
   useEffect(() => {
     if (review?.sync_map) {
       setSync(review.sync_map)

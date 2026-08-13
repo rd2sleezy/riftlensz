@@ -401,7 +401,7 @@ async function openRealMatchReview(
         ok: false,
         code: 'RIOT_CREDENTIAL_MISSING',
         message:
-          'A Riot API key is required to download this match. Sign in with a developer key first.'
+          'Riot access is required to download this match.'
       })
     }
     return fail(error)
@@ -437,7 +437,7 @@ async function listMatchParticipants(
         code: 'RIOT_CREDENTIAL_MISSING',
         message:
           typed?.message ??
-          'A Riot API key is required to download this match. Sign in with a developer key first.'
+          'Riot access is required to download this match.'
       }
     }
     return {
@@ -451,7 +451,7 @@ async function listMatchParticipants(
         ok: false as const,
         code: 'RIOT_CREDENTIAL_MISSING',
         message:
-          'A Riot API key is required to download this match. Sign in with a developer key first.'
+          'Riot access is required to download this match.'
       }
     }
     const fallback = fail(error)
@@ -488,7 +488,7 @@ async function ingestMatch(
       message:
         typed?.message ??
         (apiKey === null
-          ? 'A Riot API key is required to download this match. Sign in with a developer key first.'
+          ? 'Riot access is required to download this match.'
           : 'Match ingest failed.')
     }
   } catch (error) {
@@ -497,7 +497,7 @@ async function ingestMatch(
         ok: false as const,
         code: 'RIOT_CREDENTIAL_MISSING',
         message:
-          'A Riot API key is required to download this match. Sign in with a developer key first.'
+          'Riot access is required to download this match.'
       }
     }
     const fallback = fail(error)

@@ -76,7 +76,7 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
         "This replay belongs to a different match than the open review."
     ),
     ReplayErrorCode.RIOT_CREDENTIAL_MISSING: (
-        "A Riot API key is required to download this match. Sign in with a developer key first."
+        "Riot access is required to download this match."
     ),
     ReplayErrorCode.PARTICIPANT_REQUIRED: (
         "Choose which participant this review should coach."

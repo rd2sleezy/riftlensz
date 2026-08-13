@@ -34,7 +34,7 @@ const ACTION_LABELS: Record<ReplayActionId, string> = {
   try_anyway: 'Try anyway',
   ingest_match: 'Ingest this match',
   open_replay_match: 'Open its review?',
-  sign_in_api_key: 'Sign in with API key',
+  sign_in_api_key: 'Sign in for Riot access',
   choose_participant: 'Choose participant',
   retry_after_live_game: 'Retry after the live game',
   pick_match: 'Choose another file'
@@ -74,7 +74,7 @@ const CODE_DEFAULTS: Record<string, { message: string; actionId: ReplayActionId 
     actionId: 'open_replay_match'
   },
   RIOT_CREDENTIAL_MISSING: {
-    message: 'A Riot API key is required to download this match. Sign in with a developer key first.',
+    message: 'Riot access is required to download this match.',
     actionId: 'sign_in_api_key'
   },
   PARTICIPANT_REQUIRED: {

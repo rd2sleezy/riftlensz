@@ -19,6 +19,7 @@ from riftlens.pipeline.assemble.review_builder import build_review_from_dtos
 from riftlens.pipeline.assemble.review_presentation import (
     list_review_presentations,
     load_review_presentation,
+    purge_fixture_trial_presentations,
     review_to_presentation,
     save_review_presentation,
 )
@@ -56,10 +57,31 @@ class MatchParticipantsRequest(BaseModel):
 
 
 @router.get("/reviews")
-async def list_reviews(request: Request) -> dict[str, Any]:
-    """Return saved H.8 review summaries (fixture trials excluded from the home list)."""
+async def list_reviews(
+    request: Request,
+    include_fixtures: bool = False,
+) -> dict[str, Any]:
+    """Return saved H.8 review summaries.
+
+    Fixture/demo reviews are excluded unless ``include_fixtures=true`` (developer/E2E).
+    """
     settings = request.app.state.settings
-    return {"reviews": list_review_presentations(settings.data_dir)}
+    return {
+        "reviews": list_review_presentations(
+            settings.data_dir, include_fixtures=include_fixtures
+        )
+    }
+
+
+@router.post("/reviews/purge-fixtures")
+async def purge_fixture_reviews(request: Request) -> dict[str, Any]:
+    """Optional developer cleanup: delete on-disk fixture trial presentations only.
+
+    Production list filtering does not require this. Does not touch real match reviews.
+    """
+    settings = request.app.state.settings
+    removed = purge_fixture_trial_presentations(settings.data_dir)
+    return {"ok": True, "removed": removed}
 
 
 @router.get("/reviews/{review_id}")
