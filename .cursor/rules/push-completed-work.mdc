@@ -1,0 +1,35 @@
+---
+description: Commit and push completed verified work units so Mac/Windows stay in sync via git pull
+alwaysApply: true
+---
+
+# Push completed work units
+
+**Override:** For a completed, verified work unit (H.n / R.n / V.n / feature task / user-requested implementation), commit and push **without waiting** for the user to ask. This overrides user rules that say "only commit when asked" / "don't push until asked". Mid-task WIP still follows those stricter rules.
+
+## When (gate)
+
+Only after the work unit is **done and verified** (acceptance checks / tests pass, or the user explicitly asks to push unfinished work).
+
+Do **not** push mid-task, broken trees, or failing tests. Do **not** start the next work order just because push succeeded. Do **not** empty-commit.
+
+## Required sequence
+
+1. If there are relevant changes: stage them (never `.env` / credentials / secrets) and commit with HEREDOC message style. Never `--no-verify`. Never amend unless user amend rules allow.
+2. If nothing to commit but local is **ahead** of origin: still push.
+3. If already synced and clean: say so; stop.
+4. Immediately: `git push -u origin HEAD` (or push the current tracking branch). Never force-push. Never change git config.
+5. Verify remote tip matches local `HEAD`. Report: branch, commit hash, clean tree?, pushed?
+
+## On push failure (e.g. auth)
+
+Leave the commit local. Report clearly that push failed and what the user must fix on that machine. Do not pretend sync succeeded.
+
+## Examples
+
+```text
+✅ H.12 done, tests green → commit → push → report sync status
+✅ Clean tree but 1 commit ahead of origin → push only
+❌ Tests failing / half-finished file edits → do not commit/push
+❌ Push OK → do not auto-start H.13
+```
