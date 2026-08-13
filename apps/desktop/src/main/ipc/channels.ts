@@ -21,6 +21,7 @@ export const IPC = {
   importReplay: 'rift:gameplay:import',
   getGameplayStatus: 'rift:gameplay:status',
   checkGameplayEnvironment: 'rift:gameplay:environment',
+  enableReplayApi: 'rift:gameplay:enable-replay-api',
   openReplay: 'rift:gameplay:open',
   closeReplay: 'rift:gameplay:close',
   revealGameplay: 'rift:gameplay:reveal',
@@ -59,6 +60,7 @@ export const IPC_RENDERER_ALLOWLIST = [
   'importReplay',
   'getGameplayStatus',
   'checkGameplayEnvironment',
+  'enableReplayApi',
   'openReplay',
   'closeReplay',
   'revealGameplay',
@@ -535,6 +537,20 @@ export const GameplayEnvironmentResultSchema = z.discriminatedUnion('ok', [
   ErrorResultSchema
 ])
 
+export const EnableReplayApiInputSchema = z.object({
+  consent: z.literal(true)
+})
+
+export const EnableReplayApiResultSchema = z.object({
+  ok: z.boolean(),
+  changed: z.boolean(),
+  requires_restart: z.boolean().optional(),
+  backup_path: z.string().nullable().optional(),
+  path: z.string().nullable().optional(),
+  error: ReplayErrorPayloadSchema.nullable().optional(),
+  details: z.unknown().optional()
+})
+
 export const OpenReplayInputSchema = z.object({
   sourceId: z.string().min(1),
   matchId: z.string().min(1)
@@ -601,6 +617,7 @@ export type PickRoflResult = z.infer<typeof PickRoflResultSchema>
 export type ImportReplayResult = z.infer<typeof ImportReplayResultSchema>
 export type GameplayStatusResult = z.infer<typeof GameplayStatusResultSchema>
 export type GameplayEnvironmentResult = z.infer<typeof GameplayEnvironmentResultSchema>
+export type EnableReplayApiResult = z.infer<typeof EnableReplayApiResultSchema>
 export type OpenReplayResult = z.infer<typeof OpenReplayResultSchema>
 export type CloseReplayResult = z.infer<typeof CloseReplayResultSchema>
 export type RevealGameplayResult = z.infer<typeof RevealGameplayResultSchema>

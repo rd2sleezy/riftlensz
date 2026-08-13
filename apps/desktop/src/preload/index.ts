@@ -5,6 +5,8 @@ import {
   BuildManualSyncResultSchema,
   CloseReplayResultSchema,
   DesktopPlatformSchema,
+  EnableReplayApiInputSchema,
+  EnableReplayApiResultSchema,
   GameplayEnvironmentResultSchema,
   GameplayMatchInputSchema,
   GameplayStatusResultSchema,
@@ -38,6 +40,7 @@ import {
   type BuildManualSyncResult,
   type CloseReplayResult,
   type DesktopPlatform,
+  type EnableReplayApiResult,
   type GameplayEnvironmentResult,
   type GameplayStatusResult,
   type GetReviewResult,
@@ -157,6 +160,11 @@ const rift = {
     return ipcRenderer
       .invoke(IPC.checkGameplayEnvironment)
       .then((value) => GameplayEnvironmentResultSchema.parse(value))
+  },
+  enableReplayApi(): Promise<EnableReplayApiResult> {
+    return ipcRenderer
+      .invoke(IPC.enableReplayApi, EnableReplayApiInputSchema.parse({ consent: true }))
+      .then((value) => EnableReplayApiResultSchema.parse(value))
   },
   openReplay(sourceId: string, matchId: string): Promise<OpenReplayResult> {
     return ipcRenderer

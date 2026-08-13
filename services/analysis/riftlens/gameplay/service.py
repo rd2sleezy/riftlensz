@@ -422,6 +422,77 @@ class GameplaySourceService:
         """Delegate install/Replay-API probe. Does not launch."""
         return self._host.check_environment()
 
+    def enable_replay_api(self, *, consent: bool) -> dict[str, object]:
+        """Consent-gated EnableReplayApi write. Never modifies config silently."""
+        if consent is not True:
+            return {
+                "ok": False,
+                "changed": False,
+                "error": {
+                    "code": ReplayErrorCode.INSTALL_INVALID.value,
+                    "message": "EnableReplayApi requires explicit consent.",
+                    "suggested_action": "enable_replay_api",
+                    "recoverable": True,
+                    "details": {"reason": "consent_required"},
+                },
+                "backup_path": None,
+                "path": None,
+            }
+        enable_cfg = getattr(self._host, "enable_replay_api_config", None)
+        if not callable(enable_cfg):
+            return {
+                "ok": False,
+                "changed": False,
+                "error": {
+                    "code": ReplayErrorCode.PLATFORM_UNSUPPORTED.value,
+                    "message": "Native Replay API config is only available on Windows and macOS.",
+                    "suggested_action": "attach_video",
+                    "recoverable": False,
+                    "details": {},
+                },
+                "backup_path": None,
+                "path": None,
+            }
+        result = enable_cfg(consent=True)
+        # MacReplayHost returns MacReplayApiConfigResult; Windows returns GameConfigWriteResult.
+        primary = getattr(result, "primary", result)
+        secondary = getattr(result, "secondary", None)
+        ok_attr = getattr(result, "ok", None)
+        state = getattr(primary, "state", None)
+        error_obj = getattr(primary, "error", None)
+        changed = bool(getattr(primary, "changed", False))
+        if secondary is not None:
+            changed = changed or bool(getattr(secondary, "changed", False))
+        ok = bool(ok_attr) if ok_attr is not None else (
+            error_obj is None
+            and state is not None
+            and bool(getattr(state, "enable_replay_api", False))
+        )
+        error = None if error_obj is None else {
+            "code": error_obj.code.value,
+            "message": str(error_obj),
+            "suggested_action": "enable_replay_api_and_restart_client",
+            "recoverable": True,
+            "details": dict(error_obj.details),
+        }
+        backup = getattr(primary, "backup_path", None)
+        path = None if state is None else str(getattr(state, "path", ""))
+        details: object
+        to_dict = getattr(result, "to_dict", None)
+        details = to_dict() if callable(to_dict) else {
+            "changed": changed,
+            "path": path,
+        }
+        return {
+            "ok": ok,
+            "changed": changed,
+            "error": error,
+            "backup_path": None if backup is None else str(backup),
+            "path": path,
+            "requires_restart": True,
+            "details": details,
+        }
+
     def now_ms(self) -> int:
         """Wall-clock milliseconds for persistence timestamps."""
         return int(time.time() * 1000)

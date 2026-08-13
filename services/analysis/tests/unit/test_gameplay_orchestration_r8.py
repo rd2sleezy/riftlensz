@@ -331,12 +331,12 @@ async def test_missing_file_after_persist(engine: Engine, tmp_path: Path) -> Non
 
 
 @pytest.mark.asyncio
-async def test_non_windows_native_replay_platform_unsupported(
+async def test_linux_native_replay_platform_unsupported(
     engine: Engine, tmp_path: Path
 ) -> None:
     await _seed_match(engine, "NA1_5617764200")
     rofl = write_tiny_rofl(tmp_path / "NA1-5617764200.rofl")
-    host = create_replay_host(platform="darwin")
+    host = create_replay_host(platform="linux")
     assert isinstance(host, UnsupportedReplayHost)
     service = _service(engine, host)
     imported = await service.import_rofl(str(rofl), now_ms=100)
@@ -351,6 +351,24 @@ async def test_non_windows_native_replay_platform_unsupported(
     assert outcome.ok is False
     assert outcome.error is not None
     assert outcome.error.code is ReplayErrorCode.PLATFORM_UNSUPPORTED
+
+
+@pytest.mark.asyncio
+async def test_darwin_factory_exposes_native_capabilities(
+    engine: Engine, tmp_path: Path
+) -> None:
+    from riftlens.replay_host.mac.host import MacReplayHost
+
+    await _seed_match(engine, "NA1_5617764200")
+    rofl = write_tiny_rofl(tmp_path / "NA1-5617764200.rofl")
+    host = create_replay_host(platform="darwin")
+    assert isinstance(host, MacReplayHost)
+    service = _service(engine, host)
+    imported = await service.import_rofl(str(rofl), now_ms=100)
+    assert imported.ok
+    resolved = await service.resolve_source(imported.source_id or "")
+    assert resolved is not None
+    assert SourceCapability.SEEK in resolved.source.capabilities
 
 
 @pytest.mark.asyncio

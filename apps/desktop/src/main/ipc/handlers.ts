@@ -5,6 +5,8 @@ import {
   BuildManualSyncResultSchema,
   CloseReplayResultSchema,
   DesktopPlatformSchema,
+  EnableReplayApiInputSchema,
+  EnableReplayApiResultSchema,
   ErrorResultSchema,
   GameplayEnvironmentResultSchema,
   GameplayMatchInputSchema,
@@ -164,7 +166,7 @@ export function registerIpcHandlers(
   ipcMain.handle(IPC.getDesktopPlatform, () => {
     return DesktopPlatformSchema.parse({
       platform: process.platform,
-      nativeReplaySupported: process.platform === 'win32'
+      nativeReplaySupported: process.platform === 'win32' || process.platform === 'darwin'
     })
   })
 
@@ -193,6 +195,11 @@ export function registerIpcHandlers(
 
   ipcMain.handle(IPC.checkGameplayEnvironment, async () => {
     return GameplayEnvironmentResultSchema.parse(await checkGameplayEnvironment(supervisor))
+  })
+
+  ipcMain.handle(IPC.enableReplayApi, async (_event, raw: unknown) => {
+    const input = EnableReplayApiInputSchema.parse(raw)
+    return EnableReplayApiResultSchema.parse(await enableReplayApi(supervisor, input.consent))
   })
 
   ipcMain.handle(IPC.openReplay, async (_event, raw: unknown) => {
@@ -436,6 +443,40 @@ async function checkGameplayEnvironment(supervisor: SidecarSupervisor) {
     }
   } catch (error) {
     return fail(error)
+  }
+}
+
+async function enableReplayApi(supervisor: SidecarSupervisor, consent: true) {
+  try {
+    const payload = (await supervisor.request('/gameplay/enable-replay-api', {
+      method: 'POST',
+      body: JSON.stringify({ consent })
+    })) as Record<string, unknown>
+    return {
+      ok: Boolean(payload['ok']),
+      changed: Boolean(payload['changed']),
+      requires_restart: Boolean(payload['requires_restart'] ?? true),
+      backup_path: typeof payload['backup_path'] === 'string' ? payload['backup_path'] : null,
+      path: typeof payload['path'] === 'string' ? payload['path'] : null,
+      error: asError(payload['error']),
+      details: payload['details']
+    }
+  } catch (error) {
+    const failed = fail(error)
+    return {
+      ok: false,
+      changed: false,
+      requires_restart: false,
+      backup_path: null,
+      path: null,
+      error: {
+        code: failed.code,
+        message: failed.message,
+        suggested_action: null,
+        recoverable: true,
+        details: {}
+      }
+    }
   }
 }
 

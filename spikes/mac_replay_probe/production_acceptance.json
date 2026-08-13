@@ -1,0 +1,88 @@
+{
+  "rofl": "/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5620410094.rofl",
+  "steps": [
+    {
+      "step": "factory",
+      "host": "MacReplayHost",
+      "supported": true
+    },
+    {
+      "step": "environment",
+      "install_found": true,
+      "replay_api_documented": false,
+      "warning_codes": [
+        "REPLAY_API_UNAVAILABLE"
+      ]
+    },
+    {
+      "step": "open_session",
+      "phase": "PLAYING",
+      "ready": true,
+      "active": true,
+      "error": null
+    },
+    {
+      "step": "clock",
+      "length_ms": 2484308,
+      "t_source_ms": 2012
+    },
+    {
+      "step": "pause",
+      "ok": true,
+      "t_a": 2025,
+      "t_b": 2025
+    },
+    {
+      "step": "play",
+      "ok": true,
+      "t_a": 2354,
+      "t_b": 4877
+    },
+    {
+      "step": "seek",
+      "target_game_ms": 30000,
+      "ok": true,
+      "landed_source_ms": 30000,
+      "error": null
+    },
+    {
+      "step": "seek",
+      "target_game_ms": 1117938,
+      "ok": true,
+      "landed_source_ms": 1117938,
+      "error": null
+    },
+    {
+      "step": "seek",
+      "target_game_ms": 2111661,
+      "ok": true,
+      "landed_source_ms": 2111661,
+      "error": null
+    },
+    {
+      "step": "close",
+      "phase": "CLOSED"
+    }
+  ],
+  "verdict": "MAC_REPLAY_SUPPORTED",
+  "seek_results": [
+    {
+      "target_game_ms": 30000,
+      "ok": true,
+      "landed_source_ms": 30000,
+      "error": null
+    },
+    {
+      "target_game_ms": 1117938,
+      "ok": true,
+      "landed_source_ms": 1117938,
+      "error": null
+    },
+    {
+      "target_game_ms": 2111661,
+      "ok": true,
+      "landed_source_ms": 2111661,
+      "error": null
+    }
+  ]
+}

@@ -41,13 +41,13 @@ test('Add Gameplay menu explains native replay availability and keeps H.9 attach
     const native = window.getByTestId('import-league-replay')
     await expect(native).toBeVisible()
     await expect(window.getByTestId('attach-video-menu')).toBeVisible()
-    if (process.platform === 'win32') {
+    if (process.platform === 'win32' || process.platform === 'darwin') {
       await expect(native).toBeEnabled()
       await expect(native).toHaveAttribute('data-native-replay', 'enabled')
     } else {
       await expect(native).toBeDisabled()
       await expect(native).toHaveAttribute('data-native-replay', 'disabled')
-      await expect(native).toContainText(/Available on Windows/i)
+      await expect(native).toContainText(/Available on Windows and macOS/i)
     }
     await expect(window.getByTestId('focus-items')).toBeVisible()
     await expect(window.getByTestId('metric-summary')).toBeVisible()

@@ -36,7 +36,7 @@ const ACTION_LABELS: Record<ReplayActionId, string> = {
 
 const CODE_DEFAULTS: Record<string, { message: string; actionId: ReplayActionId }> = {
   PLATFORM_UNSUPPORTED: {
-    message: 'League replay import is available on Windows.',
+    message: 'League replay import is available on Windows and macOS.',
     actionId: 'attach_video'
   },
   ROFL_UNREADABLE: {

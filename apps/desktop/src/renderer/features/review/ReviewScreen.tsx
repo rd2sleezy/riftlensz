@@ -219,11 +219,31 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
         setWizardOpen(true)
         return
       }
+      if (action === 'enable_replay_api') {
+        void (async () => {
+          const result = await window.rift.enableReplayApi()
+          if (!result.ok) {
+            setOverlayNotice(
+              result.error?.message ?? 'Could not enable Replay API in game.cfg.'
+            )
+            return
+          }
+          setOverlayNotice(
+            result.requires_restart
+              ? 'Replay API enabled. Restart League, then Open Replay.'
+              : 'Replay API already enabled. Open Replay when ready.'
+          )
+          if (review !== undefined) {
+            void refreshGameplay(review.match_id, gameplayStatus?.active_source_id)
+          }
+        })()
+        return
+      }
       if (action === 'open_replay' || action === 'reopen_replay' || action === 'retry' || action === 'try_anyway') {
         void openReplay()
       }
     },
-    [openReplay]
+    [gameplayStatus?.active_source_id, openReplay, refreshGameplay, review]
   )
 
   useEffect(() => {

@@ -29,7 +29,20 @@ from riftlens.replay_host.clock.calibrator import (
     merge_eventdata,
     pause_crosscheck_gamestats,
 )
-from riftlens.replay_host.lcu.port import LcuReplayPort, NullLcuReplayPort, is_live_gameflow_phase
+from riftlens.replay_host.launch_strategies import (
+    DirectExeStrategy,
+    ProcessOps,
+    ShellOpenStrategy,
+    UserAssistedStrategy,
+)
+from riftlens.replay_host.lcu.port import NullLcuReplayPort
+from riftlens.replay_host.mac.game_config import (
+    MacReplayApiConfigResult,
+    enable_mac_replay_api,
+    read_mac_replay_api_state,
+    restore_mac_replay_api,
+)
+from riftlens.replay_host.mac.install_locator import locate_league_install_mac
 from riftlens.replay_host.port import CaptureProgressSink, ControlOutcome, EnvironmentCheck
 from riftlens.replay_host.seek import REAL_SEEK_TOLERANCE_MS, SeekOutcome, verified_seek
 from riftlens.replay_host.session import ReplaySessionPhase, ReplaySessionSnapshot
@@ -44,24 +57,16 @@ from riftlens.replay_host.windows.capability_probe import (
     ReplayApiCapability,
     probe_replay_api_capability,
 )
-from riftlens.replay_host.windows.game_config import (
-    GameConfigWriteResult,
-    enable_replay_api,
-    read_game_cfg,
-)
-from riftlens.replay_host.windows.install_locator import (
-    LeagueInstall,
-    LeagueInstallResult,
-    locate_league_install,
-)
+from riftlens.replay_host.windows.game_config import GameConfigWriteResult
+from riftlens.replay_host.windows.install_locator import LeagueInstall, LeagueInstallResult
 
 LocateFn = Callable[[], LeagueInstallResult]
 ProbeFn = Callable[[], ReplayApiCapability]
 SupervisorFactory = Callable[[], ReplayProcessSupervisor]
 
 
-class WindowsReplayHost:
-    """In-process Windows ReplayHostPort wrapping R.3–R.6. No remote transport."""
+class MacReplayHost:
+    """In-process macOS ReplayHostPort wrapping shared R.3–R.6 session/seek/API."""
 
     def __init__(
         self,
@@ -70,14 +75,15 @@ class WindowsReplayHost:
         probe: ProbeFn | None = None,
         supervisor_factory: SupervisorFactory | None = None,
         transport: PlaybackTransport | None = None,
-        lcu: LcuReplayPort | None = None,
         clock: SleepClock | None = None,
         landing_tolerance_ms: int = REAL_SEEK_TOLERANCE_MS,
+        configured_install: str | Path | None = None,
     ) -> None:
-        self._locate = locate if locate is not None else locate_league_install
+        self._configured_install = configured_install
+        self._locate = locate if locate is not None else self._default_locate
         self._probe = probe if probe is not None else probe_replay_api_capability
         self._transport: PlaybackTransport | None = transport
-        self._lcu = lcu if lcu is not None else NullLcuReplayPort()
+        self._lcu = NullLcuReplayPort()
         self._clock = clock if clock is not None else WallClock()
         self._landing_tolerance_ms = landing_tolerance_ms
         self._supervisor_factory = supervisor_factory
@@ -105,55 +111,88 @@ class WindowsReplayHost:
         self._install = located.install
         cfg_path = located.install.game_cfg
         if cfg_path.is_file():
-            state = read_game_cfg(cfg_path)
+            state = read_mac_replay_api_state(located.install)
             if state.enable_replay_api is not True:
                 warnings.append(
                     ReplayError(
                         ReplayErrorCode.REPLAY_API_DISABLED,
-                        details={"reason": "game_cfg_flag_missing", "path": cfg_path.name},
+                        details={
+                            "reason": "game_cfg_flag_missing",
+                            "path": str(cfg_path),
+                            "config_tree": "Game/Config",
+                            "suggested_action": "enable_replay_api_and_restart_client",
+                        },
                     )
                 )
+        else:
+            warnings.append(
+                ReplayError(
+                    ReplayErrorCode.REPLAY_API_DISABLED,
+                    details={
+                        "reason": "game_cfg_missing",
+                        "path": str(cfg_path),
+                        "config_tree": "Game/Config",
+                        "suggested_action": "enable_replay_api_and_restart_client",
+                    },
+                )
+            )
         capability = self._probe()
         if capability.error is not None:
             warnings.append(capability.error)
-        live_game = is_live_gameflow_phase(self._lcu.gameflow_phase())
-        live_error: ReplayError | None = None
-        if live_game:
-            live_error = ReplayError(
-                ReplayErrorCode.LIVE_GAME_IN_PROGRESS,
-                details={"reason": "lcu_gameflow", "phase": self._lcu.gameflow_phase()},
-            )
         return EnvironmentCheck(
             supported=True,
             install_found=True,
             replay_api_documented=capability.replay_playback_present,
-            live_game=live_game,
-            error=live_error,
+            live_game=False,
+            error=None,
             warnings=tuple(warnings),
         )
 
-    def enable_replay_api_config(self, *, consent: Literal[True]) -> GameConfigWriteResult:
-        """Consent-gated EnableReplayApi write for the Windows install game.cfg."""
+    def enable_replay_api_config(self, *, consent: Literal[True]) -> MacReplayApiConfigResult:
+        """Consent-gated EnableReplayApi write for Game/Config (and LoL/Config mirror)."""
         if consent is not True:
             raise ValueError("EnableReplayApi edits require consent=True")
         located = self._locate()
         if located.install is None:
-            return GameConfigWriteResult(
-                state=None,
-                backup_path=None,
-                changed=False,
-                error=located.error or ReplayError(ReplayErrorCode.INSTALL_NOT_FOUND),
+            return MacReplayApiConfigResult(
+                primary=GameConfigWriteResult(
+                    state=None,
+                    backup_path=None,
+                    changed=False,
+                    error=located.error or ReplayError(ReplayErrorCode.INSTALL_NOT_FOUND),
+                )
             )
         self._install = located.install
-        return enable_replay_api(located.install.game_cfg, consent=True)
+        return enable_mac_replay_api(located.install, consent=True)
+
+    def restore_replay_api_config(self, *, consent: Literal[True]) -> MacReplayApiConfigResult:
+        """Restore game.cfg from RiftLens backups."""
+        if consent is not True:
+            raise ValueError("game.cfg restore requires consent=True")
+        located = self._locate()
+        if located.install is None:
+            return MacReplayApiConfigResult(
+                primary=GameConfigWriteResult(
+                    state=None,
+                    backup_path=None,
+                    changed=False,
+                    error=located.error or ReplayError(ReplayErrorCode.INSTALL_NOT_FOUND),
+                )
+            )
+        return restore_mac_replay_api(located.install, consent=True)
 
     def open_session(self, rofl_path: str) -> ReplaySessionSnapshot:
         env = self.check_environment()
-        if env.error is not None and env.error.code is ReplayErrorCode.LIVE_GAME_IN_PROGRESS:
-            return ReplaySessionSnapshot(phase=ReplaySessionPhase.FAILED, error=env.error)
         if self._install is None:
             error = env.error or ReplayError(ReplayErrorCode.INSTALL_NOT_FOUND)
             return ReplaySessionSnapshot(phase=ReplaySessionPhase.FAILED, error=error)
+        # Config disabled is a warning until open; refuse open when flag missing.
+        disabled = next(
+            (w for w in env.warnings if w.code is ReplayErrorCode.REPLAY_API_DISABLED),
+            None,
+        )
+        if disabled is not None and not env.replay_api_documented:
+            return ReplaySessionSnapshot(phase=ReplaySessionPhase.FAILED, error=disabled)
         supervisor = self._fresh_supervisor()
         return supervisor.open(rofl_path, self._install)
 
@@ -363,16 +402,6 @@ class WindowsReplayHost:
             )
         client = self.recording_client()
         if client is None:
-            if cancel is not None and cancel.is_set():
-                return CaptureResult(
-                    ok=False,
-                    capture_id=capture_id,
-                    status=CaptureStatus.CANCELLED,
-                    error=ReplayError(
-                        ReplayErrorCode.CAPTURE_CANCELLED,
-                        details={"reason": "cancelled_before_recording_client"},
-                    ),
-                )
             return _failed_capture(
                 capture_id,
                 ReplayError(
@@ -403,6 +432,9 @@ class WindowsReplayHost:
         if isinstance(transport, ReplayApiTransport):
             return transport.replay
         return None
+
+    def _default_locate(self) -> LeagueInstallResult:
+        return locate_league_install_mac(self._configured_install)
 
     def _set_playback(
         self,
@@ -440,8 +472,15 @@ class WindowsReplayHost:
                 self._supervisor = ReplayProcessSupervisor(
                     transport=transport,
                     live_probe=transport if isinstance(transport, ReplayApiTransport) else None,
+                    processes=mac_process_ops(),
                     lcu=self._lcu,
                     clock=self._clock,
+                    strategies=(
+                        DirectExeStrategy(),
+                        ShellOpenStrategy(),
+                        UserAssistedStrategy(),
+                    ),
+                    allow_user_assisted=False,
                 )
         return self._supervisor
 
@@ -458,6 +497,25 @@ class WindowsReplayHost:
         if isinstance(transport, ReplayApiTransport):
             return transport.live
         return None
+
+
+def mac_process_ops() -> ProcessOps:
+    """Adapter over ``mac.process`` for the shared launch chain."""
+    from riftlens.replay_host.mac import process as macproc
+
+    class _MacProcessOps:
+        def spawn_direct(
+            self, install: LeagueInstall, rofl_path: Path, *, platform_id: str | None
+        ) -> macproc.OwnedProcess:
+            return macproc.spawn_direct_exe(install, rofl_path, platform_id=platform_id)
+
+        def shell_open(self, rofl_path: Path) -> None:
+            macproc.shell_open_rofl(rofl_path)
+
+        def pid_is_running(self, pid: int) -> bool:
+            return macproc.pid_is_running(pid)
+
+    return _MacProcessOps()
 
 
 def _failed_capture(capture_id: str, error: ReplayError) -> CaptureResult:

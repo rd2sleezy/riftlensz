@@ -29,6 +29,10 @@ class RevealRequest(BaseModel):
     lead_in_ms: int = SEEK_LEAD_IN_MS
 
 
+class EnableReplayApiRequest(BaseModel):
+    consent: bool = False
+
+
 def _service(request: Request) -> GameplaySourceService:
     service = getattr(request.app.state, "gameplay_service", None)
     if not isinstance(service, GameplaySourceService):
@@ -113,6 +117,13 @@ async def close_replay(body: SourceIdRequest, request: Request) -> dict[str, Any
         body.match_id, source_id=body.source_id, poll=False
     )
     return {"ok": True, "status": status}
+
+
+@router.post("/gameplay/enable-replay-api")
+async def enable_replay_api(body: EnableReplayApiRequest, request: Request) -> dict[str, Any]:
+    """Consent-gated EnableReplayApi write. Never edits game.cfg without consent=true."""
+    service = _service(request)
+    return service.enable_replay_api(consent=body.consent)
 
 
 @router.post("/gameplay/reveal")

@@ -3,6 +3,7 @@ import type {
   BuildManualSyncResult,
   CloseReplayResult,
   DesktopPlatform,
+  EnableReplayApiResult,
   GameplayEnvironmentResult,
   GameplayStatusResult,
   GetReviewResult,
@@ -52,6 +53,7 @@ export interface RiftApi {
   importReplay: (path: string, matchId: string) => Promise<ImportReplayResult>
   getGameplayStatus: (matchId: string, sourceId?: string | null) => Promise<GameplayStatusResult>
   checkGameplayEnvironment: () => Promise<GameplayEnvironmentResult>
+  enableReplayApi: () => Promise<EnableReplayApiResult>
   openReplay: (sourceId: string, matchId: string) => Promise<OpenReplayResult>
   closeReplay: (sourceId: string, matchId: string) => Promise<CloseReplayResult>
   revealGameplay: (input: {

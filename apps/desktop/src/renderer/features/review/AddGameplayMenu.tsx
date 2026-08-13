@@ -43,7 +43,7 @@ export function AddGameplayMenu(props: Props): ReactElement {
             data-testid="import-league-replay"
             data-native-replay={props.nativeReplaySupported ? 'enabled' : 'disabled'}
             disabled={!props.nativeReplaySupported}
-            title={props.nativeReplaySupported ? undefined : 'Available on Windows'}
+            title={props.nativeReplaySupported ? undefined : 'Available on Windows and macOS'}
             className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-800 disabled:cursor-not-allowed disabled:text-slate-500"
             onClick={() => {
               setOpen(false)
@@ -52,7 +52,7 @@ export function AddGameplayMenu(props: Props): ReactElement {
           >
             Import League Replay (.rofl)
             {!props.nativeReplaySupported ? (
-              <span className="mt-0.5 block text-xs text-slate-400">Available on Windows</span>
+              <span className="mt-0.5 block text-xs text-slate-400">Available on Windows and macOS</span>
             ) : null}
           </button>
           <button

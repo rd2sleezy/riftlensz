@@ -25,12 +25,15 @@ from riftlens.replay_host.session import ReplaySessionPhase, ReplaySessionSnapsh
 def _unsupported() -> ReplayError:
     return ReplayError(
         ReplayErrorCode.PLATFORM_UNSUPPORTED,
-        details={"reason": "native_replay_windows_only", "suggested_action": "attach_video"},
+        details={
+            "reason": "native_replay_windows_or_macos_only",
+            "suggested_action": "attach_video",
+        },
     )
 
 
 class UnsupportedReplayHost:
-    """macOS/Linux ReplayHostPort. Never launches League; never raises on construction."""
+    """Non-Windows/non-macOS ReplayHostPort. Never launches League."""
 
     def platform_supported(self) -> bool:
         return False
