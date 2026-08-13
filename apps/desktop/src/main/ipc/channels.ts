@@ -482,7 +482,8 @@ export const GameplayStatusSchema = z.object({
 
 export const DesktopPlatformSchema = z.object({
   platform: z.string(),
-  nativeReplaySupported: z.boolean()
+  nativeReplaySupported: z.boolean(),
+  e2eMode: z.boolean().default(false)
 })
 
 export const PickRoflResultSchema = z.discriminatedUnion('ok', [

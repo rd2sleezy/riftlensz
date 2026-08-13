@@ -30,6 +30,7 @@ from riftlens.api.sync import router as sync_router
 from riftlens.config import Settings, get_settings
 from riftlens.gameplay.service import GameplaySourceService
 from riftlens.logging import configure_logging
+from riftlens.pipeline.assemble.review_presentation import purge_fixture_trial_presentations
 from riftlens.replay_host.capture.capture_service import CaptureService
 from riftlens.replay_host.factory import create_replay_host
 from riftlens.replay_host.port import ReplayHostPort
@@ -53,6 +54,8 @@ def create_app(
         app.state.engine = engine
         session_factory = make_session_factory(engine)
         app.state.session_factory = session_factory
+        # Drop leftover Pyke/fixture trial presentations so they cannot reappear in the UI.
+        purge_fixture_trial_presentations(resolved.data_dir)
         host = injected_host if injected_host is not None else create_replay_host()
         app.state.replay_host = host
         gameplay_repo = SqlGameplayRepository(session_factory)

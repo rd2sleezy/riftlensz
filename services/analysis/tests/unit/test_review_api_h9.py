@@ -126,10 +126,8 @@ def test_get_saved_presentation_round_trip(client: TestClient, settings: object)
     save_review_presentation(settings.data_dir, payload)  # type: ignore[attr-defined]
     listed = client.get("/reviews", headers=_AUTH)
     assert listed.status_code == 200
-    cards = listed.json()["reviews"]
-    assert len(cards) == 1
-    assert cards[0]["champion"] == "Ahri"
-    assert cards[0]["unpaired_match_timeline"] is True
+    # Fixture trial reviews are hidden from the home list so Pyke trials stay gone.
+    assert listed.json()["reviews"] == []
     fetched = client.get(f"/reviews/{payload['id']}", headers=_AUTH)
     assert fetched.status_code == 200
     body = fetched.json()
@@ -163,8 +161,11 @@ def test_from_fixture_builds_h8_review(client: TestClient) -> None:
     assert len(body["focus_items"]) <= 3
     assert body["findings"]
     assert all(item["evidence"] for item in body["findings"])
+    fetched = client.get(f"/reviews/{body['id']}", headers=_AUTH)
+    assert fetched.status_code == 200
     listed = client.get("/reviews", headers=_AUTH)
-    assert any(card["id"] == body["id"] for card in listed.json()["reviews"])
+    assert listed.status_code == 200
+    assert not any(card["id"] == body["id"] for card in listed.json()["reviews"])
 
 
 def test_manual_sync_and_seek_endpoints(client: TestClient) -> None:

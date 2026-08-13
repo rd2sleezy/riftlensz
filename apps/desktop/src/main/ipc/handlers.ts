@@ -190,7 +190,8 @@ export function registerIpcHandlers(
   ipcMain.handle(IPC.getDesktopPlatform, () => {
     return DesktopPlatformSchema.parse({
       platform: process.platform,
-      nativeReplaySupported: process.platform === 'win32' || process.platform === 'darwin'
+      nativeReplaySupported: process.platform === 'win32' || process.platform === 'darwin',
+      e2eMode: process.env['RIFTLENS_E2E'] === '1'
     })
   })
 

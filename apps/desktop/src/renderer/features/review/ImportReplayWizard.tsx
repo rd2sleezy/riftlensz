@@ -210,7 +210,7 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     setStep('identifying')
     setPatch(imported.identity?.declared_patch ?? imported.status.declared_patch)
     setReplayMatchId(imported.match_id)
-    if (imported.match_id !== props.matchId) {
+    if (props.matchId.length === 0 || imported.match_id !== props.matchId) {
       setInfoLabel(`Replay belongs to ${imported.match_id}. Opening that review…`)
       await ensureReviewThenFinish(picked.path, imported.match_id, imported.source_id)
       return

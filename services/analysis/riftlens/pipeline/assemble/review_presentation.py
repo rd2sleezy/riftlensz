@@ -107,7 +107,11 @@ def load_review_presentation(data_dir: Path, review_id: str) -> dict[str, Any] |
 
 
 def list_review_presentations(data_dir: Path) -> list[dict[str, Any]]:
-    """Return summaries for every saved presentation, newest first when timestamps exist."""
+    """Return summaries for saved presentations, newest first.
+
+    Fixture trial reviews (NA1_fixture_*) are excluded so they cannot reappear in the
+    desktop home list after being deleted.
+    """
     folder = Path(data_dir) / "reviews"
     if not folder.is_dir():
         return []
@@ -117,10 +121,39 @@ def list_review_presentations(data_dir: Path) -> list[dict[str, Any]]:
             parsed: object = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             continue
-        if isinstance(parsed, dict) and "id" in parsed:
-            summaries.append(review_summary(parsed))
+        if not isinstance(parsed, dict) or "id" not in parsed:
+            continue
+        if _is_fixture_trial_presentation(parsed):
+            continue
+        summaries.append(review_summary(parsed))
     summaries.sort(key=lambda item: int(item.get("created_at") or 0), reverse=True)
     return summaries
+
+
+def purge_fixture_trial_presentations(data_dir: Path) -> int:
+    """Delete on-disk fixture trial review JSON. Returns the number removed."""
+    folder = Path(data_dir) / "reviews"
+    if not folder.is_dir():
+        return 0
+    removed = 0
+    for path in list(folder.glob("*.json")):
+        try:
+            parsed: object = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        if isinstance(parsed, dict) and _is_fixture_trial_presentation(parsed):
+            path.unlink(missing_ok=True)
+            removed += 1
+    return removed
+
+
+def _is_fixture_trial_presentation(payload: Mapping[str, Any]) -> bool:
+    """True for NA1_fixture_* trial reviews (Pyke fixtures used during early UI trials)."""
+    fixture_id = payload.get("fixture_id")
+    if isinstance(fixture_id, str) and fixture_id.startswith("NA1_fixture_"):
+        return True
+    match_id = payload.get("match_id")
+    return isinstance(match_id, str) and match_id.startswith("NA1_fixture_")
 
 
 def is_quarantined_key(name: str) -> bool:

@@ -57,7 +57,7 @@ class MatchParticipantsRequest(BaseModel):
 
 @router.get("/reviews")
 async def list_reviews(request: Request) -> dict[str, Any]:
-    """Return saved H.8 review summaries. Assumes presentations live under data_dir."""
+    """Return saved H.8 review summaries (fixture trials excluded from the home list)."""
     settings = request.app.state.settings
     return {"reviews": list_review_presentations(settings.data_dir)}
 
