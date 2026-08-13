@@ -1,0 +1,29 @@
+---
+description: Phase 1 / parallel-track work-order discipline (H.n, R.n, V.n)
+alwaysApply: true
+---
+
+# Work-order discipline
+
+When the user starts an **H.n / R.n / V.n** (or says “Begin X only”):
+
+## Before edits
+1. Re-read `docs/CURSOR.md`.
+2. Re-read the **complete** work-order + acceptance criteria from the Phase 1 / architecture docs in the repo (`docs/` and cited specs). Do not rely on memory alone.
+3. Implement **exactly** that scope. Do not start the next work order.
+
+## Preserve
+- GST is the only gameplay-analysis source of truth (no raw Riot JSON in analysis/metrics/rules).
+- Use existing H.5 features/metrics, H.6 RuleEngine/Finding/Evidence, H.7 rule pack, H.8 Review — no parallel coaching pipelines in the UI or elsewhere.
+- Evidence, confidence, provenance, integer `t_ms`; never invent timestamps or upgrade inferred → fact.
+- Keep `goldPerSecond` / `healthRegen` quarantined unless units are proven.
+- Unpaired fixtures A/B/C are **not** the same real match+timeline; tests/UI must not imply they are.
+- No paid/cloud deps unless the work order explicitly requires them. No secrets in the repo.
+
+## After
+- Deterministic tests for new components; run `/verify` (full if UI touched).
+- Completion report per the user’s requested numbered sections.
+- Commit + push when verified (`push-completed-work` rule). Stop; wait for explicit approval before the next work order.
+
+## Do not
+Invent alternate architecture when the spec is clear. Soften acceptance criteria. Begin H.10+ / R.next / V.next without explicit user approval.
