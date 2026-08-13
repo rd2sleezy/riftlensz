@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import {
+  AuthSessionSchema,
   BuildManualSyncInputSchema,
   BuildManualSyncResultSchema,
   GetReviewResultSchema,
@@ -11,6 +12,9 @@ import {
   ProbeVodInputSchema,
   ProbeVodResultSchema,
   SidecarStatusSchema,
+  SignInResultSchema,
+  SignInWithApiKeyInputSchema,
+  type AuthSession,
   type BuildManualSyncResult,
   type GetReviewResult,
   type HealthPayload,
@@ -18,7 +22,9 @@ import {
   type OpenFixtureInput,
   type PickVodResult,
   type ProbeVodResult,
-  type SidecarStatus
+  type SidecarStatus,
+  type SignInResult,
+  type SignInWithApiKeyInput
 } from '../main/ipc/channels'
 
 const rift = {
@@ -71,6 +77,29 @@ const rift = {
     return ipcRenderer
       .invoke(IPC.buildManualSync, BuildManualSyncInputSchema.parse(input))
       .then((value) => BuildManualSyncResultSchema.parse(value))
+  },
+  getAuthSession(): Promise<AuthSession> {
+    return ipcRenderer.invoke(IPC.getAuthSession).then((value) => AuthSessionSchema.parse(value))
+  },
+  signIn(): Promise<SignInResult> {
+    return ipcRenderer.invoke(IPC.signIn).then((value) => SignInResultSchema.parse(value))
+  },
+  signInWithApiKey(input: SignInWithApiKeyInput): Promise<SignInResult> {
+    return ipcRenderer
+      .invoke(IPC.signInWithApiKey, SignInWithApiKeyInputSchema.parse(input))
+      .then((value) => SignInResultSchema.parse(value))
+  },
+  signOut(): Promise<AuthSession> {
+    return ipcRenderer.invoke(IPC.signOut).then((value) => AuthSessionSchema.parse(value))
+  },
+  onAuthSession(cb: (session: AuthSession) => void): () => void {
+    const listener = (_event: Electron.IpcRendererEvent, value: unknown): void => {
+      cb(AuthSessionSchema.parse(value))
+    }
+    ipcRenderer.on(IPC.authSessionEvent, listener)
+    return () => {
+      ipcRenderer.removeListener(IPC.authSessionEvent, listener)
+    }
   }
 }
 

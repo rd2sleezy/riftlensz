@@ -7,6 +7,16 @@ import type {
   ReviewPresentation
 } from '../../../main/ipc/channels'
 import { type SyncMapData, formatMmss, seekTarget } from '../../../main/sync/syncMap'
+import { Badge, Card, Disclosure, EmptyState, SectionLabel } from '../../components/ui'
+import {
+  formatConfidencePct,
+  formatResult,
+  humanizeConceptId,
+  humanizeIdentifier,
+  humanizeMetricId,
+  humanizePhase,
+  humanizeRole
+} from '../../lib/humanize'
 import { VideoPlayer } from './VideoPlayer'
 
 export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
@@ -75,6 +85,11 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
     [sync]
   )
 
+  const selectItem = useCallback((item: CoachingItem) => {
+    setSelectedItemId(item.id)
+    setSelectedFindingId(item.exemplar_finding_id)
+  }, [])
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent): void => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
@@ -112,9 +127,9 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
 
   if (reviewQuery.isError) {
     return (
-      <main className="min-h-screen bg-slate-950 p-8 text-slate-100">
+      <main className="min-h-screen p-8 text-slate-100">
         <BackLink />
-        <p className="mt-6 text-rose-400" data-testid="review-error">
+        <p className="mt-6 text-rift-danger" data-testid="review-error">
           {reviewQuery.error instanceof Error ? reviewQuery.error.message : 'Review unavailable'}
         </p>
       </main>
@@ -123,127 +138,151 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
 
   if (review === undefined) {
     return (
-      <main className="min-h-screen bg-slate-950 p-8 text-slate-100">
+      <main className="min-h-screen p-8 text-slate-100">
         <BackLink />
-        <p className="mt-6 text-slate-400">Loading review…</p>
+        <div className="mt-6 space-y-3">
+          <div className="h-24 animate-pulse rounded-xl border border-rift-border bg-rift-surface" />
+          <p className="text-sm text-slate-500">Loading review…</p>
+        </div>
       </main>
     )
   }
 
+  const result = formatResult(review.result)
+  const resultVariant = result === 'Victory' ? 'win' : result === 'Defeat' ? 'loss' : 'neutral'
+
   return (
-    <main className="min-h-screen bg-slate-950 p-4 text-slate-100">
-      <header className="mb-3 flex items-center justify-between gap-4">
-        <div>
-          <BackLink />
-          <h1 className="mt-2 text-xl font-semibold" data-testid="review-identity">
-            {review.champion} {review.role} · {review.result ?? 'unknown result'} ·{' '}
-            {formatMmss(review.duration_ms)} · Patch {review.patch} · pid {review.participant_id}
-          </h1>
-          <p className="text-xs text-slate-400">
-            {review.match_id} · rank {review.rank} · {review.engine_version} · LLM {review.llm_provider}
-          </p>
-        </div>
-        {sync ? (
-          <p className="text-xs text-slate-300" data-testid="sync-status">
-            Sync {sync.quality.verdict}
-            {sync.quality.verdict === 'DEGRADED' || !sync.verified ? ' · uncertain' : ''}
-          </p>
-        ) : (
-          <p className="text-xs text-slate-500">No VOD sync</p>
-        )}
-      </header>
+    <main className="min-h-screen p-4 text-slate-100 sm:p-6">
+      <div className="mx-auto max-w-[1400px]">
+        <header className="mb-4 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <BackLink />
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <h1 className="text-xl font-semibold" data-testid="review-identity">
+                {review.champion} {review.role} · {review.result ?? 'unknown result'} ·{' '}
+                {formatMmss(review.duration_ms)} · Patch {review.patch} · pid {review.participant_id}
+              </h1>
+            </div>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <Badge variant={resultVariant}>{result}</Badge>
+              <span className="text-sm text-slate-400">
+                {review.champion} · {humanizeRole(review.role)} · {formatMmss(review.duration_ms)}
+              </span>
+              <span className="font-mono text-xs text-slate-600">
+                {review.match_id} · rank {review.rank} · {review.engine_version}
+              </span>
+            </div>
+          </div>
+          {sync ? (
+            <Badge variant={sync.quality.verdict === 'DEGRADED' || !sync.verified ? 'gold' : 'win'}>
+              <span data-testid="sync-status">
+                Sync {sync.quality.verdict}
+                {sync.quality.verdict === 'DEGRADED' || !sync.verified ? ' · uncertain' : ''}
+              </span>
+            </Badge>
+          ) : (
+            <span className="text-xs text-slate-500">No VOD sync</span>
+          )}
+        </header>
 
-      {review.fixture_warning ? (
-        <p
-          className="mb-3 rounded border border-amber-700/70 bg-amber-950/50 px-3 py-2 text-sm text-amber-100"
-          data-testid="fixture-warning"
-        >
-          {review.fixture_warning}
-        </p>
-      ) : null}
+        {review.fixture_warning ? (
+          <p
+            className="mb-4 rounded-lg border border-rift-gold/25 bg-rift-gold-soft px-3 py-2 text-sm text-amber-100"
+            data-testid="fixture-warning"
+          >
+            {review.fixture_warning}
+          </p>
+        ) : null}
 
-      <div className="grid grid-cols-12 gap-3">
-        <div className="col-span-8 space-y-3">
-          <VideoPlayer
-            src={mediaUrl}
-            playheadMs={playheadMs}
-            onTimeMs={setPlayheadMs}
-            seekRequestMs={seekRequestMs}
-            error={vodError}
-            warning={vodWarning}
-            playbackRate={rate}
-            onPlaybackRate={setRate}
-            onAttach={() => {
-              void attachVod(setVodError, setVodWarning, setMediaUrl, setProbe)
-            }}
-          />
-          <ManualSyncBar
-            clockInput={clockInput}
-            onClockInput={setClockInput}
-            disabled={probe === null}
-            message={syncMessage}
-            onConfirm={() => {
-              void confirmSync({
-                review,
-                probe,
-                playheadMs,
-                clockInput,
-                setSync,
-                setSyncMessage
-              })
-            }}
-          />
-          <MarkerTrack
-            review={review}
-            sync={sync}
-            playheadMs={playheadMs}
-            onSelect={(tMs, itemId, findingId) => {
-              if (itemId !== null) {
-                setSelectedItemId(itemId)
-              }
-              setSelectedFindingId(findingId)
-              seekToGame(tMs)
-            }}
-          />
-          <ItemDetail item={selectedItem} finding={selectedFinding} onSeek={seekToGame} />
+        <section className="mb-4" data-testid="focus-items">
+          <SectionLabel className="mb-2">Your coaching plan from this match</SectionLabel>
+          {review.focus_items.length === 0 ? (
+            <EmptyState title="No primary coaching focuses for this match." />
+          ) : (
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              {review.focus_items.map((item, index) => (
+                <FocusCard
+                  key={item.id}
+                  item={item}
+                  rank={index + 1}
+                  selected={selectedItem?.id === item.id}
+                  onSelect={() => {
+                    selectItem(item)
+                    const first = item.evidence_timestamps_ms[0]
+                    if (first !== undefined) {
+                      seekToGame(first)
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <div className="grid grid-cols-12 gap-3">
+          <div className="col-span-12 space-y-3 xl:col-span-8">
+            <VideoPlayer
+              src={mediaUrl}
+              playheadMs={playheadMs}
+              onTimeMs={setPlayheadMs}
+              seekRequestMs={seekRequestMs}
+              error={vodError}
+              warning={vodWarning}
+              playbackRate={rate}
+              onPlaybackRate={setRate}
+              onAttach={() => {
+                void attachVod(setVodError, setVodWarning, setMediaUrl, setProbe)
+              }}
+            />
+            <ManualSyncBar
+              clockInput={clockInput}
+              onClockInput={setClockInput}
+              disabled={probe === null}
+              message={syncMessage}
+              onConfirm={() => {
+                void confirmSync({
+                  review,
+                  probe,
+                  playheadMs,
+                  clockInput,
+                  setSync,
+                  setSyncMessage
+                })
+              }}
+            />
+            <MarkerTrack
+              review={review}
+              sync={sync}
+              playheadMs={playheadMs}
+              onSelect={(tMs, itemId, findingId) => {
+                if (itemId !== null) {
+                  setSelectedItemId(itemId)
+                }
+                setSelectedFindingId(findingId)
+                seekToGame(tMs)
+              }}
+            />
+            <ItemDetail item={selectedItem} finding={selectedFinding} onSeek={seekToGame} />
+          </div>
+          <aside className="col-span-12 space-y-3 xl:col-span-4">
+            <ObservationList
+              title="Also noticed"
+              testId="secondary-items"
+              items={review.secondary_items}
+              selectedId={selectedItem?.id ?? null}
+              onSelect={selectItem}
+            />
+            <ObservationList
+              title="What you did well"
+              testId="strength-items"
+              items={review.strengths}
+              selectedId={selectedItem?.id ?? null}
+              onSelect={selectItem}
+              positive
+            />
+            <StatsPanel metrics={review.metrics} />
+          </aside>
         </div>
-        <aside className="col-span-4 space-y-3">
-          <FocusList
-            title="Focus on these"
-            testId="focus-items"
-            items={review.focus_items}
-            selectedId={selectedItem?.id ?? null}
-            onSelect={(item) => {
-              setSelectedItemId(item.id)
-              setSelectedFindingId(item.exemplar_finding_id)
-              const first = item.evidence_timestamps_ms[0]
-              if (first !== undefined) {
-                seekToGame(first)
-              }
-            }}
-          />
-          <FocusList
-            title="Also noticed"
-            testId="secondary-items"
-            items={review.secondary_items}
-            selectedId={selectedItem?.id ?? null}
-            onSelect={(item) => {
-              setSelectedItemId(item.id)
-              setSelectedFindingId(item.exemplar_finding_id)
-            }}
-          />
-          <FocusList
-            title="What went well"
-            testId="strength-items"
-            items={review.strengths}
-            selectedId={selectedItem?.id ?? null}
-            onSelect={(item) => {
-              setSelectedItemId(item.id)
-              setSelectedFindingId(item.exemplar_finding_id)
-            }}
-          />
-          <StatsPanel metrics={review.metrics} />
-        </aside>
       </div>
     </main>
   )
@@ -253,7 +292,7 @@ function BackLink(): ReactElement {
   return (
     <button
       type="button"
-      className="text-sm text-sky-400 hover:underline"
+      className="text-sm text-rift-accent-strong hover:underline"
       onClick={() => {
         window.location.hash = '#/'
       }}
@@ -263,42 +302,88 @@ function BackLink(): ReactElement {
   )
 }
 
-function FocusList(props: {
+function FocusCard(props: {
+  item: CoachingItem
+  rank: number
+  selected: boolean
+  onSelect: () => void
+}): ReactElement {
+  const { item } = props
+  return (
+    <button
+      type="button"
+      onClick={props.onSelect}
+      className={`group flex flex-col gap-2.5 rounded-xl border p-4 text-left transition ${
+        props.selected
+          ? 'border-rift-accent/60 bg-rift-accent-soft shadow-glow'
+          : 'border-rift-border bg-rift-surface hover:border-rift-accent/30 hover:bg-rift-raised'
+      }`}
+    >
+      <div className="flex items-center justify-between gap-2">
+        <span
+          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+            props.selected ? 'bg-rift-accent text-rift-bg' : 'bg-white/10 text-slate-300'
+          }`}
+        >
+          {props.rank}
+        </span>
+        <Badge variant="neutral" className="capitalize">
+          {humanizeIdentifier(item.issue_type)}
+        </Badge>
+      </div>
+      <h3 className="text-sm font-semibold leading-snug text-slate-100">{item.title}</h3>
+      <p className="line-clamp-3 text-xs leading-relaxed text-slate-400">{item.body}</p>
+      <div className="mt-auto flex items-center justify-between pt-1 text-[11px] text-slate-500">
+        <span>{item.cost_summary}</span>
+        <span>{formatConfidencePct(item.confidence)} confidence</span>
+      </div>
+    </button>
+  )
+}
+
+function ObservationList(props: {
   title: string
   testId: string
   items: CoachingItem[]
   selectedId: string | null
   onSelect: (item: CoachingItem) => void
+  positive?: boolean
 }): ReactElement {
   return (
-    <section className="rounded-lg border border-slate-800 p-3" data-testid={props.testId}>
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-400">{props.title}</h2>
+    <Card className="p-3" testId={props.testId}>
+      <SectionLabel>{props.title}</SectionLabel>
       {props.items.length === 0 ? (
-        <p className="mt-2 text-xs text-slate-500">None</p>
+        <p className="mt-2 text-xs text-slate-600">None</p>
       ) : (
-        <ol className="mt-2 space-y-2">
-          {props.items.map((item, index) => (
+        <ol className="mt-2 space-y-1">
+          {props.items.map((item) => (
             <li key={item.id}>
               <button
                 type="button"
-                className={`w-full rounded px-2 py-1.5 text-left text-sm ${
-                  props.selectedId === item.id ? 'bg-sky-900/70' : 'hover:bg-slate-900'
+                className={`w-full rounded-lg px-2.5 py-2 text-left text-sm transition ${
+                  props.selectedId === item.id
+                    ? 'bg-rift-accent-soft text-slate-100'
+                    : 'text-slate-300 hover:bg-white/5'
                 }`}
                 onClick={() => props.onSelect(item)}
               >
-                <div className="font-medium">
-                  {index + 1}. {item.title}
+                <div className="flex items-center gap-1.5 font-medium">
+                  {props.positive ? (
+                    <span className="text-rift-win">✓</span>
+                  ) : (
+                    <span className="text-slate-600">·</span>
+                  )}
+                  {item.title}
                 </div>
-                <div className="text-xs text-slate-400">
-                  {item.issue_type} · {item.certainty} · {item.cost_summary} ·{' '}
-                  {item.evidence_timestamps_ms.map(formatMmss).join(' ')}
+                <div className="mt-0.5 text-xs text-slate-500">
+                  {humanizeIdentifier(item.issue_type)} · {item.cost_summary}
                 </div>
               </button>
             </li>
           ))}
         </ol>
       )}
-    </section>
+    </Card>
   )
 }
 
@@ -309,65 +394,90 @@ function ItemDetail(props: {
 }): ReactElement {
   if (props.item === null) {
     return (
-      <section className="rounded-lg border border-slate-800 p-3 text-sm text-slate-500">
-        Select a coaching item.
-      </section>
+      <Card className="p-4">
+        <EmptyState title="Select a coaching item to see the full breakdown." />
+      </Card>
     )
   }
+  const item = props.item
   return (
-    <section className="rounded-lg border border-slate-800 p-3" data-testid="item-detail">
-      <h2 className="text-lg font-semibold">{props.item.title}</h2>
-      <p className="mt-1 text-xs uppercase text-slate-400">
-        {props.item.issue_type} · confidence {(props.item.confidence * 100).toFixed(0)}% ·{' '}
-        {props.item.certainty}
-      </p>
-      <p className="mt-3 whitespace-pre-wrap text-sm text-slate-200">{props.item.body}</p>
-      {props.item.the_fix ? (
-        <div className="mt-3">
-          <h3 className="text-xs font-semibold uppercase text-slate-400">Instead</h3>
-          <p className="text-sm">{props.item.the_fix}</p>
-        </div>
-      ) : null}
-      {props.item.next_game_check ? (
-        <div className="mt-3">
-          <h3 className="text-xs font-semibold uppercase text-slate-400">Next game check</h3>
-          <p className="text-sm">{props.item.next_game_check}</p>
-        </div>
-      ) : null}
-      <div className="mt-3 flex flex-wrap gap-2">
-        {props.item.evidence_timestamps_ms.map((tMs) => (
-          <button
-            key={tMs}
-            type="button"
-            className="rounded bg-slate-800 px-2 py-1 text-xs hover:bg-slate-700"
-            onClick={() => props.onSeek(tMs)}
-          >
-            {formatMmss(tMs)}
-          </button>
-        ))}
+    <Card className="animate-fade-in p-4" testId="item-detail">
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge variant="neutral">{humanizeIdentifier(item.issue_type)}</Badge>
+        <Badge variant="accent">{formatConfidencePct(item.confidence)} confidence</Badge>
+        <span className="text-xs text-slate-500">{humanizeIdentifier(item.certainty)}</span>
       </div>
-      {props.finding ? <EvidencePanel finding={props.finding} /> : null}
-    </section>
+      <h2 className="mt-2 text-lg font-semibold">{item.title}</h2>
+
+      <div className="mt-3">
+        <SectionLabel>{item.is_strength ? 'What you did well' : 'What happened'}</SectionLabel>
+        <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-slate-200">{item.body}</p>
+      </div>
+
+      {!item.is_strength && item.the_fix ? (
+        <div className="mt-3">
+          <SectionLabel>What to do instead</SectionLabel>
+          <p className="mt-1 text-sm leading-relaxed text-slate-200">{item.the_fix}</p>
+        </div>
+      ) : null}
+
+      {item.next_game_check ? (
+        <div className="mt-3 rounded-lg border border-rift-accent/25 bg-rift-accent-soft px-3 py-2.5">
+          <SectionLabel className="text-rift-accent-strong">Next-game goal</SectionLabel>
+          <p className="mt-1 text-sm leading-relaxed text-slate-100">{item.next_game_check}</p>
+        </div>
+      ) : null}
+
+      {item.evidence_timestamps_ms.length > 0 ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {item.evidence_timestamps_ms.map((tMs) => (
+            <button
+              key={tMs}
+              type="button"
+              className="rounded-md bg-white/5 px-2 py-1 text-xs text-slate-300 transition hover:bg-white/10"
+              onClick={() => props.onSeek(tMs)}
+            >
+              ▶ {formatMmss(tMs)}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      <div className="mt-4 border-t border-rift-border pt-3">
+        <Disclosure summary="Why RiftLens flagged this" testId="why-flagged">
+          <div className="space-y-2 text-xs text-slate-400">
+            <p>
+              Concept: <span className="text-slate-300">{humanizeConceptId(item.root_concept_id)}</span>{' '}
+              · occurred {item.occurrences} {item.occurrences === 1 ? 'time' : 'times'}
+            </p>
+            <p>{item.grouping_reason}</p>
+            {props.finding ? <EvidencePanel finding={props.finding} /> : null}
+          </div>
+        </Disclosure>
+      </div>
+    </Card>
   )
 }
 
 function EvidencePanel({ finding }: { finding: Finding }): ReactElement {
   return (
-    <div className="mt-4 border-t border-slate-800 pt-3" data-testid="evidence-panel">
-      <h3 className="text-xs font-semibold uppercase text-slate-400">
-        Evidence · {finding.rule_id} · {finding.t_mmss} · conf {(finding.confidence * 100).toFixed(0)}%
-      </h3>
-      <ul className="mt-2 space-y-1 text-sm">
+    <div className="mt-2 border-t border-rift-border pt-2" data-testid="evidence-panel">
+      <p className="font-mono text-[11px] text-slate-500">
+        {finding.rule_id} rev{finding.rule_version} · {finding.t_mmss} · conf{' '}
+        {formatConfidencePct(finding.confidence)}
+      </p>
+      <ul className="mt-2 space-y-1.5">
         {finding.evidence.map((item, index) => (
-          <li key={`${item.label}-${index}`} className="text-slate-200">
-            <span className="text-slate-400">{item.label}</span>: {formatEvidenceValue(item.value)}
+          <li key={`${item.label}-${index}`} className="text-slate-300">
+            <span className="text-slate-500">{humanizeIdentifier(item.label)}</span>:{' '}
+            {formatEvidenceValue(item.value)}
             {item.confidence !== null ? ` · c=${item.confidence.toFixed(2)}` : ''}
             {item.source ? ` · ${item.source}` : ''}
             {item.quarantined ? (
-              <span className="ml-2 text-amber-300">unverified (not a proven fact)</span>
+              <span className="ml-2 text-rift-gold">unverified (not a proven fact)</span>
             ) : null}
             {item.provenance ? (
-              <span className="ml-2 text-xs text-slate-500">
+              <span className="ml-2 text-slate-600">
                 via {item.provenance.producer} v{item.provenance.producer_version}
               </span>
             ) : null}
@@ -380,26 +490,37 @@ function EvidencePanel({ finding }: { finding: Finding }): ReactElement {
 
 function StatsPanel({ metrics }: { metrics: ReviewPresentation['metrics'] }): ReactElement {
   return (
-    <section className="rounded-lg border border-slate-800 p-3" data-testid="metric-summary">
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-400">Match stats</h2>
-      <ul className="mt-2 space-y-1 text-sm">
+    <Card className="p-3" testId="metric-summary">
+      <SectionLabel>Match stats</SectionLabel>
+      <ul className="mt-2 space-y-2">
         {metrics.map((metric) => (
-          <li key={`${metric.metric_id}-${metric.phase ?? 'all'}`}>
-            <span className="text-slate-300">{metric.metric_id}</span>{' '}
-            <span className="font-mono">
-              {metric.value.toFixed(2)} {metric.unit}
-            </span>
+          <li key={`${metric.metric_id}-${metric.phase ?? 'all'}`} className="text-sm">
+            <div className="flex items-baseline justify-between gap-2">
+              <span className="text-slate-300" title={metric.metric_id}>
+                {humanizeMetricId(metric.metric_id)}
+                {metric.phase !== null ? (
+                  <span className="ml-1 text-xs text-slate-600">· {humanizePhase(metric.phase)}</span>
+                ) : null}
+              </span>
+              <span className="font-mono text-slate-100">
+                {metric.value.toFixed(2)} {metric.unit}
+              </span>
+            </div>
             {metric.baseline_percentile !== null ? (
-              <span className="text-xs text-slate-500"> p{Math.round(metric.baseline_percentile)}</span>
+              <div className="mt-1 h-1 overflow-hidden rounded-full bg-white/5">
+                <div
+                  className="h-full rounded-full bg-rift-accent/70"
+                  style={{ width: `${Math.min(100, Math.max(0, metric.baseline_percentile))}%` }}
+                />
+              </div>
             ) : null}
-            <span className="text-xs text-slate-500"> · c={metric.confidence.toFixed(2)}</span>
             {metric.quarantined ? (
-              <span className="ml-1 text-xs text-amber-300">unverified</span>
+              <span className="text-[11px] text-rift-gold">unverified</span>
             ) : null}
           </li>
         ))}
       </ul>
-    </section>
+    </Card>
   )
 }
 
@@ -414,9 +535,9 @@ function MarkerTrack(props: {
     item.evidence_timestamps_ms.map((tMs) => ({ tMs, itemId: item.id, findingId: item.exemplar_finding_id }))
   )
   return (
-    <section className="rounded-lg border border-slate-800 p-3" data-testid="marker-track">
-      <h2 className="text-xs font-semibold uppercase text-slate-400">Timestamps</h2>
-      <div className="relative mt-2 h-8 rounded bg-slate-900">
+    <Card className="p-3" testId="marker-track">
+      <SectionLabel>Timestamps</SectionLabel>
+      <div className="relative mt-2 h-8 rounded-lg bg-rift-raised">
         {markers.map((marker, index) => {
           const left = `${(marker.tMs / duration) * 100}%`
           const target = seekTarget(props.sync, marker.tMs)
@@ -425,8 +546,8 @@ function MarkerTrack(props: {
               key={`${marker.itemId}-${marker.tMs}-${index}`}
               type="button"
               title={`${formatMmss(marker.tMs)}${target.covered ? '' : ' (no VOD coverage)'}`}
-              className={`absolute top-1 h-6 w-1.5 -translate-x-1/2 rounded ${
-                target.covered ? 'bg-sky-400' : 'bg-slate-500'
+              className={`absolute top-1 h-6 w-1.5 -translate-x-1/2 rounded-full transition ${
+                target.covered ? 'bg-rift-accent' : 'bg-slate-600'
               } ${target.uncertain ? 'opacity-60' : ''}`}
               style={{ left }}
               onClick={() => props.onSelect(marker.tMs, marker.itemId, marker.findingId)}
@@ -434,10 +555,10 @@ function MarkerTrack(props: {
           )
         })}
       </div>
-      <p className="mt-1 text-xs text-slate-500">
+      <p className="mt-1.5 text-xs text-slate-600">
         Video playhead {formatMmss(props.playheadMs)} · grey markers have no sync coverage
       </p>
-    </section>
+    </Card>
   )
 }
 
@@ -449,29 +570,29 @@ function ManualSyncBar(props: {
   onConfirm: () => void
 }): ReactElement {
   return (
-    <section className="rounded-lg border border-slate-800 p-3 text-sm">
-      <h2 className="text-xs font-semibold uppercase text-slate-400">Manual VOD sync</h2>
+    <Card className="p-3 text-sm">
+      <SectionLabel>Manual VOD sync</SectionLabel>
       <p className="mt-1 text-xs text-slate-500">
         Pause on a frame, type the in-game clock you see, then confirm. One anchor is approximate.
       </p>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <input
           value={props.clockInput}
-          className="w-24 rounded border border-slate-700 bg-slate-900 px-2 py-1 font-mono"
+          className="w-24 rounded-md border border-rift-edge bg-rift-raised px-2 py-1 font-mono text-slate-100 focus:border-rift-accent/50"
           placeholder="m:ss"
           onChange={(event) => props.onClockInput(event.target.value)}
         />
         <button
           type="button"
           disabled={props.disabled}
-          className="rounded bg-sky-700 px-3 py-1 disabled:opacity-50"
+          className="rounded-md bg-rift-accent px-3 py-1 font-medium text-rift-bg transition hover:bg-rift-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
           onClick={props.onConfirm}
         >
           Clock reads this
         </button>
       </div>
-      {props.message ? <p className="mt-2 text-xs text-amber-200">{props.message}</p> : null}
-    </section>
+      {props.message ? <p className="mt-2 text-xs text-rift-gold">{props.message}</p> : null}
+    </Card>
   )
 }
 

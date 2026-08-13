@@ -1,6 +1,7 @@
 import { BrowserWindow, dialog, ipcMain } from 'electron'
 import { z } from 'zod'
 import {
+  AuthSessionSchema,
   BuildManualSyncInputSchema,
   BuildManualSyncResultSchema,
   ErrorResultSchema,
@@ -15,6 +16,8 @@ import {
   ReviewPresentationSchema,
   ReviewSummarySchema,
   SidecarStatusSchema,
+  SignInResultSchema,
+  SignInWithApiKeyInputSchema,
   SyncMapSchema,
   type ErrorResult
 } from './channels'
@@ -23,14 +26,42 @@ import { logger } from '../logging'
 import { SidecarRequestError } from '../sidecar/client'
 import type { SidecarSupervisor } from '../sidecar/supervisor'
 import { SyncAnchorInconsistent, buildManualSync } from '../sync/syncMap'
+import { PLACEHOLDER_FIXTURE_B_REVIEW_ID, buildPlaceholderFixtureBReview } from '../fixtures/placeholderReview'
+import type { AuthService } from '../auth/authService'
 
-/** Register IPC handlers. Assumes supervisor.start() will run around the same time. */
-export function registerIpcHandlers(supervisor: SidecarSupervisor): void {
+/** Register IPC handlers. Assumes supervisor.start() and authService.start() will run around the same time. */
+export function registerIpcHandlers(supervisor: SidecarSupervisor, authService: AuthService): void {
   for (const channel of Object.values(IPC)) {
-    if (channel !== IPC.sidecarStatusEvent) {
+    if (channel !== IPC.sidecarStatusEvent && channel !== IPC.authSessionEvent) {
       ipcMain.removeHandler(channel)
     }
   }
+
+  ipcMain.handle(IPC.getAuthSession, () => {
+    return AuthSessionSchema.parse(authService.getSession())
+  })
+
+  ipcMain.handle(IPC.signIn, async () => {
+    return SignInResultSchema.parse(await authService.signIn())
+  })
+
+  ipcMain.handle(IPC.signInWithApiKey, async (_event, raw: unknown) => {
+    const input = SignInWithApiKeyInputSchema.parse(raw)
+    return SignInResultSchema.parse(
+      await authService.signInWithApiKey(input.apiKey, input.gameName, input.tagLine, input.region)
+    )
+  })
+
+  ipcMain.handle(IPC.signOut, () => {
+    return AuthSessionSchema.parse(authService.signOut())
+  })
+
+  authService.on('session', (session) => {
+    const parsed = AuthSessionSchema.parse(session)
+    for (const win of BrowserWindow.getAllWindows()) {
+      win.webContents.send(IPC.authSessionEvent, parsed)
+    }
+  })
 
   ipcMain.handle(IPC.getSidecarStatus, () => {
     return SidecarStatusSchema.parse(supervisor.getStatus())
@@ -119,6 +150,9 @@ async function listReviews(supervisor: SidecarSupervisor) {
 }
 
 async function getReview(supervisor: SidecarSupervisor, reviewId: string) {
+  if (reviewId === PLACEHOLDER_FIXTURE_B_REVIEW_ID) {
+    return { ok: true as const, review: buildPlaceholderFixtureBReview(5, 'UNRANKED') }
+  }
   try {
     const payload = await supervisor.request(`/reviews/${encodeURIComponent(reviewId)}`)
     return { ok: true as const, review: ReviewPresentationSchema.parse(payload) }
@@ -146,6 +180,13 @@ async function openFixtureReview(
     )
     return { ok: true as const, review: ReviewPresentationSchema.parse(payload) }
   } catch (error) {
+    if (input.fixtureId === 'NA1_fixture_b') {
+      logger.warn({ error: fail(error) }, 'sidecar unavailable for fixture B, serving placeholder review')
+      return {
+        ok: true as const,
+        review: buildPlaceholderFixtureBReview(input.participantId, input.rank ?? 'UNRANKED')
+      }
+    }
     return fail(error)
   }
 }

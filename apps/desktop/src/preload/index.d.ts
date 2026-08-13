@@ -1,4 +1,5 @@
 import type {
+  AuthSession,
   BuildManualSyncResult,
   GetReviewResult,
   HealthPayload,
@@ -6,7 +7,9 @@ import type {
   OpenFixtureInput,
   PickVodResult,
   ProbeVodResult,
-  SidecarStatus
+  SidecarStatus,
+  SignInResult,
+  SignInWithApiKeyInput
 } from '../main/ipc/channels'
 
 export interface RiftApi {
@@ -26,6 +29,11 @@ export interface RiftApi {
     mediaAssetId?: string
     anchors: { t_video_ms: number; t_game_ms: number }[]
   }) => Promise<BuildManualSyncResult>
+  getAuthSession: () => Promise<AuthSession>
+  signIn: () => Promise<SignInResult>
+  signInWithApiKey: (input: SignInWithApiKeyInput) => Promise<SignInResult>
+  signOut: () => Promise<AuthSession>
+  onAuthSession: (cb: (session: AuthSession) => void) => () => void
 }
 
 declare global {

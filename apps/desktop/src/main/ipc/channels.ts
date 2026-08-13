@@ -10,7 +10,12 @@ export const IPC = {
   openFixtureReview: 'rift:reviews:from-fixture',
   pickVod: 'rift:media:pick',
   probeVod: 'rift:media:probe',
-  buildManualSync: 'rift:sync:manual'
+  buildManualSync: 'rift:sync:manual',
+  getAuthSession: 'rift:auth:get-session',
+  authSessionEvent: 'rift:auth:session',
+  signIn: 'rift:auth:sign-in',
+  signInWithApiKey: 'rift:auth:sign-in-api-key',
+  signOut: 'rift:auth:sign-out'
 } as const
 
 export const SidecarStateSchema = z.enum([
@@ -47,9 +52,33 @@ export const ErrorResultSchema = z.object({
     'UNSUPPORTED_CODEC',
     'SYNC_INVALID',
     'VALIDATION',
+    'AUTH_NOT_CONFIGURED',
+    'AUTH_CANCELLED',
+    'AUTH_FAILED',
     'UNKNOWN'
   ]),
   message: z.string()
+})
+
+/** Public-safe account session. Never carries tokens across the IPC boundary. */
+export const AuthSessionSchema = z.object({
+  signedIn: z.boolean(),
+  puuid: z.string().nullable(),
+  gameName: z.string().nullable(),
+  tagLine: z.string().nullable(),
+  signedInAt: z.number().int().nullable()
+})
+
+export const SignInResultSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), session: AuthSessionSchema }),
+  ErrorResultSchema
+])
+
+export const SignInWithApiKeyInputSchema = z.object({
+  apiKey: z.string().min(1),
+  gameName: z.string().min(1),
+  tagLine: z.string().min(1),
+  region: z.enum(['americas', 'asia', 'europe'])
 })
 
 export const ProvenanceSchema = z.object({
@@ -329,3 +358,6 @@ export type ProbeVodResult = z.infer<typeof ProbeVodResultSchema>
 export type PickVodResult = z.infer<typeof PickVodResultSchema>
 export type BuildManualSyncResult = z.infer<typeof BuildManualSyncResultSchema>
 export type OpenFixtureInput = z.infer<typeof OpenFixtureInputSchema>
+export type AuthSession = z.infer<typeof AuthSessionSchema>
+export type SignInResult = z.infer<typeof SignInResultSchema>
+export type SignInWithApiKeyInput = z.infer<typeof SignInWithApiKeyInputSchema>

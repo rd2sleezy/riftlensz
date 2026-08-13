@@ -66,13 +66,13 @@ export function VideoPlayer(props: Props): ReactElement {
   }, [props.onTimeMs, props.src])
 
   return (
-    <section className="rounded-lg border border-slate-800 bg-slate-900/60 p-3">
+    <section className="rounded-xl border border-rift-border bg-rift-surface p-3 shadow-card">
       {props.src === null ? (
-        <div className="flex h-64 flex-col items-center justify-center gap-3 text-sm text-slate-300">
+        <div className="flex h-64 flex-col items-center justify-center gap-3 rounded-lg bg-rift-raised/60 text-sm text-slate-400">
           <p>No VOD attached. Data-only review is still valid.</p>
           <button
             type="button"
-            className="rounded-md bg-slate-700 px-3 py-1.5 hover:bg-slate-600"
+            className="rounded-md bg-rift-accent px-3 py-1.5 font-medium text-rift-bg hover:bg-rift-accent-strong"
             onClick={props.onAttach}
           >
             Attach VOD
@@ -81,7 +81,7 @@ export function VideoPlayer(props: Props): ReactElement {
       ) : (
         <video
           ref={videoRef}
-          className="aspect-video w-full bg-black"
+          className="aspect-video w-full rounded-lg bg-black"
           src={props.src}
           controls
           onError={() => {
@@ -89,23 +89,31 @@ export function VideoPlayer(props: Props): ReactElement {
           }}
         />
       )}
-      {props.error ? <p className="mt-2 text-sm text-rose-400">{props.error}</p> : null}
-      {props.warning ? <p className="mt-2 text-sm text-amber-300">{props.warning}</p> : null}
+      {props.error ? <p className="mt-2 text-sm text-rift-danger">{props.error}</p> : null}
+      {props.warning ? <p className="mt-2 text-sm text-rift-gold">{props.warning}</p> : null}
       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-        <button type="button" className="rounded bg-slate-800 px-2 py-1" onClick={props.onAttach}>
+        <button
+          type="button"
+          className="rounded-md bg-white/5 px-2 py-1 hover:bg-white/10"
+          onClick={props.onAttach}
+        >
           {props.src === null ? 'Attach VOD' : 'Replace VOD'}
         </button>
         {[0.5, 1, 2].map((rate) => (
           <button
             key={rate}
             type="button"
-            className={`rounded px-2 py-1 ${props.playbackRate === rate ? 'bg-sky-700 text-white' : 'bg-slate-800'}`}
+            className={`rounded-md px-2 py-1 transition ${
+              props.playbackRate === rate
+                ? 'bg-rift-accent text-rift-bg'
+                : 'bg-white/5 hover:bg-white/10'
+            }`}
             onClick={() => props.onPlaybackRate(rate)}
           >
             {rate}×
           </button>
         ))}
-        <span>playhead {formatMmss(props.playheadMs)}</span>
+        <span className="font-mono">playhead {formatMmss(props.playheadMs)}</span>
       </div>
     </section>
   )

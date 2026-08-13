@@ -10,4 +10,35 @@ body,
 
 body {
   margin: 0;
+  background-color: #0a0a0b;
+  background-image:
+    radial-gradient(ellipse 900px 500px at 12% -10%, rgb(240 49 61 / 0.06), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 0%, rgb(232 185 92 / 0.05), transparent 55%);
+  background-attachment: fixed;
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3a3a3d transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #3a3a3d;
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid #F0313D;
+  outline-offset: 2px;
 }
