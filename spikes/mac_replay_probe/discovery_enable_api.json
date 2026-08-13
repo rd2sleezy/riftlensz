@@ -1,0 +1,174 @@
+{
+  "finalPaths": [
+    "/AsyncDelete",
+    "/AsyncResult",
+    "/AsyncStatus",
+    "/Cancel",
+    "/Exit",
+    "/Help",
+    "/Subscribe",
+    "/Unsubscribe",
+    "/async/v1/result/{asyncToken}",
+    "/async/v1/status/{asyncToken}",
+    "/liveclientdata/activeplayer",
+    "/liveclientdata/activeplayerabilities",
+    "/liveclientdata/activeplayername",
+    "/liveclientdata/activeplayerrunes",
+    "/liveclientdata/allgamedata",
+    "/liveclientdata/eventdata",
+    "/liveclientdata/gamestats",
+    "/liveclientdata/playeritems",
+    "/liveclientdata/playerlist",
+    "/liveclientdata/playermainrunes",
+    "/liveclientdata/playerscores",
+    "/liveclientdata/playersummonerspells",
+    "/swagger/v1/api-docs",
+    "/swagger/v1/api-docs/{api}",
+    "/swagger/v2/swagger.json",
+    "/swagger/v3/openapi.json"
+  ],
+  "discovery": {
+    "/replay/playback": {
+      "status": 404,
+      "json": {
+        "errorCode": "RESOURCE_NOT_FOUND",
+        "httpStatus": 404,
+        "message": "Invalid URI format"
+      },
+      "raw": "{\r\n\t\"errorCode\": \"RESOURCE_NOT_FOUND\",\r\n\t\"httpStatus\": 404,\r\n\t\"message\": \"Invalid URI format\"\r\n}"
+    },
+    "/replay/game": {
+      "status": 404,
+      "json": {
+        "errorCode": "RESOURCE_NOT_FOUND",
+        "httpStatus": 404,
+        "message": "Invalid URI format"
+      },
+      "raw": "{\r\n\t\"errorCode\": \"RESOURCE_NOT_FOUND\",\r\n\t\"httpStatus\": 404,\r\n\t\"message\": \"Invalid URI format\"\r\n}"
+    },
+    "/replay/render": {
+      "status": 404,
+      "json": {
+        "errorCode": "RESOURCE_NOT_FOUND",
+        "httpStatus": 404,
+        "message": "Invalid URI format"
+      },
+      "raw": "{\r\n\t\"errorCode\": \"RESOURCE_NOT_FOUND\",\r\n\t\"httpStatus\": 404,\r\n\t\"message\": \"Invalid URI format\"\r\n}"
+    },
+    "/replay/recording": {
+      "status": 404,
+      "json": {
+        "errorCode": "RESOURCE_NOT_FOUND",
+        "httpStatus": 404,
+        "message": "Invalid URI format"
+      },
+      "raw": "{\r\n\t\"errorCode\": \"RESOURCE_NOT_FOUND\",\r\n\t\"httpStatus\": 404,\r\n\t\"message\": \"Invalid URI format\"\r\n}"
+    },
+    "/liveclientdata/gamestats": {
+      "status": 200,
+      "json": {
+        "gameMode": "CLASSIC",
+        "gameTime": 346.10968017578125,
+        "mapName": "Map11",
+        "mapNumber": 11,
+        "mapTerrain": "Default"
+      },
+      "raw": "{\r\n\t\"gameMode\": \"CLASSIC\",\r\n\t\"gameTime\": 346.10968017578127,\r\n\t\"mapName\": \"Map11\",\r\n\t\"mapNumber\": 11,\r\n\t\"mapTerrain\": \"Default\"\r\n}"
+    },
+    "/liveclientdata/eventdata": {
+      "status": 200,
+      "json": {
+        "Events": [
+          {
+            "EventID": 0,
+            "EventName": "GameStart",
+            "EventTime": 0
+          },
+          {
+            "EventID": 1,
+            "EventName": "MinionsSpawning",
+            "EventTime": 30.02046775817871
+          },
+          {
+            "Assisters": [
+              "dodo2238ala19669"
+            ],
+            "EventID": 2,
+            "EventName": "ChampionKill",
+            "EventTime": 134.92623901367188,
+            "KillerName": "Dble D",
+            "VictimName": "ViegosBathwater"
+          },
+          {
+            "EventID": 3,
+            "EventName": "FirstBlood",
+            "EventTime": 134.92623901367188,
+            "Recipient": "Dble D"
+          },
+          {
+            "Assisters": [
+              "ViegosBathwater"
+            ],
+            "EventID": 4,
+            "EventName": "ChampionKill",
+            "EventTime": 135.36099243164062,
+            "KillerName": "The Rock Troll",
+            "VictimName": "dodo2238ala19669"
+          },
+          {
+            "Assisters": [
+              "dodo2238ala19669"
+            ],
+            "EventID": 5,
+            "EventName": "ChampionKill",
+            "EventTime": 137.9307861328125,
+            "KillerName": "Dble D",
+            "VictimName": "The Rock Troll"
+          },
+          {
+            "EventID": 6,
+            "EventName": "Multikill",
+            "EventTime": 137.9307861328125,
+            "KillStreak": 2,
+            "KillerName": "Dble D"
+          },
+          {
+            "Assisters": [],
+            "EventID": 7,
+            "EventName": "ChampionKill",
+            "EventTime": 174.34518432617188,
+            "KillerName": "retronixxxx",
+            "VictimName": "Hittheclub09"
+          },
+          {
+            "Assisters": [],
+            "EventID": 8,
+            "EventName": "ChampionKill",
+            "EventTime": 274.9117431640625,
+            "KillerName": "Hittheclub09",
+            "VictimName": "Saxon"
+          },
+          {
+            "Assisters": [
+              "Saxon"
+            ],
+            "EventID": 9,
+            "EventName": "ChampionKill",
+            "EventTime": 277.3469543457031,
+            "KillerName": "retronixxxx",
+            "VictimName": "Hittheclub09"
+          },
+          {
+            "Assisters": [],
+            "EventID": 10,
+            "EventName": "ChampionKill",
+            "EventTime": 279.9535217285156,
+            "KillerName": "Turret_TOrder_L1_P3_1242677625_0",
+            "VictimName": "retronixxxx"
+          }
+        ]
+      },
+      "raw": "{\r\n\t\"Events\": [\r\n\t\t{\r\n\t\t\t\"EventID\": 0,\r\n\t\t\t\"EventName\": \"GameStart\",\r\n\t\t\t\"EventTime\": 0.0\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"EventID\": 1,\r\n\t\t\t\"EventName\": \"MinionsSpawning\",\r\n\t\t\t\"EventTime\": 30.02046775817871\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Assisters\": [\r\n\t\t\t\t\"dodo2238ala19669\"\r\n\t\t\t],\r\n\t\t\t\"EventID\": 2,\r\n\t\t\t\"EventName\": \"ChampionKill\",\r\n\t\t\t\"EventTime\": 134.92623901367188,\r\n\t\t\t\"KillerName\": \"Dble D\",\r\n\t\t\t\"VictimName\": \"ViegosBathwater\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"EventID\": 3,\r\n\t\t\t\"EventName\": \"FirstBlood\",\r\n\t\t\t\"EventTime\": 134.92623901367188,\r\n\t\t\t\"Recipient\": \"Dble D\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Assisters\": [\r\n\t\t\t\t\"ViegosBathwater\"\r\n\t\t\t],\r\n\t\t\t\"EventID\": 4,\r\n\t\t\t\"EventName\": \"ChampionKill\",\r\n\t\t\t\"EventTime\": 135.36099243164063,\r\n\t\t\t\"KillerName\": \"The Rock Troll\",\r\n\t\t\t\"VictimName\": \"dodo2238ala19669\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Assisters\": [\r\n\t\t\t\t\"dodo2238ala19669\"\r\n\t\t\t],\r\n\t\t\t\"EventID\": 5,\r\n\t\t\t\"EventName\": \"ChampionKill\",\r\n\t\t\t\"EventTime\": 137.9307861328125,\r\n\t\t\t\"KillerName\": \"Dble D\",\r\n\t\t\t\"VictimName\": \"The Rock Troll\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"EventID\": 6,\r\n\t\t\t\"EventName\": \"Multikill\",\r\n\t\t\t\"EventTime\": 137.9307861328125,\r\n\t\t\t\"KillStreak\": 2,\r\n\t\t\t\"KillerName\": \"Dble D\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Assisters\": [],\r\n\t\t\t\"EventID\": 7,\r\n\t\t\t\"EventName\": \"ChampionKill\",\r\n\t\t\t\"EventTime\": 174.34518432617188,\r\n\t\t\t\"KillerName\": \"retronixxxx\",\r\n\t\t\t\"VictimName\": \"Hittheclub09\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Assisters\": [],\r\n\t\t\t\"EventID\": 8,\r\n\t\t\t\"EventName\": \"ChampionKill\",\r\n\t\t\t\"EventTime\": 274.9117431640625,\r\n\t\t\t\"KillerName\": \"Hittheclub09\",\r\n\t\t\t\"VictimName\": \"Saxon\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Assisters\": [\r\n\t\t\t"
+    }
+  }
+}

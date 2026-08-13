@@ -18,6 +18,9 @@ Preferred launch on Mac: `--launch-method direct` (uses `GameBaseDir=…/Game`).
 
 ## Note
 
-This spike **will not** set `EnableReplayApi=1`. Ask before editing config.
+`EnableReplayApi=1` was approved and applied under `[General]` in both:
 
-Latest verdict: see `SPIKE_REPORT.md`.
+- `…/LoL/Config/game.cfg`
+- `…/LoL/Game/Config/game.cfg` (required for Mac direct launch)
+
+Backups live under `backups/`. Latest verdict: see `SPIKE_REPORT.md`.

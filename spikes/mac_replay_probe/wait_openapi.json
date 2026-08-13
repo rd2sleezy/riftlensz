@@ -1,0 +1,562 @@
+[
+  {
+    "t": 0,
+    "gamestats": 200,
+    "gameTime": 225.5726776123047,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 3,
+    "gamestats": 200,
+    "gameTime": 228.5948028564453,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 6,
+    "gamestats": 200,
+    "gameTime": 231.61257934570312,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 9,
+    "gamestats": 200,
+    "gameTime": 234.6277313232422,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 12,
+    "gamestats": 200,
+    "gameTime": 237.64076232910156,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 15,
+    "gamestats": 200,
+    "gameTime": 240.6522674560547,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 18,
+    "gamestats": 200,
+    "gameTime": 243.66555786132812,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 21,
+    "gamestats": 200,
+    "gameTime": 246.6782684326172,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 24,
+    "gamestats": 200,
+    "gameTime": 249.68959045410156,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 27,
+    "gamestats": 200,
+    "gameTime": 252.70008850097656,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 30,
+    "gamestats": 200,
+    "gameTime": 255.71347045898438,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 33,
+    "gamestats": 200,
+    "gameTime": 258.727783203125,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 36,
+    "gamestats": 200,
+    "gameTime": 261.7425842285156,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 39,
+    "gamestats": 200,
+    "gameTime": 264.7563781738281,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 42,
+    "gamestats": 200,
+    "gameTime": 267.77099609375,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 45,
+    "gamestats": 200,
+    "gameTime": 270.7823181152344,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 48,
+    "gamestats": 200,
+    "gameTime": 273.79376220703125,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 51,
+    "gamestats": 200,
+    "gameTime": 276.8036804199219,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 54,
+    "gamestats": 200,
+    "gameTime": 279.81536865234375,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 57,
+    "gamestats": 200,
+    "gameTime": 282.83245849609375,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 60,
+    "gamestats": 200,
+    "gameTime": 285.84539794921875,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 63,
+    "gamestats": 200,
+    "gameTime": 288.8619384765625,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 66,
+    "gamestats": 200,
+    "gameTime": 291.8736267089844,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 69,
+    "gamestats": 200,
+    "gameTime": 294.8851318359375,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 72,
+    "gamestats": 200,
+    "gameTime": 297.89764404296875,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 75,
+    "gamestats": 200,
+    "gameTime": 300.9074401855469,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 78,
+    "gamestats": 200,
+    "gameTime": 303.9226379394531,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 81,
+    "gamestats": 200,
+    "gameTime": 306.9341735839844,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 84,
+    "gamestats": 200,
+    "gameTime": 309.9468688964844,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 87,
+    "gamestats": 200,
+    "gameTime": 312.96197509765625,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 90,
+    "gamestats": 200,
+    "gameTime": 315.9763488769531,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 93,
+    "gamestats": 200,
+    "gameTime": 318.9902038574219,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 96,
+    "gamestats": 200,
+    "gameTime": 322.0010070800781,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 99,
+    "gamestats": 200,
+    "gameTime": 325.0141906738281,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 102,
+    "gamestats": 200,
+    "gameTime": 328.0277404785156,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 105,
+    "gamestats": 200,
+    "gameTime": 331.0426940917969,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 109,
+    "gamestats": 200,
+    "gameTime": 334.0552978515625,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 112,
+    "gamestats": 200,
+    "gameTime": 337.0672607421875,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 115,
+    "gamestats": 200,
+    "gameTime": 340.08154296875,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  },
+  {
+    "t": 118,
+    "gamestats": 200,
+    "gameTime": 343.094482421875,
+    "pathCount": 26,
+    "hasReplay": false,
+    "replayPaths": [],
+    "playbackStatus": 404,
+    "playback": {
+      "errorCode": "RESOURCE_NOT_FOUND",
+      "httpStatus": 404,
+      "message": "Invalid URI format"
+    }
+  }
+]
