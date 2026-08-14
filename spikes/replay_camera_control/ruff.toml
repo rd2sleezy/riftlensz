@@ -1,0 +1,3 @@
+# Disposable spike — keep local lint light; production code is under services/analysis.
+lint.select = ["E", "F", "I", "UP", "B"]
+lint.ignore = ["E402", "E501", "I001"]

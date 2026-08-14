@@ -1,0 +1,467 @@
+{
+  "match_id": "NA1_5620410094",
+  "subject_pid": 6,
+  "subject_champion": "Vladimir",
+  "death_t_ms": 839881,
+  "death_position_riot": {
+    "x": 1591.0,
+    "y": 9726.0,
+    "champion": "Vladimir"
+  },
+  "summoner_display_name": "immynator",
+  "accepted_camera_modes": [
+    "top",
+    "path",
+    "fps"
+  ],
+  "camera_mode_probes": [
+    {
+      "requested": "top",
+      "readback": "top",
+      "accepted": true
+    },
+    {
+      "requested": "path",
+      "readback": "path",
+      "accepted": true
+    },
+    {
+      "requested": "fps",
+      "readback": "fps",
+      "accepted": true
+    }
+  ],
+  "direct_subject_targeting": {
+    "selection_name_accepts_champion": true,
+    "selection_name_resolves_to_summoner": "immynator",
+    "cameraAttached_works": true,
+    "no_participant_id_field": true
+  },
+  "world_position_tests": [
+    {
+      "label": "path_plus_position",
+      "ground_distance_to_death": 0.0,
+      "position_applied": true
+    },
+    {
+      "label": "top_plus_position",
+      "ground_distance_to_death": 13127.0,
+      "position_applied": false
+    }
+  ],
+  "directed_camera_behavior": [
+    {
+      "label": "seek_while_top",
+      "ground_distance_to_death": 13127.0
+    },
+    {
+      "label": "seek_while_path_at_death",
+      "ground_distance_to_death": 0.0
+    }
+  ],
+  "strategy_runs_primary": [
+    {
+      "strategy": "C_path_gst_position",
+      "capture_ok": true,
+      "capture_id": "01KZZBA8Y3VQ06YTAB4GTSJHH1",
+      "capture_dir": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/camspike_01KZZBA8Y3VQ06YTAB4GTSJHH1",
+      "applied": {
+        "ground_distance_to_death": 0.0,
+        "patch": {
+          "cameraMode": "path",
+          "cameraPosition": {
+            "x": 1591.0,
+            "y": 1910.0,
+            "z": 9726.0
+          }
+        }
+      },
+      "frames": [
+        "artifacts/frames/C_path_gst_position/frame_0000.jpg",
+        "artifacts/frames/C_path_gst_position/frame_0030.jpg",
+        "artifacts/frames/C_path_gst_position/frame_0060.jpg",
+        "artifacts/frames/C_path_gst_position/frame_0090.jpg"
+      ],
+      "analysis": {
+        "death_t_ms": 839881,
+        "v4_status": "UNKNOWN",
+        "v4_confidence": 0.0,
+        "v4_track_id": null,
+        "v5_status": "UNKNOWN",
+        "v5_confidence": 0.0,
+        "v5_identity_change": "unchanged",
+        "v5_cues": [],
+        "tracks": [
+          {
+            "track_id": "trk_0001",
+            "kind": "CHAMPION_LIKE",
+            "obs": 1,
+            "duration_ms": 0,
+            "team": "ALLY"
+          },
+          {
+            "track_id": "trk_0002",
+            "kind": "CHAMPION_LIKE",
+            "obs": 1,
+            "duration_ms": 0,
+            "team": "ENEMY"
+          },
+          {
+            "track_id": "trk_0003",
+            "kind": "CHAMPION_LIKE",
+            "obs": 14,
+            "duration_ms": 3266,
+            "team": "ENEMY"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "CHAMPION_LIKE",
+            "obs": 14,
+            "duration_ms": 3266,
+            "team": "ENEMY"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "CHAMPION_LIKE",
+            "obs": 5,
+            "duration_ms": 1234,
+            "team": "ENEMY"
+          }
+        ],
+        "track_count": 5,
+        "longest_track_ms": 3266,
+        "confirmed_detections": 35,
+        "informative_frames": 14,
+        "analyzed_frames": 14,
+        "useful_fraction": 1.0,
+        "runtime": {
+          "v4_wall_s": 0.615,
+          "v5_refine_s": 0.0002,
+          "detect_ms": 340.8,
+          "continuity_ms": 0.004
+        }
+      },
+      "reused_prior_capture": true
+    },
+    {
+      "strategy": "A_directed_top",
+      "seek": {
+        "time": 829.8809814453125,
+        "seeking": false,
+        "paused": true,
+        "elapsed_s": 0.338,
+        "landed": true
+      },
+      "applied": {
+        "strategy": "A_directed_top",
+        "patch": {
+          "cameraMode": "top",
+          "cameraAttached": false
+        },
+        "before": {
+          "cameraMode": "top",
+          "cameraAttached": false,
+          "cameraPosition": {
+            "x": 14272.3564453125,
+            "y": 1911.8480224609375,
+            "z": 13111.9765625
+          },
+          "cameraRotation": {
+            "x": 0.0,
+            "y": 56.0,
+            "z": 0.0
+          },
+          "fieldOfView": 40.0,
+          "fogOfWar": true,
+          "selectionName": "",
+          "selectionOffset": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "cameraLockX": false,
+          "cameraLockY": false,
+          "cameraLockZ": false,
+          "cameraMoveSpeed": 500.0,
+          "cameraLookSpeed": 1.0
+        },
+        "after_post": {
+          "cameraMode": "top",
+          "cameraAttached": false,
+          "cameraPosition": {
+            "x": 14272.3564453125,
+            "y": 1911.8480224609375,
+            "z": 13111.9765625
+          },
+          "cameraRotation": {
+            "x": 0.0,
+            "y": 56.0,
+            "z": 0.0
+          },
+          "fieldOfView": 40.0,
+          "fogOfWar": true,
+          "selectionName": "",
+          "selectionOffset": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "cameraLockX": false,
+          "cameraLockY": false,
+          "cameraLockZ": false,
+          "cameraMoveSpeed": 500.0,
+          "cameraLookSpeed": 1.0
+        },
+        "settled": {
+          "cameraMode": "top",
+          "cameraAttached": false,
+          "cameraPosition": {
+            "x": 14272.3564453125,
+            "y": 1911.8480224609375,
+            "z": 13111.9765625
+          },
+          "cameraRotation": {
+            "x": 0.0,
+            "y": 56.0,
+            "z": 0.0
+          },
+          "fieldOfView": 40.0,
+          "fogOfWar": true,
+          "selectionName": "",
+          "selectionOffset": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "cameraLockX": false,
+          "cameraLockY": false,
+          "cameraLockZ": false,
+          "cameraMoveSpeed": 500.0,
+          "cameraLookSpeed": 1.0
+        },
+        "error": null,
+        "ground_distance_to_death": 13125.6,
+        "mode_changed": false,
+        "position_changed": false,
+        "attached_changed": false,
+        "selection_changed": false
+      },
+      "capture_ok": true,
+      "capture_error": null,
+      "capture_runtime_s": 50.52,
+      "capture_id": "01KZZBH5TK01HK99AXF97FC37M",
+      "capture_dir": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/camspike_01KZZBH5TK01HK99AXF97FC37M",
+      "frames": [
+        "artifacts/frames/A_directed_top/frame_0000.jpg",
+        "artifacts/frames/A_directed_top/frame_0030.jpg",
+        "artifacts/frames/A_directed_top/frame_0060.jpg",
+        "artifacts/frames/A_directed_top/frame_0090.jpg"
+      ],
+      "analysis": {
+        "death_t_ms": 839881,
+        "v4_status": "UNKNOWN",
+        "v4_confidence": 0.0,
+        "v4_track_id": null,
+        "v5_status": "UNKNOWN",
+        "v5_confidence": 0.0,
+        "v5_identity_change": "unchanged",
+        "v5_cues": [],
+        "tracks": [],
+        "track_count": 0,
+        "longest_track_ms": 0,
+        "confirmed_detections": 0,
+        "informative_frames": 17,
+        "analyzed_frames": 17,
+        "useful_fraction": 1.0,
+        "runtime": {
+          "v4_wall_s": 0.369,
+          "v5_refine_s": 0.0002,
+          "detect_ms": 197.7,
+          "continuity_ms": 0.003
+        }
+      }
+    },
+    {
+      "strategy": "D_attach_selection_champion",
+      "capture_ok": false,
+      "error": "Local Replay API is not reachable."
+    },
+    {
+      "strategy": "B_seek_wait_top",
+      "capture_ok": false,
+      "error": "Local Replay API is not reachable."
+    }
+  ],
+  "strategy_ranking": [
+    {
+      "strategy": "C_path_gst_position",
+      "score": [
+        35,
+        5,
+        3266,
+        1
+      ],
+      "capture_ok": true,
+      "analysis": {
+        "death_t_ms": 839881,
+        "v4_status": "UNKNOWN",
+        "v4_confidence": 0.0,
+        "v4_track_id": null,
+        "v5_status": "UNKNOWN",
+        "v5_confidence": 0.0,
+        "v5_identity_change": "unchanged",
+        "v5_cues": [],
+        "tracks": [
+          {
+            "track_id": "trk_0001",
+            "kind": "CHAMPION_LIKE",
+            "obs": 1,
+            "duration_ms": 0,
+            "team": "ALLY"
+          },
+          {
+            "track_id": "trk_0002",
+            "kind": "CHAMPION_LIKE",
+            "obs": 1,
+            "duration_ms": 0,
+            "team": "ENEMY"
+          },
+          {
+            "track_id": "trk_0003",
+            "kind": "CHAMPION_LIKE",
+            "obs": 14,
+            "duration_ms": 3266,
+            "team": "ENEMY"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "CHAMPION_LIKE",
+            "obs": 14,
+            "duration_ms": 3266,
+            "team": "ENEMY"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "CHAMPION_LIKE",
+            "obs": 5,
+            "duration_ms": 1234,
+            "team": "ENEMY"
+          }
+        ],
+        "track_count": 5,
+        "longest_track_ms": 3266,
+        "confirmed_detections": 35,
+        "informative_frames": 14,
+        "analyzed_frames": 14,
+        "useful_fraction": 1.0,
+        "runtime": {
+          "v4_wall_s": 0.615,
+          "v5_refine_s": 0.0002,
+          "detect_ms": 340.8,
+          "continuity_ms": 0.004
+        }
+      },
+      "ground_distance_to_death": 0.0
+    },
+    {
+      "strategy": "A_directed_top",
+      "score": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "capture_ok": true,
+      "analysis": {
+        "death_t_ms": 839881,
+        "v4_status": "UNKNOWN",
+        "v4_confidence": 0.0,
+        "v4_track_id": null,
+        "v5_status": "UNKNOWN",
+        "v5_confidence": 0.0,
+        "v5_identity_change": "unchanged",
+        "v5_cues": [],
+        "tracks": [],
+        "track_count": 0,
+        "longest_track_ms": 0,
+        "confirmed_detections": 0,
+        "informative_frames": 17,
+        "analyzed_frames": 17,
+        "useful_fraction": 1.0,
+        "runtime": {
+          "v4_wall_s": 0.369,
+          "v5_refine_s": 0.0002,
+          "detect_ms": 197.7,
+          "continuity_ms": 0.003
+        }
+      },
+      "ground_distance_to_death": 13125.6
+    },
+    {
+      "strategy": "D_attach_selection_champion",
+      "score": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "capture_ok": false,
+      "analysis": null,
+      "ground_distance_to_death": null
+    },
+    {
+      "strategy": "B_seek_wait_top",
+      "score": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "capture_ok": false,
+      "analysis": null,
+      "ground_distance_to_death": null
+    }
+  ],
+  "strategy_run_alternate": null,
+  "research_verdict": "CAMERA_CONTROL_SUPPORTED",
+  "baseline_fountain_capture": {
+    "capture_id": "01KZZAGC6QZ8FWB61KQYDX4VVY",
+    "confirmed_detections": 1,
+    "track_count": 1,
+    "v4_status": "UNKNOWN"
+  },
+  "render_schema_keys_observed": [
+    "banners",
+    "cameraAttached",
+    "cameraLockX",
+    "cameraLockY",
+    "cameraLockZ",
+    "cameraLookSpeed",
+    "cameraMode",
+    "cameraMoveSpeed",
+    "cameraPosition",
+    "cameraRotation",
+    "champions",
+    "characters",
+    "fieldOfView",
+    "fogOfWar",
+    "selectionName",
+    "selectionOffset",
+    "interfaceAll",
+    "interfaceReplay"
+  ],
+  "c_path_v5_detail": {
+    "rejected_cues": [
+      "no_base_likely_track"
+    ],
+    "contributing_cues": [],
+    "v4_reasons": [
+      "capture_review_pid_ignored_for_identity",
+      "subject_death_game_t_ms=839881",
+      "disappearing_tracks=0",
+      "no champion-like track disappeared near subject death",
+      "death-time alignment insufficient; capture ownership ignored"
+    ],
+    "subject_candidate_exists": false
+  }
+}

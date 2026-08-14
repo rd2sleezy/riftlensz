@@ -1,0 +1,52 @@
+{
+  "accepted_camera_modes": [
+    "top",
+    "path",
+    "fps"
+  ],
+  "camera_mode_probes": [
+    {
+      "requested": "top",
+      "readback": "top",
+      "accepted": true
+    },
+    {
+      "requested": "path",
+      "readback": "path",
+      "accepted": true
+    },
+    {
+      "requested": "fps",
+      "readback": "fps",
+      "accepted": true
+    }
+  ],
+  "direct_subject_targeting": {
+    "selection_name_accepts_champion": true,
+    "selection_name_resolves_to_summoner": "immynator",
+    "cameraAttached_works": true,
+    "no_participant_id_field": true
+  },
+  "world_position_tests": [
+    {
+      "label": "path_plus_position",
+      "ground_distance_to_death": 0.0,
+      "position_applied": true
+    },
+    {
+      "label": "top_plus_position",
+      "ground_distance_to_death": 13127.0,
+      "position_applied": false
+    }
+  ],
+  "directed_camera_behavior": [
+    {
+      "label": "seek_while_top",
+      "ground_distance_to_death": 13127.0
+    },
+    {
+      "label": "seek_while_path_at_death",
+      "ground_distance_to_death": 0.0
+    }
+  ]
+}
