@@ -66,7 +66,10 @@ def read_clock(
     rect = layout.clock_rect.clamp(width, height)
     crop = _crop(frame, rect)
     digits = read_digits(crop)
-    if digits.confidence < GLYPH_MATCH_FLOOR or not digits.value:
+    # Per-glyph floor is enforced inside ``read_digits``. Combined confidence can
+    # land below that floor via ``combine`` even when every glyph matched — do not
+    # fail-closed a second time on the combined score alone.
+    if not digits.value or digits.confidence <= 0.0:
         return Estimate(0, 0.0, basis=digits.basis or "unreadable_digits")
     parsed = parse_clock_text(digits.value)
     if parsed is None:

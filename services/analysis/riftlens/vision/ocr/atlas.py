@@ -64,9 +64,24 @@ def load_atlas(height_px: int, *, root: Path | None = None) -> GlyphAtlas:
     return GlyphAtlas(height_px=height_px, templates=templates, source=source)
 
 
-def choose_atlas(roi_height: int, *, root: Path | None = None) -> GlyphAtlas:
-    """Pick the closest available atlas height to the ROI glyph height."""
+def choose_atlas(
+    roi_height: int,
+    *,
+    root: Path | None = None,
+    prefer_league: bool = True,
+) -> GlyphAtlas:
+    """Pick the closest atlas height. Prefer ``glyphs/league/`` when available."""
     root = root or default_glyphs_root()
+    if prefer_league:
+        league_root = root / "league"
+        if league_root.is_dir():
+            league = _choose_height(roi_height, league_root)
+            if league.available():
+                return league
+    return _choose_height(roi_height, root)
+
+
+def _choose_height(roi_height: int, root: Path) -> GlyphAtlas:
     candidates = sorted(
         int(p.name.replace("px", ""))
         for p in root.glob("*px")

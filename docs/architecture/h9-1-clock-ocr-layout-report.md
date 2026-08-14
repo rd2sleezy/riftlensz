@@ -1,6 +1,6 @@
 # H.9.1 — Clock OCR & Layout Calibration
 
-**Status:** engineering complete; real corpus acceptance blocked  
+**Status:** engineering complete; real corpus acceptance **PARTIAL** (see real-corpus validation report)  
 **Date:** 2026-08-14  
 **Branch:** `integrate/ui-r1`  
 **Does not implement:** H.10 RANSAC / `/sync/auto`, H.11, R.12, V.7, neural OCR, ROFL OCR dependency, overlay, ReplayHost, coaching.
@@ -229,15 +229,15 @@ PTS reader, domain types, layout package, classical OCR + synthetic atlas, in-ga
 
 ## 21. REAL_CORPUS_ACCEPTANCE verdict
 
-**REAL_CORPUS_ACCEPTANCE = BLOCKED_INSUFFICIENT_CORPUS**
+**REAL_CORPUS_ACCEPTANCE = PARTIAL**
 
-Missing the original H.9 labelled ~150-image gate (resolutions × in-game/loading/post-game/occluded) with targets ≥99% / ≥95% / 0 confident-wrong. Local R.10 smoke does not satisfy that gate.
+Follow-up validation (2026-08-14) built a small labelled REAL corpus + League glyph atlas. See [`h9-1-real-clock-corpus-validation-report.md`](./h9-1-real-clock-corpus-validation-report.md): **39/41** clean correct (**95.1%**), **0** wrong, **5/5** non-clock rejected; single resolution **1520×982**, mid-game only. Not a full PASS vs ≥99% / multi-resolution / loading–post-game gate.
 
 ## 22. Whether H.10 is now genuinely unblocked
 
 | Question | Answer |
 |---|---|
 | H.10 **engineering** (consume `ClockReading[]`, implement RANSAC / SyncMap fitter behind VIDEO path) | **Unblocked** — the H.9.1 API and types exist |
-| H.10 **real auto-sync** on League VODs end-to-end | **Still blocked** until a real (or sufficiently League-like) glyph atlas + labelled corpus make OCR produce trustworthy 1 Hz readings |
+| H.10 **real auto-sync** on League VODs end-to-end | **Partial / not yet** — real glyphs help on this match’s mid-game crops; corpus breadth still too thin for production auto-sync claims |
 
 Stop here. Do not treat this report as permission to start H.10 without an explicit work order.
