@@ -1,0 +1,39 @@
+{
+  "root_cause": "macOS overlay used alwaysOnTopLevel=floating (below League) and could show before League bounds resolved, so the panel appeared tied to the RiftLens Space/z-order.",
+  "before": {
+    "alwaysOnTopLevel": "floating",
+    "alwaysOnTopRelativeLevel": 0,
+    "note": "floating sits below Dock / Metal game windows on macOS"
+  },
+  "after": {
+    "alwaysOnTopLevel": "screen-saver",
+    "alwaysOnTopRelativeLevel": 1,
+    "type": "panel",
+    "visibleOnAllWorkspaces": true,
+    "visibleOnFullScreen": true,
+    "fullscreenable": false,
+    "parentedToMainWindow": false
+  },
+  "chrome_calls": [
+    "fullscreenable:false",
+    "workspaces:true:true",
+    "aot:true:screen-saver:1",
+    "ignore:false",
+    "moveTop"
+  ],
+  "example_league_bounds": {
+    "x": 0,
+    "y": 25,
+    "width": 1512,
+    "height": 957
+  },
+  "example_overlay_bounds": {
+    "x": 1200,
+    "y": 111.13,
+    "width": 300,
+    "height": 440
+  },
+  "overlay_hud_safe": true,
+  "permission_guidance": "If League bounds cannot be read, grant Screen Recording or Accessibility for RiftLens, keep Windowed/Borderless, then Recheck.",
+  "ok": true
+}

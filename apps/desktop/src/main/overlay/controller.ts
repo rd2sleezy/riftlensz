@@ -11,10 +11,11 @@ import {
   primaryWorkArea,
   workAreaForRect
 } from './createOverlayWindow'
-import { overlayWindowOptionsForPlatform } from './platform'
+import { overlayWindowOptionsForPlatform, applyOverlayWindowChrome } from './platform'
 import {
   classifyDisplayMode,
   findLeagueClientWindow,
+  getDarwinLeagueProbeMeta,
   isExclusiveD3dFullscreen,
   isReplaySessionActive,
   refreshLeagueClientWindowAsync
@@ -25,6 +26,7 @@ import {
   LEAGUE_MISSING_GRACE_POLLS,
   NAVIGATOR_HEIGHT,
   OVERLAY_POLL_MS,
+  type LeagueBoundsSource,
   type LeagueDisplayMode,
   type OverlayContext,
   type OverlayPrefs,
@@ -55,6 +57,9 @@ export type OverlayLifecycleEvent = {
   sessionReachedReady: boolean
   presentation: OverlayPresentation
   needsCompat: boolean
+  leagueBoundsSource: LeagueBoundsSource | null
+  alwaysOnTopLevel: string | null
+  visibleOnAllWorkspaces: boolean
 }
 
 function rectsEqual(a: Rect, b: Rect): boolean {
@@ -77,6 +82,8 @@ export class OverlayController {
   private lastAppliedBounds: Rect | null = null
   private lastBroadcastKey = ''
   private lastLeagueSeenAt = 0
+  private leagueBoundsSource: LeagueBoundsSource = 'none'
+  private placementMessage: string | null = null
   private session: OverlaySessionSnapshot = {
     sessionPhase: null,
     sessionReachedReady: false,
@@ -125,16 +132,22 @@ export class OverlayController {
       this.window !== null &&
       !this.window.isDestroyed() &&
       this.window.isVisible()
+    const platformOpts = overlayWindowOptionsForPlatform()
     return {
       kind: 'visibility',
       visible,
       reason: this.lastReason,
       displayMode: this.displayMode,
-      message: this.needsCompat ? BORDERLESS_REQUIRED_MESSAGE : null,
+      message: this.needsCompat
+        ? BORDERLESS_REQUIRED_MESSAGE
+        : this.placementMessage,
       sessionPhase: this.session.sessionPhase,
       sessionReachedReady: this.session.sessionReachedReady,
       presentation: this.presentation,
-      needsCompat: this.needsCompat
+      needsCompat: this.needsCompat,
+      leagueBoundsSource: this.leagueBoundsSource === 'none' ? null : this.leagueBoundsSource,
+      alwaysOnTopLevel: platformOpts.alwaysOnTopLevel,
+      visibleOnAllWorkspaces: platformOpts.visibleOnAllWorkspaces
     }
   }
 
@@ -168,10 +181,29 @@ export class OverlayController {
     if (session !== undefined) {
       this.session = { ...this.session, ...session }
     }
-    this.ensureWindow()
     this.startPolling()
-    this.tick()
-    void refreshLeagueClientWindowAsync().then(() => this.tick())
+    // Await League bounds before first show so we do not place against the
+    // RiftLens/primary work area while the darwin probe is still in flight.
+    void (async () => {
+      const league = await refreshLeagueClientWindowAsync()
+      if (league !== null) {
+        this.lastLeagueBounds = league.bounds
+        this.leagueBoundsSource = league.boundsSource ?? 'probe'
+        this.missingPolls = 0
+        this.lastLeagueSeenAt = Date.now()
+      }
+      if (process.platform === 'darwin') {
+        const meta = getDarwinLeagueProbeMeta()
+        this.placementMessage = meta.message
+        if (league?.boundsSource !== undefined) {
+          this.leagueBoundsSource = league.boundsSource
+        } else if (meta.boundsSource !== 'none') {
+          this.leagueBoundsSource = meta.boundsSource
+        }
+      }
+      this.ensureWindow()
+      this.tick()
+    })()
     return { ok: true }
   }
 
@@ -356,7 +388,11 @@ export class OverlayController {
       this.missingPolls = 0
       this.lastLeagueSeenAt = Date.now()
       this.lastLeagueBounds = league.bounds
+      this.leagueBoundsSource = league.boundsSource ?? this.leagueBoundsSource
       leagueMinimized = league.minimized
+      if (process.platform === 'darwin') {
+        this.placementMessage = getDarwinLeagueProbeMeta().message
+      }
       const display = screen.getDisplayMatching({
         x: Math.round(league.bounds.x),
         y: Math.round(league.bounds.y),
@@ -428,15 +464,10 @@ export class OverlayController {
       return
     }
     this.relayout(options.forceLayout)
+    applyOverlayWindowChrome(this.window)
     if (!this.window.isVisible()) {
-      const platformOpts = overlayWindowOptionsForPlatform()
-      this.window.setAlwaysOnTop(true, platformOpts.alwaysOnTopLevel)
-      if (platformOpts.visibleOnAllWorkspaces) {
-        this.window.setVisibleOnAllWorkspaces(true, {
-          visibleOnFullScreen: platformOpts.visibleOnFullScreen
-        })
-      }
       this.window.showInactive()
+      applyOverlayWindowChrome(this.window)
     }
     this.broadcastLifecycle(options.kind)
   }

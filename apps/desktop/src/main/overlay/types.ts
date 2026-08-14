@@ -40,11 +40,22 @@ export type OverlayContext = {
 
 export type LeagueDisplayMode = 'windowed' | 'borderless' | 'exclusive_fullscreen' | 'unknown'
 
+export type LeagueBoundsSource =
+  | 'cgwindowlist'
+  | 'system_events'
+  | 'primary_fallback'
+  | 'findwindow'
+  | 'powershell'
+  | 'probe'
+  | 'none'
+
 export type LeagueWindowInfo = {
   bounds: Rect
   minimized: boolean
   title: string
   displayMode: LeagueDisplayMode
+  /** How bounds were obtained (diagnostics / permission guidance). */
+  boundsSource?: LeagueBoundsSource
 }
 
 /** Combined chrome sizes (navigator + optional detail). */

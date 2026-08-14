@@ -358,6 +358,10 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
         )
         return
       }
+      if (event.message !== null && event.message.length > 0) {
+        setOverlayNotice(event.message)
+        return
+      }
       setOverlayNotice(null)
     })
   }, [])

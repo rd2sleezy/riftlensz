@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { resolveOverlayHotkey } from './hotkeys'
 import {
+  applyOverlayWindowChrome,
   overlayCompanionSupported,
   overlayWindowOptionsForPlatform
 } from './platform'
@@ -18,12 +19,14 @@ describe('macOS overlay platform capability', () => {
     expect(overlayCompanionSupported('linux')).toBe(false)
   })
 
-  it('uses a Mac panel always-on-top configuration', () => {
+  it('uses a Mac panel always-on-top configuration above League', () => {
     const mac = overlayWindowOptionsForPlatform('darwin')
     expect(mac.frame).toBe(false)
     expect(mac.alwaysOnTop).toBe(true)
     expect(mac.type).toBe('panel')
-    expect(mac.alwaysOnTopLevel).toBe('floating')
+    // floating is below Dock/game windows — screen-saver is required for League.
+    expect(mac.alwaysOnTopLevel).toBe('screen-saver')
+    expect(mac.alwaysOnTopRelativeLevel).toBe(1)
     expect(mac.visibleOnAllWorkspaces).toBe(true)
     expect(mac.visibleOnFullScreen).toBe(true)
     expect(mac.fullscreenable).toBe(false)
@@ -33,6 +36,25 @@ describe('macOS overlay platform capability', () => {
     const win = overlayWindowOptionsForPlatform('win32')
     expect(win.type).toBeUndefined()
     expect(win.alwaysOnTopLevel).toBe('screen-saver')
+  })
+
+  it('applies chrome without parenting and raises always-on-top after show', () => {
+    const calls: string[] = []
+    const win = {
+      setFullScreenable: (v: boolean) => calls.push(`fullscreenable:${v}`),
+      setVisibleOnAllWorkspaces: (v: boolean, opts?: { visibleOnFullScreen?: boolean }) =>
+        calls.push(`workspaces:${v}:${opts?.visibleOnFullScreen === true}`),
+      setAlwaysOnTop: (flag: boolean, level?: string, relative?: number) =>
+        calls.push(`aot:${flag}:${level}:${relative ?? 0}`),
+      moveTop: () => calls.push('moveTop'),
+      setIgnoreMouseEvents: (ignore: boolean) => calls.push(`ignore:${ignore}`)
+    }
+    applyOverlayWindowChrome(win, 'darwin')
+    expect(calls).toContain('fullscreenable:false')
+    expect(calls).toContain('workspaces:true:true')
+    expect(calls).toContain('aot:true:screen-saver:1')
+    expect(calls).toContain('moveTop')
+    expect(calls).toContain('ignore:false')
   })
 })
 

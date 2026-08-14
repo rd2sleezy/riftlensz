@@ -42,7 +42,8 @@ export {
 } from './displayModeAssist'
 export {
   overlayCompanionSupported,
-  overlayWindowOptionsForPlatform
+  overlayWindowOptionsForPlatform,
+  applyOverlayWindowChrome
 } from './platform'
 export {
   OVERLAY_HOTKEY_HELP,

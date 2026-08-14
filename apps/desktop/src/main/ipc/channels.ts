@@ -759,7 +759,21 @@ export const OverlayLifecycleEventSchema = z.object({
   sessionPhase: z.string().nullable(),
   sessionReachedReady: z.boolean(),
   presentation: OverlayPresentationSchema,
-  needsCompat: z.boolean()
+  needsCompat: z.boolean(),
+  leagueBoundsSource: z
+    .enum([
+      'cgwindowlist',
+      'system_events',
+      'primary_fallback',
+      'findwindow',
+      'powershell',
+      'probe',
+      'none'
+    ])
+    .nullable()
+    .optional(),
+  alwaysOnTopLevel: z.string().nullable().optional(),
+  visibleOnAllWorkspaces: z.boolean().optional()
 })
 
 export type OverlayContextPayload = z.infer<typeof OverlayContextSchema>

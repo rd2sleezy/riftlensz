@@ -3,7 +3,7 @@
 import { join } from 'node:path'
 import { BrowserWindow, screen } from 'electron'
 import { logger } from '../logging'
-import { overlayWindowOptionsForPlatform } from './platform'
+import { applyOverlayWindowChrome, overlayWindowOptionsForPlatform } from './platform'
 import { NAVIGATOR_HEIGHT, type Rect } from './types'
 
 export type CreateOverlayWindowOptions = {
@@ -16,7 +16,10 @@ export type CreateOverlayWindowOptions = {
 }
 
 export function createOverlayWindow(options: CreateOverlayWindowOptions): BrowserWindow {
-  const platformOpts = overlayWindowOptionsForPlatform(options.platform ?? process.platform)
+  const platform = options.platform ?? process.platform
+  const platformOpts = overlayWindowOptionsForPlatform(platform)
+  // Intentionally NOT parented to the RiftLens main window — a parented child
+  // stays tied to the main app Space/z-order on macOS.
   const win = new BrowserWindow({
     width: options.initialBounds.width,
     height: options.initialBounds.height,
@@ -44,14 +47,7 @@ export function createOverlayWindow(options: CreateOverlayWindowOptions): Browse
     }
   })
 
-  win.setAlwaysOnTop(true, platformOpts.alwaysOnTopLevel)
-  if (platformOpts.visibleOnAllWorkspaces) {
-    win.setVisibleOnAllWorkspaces(true, {
-      visibleOnFullScreen: platformOpts.visibleOnFullScreen
-    })
-  }
-  // Never click-through the chrome; empty transparent pixels still pass through on Windows.
-  win.setIgnoreMouseEvents(false)
+  applyOverlayWindowChrome(win, platform)
 
   let dragMoved = false
   win.on('move', () => {
