@@ -50,6 +50,25 @@ def read_mac_replay_api_state(install: LeagueInstall) -> GameConfigState:
     return read_game_cfg(install.game_cfg)
 
 
+def ensure_mac_game_config(install: LeagueInstall) -> Path:
+    """Ensure ``Game/Config/game.cfg`` exists for MacReplayHost launches.
+
+    League may omit ``Game/Config`` between sessions even when the install is valid.
+    Prefer seeding from ``LoL/Config/game.cfg`` (already has user prefs / EnableReplayApi)
+    so EnableReplayApi enablement and open_session share the same tree.
+    """
+    cfg = install.game_cfg
+    cfg.parent.mkdir(parents=True, exist_ok=True)
+    if cfg.is_file():
+        return cfg
+    seed = lol_config_game_cfg(install)
+    if seed.is_file():
+        cfg.write_bytes(seed.read_bytes())
+        return cfg
+    cfg.write_text("[General]\r\nEnableAudio=1\r\n", encoding="utf-8", newline="")
+    return cfg
+
+
 def enable_mac_replay_api(
     install: LeagueInstall,
     *,
@@ -58,12 +77,15 @@ def enable_mac_replay_api(
 ) -> MacReplayApiConfigResult:
     """Set ``EnableReplayApi=1`` on the game-read config after backup.
 
-    Refuses to run without ``consent=True``. Optionally mirrors the flag into
-    ``LoL/Config/game.cfg`` when that file exists (not sufficient alone).
+    Refuses to run without ``consent=True``. Creates ``Game/Config/game.cfg`` when
+    missing (seeded from ``LoL/Config`` when available). Optionally mirrors the flag
+    into ``LoL/Config/game.cfg`` when that file exists (not sufficient alone).
     """
     if consent is not True:
         raise ValueError("game.cfg edits require consent=True")
-    if not install.game_cfg.is_file():
+    try:
+        ensure_mac_game_config(install)
+    except OSError as exc:
         return MacReplayApiConfigResult(
             primary=GameConfigWriteResult(
                 state=None,
@@ -72,9 +94,9 @@ def enable_mac_replay_api(
                 error=ReplayError(
                     ReplayErrorCode.INSTALL_INVALID,
                     details={
-                        "reason": "game_cfg_missing",
+                        "reason": "game_cfg_create_failed",
                         "path": str(install.game_cfg),
-                        "hint": "Mac Replay API requires Game/Config/game.cfg",
+                        "error": type(exc).__name__,
                     },
                 ),
             )

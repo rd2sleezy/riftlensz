@@ -72,6 +72,33 @@ def test_locate_mac_well_known(tmp_path: Path) -> None:
     assert result.error is None
 
 
+def test_locate_accepts_install_without_game_config_dir(tmp_path: Path) -> None:
+    """League often drops Game/Config between sessions; discovery must still succeed."""
+    lol = _mac_tree(tmp_path / "LoL")
+    game_cfg_dir = lol / "Game" / "Config"
+    for child in list(game_cfg_dir.iterdir()):
+        child.unlink()
+    game_cfg_dir.rmdir()
+    assert not game_cfg_dir.exists()
+    install = validate_mac_install_root(lol)
+    assert install.game_dir.is_dir()
+    assert not install.game_cfg.is_file()
+    located = locate_league_install_mac(platform="darwin", well_known_candidates=[lol])
+    assert located.install is not None
+    assert located.error is None
+
+
+def test_locate_preserves_invalid_error_instead_of_not_found_mask(tmp_path: Path) -> None:
+    """Incomplete candidates must not collapse to a false INSTALL_NOT_FOUND."""
+    broken = tmp_path / "LoL"
+    (broken / "Game").mkdir(parents=True)
+    result = locate_league_install_mac(platform="darwin", well_known_candidates=[broken])
+    assert result.install is None
+    assert result.error is not None
+    assert result.error.code is ReplayErrorCode.INSTALL_INVALID
+    assert result.error.details.get("reason") == "missing_structure"
+
+
 def test_locate_mac_rejects_non_darwin(tmp_path: Path) -> None:
     lol = _mac_tree(tmp_path / "LoL")
     result = locate_league_install_mac(lol, platform="linux")
@@ -102,6 +129,25 @@ def test_game_config_enable_targets_game_config(tmp_path: Path) -> None:
     restored = restore_mac_replay_api(install, consent=True)
     assert restored.ok is True or restored.primary.state is not None
     assert read_mac_replay_api_state(install).enable_replay_api is False
+
+
+def test_enable_creates_missing_game_config_from_lol_seed(tmp_path: Path) -> None:
+    lol = _mac_tree(tmp_path / "LoL", enable_api=False)
+    (lol / "Config" / "game.cfg").write_text(
+        "[General]\r\nEnableReplayApi=1\r\nEnableAudio=1\r\n",
+        encoding="utf-8",
+        newline="",
+    )
+    game_cfg_dir = lol / "Game" / "Config"
+    for child in list(game_cfg_dir.iterdir()):
+        child.unlink()
+    game_cfg_dir.rmdir()
+    install = validate_mac_install_root(lol)
+    assert not install.game_cfg.is_file()
+    result = enable_mac_replay_api(install, consent=True)
+    assert result.ok is True
+    assert install.game_cfg.is_file()
+    assert "EnableReplayApi=1" in install.game_cfg.read_text(encoding="utf-8")
 
 
 def test_direct_exe_args_use_game_dir(tmp_path: Path) -> None:

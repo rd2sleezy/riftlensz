@@ -1,0 +1,92 @@
+{
+  "match_id": "NA1_5620410094",
+  "rofl": "/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5620410094.rofl",
+  "review_id": "01KZWSX7ZSADJD58K10MASN1BX",
+  "lead_in_ms": 8000,
+  "locate": {
+    "ok": true,
+    "error": null,
+    "attempts": [
+      [
+        "well_known",
+        "/Applications/League of Legends.app"
+      ]
+    ],
+    "root": "/Applications/League of Legends.app/Contents/LoL",
+    "game_dir": "/Applications/League of Legends.app/Contents/LoL/Game",
+    "game_exe": "/Applications/League of Legends.app/Contents/LoL/Game/LeagueofLegends.app/Contents/MacOS/LeagueofLegends",
+    "game_cfg": "/Applications/League of Legends.app/Contents/LoL/Game/Config/game.cfg",
+    "game_cfg_existed_before_enable": true
+  },
+  "enable_replay_api": {
+    "ok": true,
+    "changed": false,
+    "game_cfg_exists": true,
+    "enable_replay_api": true,
+    "path": "/Applications/League of Legends.app/Contents/LoL/Game/Config/game.cfg"
+  },
+  "environment": {
+    "install_found": true,
+    "error": null,
+    "warning_codes": [
+      "REPLAY_API_UNAVAILABLE"
+    ]
+  },
+  "open": {
+    "phase": "PLAYING",
+    "error": null
+  },
+  "startup": {
+    "final_phase": "PLAYING",
+    "phases_seen": [
+      "PLAYING"
+    ],
+    "error": null,
+    "replay_connected": true,
+    "session_reached_ready": true
+  },
+  "seeks": [
+    {
+      "index": 1,
+      "title": "Stop dying to an unseen jungler",
+      "expected_t_ms": 1468841,
+      "t_mmss": "24:28",
+      "lead_in_ms": 8000,
+      "target_source_ms": 1460841,
+      "landed_source_ms": 1460841,
+      "delta_vs_expected_ms": -8000,
+      "delta_vs_target_ms": 0,
+      "ok": true,
+      "error": null
+    },
+    {
+      "index": 2,
+      "title": "Do not start fogged fights",
+      "expected_t_ms": 1446861,
+      "t_mmss": "24:06",
+      "lead_in_ms": 8000,
+      "target_source_ms": 1438861,
+      "landed_source_ms": 1438861,
+      "delta_vs_expected_ms": -8000,
+      "delta_vs_target_ms": 0,
+      "ok": true,
+      "error": null
+    },
+    {
+      "index": 3,
+      "title": "Spend tempo after a won fight",
+      "expected_t_ms": 1687957,
+      "t_mmss": "28:07",
+      "lead_in_ms": 8000,
+      "target_source_ms": 1679957,
+      "landed_source_ms": 1679957,
+      "delta_vs_expected_ms": -8000,
+      "delta_vs_target_ms": 0,
+      "ok": true,
+      "error": null
+    }
+  ],
+  "ok": true,
+  "sync_map_involved": false,
+  "fixture_involved": false
+}

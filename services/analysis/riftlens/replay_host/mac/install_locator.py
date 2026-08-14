@@ -7,6 +7,10 @@ Spike truth (``spikes/mac_replay_probe/SPIKE_REPORT.md``):
 * Game dir: ``…/Contents/LoL/Game`` (``-GameBaseDir`` must point here)
 * Game-read config: ``…/Game/Config/game.cfg`` (not ``LoL/Config`` alone)
 * Binary: ``…/Game/LeagueofLegends.app/Contents/MacOS/LeagueofLegends``
+
+``Game/Config`` may be absent between client sessions; discovery still succeeds
+when the Game binary + Bootstrap WAD are present. EnableReplayApi creates the
+config tree (seeded from ``LoL/Config`` when available).
 """
 
 from __future__ import annotations
@@ -29,8 +33,15 @@ CLIENT_BINARY_REL = Path("LeagueClient.app/Contents/MacOS/LeagueClient")
 
 
 def default_well_known_mac_roots() -> tuple[Path, ...]:
-    """Return conventional macOS League LoL-root candidates."""
-    return (DEFAULT_APP_BUNDLE / "Contents" / "LoL",)
+    """Return conventional macOS League app-bundle / LoL-root candidates.
+
+    ``Game/Config`` is not required at discovery time: the client may recreate or
+    omit that directory between sessions. EnableReplayApi ensures it exists later.
+    """
+    return (
+        DEFAULT_APP_BUNDLE,
+        DEFAULT_APP_BUNDLE / "Contents" / "LoL",
+    )
 
 
 def validate_mac_install_root(
@@ -38,7 +49,11 @@ def validate_mac_install_root(
     *,
     discovery_method: InstallDiscoveryMethod = InstallDiscoveryMethod.CONFIGURED,
 ) -> LeagueInstall:
-    """Validate a Mac install root or app bundle. Never trusts the display name alone."""
+    """Validate a Mac install root or app bundle. Never trusts the display name alone.
+
+    Requires Game binary + Bootstrap WAD. ``Game/Config`` may be absent until
+    Replay API enablement creates it (League frequently drops that tree).
+    """
     candidate = Path(path).expanduser()
     try:
         resolved = candidate.resolve()
@@ -82,23 +97,19 @@ def validate_mac_install_root(
                 "hint": "GameBaseDir must be the Game directory that contains DATA/FINAL",
             },
         )
-    if not game_cfg_dir.is_dir():
-        raise ReplayError(
-            ReplayErrorCode.INSTALL_INVALID,
-            details={"reason": "missing_game_config_dir", "path": str(game_cfg_dir)},
-        )
     client = root / CLIENT_BINARY_REL
     client_exe = None
     if client.is_file() and _is_within(client.resolve(), root):
         client_exe = client.resolve()
     # game_cfg is the config the game process actually reads (spike: Game/Config).
+    # Directory may not exist yet; enable_mac_replay_api ensures it before writes.
     return LeagueInstall(
         root=root.resolve(),
         game_dir=game_dir.resolve(),
         config_dir=game_cfg_dir.resolve(),
         game_exe=resolved_exe,
         client_exe=client_exe,
-        game_cfg=game_cfg_dir / "game.cfg",
+        game_cfg=(game_cfg_dir / "game.cfg").resolve(),
         discovery_method=discovery_method,
     )
 
@@ -122,6 +133,7 @@ def locate_league_install_mac(
     attempts: list[tuple[str, str]] = []
     if configured_path is not None:
         return _try_one(Path(configured_path), InstallDiscoveryMethod.CONFIGURED, attempts)
+    last_error: ReplayError | None = None
     for candidate in (
         list(well_known_candidates)
         if well_known_candidates is not None
@@ -130,6 +142,16 @@ def locate_league_install_mac(
         result = _try_one(candidate, InstallDiscoveryMethod.WELL_KNOWN, attempts)
         if result.install is not None:
             return result
+        if result.error is not None:
+            last_error = result.error
+    # Prefer the concrete validation failure over a generic "not found" mask when
+    # a candidate existed but was incomplete (historically hid missing Game/Config).
+    if last_error is not None and last_error.code is not ReplayErrorCode.INSTALL_NOT_FOUND:
+        return LeagueInstallResult(
+            install=None,
+            error=last_error,
+            attempts=tuple(attempts),
+        )
     return LeagueInstallResult(
         install=None,
         error=ReplayError(
