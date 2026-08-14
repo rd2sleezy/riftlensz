@@ -1,0 +1,6991 @@
+{
+  "match_id": "NA1_5620410094",
+  "capture_id": "01KZZCQ1C9W831FNC40H2R8MS2",
+  "capture_dir": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/01KZZCQ1C9W831FNC40H2R8MS2",
+  "clip": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/01KZZCQ1C9W831FNC40H2R8MS2/clip_g829881.webm",
+  "death_t_ms": 839881,
+  "camera_controlled": true,
+  "requested_interval": [
+    829881,
+    846881
+  ],
+  "tracker_defaults": {
+    "MISS_GRACE_FRAMES": 2,
+    "LONG_GAP_FRAMES": 8,
+    "MATCH_CENTER_PX": 72.0,
+    "MATCH_IOU": 0.12,
+    "DEATH_ALIGN_MS": 2000
+  },
+  "media": {
+    "path": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/01KZZCQ1C9W831FNC40H2R8MS2/clip_g829881.webm",
+    "bytes": 3158097,
+    "decoded_frames": 132,
+    "duration_s": 4.366,
+    "implied_end_game_ms": 834247,
+    "requested_end_game_ms_delta": -12634,
+    "death_in_file": false,
+    "shortfall_to_death_ms": 5634
+  },
+  "baseline_4fps": {
+    "summary": {
+      "fps": 4.0,
+      "sample_count": 18,
+      "first_sample_ms": 829881,
+      "last_sample_ms": 834147,
+      "extract_ms": 153.0,
+      "detect_ms": 206.3,
+      "track_ms": 0.3,
+      "raw_detection_total": 42,
+      "confirmed_detection_total": 42,
+      "track_count": 6,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "min_end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 831381,
+          "last_ms": 831647,
+          "duration_ms": 266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 8234
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 832147,
+          "last_ms": 832381,
+          "duration_ms": 234,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "frames_after_latest_last_seen": 0,
+      "detections_after_latest_last_seen": []
+    },
+    "timeline_focus": [
+      {
+        "game_t_ms": 832147,
+        "frame_index": 9,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 3,
+        "confirmed_det_count": 3,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 750,
+              "y": 190,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 750,
+              "y": 190,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004",
+          "trk_0006"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0006",
+            "region": {
+              "x": 750,
+              "y": 190,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "ENTERED_VIEW",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0001",
+            "kind": "LEFT_VIEW"
+          },
+          {
+            "track_id": "trk_0002",
+            "kind": "LEFT_VIEW"
+          },
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0006",
+            "kind": "ENTERED_VIEW"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_832147.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 105.26442043802665,
+          "center_val_mean": 65.35650736779883,
+          "center_gray_std": 15.888724737853861,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 832381,
+        "frame_index": 10,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 3,
+        "confirmed_det_count": 3,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004",
+          "trk_0006"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0006",
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "LOST_TRACK"
+          },
+          {
+            "track_id": "trk_0006",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_832381.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 109.97490183305285,
+          "center_val_mean": 66.29561068587181,
+          "center_gray_std": 16.61705195883346,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 832647,
+        "frame_index": 11,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_832647.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 116.04038868682483,
+          "center_val_mean": 67.57230576214344,
+          "center_gray_std": 17.498120657543325,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 832881,
+        "frame_index": 12,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_832881.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 117.19276912219749,
+          "center_val_mean": 69.31876059328424,
+          "center_gray_std": 19.041367461207013,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 833147,
+        "frame_index": 13,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0006",
+            "kind": "LOST_TRACK"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_833147.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 115.57425402167816,
+          "center_val_mean": 70.76430281864297,
+          "center_gray_std": 20.484265434034953,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 833381,
+        "frame_index": 14,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_833381.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 114.9078648161217,
+          "center_val_mean": 74.231854948157,
+          "center_gray_std": 28.897385452485153,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 833647,
+        "frame_index": 15,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_833647.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 114.9573433701874,
+          "center_val_mean": 73.40663132053393,
+          "center_gray_std": 30.004107563103343,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 833881,
+        "frame_index": 16,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "LEFT_VIEW"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_833881.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 122.54968664989836,
+          "center_val_mean": 78.50576334980005,
+          "center_gray_std": 26.46714493849943,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 834147,
+        "frame_index": 17,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0003",
+            "kind": "LEFT_VIEW"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "LEFT_VIEW"
+          },
+          {
+            "track_id": "trk_0006",
+            "kind": "LEFT_VIEW"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_834147.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 111.80552388879842,
+          "center_val_mean": 71.52689864828186,
+          "center_gray_std": 26.85273652564588,
+          "coverage": "USEFUL"
+        }
+      }
+    ],
+    "timeline_loss_band": [
+      {
+        "game_t_ms": 833647,
+        "frame_index": 15,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_833647.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 114.9573433701874,
+          "center_val_mean": 73.40663132053393,
+          "center_gray_std": 30.004107563103343,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 833881,
+        "frame_index": 16,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "LEFT_VIEW"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_833881.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 122.54968664989836,
+          "center_val_mean": 78.50576334980005,
+          "center_gray_std": 26.46714493849943,
+          "coverage": "USEFUL"
+        }
+      },
+      {
+        "game_t_ms": 834147,
+        "frame_index": 17,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0003",
+            "kind": "LEFT_VIEW"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "LEFT_VIEW"
+          },
+          {
+            "track_id": "trk_0006",
+            "kind": "LEFT_VIEW"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true,
+        "frame_jpeg": "artifacts/frames/f4_834147.jpg",
+        "viewport_stats": {
+          "center_sat_mean": 111.80552388879842,
+          "center_val_mean": 71.52689864828186,
+          "center_gray_std": 26.85273652564588,
+          "coverage": "USEFUL"
+        }
+      }
+    ],
+    "confirmed_frames": [
+      {
+        "frame_index": 0,
+        "game_t_ms": 829881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 707,
+              "y": 116,
+              "width": 76,
+              "height": 96
+            },
+            "confidence": 0.85,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 667,
+              "y": 616,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 1,
+        "game_t_ms": 830147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 2,
+        "game_t_ms": 830381,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 3,
+        "game_t_ms": 830647,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 4,
+        "game_t_ms": 830881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 5,
+        "game_t_ms": 831147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 6,
+        "game_t_ms": 831381,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 717,
+              "y": 306,
+              "width": 71,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 7,
+        "game_t_ms": 831647,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 728,
+              "y": 262,
+              "width": 71,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 8,
+        "game_t_ms": 831881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 9,
+        "game_t_ms": 832147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 750,
+              "y": 190,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 10,
+        "game_t_ms": 832381,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 11,
+        "game_t_ms": 832647,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 12,
+        "game_t_ms": 832881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 13,
+        "game_t_ms": 833147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 14,
+        "game_t_ms": 833381,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 15,
+        "game_t_ms": 833647,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 16,
+        "game_t_ms": 833881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 17,
+        "game_t_ms": 834147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      }
+    ]
+  },
+  "higher_8fps": {
+    "summary": {
+      "fps": 8.0,
+      "sample_count": 35,
+      "first_sample_ms": 829881,
+      "last_sample_ms": 834147,
+      "extract_ms": 157.8,
+      "detect_ms": 397.2,
+      "track_ms": 0.5,
+      "raw_detection_total": 84,
+      "confirmed_detection_total": 84,
+      "track_count": 5,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "min_end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 829881,
+          "last_ms": 830014,
+          "duration_ms": 133,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 9867
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 35,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 35,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 11,
+          "first_ms": 830280,
+          "last_ms": 832381,
+          "duration_ms": 2101,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "frames_after_latest_last_seen": 0,
+      "detections_after_latest_last_seen": []
+    },
+    "timeline_focus": [
+      {
+        "game_t_ms": 832014,
+        "frame_index": 17,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 832147,
+        "frame_index": 18,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 3,
+        "confirmed_det_count": 3,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 750,
+              "y": 190,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 750,
+              "y": 190,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004",
+          "trk_0005"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0005",
+            "region": {
+              "x": 750,
+              "y": 190,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 832280,
+        "frame_index": 19,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 3,
+        "confirmed_det_count": 3,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004",
+          "trk_0005"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0005",
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 832381,
+        "frame_index": 20,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 3,
+        "confirmed_det_count": 3,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004",
+          "trk_0005"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0005",
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 832514,
+        "frame_index": 21,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 832647,
+        "frame_index": 22,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 832780,
+        "frame_index": 23,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "LOST_TRACK"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 832881,
+        "frame_index": 24,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833014,
+        "frame_index": 25,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833147,
+        "frame_index": 26,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833280,
+        "frame_index": 27,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833381,
+        "frame_index": 28,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": false,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833514,
+        "frame_index": 29,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "LEFT_VIEW"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833647,
+        "frame_index": 30,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833780,
+        "frame_index": 31,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833881,
+        "frame_index": 32,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 834014,
+        "frame_index": 33,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 834147,
+        "frame_index": 34,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0003",
+            "kind": "LEFT_VIEW"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "LEFT_VIEW"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      }
+    ],
+    "timeline_loss_band": [
+      {
+        "game_t_ms": 833514,
+        "frame_index": 29,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0005",
+            "kind": "LEFT_VIEW"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833647,
+        "frame_index": 30,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833780,
+        "frame_index": 31,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 833881,
+        "frame_index": 32,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 834014,
+        "frame_index": 33,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      },
+      {
+        "game_t_ms": 834147,
+        "frame_index": 34,
+        "coverage_raw": "USEFUL",
+        "coverage_confirmed": "USEFUL",
+        "raw_det_count": 2,
+        "confirmed_det_count": 2,
+        "raw_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "confirmed_boxes": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ],
+        "active_track_ids": [
+          "trk_0003",
+          "trk_0004"
+        ],
+        "assignments": [
+          {
+            "track_id": "trk_0003",
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          },
+          {
+            "track_id": "trk_0004",
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "lifecycle": "PRESENT",
+            "team": "UNKNOWN",
+            "conf": 0.8
+          }
+        ],
+        "lifecycle_events": [
+          {
+            "track_id": "trk_0003",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0003",
+            "kind": "LEFT_VIEW"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "PRESENT"
+          },
+          {
+            "track_id": "trk_0004",
+            "kind": "LEFT_VIEW"
+          }
+        ],
+        "in_loss_band": true,
+        "in_focus": true
+      }
+    ],
+    "confirmed_frames": [
+      {
+        "frame_index": 0,
+        "game_t_ms": 829881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 707,
+              "y": 116,
+              "width": 76,
+              "height": 96
+            },
+            "confidence": 0.85,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 667,
+              "y": 616,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 1,
+        "game_t_ms": 830014,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 669,
+              "y": 598,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 2,
+        "game_t_ms": 830147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 3,
+        "game_t_ms": 830280,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 679,
+              "y": 514,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 4,
+        "game_t_ms": 830381,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 5,
+        "game_t_ms": 830514,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 684,
+              "y": 466,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 6,
+        "game_t_ms": 830647,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 7,
+        "game_t_ms": 830780,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 692,
+              "y": 414,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 8,
+        "game_t_ms": 830881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 9,
+        "game_t_ms": 831014,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 702,
+              "y": 370,
+              "width": 71,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 10,
+        "game_t_ms": 831147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 11,
+        "game_t_ms": 831280,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 12,
+        "game_t_ms": 831381,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 717,
+              "y": 306,
+              "width": 71,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 13,
+        "game_t_ms": 831514,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 723,
+              "y": 284,
+              "width": 71,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 14,
+        "game_t_ms": 831647,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 728,
+              "y": 262,
+              "width": 71,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 15,
+        "game_t_ms": 831780,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 733,
+              "y": 246,
+              "width": 71,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 16,
+        "game_t_ms": 831881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 17,
+        "game_t_ms": 832014,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 18,
+        "game_t_ms": 832147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 750,
+              "y": 190,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 19,
+        "game_t_ms": 832280,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 20,
+        "game_t_ms": 832381,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 754,
+              "y": 174,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 21,
+        "game_t_ms": 832514,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 22,
+        "game_t_ms": 832647,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 23,
+        "game_t_ms": 832780,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 24,
+        "game_t_ms": 832881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 25,
+        "game_t_ms": 833014,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 26,
+        "game_t_ms": 833147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 27,
+        "game_t_ms": 833280,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 28,
+        "game_t_ms": 833381,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 29,
+        "game_t_ms": 833514,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 30,
+        "game_t_ms": 833647,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 31,
+        "game_t_ms": 833780,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 32,
+        "game_t_ms": 833881,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 33,
+        "game_t_ms": 834014,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      },
+      {
+        "frame_index": 34,
+        "game_t_ms": 834147,
+        "coverage": "USEFUL",
+        "candidates": [
+          {
+            "region": {
+              "x": 108,
+              "y": 623,
+              "width": 85,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          },
+          {
+            "region": {
+              "x": 180,
+              "y": 623,
+              "width": 72,
+              "height": 96
+            },
+            "confidence": 0.8,
+            "ally_like": null,
+            "kind": "CHAMPION_LIKE"
+          }
+        ]
+      }
+    ]
+  },
+  "tracker_counterfactuals": [
+    {
+      "name": "default",
+      "params": {
+        "name": "default",
+        "miss_grace": 2,
+        "long_gap": 8
+      },
+      "track_count": 6,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 831381,
+          "last_ms": 831647,
+          "duration_ms": 266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 8234
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 832147,
+          "last_ms": 832381,
+          "duration_ms": 234,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    },
+    {
+      "name": "miss_grace_4",
+      "params": {
+        "name": "miss_grace_4",
+        "miss_grace": 4,
+        "long_gap": 8
+      },
+      "track_count": 6,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 831381,
+          "last_ms": 831647,
+          "duration_ms": 266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 8234
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 832147,
+          "last_ms": 832381,
+          "duration_ms": 234,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    },
+    {
+      "name": "miss_grace_6",
+      "params": {
+        "name": "miss_grace_6",
+        "miss_grace": 6,
+        "long_gap": 8
+      },
+      "track_count": 6,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 831381,
+          "last_ms": 831647,
+          "duration_ms": 266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 8234
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 832147,
+          "last_ms": 832381,
+          "duration_ms": 234,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    },
+    {
+      "name": "long_gap_16",
+      "params": {
+        "name": "long_gap_16",
+        "miss_grace": 2,
+        "long_gap": 16
+      },
+      "track_count": 6,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 831381,
+          "last_ms": 831647,
+          "duration_ms": 266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 8234
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 832147,
+          "last_ms": 832381,
+          "duration_ms": 234,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    },
+    {
+      "name": "miss_grace_4_long_16",
+      "params": {
+        "name": "miss_grace_4_long_16",
+        "miss_grace": 4,
+        "long_gap": 16
+      },
+      "track_count": 6,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 831381,
+          "last_ms": 831647,
+          "duration_ms": 266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 8234
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 832147,
+          "last_ms": 832381,
+          "duration_ms": 234,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    },
+    {
+      "name": "miss_grace_8_long_24",
+      "params": {
+        "name": "miss_grace_8_long_24",
+        "miss_grace": 8,
+        "long_gap": 24
+      },
+      "track_count": 6,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 831381,
+          "last_ms": 831647,
+          "duration_ms": 266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 8234
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 832147,
+          "last_ms": 832381,
+          "duration_ms": 234,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    },
+    {
+      "name": "assoc_center_96_iou_0.08",
+      "params": {
+        "match_center_px": 96.0,
+        "match_iou": 0.08
+      },
+      "track_count": 5,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 4,
+          "first_ms": 831381,
+          "last_ms": 832381,
+          "duration_ms": 1000,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    },
+    {
+      "name": "assoc_center_120_iou_0.05",
+      "params": {
+        "match_center_px": 120.0,
+        "match_iou": 0.05
+      },
+      "track_count": 5,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 4,
+          "first_ms": 831381,
+          "last_ms": 832381,
+          "duration_ms": 1000,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    },
+    {
+      "name": "assoc_center_160_iou_0.03",
+      "params": {
+        "match_center_px": 160.0,
+        "match_iou": 0.03
+      },
+      "track_count": 6,
+      "longest_duration_ms": 4266,
+      "latest_last_seen_ms": 834147,
+      "end_to_death_ms": 5734,
+      "disappearing_near_death": [],
+      "unique_near_death": false,
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.85,
+          "closed_reason": "AMBIGUOUS",
+          "ambiguous": true,
+          "fragmented": true,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 829881,
+          "last_ms": 829881,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 10000
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 18,
+          "first_ms": 829881,
+          "last_ms": 834147,
+          "duration_ms": 4266,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 5734
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 2,
+          "first_ms": 831381,
+          "last_ms": 831647,
+          "duration_ms": 266,
+          "confidence": 0.8,
+          "closed_reason": "AMBIGUOUS",
+          "ambiguous": true,
+          "fragmented": true,
+          "end_to_death_ms": 8234
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "team": "UNKNOWN",
+          "obs": 1,
+          "first_ms": 832381,
+          "last_ms": 832381,
+          "duration_ms": 0,
+          "confidence": 0.8,
+          "closed_reason": "LEFT_VIEW",
+          "ambiguous": false,
+          "fragmented": false,
+          "end_to_death_ms": 7500
+        }
+      ],
+      "reaches_death_window": false
+    }
+  ],
+  "duplicate_tracks": {
+    "pairs": [
+      {
+        "a": "trk_0001",
+        "b": "trk_0002",
+        "overlap_ms": 0,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 501.8,
+        "max_iou": 0.0,
+        "min_center_dist_px": 501.8,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0001",
+        "b": "trk_0003",
+        "overlap_ms": 0,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 781.3,
+        "max_iou": 0.0,
+        "min_center_dist_px": 781.3,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0001",
+        "b": "trk_0004",
+        "overlap_ms": 0,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 732.7,
+        "max_iou": 0.0,
+        "min_center_dist_px": 732.7,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0002",
+        "b": "trk_0003",
+        "overlap_ms": 0,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 552.5,
+        "max_iou": 0.0,
+        "min_center_dist_px": 552.5,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0002",
+        "b": "trk_0004",
+        "overlap_ms": 0,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 487.1,
+        "max_iou": 0.0,
+        "min_center_dist_px": 487.1,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0003",
+        "b": "trk_0004",
+        "overlap_ms": 4266,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.09,
+        "mean_center_dist_px": 65.5,
+        "max_iou": 0.09,
+        "min_center_dist_px": 65.5,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0003",
+        "b": "trk_0005",
+        "overlap_ms": 266,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 695.9,
+        "max_iou": 0.0,
+        "min_center_dist_px": 680.4,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0003",
+        "b": "trk_0006",
+        "overlap_ms": 234,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 775.2,
+        "max_iou": 0.0,
+        "min_center_dist_px": 769.0,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0004",
+        "b": "trk_0005",
+        "overlap_ms": 266,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 639.5,
+        "max_iou": 0.0,
+        "min_center_dist_px": 623.2,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      },
+      {
+        "a": "trk_0004",
+        "b": "trk_0006",
+        "overlap_ms": 234,
+        "a_team": "UNKNOWN",
+        "b_team": "UNKNOWN",
+        "mean_iou": 0.0,
+        "mean_center_dist_px": 722.3,
+        "max_iou": 0.0,
+        "min_center_dist_px": 715.8,
+        "likely_same_region": false,
+        "likely_distinct_side_by_side": true
+      }
+    ],
+    "trk_0003_0004": {
+      "a": "trk_0003",
+      "b": "trk_0004",
+      "overlap_ms": 4266,
+      "a_team": "UNKNOWN",
+      "b_team": "UNKNOWN",
+      "mean_iou": 0.09,
+      "mean_center_dist_px": 65.5,
+      "max_iou": 0.09,
+      "min_center_dist_px": 65.5,
+      "likely_same_region": false,
+      "likely_distinct_side_by_side": true
+    }
+  },
+  "case_classification": {
+    "primary_track": "trk_0003",
+    "primary_case": "Case D",
+    "loss_t_ms": 834147,
+    "det_counts_after_loss": [],
+    "raw_counts_after_loss": [],
+    "useful_frames_after_loss": 0,
+    "per_track": [
+      {
+        "track_id": "trk_0001",
+        "last_seen_ms": 829881,
+        "end_to_death_ms": 10000,
+        "case": "Case D",
+        "why": "no later sampled frames after last_seen",
+        "next_confirmed_dets": 0,
+        "next_raw_dets": 0,
+        "next_frames": []
+      },
+      {
+        "track_id": "trk_0002",
+        "last_seen_ms": 829881,
+        "end_to_death_ms": 10000,
+        "case": "Case D",
+        "why": "no later sampled frames after last_seen",
+        "next_confirmed_dets": 0,
+        "next_raw_dets": 0,
+        "next_frames": []
+      },
+      {
+        "track_id": "trk_0003",
+        "last_seen_ms": 834147,
+        "end_to_death_ms": 5734,
+        "case": "Case D",
+        "why": "track ends on final sampled frame; media/clip ends before GST death (last_sample_ms=834147, death=839881)",
+        "next_confirmed_dets": 0,
+        "next_raw_dets": 0,
+        "next_frames": []
+      },
+      {
+        "track_id": "trk_0004",
+        "last_seen_ms": 834147,
+        "end_to_death_ms": 5734,
+        "case": "Case D",
+        "why": "track ends on final sampled frame; media/clip ends before GST death (last_sample_ms=834147, death=839881)",
+        "next_confirmed_dets": 0,
+        "next_raw_dets": 0,
+        "next_frames": []
+      },
+      {
+        "track_id": "trk_0005",
+        "last_seen_ms": 831647,
+        "end_to_death_ms": 8234,
+        "case": "Case D",
+        "why": "no later sampled frames after last_seen",
+        "next_confirmed_dets": 0,
+        "next_raw_dets": 0,
+        "next_frames": []
+      },
+      {
+        "track_id": "trk_0006",
+        "last_seen_ms": 832381,
+        "end_to_death_ms": 7500,
+        "case": "Case D",
+        "why": "no later sampled frames after last_seen",
+        "next_confirmed_dets": 0,
+        "next_raw_dets": 0,
+        "next_frames": []
+      }
+    ]
+  },
+  "death_alignment_feasibility": {
+    "verdict": "TRACK_CONTINUITY_NOT_FIXABLE",
+    "primary_case": "Case D",
+    "baseline_end_to_death_ms": 5734,
+    "higher_fps_end_to_death_ms": 5734,
+    "best_legitimate_end_to_death_ms": 5734,
+    "best_counterfactual": "default",
+    "any_counterfactual_reaches_death_window": false,
+    "higher_fps_reaches_death_window": false,
+    "death_in_media": false,
+    "can_existing_classical_stack_hit_pm_2000_without_unsafe_identity": false,
+    "recommended_next": "Primary failure is Case D: encoded clip ends before GST death (~4.366s media, shortfall_to_death_ms=5634). Tracker/detector parameter tweaks cannot invent frames past EOF. Fix R.10 Mac encode duration / finalize so the requested interval actually reaches death, then re-run continuity diagnosis \u2014 do not widen DEATH_ALIGN_MS or start V.6 ranking."
+  },
+  "verdict": "TRACK_CONTINUITY_NOT_FIXABLE",
+  "recommended_next": "Primary failure is Case D: encoded clip ends before GST death (~4.366s media, shortfall_to_death_ms=5634). Tracker/detector parameter tweaks cannot invent frames past EOF. Fix R.10 Mac encode duration / finalize so the requested interval actually reaches death, then re-run continuity diagnosis \u2014 do not widen DEATH_ALIGN_MS or start V.6 ranking."
+}
