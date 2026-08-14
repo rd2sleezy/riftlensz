@@ -1,13 +1,30 @@
 /**
  * League client window discovery (R.10.5).
- * Fast FindWindowW path + rare PowerShell fallback. Detects exclusive D3D fullscreen
- * via SHQueryUserNotificationState (no process injection).
+ *
+ * Platform branching stays here:
+ * - win32: FindWindowW + rare PowerShell fallback + D3D exclusive probe
+ * - darwin: System Events bounds + process/primary-display fallback
+ *
+ * Detects exclusive D3D fullscreen on Windows via SHQueryUserNotificationState
+ * (no process injection).
  */
 
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
-import type { LeagueDisplayMode, LeagueWindowInfo, Rect } from './types'
+import type { LeagueWindowInfo, Rect } from './types'
 import { LEAGUE_CACHE_MS, POWERSHELL_FALLBACK_COOLDOWN_MS } from './types'
+import {
+  findLeagueClientWindowDarwin,
+  isExclusiveFullscreenDarwin,
+  refreshLeagueClientWindowDarwinAsync,
+  resetDarwinLeagueWindowCache
+} from './leagueWindow.darwin'
+import {
+  classifyDisplayMode,
+  isLeagueTitle,
+  isReplaySessionActive,
+  shouldShowOverlay
+} from './leagueWindow.shared'
 
 const execFileAsync = promisify(execFile)
 
@@ -30,6 +47,7 @@ let powerShellInFlight: Promise<LeagueWindowInfo | null> | null = null
 export function setLeagueWindowProbeForTests(probe: LeagueWindowProbe | null): void {
   cachedProbe = probe
   cache = null
+  resetDarwinLeagueWindowCache()
 }
 
 /** Clear caches (tests). */
@@ -37,15 +55,20 @@ export function resetLeagueWindowCache(): void {
   cache = null
   lastPowerShellAt = 0
   powerShellInFlight = null
+  resetDarwinLeagueWindowCache()
 }
 
 /**
- * Synchronous lookup for the controller tick. Uses FindWindowW + short TTL cache.
- * Never runs PowerShell on the hot path (that was a major lag source).
+ * Synchronous lookup for the controller tick. Uses FindWindowW + short TTL cache
+ * on Windows; darwin cache/async refresh on macOS.
+ * Never runs PowerShell/osascript on the hot path.
  */
 export function findLeagueClientWindow(): LeagueWindowInfo | null {
   if (cachedProbe !== null) {
     return cachedProbe()
+  }
+  if (process.platform === 'darwin') {
+    return findLeagueClientWindowDarwin()
   }
   if (process.platform !== 'win32') {
     return null
@@ -72,6 +95,9 @@ export async function refreshLeagueClientWindowAsync(): Promise<LeagueWindowInfo
   if (cachedProbe !== null) {
     return cachedProbe()
   }
+  if (process.platform === 'darwin') {
+    return refreshLeagueClientWindowDarwinAsync()
+  }
   if (process.platform !== 'win32') {
     return null
   }
@@ -90,6 +116,9 @@ export async function refreshLeagueClientWindowAsync(): Promise<LeagueWindowInfo
 }
 
 export function isExclusiveD3dFullscreen(): boolean {
+  if (process.platform === 'darwin') {
+    return isExclusiveFullscreenDarwin()
+  }
   if (process.platform !== 'win32') {
     return false
   }
@@ -109,25 +138,6 @@ export function isExclusiveD3dFullscreen(): boolean {
   } catch {
     return false
   }
-}
-
-export function classifyDisplayMode(input: {
-  exclusiveD3d: boolean
-  bounds: Rect
-  displayBounds: Rect | null
-}): LeagueDisplayMode {
-  if (input.exclusiveD3d) {
-    return 'exclusive_fullscreen'
-  }
-  if (input.displayBounds === null) {
-    return 'unknown'
-  }
-  const covers =
-    Math.abs(input.bounds.width - input.displayBounds.width) <= 2 &&
-    Math.abs(input.bounds.height - input.displayBounds.height) <= 48 &&
-    Math.abs(input.bounds.x - input.displayBounds.x) <= 2 &&
-    Math.abs(input.bounds.y - input.displayBounds.y) <= 2
-  return covers ? 'borderless' : 'windowed'
 }
 
 function findViaFindWindow(): LeagueWindowInfo | null {
@@ -272,62 +282,9 @@ function toBounds(rect: { left: number; top: number; right: number; bottom: numb
   }
 }
 
-export function isLeagueTitle(title: string): boolean {
-  const normalized = title.trim()
-  if (normalized.length === 0) {
-    return false
-  }
-  if (/riot client/i.test(normalized)) {
-    return false
-  }
-  return LEAGUE_TITLES.some((hint) => normalized.includes(hint))
-}
-
-/** Visibility policy used by the controller (pure, testable). */
-export function shouldShowOverlay(input: {
-  prefsEnabled: boolean
-  liveGame: boolean
-  hasContext: boolean
-  sessionActive: boolean
-  league: LeagueWindowInfo | null
-  missingPolls: number
-  gracePolls?: number
-  exclusiveFullscreen?: boolean
-}): { visible: boolean; reason: string } {
-  if (!input.prefsEnabled) {
-    return { visible: false, reason: 'prefs_disabled' }
-  }
-  if (input.liveGame) {
-    return { visible: false, reason: 'live_game' }
-  }
-  if (!input.hasContext) {
-    return { visible: false, reason: 'no_context' }
-  }
-  if (!input.sessionActive) {
-    return { visible: false, reason: 'session_inactive' }
-  }
-  if (input.league === null) {
-    const grace = input.gracePolls ?? 3
-    if (input.missingPolls > grace) {
-      return { visible: false, reason: 'league_missing' }
-    }
-    return { visible: true, reason: 'league_grace' }
-  }
-  if (input.league.minimized) {
-    return { visible: false, reason: 'league_minimized' }
-  }
-  if (
-    input.exclusiveFullscreen === true ||
-    input.league.displayMode === 'exclusive_fullscreen'
-  ) {
-    return { visible: true, reason: 'exclusive_fullscreen' }
-  }
-  return { visible: true, reason: 'ok' }
-}
-
-export function isReplaySessionActive(phase: string | null | undefined, reachedReady: boolean): boolean {
-  if (!reachedReady) {
-    return false
-  }
-  return phase === 'READY' || phase === 'PLAYING' || phase === 'PAUSED' || phase === 'SEEKING'
+export {
+  classifyDisplayMode,
+  isLeagueTitle,
+  isReplaySessionActive,
+  shouldShowOverlay
 }

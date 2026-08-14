@@ -483,6 +483,8 @@ export const GameplayStatusSchema = z.object({
 export const DesktopPlatformSchema = z.object({
   platform: z.string(),
   nativeReplaySupported: z.boolean(),
+  /** R.10.5 companion overlay (Windows + macOS). */
+  overlayCompanionSupported: z.boolean().default(false),
   e2eMode: z.boolean().default(false)
 })
 

@@ -3,6 +3,7 @@
 import { join } from 'node:path'
 import { BrowserWindow, screen } from 'electron'
 import { logger } from '../logging'
+import { overlayWindowOptionsForPlatform } from './platform'
 import { NAVIGATOR_HEIGHT, type Rect } from './types'
 
 export type CreateOverlayWindowOptions = {
@@ -11,26 +12,29 @@ export type CreateOverlayWindowOptions = {
   rendererDevUrl: string | null
   initialBounds: Rect
   onMoved: (bounds: Rect) => void
+  platform?: NodeJS.Platform
 }
 
 export function createOverlayWindow(options: CreateOverlayWindowOptions): BrowserWindow {
+  const platformOpts = overlayWindowOptionsForPlatform(options.platform ?? process.platform)
   const win = new BrowserWindow({
     width: options.initialBounds.width,
     height: options.initialBounds.height,
     x: options.initialBounds.x,
     y: options.initialBounds.y,
     show: false,
-    frame: false,
-    transparent: true,
+    frame: platformOpts.frame,
+    transparent: platformOpts.transparent,
     backgroundColor: '#00000000',
-    resizable: false,
-    maximizable: false,
-    minimizable: false,
-    fullscreenable: false,
-    skipTaskbar: true,
-    alwaysOnTop: true,
-    hasShadow: false,
-    focusable: true,
+    resizable: platformOpts.resizable,
+    maximizable: platformOpts.maximizable,
+    minimizable: platformOpts.minimizable,
+    fullscreenable: platformOpts.fullscreenable,
+    skipTaskbar: platformOpts.skipTaskbar,
+    alwaysOnTop: platformOpts.alwaysOnTop,
+    hasShadow: platformOpts.hasShadow,
+    focusable: platformOpts.focusable,
+    ...(platformOpts.type !== undefined ? { type: platformOpts.type } : {}),
     webPreferences: {
       preload: options.preloadPath,
       contextIsolation: true,
@@ -40,8 +44,12 @@ export function createOverlayWindow(options: CreateOverlayWindowOptions): Browse
     }
   })
 
-  win.setAlwaysOnTop(true, 'screen-saver')
-  win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+  win.setAlwaysOnTop(true, platformOpts.alwaysOnTopLevel)
+  if (platformOpts.visibleOnAllWorkspaces) {
+    win.setVisibleOnAllWorkspaces(true, {
+      visibleOnFullScreen: platformOpts.visibleOnFullScreen
+    })
+  }
   // Never click-through the chrome; empty transparent pixels still pass through on Windows.
   win.setIgnoreMouseEvents(false)
 

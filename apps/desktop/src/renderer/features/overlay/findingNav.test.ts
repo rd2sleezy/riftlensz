@@ -135,5 +135,15 @@ describe('overlay reveal contract', () => {
     expect(source).not.toMatch(/onMouseLeave|mouseleave/)
     expect(source).toContain('overlay-minimize')
     expect(source).toContain('overlay-access')
+    expect(source).toContain('resolveOverlayHotkey')
+    expect(source).toContain('revealGameplayTimestamp')
+  })
+
+  it('gates ReviewScreen overlay open on overlayCompanionSupported', async () => {
+    const { readFileSync } = await import('node:fs')
+    const { join } = await import('node:path')
+    const source = readFileSync(join(__dirname, '../review/ReviewScreen.tsx'), 'utf8')
+    expect(source).toContain('overlayCompanionSupported')
+    expect(source).toContain('overlayOpen')
   })
 })

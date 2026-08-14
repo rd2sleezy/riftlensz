@@ -16,10 +16,12 @@ import {
   findNavIndex,
   formatGameMmss,
   groupNavSections,
+  stepNav,
   stepTimestamp,
   timestampsForItem,
   type OverlayNavItem
 } from './findingNav'
+import { resolveOverlayHotkey } from '../../../main/overlay/hotkeys'
 
 export function OverlayApp(): ReactElement {
   const [review, setReview] = useState<ReviewPresentation | null>(null)
@@ -216,23 +218,102 @@ export function OverlayApp(): ReactElement {
     setPrefs(updated)
   }
 
-  const expandOverlay = (): void => {
+  const expandOverlay = useCallback((): void => {
     setPresentation('OVERLAY_OPEN')
     void window.rift.overlaySetPresentation('overlay').then(applyLifecycle)
-  }
+  }, [applyLifecycle])
 
-  const minimizeOverlay = (): void => {
+  const minimizeOverlay = useCallback((): void => {
     const el = navScrollRef.current
     if (el !== null) {
       navScrollTop.current = el.scrollTop
     }
     setPresentation('LAUNCHER')
     void window.rift.overlaySetPresentation('launcher').then(applyLifecycle)
-  }
+  }, [applyLifecycle])
 
   const recheckDisplay = (): void => {
     void window.rift.overlayRecheckDisplay().then(applyLifecycle)
   }
+
+  const selectByDelta = useCallback(
+    (delta: number, seek: boolean): void => {
+      if (nav.length === 0) {
+        return
+      }
+      const nextIndex = stepNav(nav, navIndex, delta)
+      const row = nav[nextIndex]
+      if (row === undefined) {
+        return
+      }
+      if (seek) {
+        const ts = activeTsFor(row.item)
+        if (ts !== undefined) {
+          seekTo(row.item, ts)
+          return
+        }
+      }
+      setSelectedItemId(row.item.id)
+    },
+    [activeTsFor, nav, navIndex, seekTo]
+  )
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+        return
+      }
+      const action = resolveOverlayHotkey({
+        key: event.key,
+        code: event.code,
+        altKey: event.altKey,
+        metaKey: event.metaKey,
+        ctrlKey: event.ctrlKey,
+        shiftKey: event.shiftKey,
+        repeat: event.repeat
+      })
+      if (action === null) {
+        return
+      }
+      event.preventDefault()
+      if (action === 'minimize') {
+        minimizeOverlay()
+        return
+      }
+      if (action === 'expand') {
+        expandOverlay()
+        return
+      }
+      if (presentation !== 'OVERLAY_OPEN' || needsCompat) {
+        return
+      }
+      if (action === 'prev_item') {
+        selectByDelta(-1, false)
+        return
+      }
+      if (action === 'next_item') {
+        selectByDelta(1, false)
+        return
+      }
+      if (action === 'seek_selected' && current !== null) {
+        const ts = activeTsFor(current.item)
+        if (ts !== undefined) {
+          seekTo(current.item, ts)
+        }
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [
+    activeTsFor,
+    current,
+    expandOverlay,
+    minimizeOverlay,
+    needsCompat,
+    presentation,
+    selectByDelta,
+    seekTo
+  ])
 
   if (error !== null) {
     return (
@@ -289,8 +370,8 @@ export function OverlayApp(): ReactElement {
           <h1 className="overlay-heading">RiftLens Overlay requires Borderless display mode.</h1>
           <ol className="overlay-steps" data-testid="overlay-compat-steps">
             <li>Open League video settings.</li>
-            <li>Change Window Mode to Borderless.</li>
-            <li>Return to the replay.</li>
+            <li>Use Borderless or Windowed (avoid a separate fullscreen Space on Mac).</li>
+            <li>Return to the replay, then Recheck.</li>
           </ol>
           <div className="overlay-footer">
             <button

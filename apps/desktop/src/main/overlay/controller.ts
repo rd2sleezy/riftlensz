@@ -11,6 +11,7 @@ import {
   primaryWorkArea,
   workAreaForRect
 } from './createOverlayWindow'
+import { overlayWindowOptionsForPlatform } from './platform'
 import {
   classifyDisplayMode,
   findLeagueClientWindow,
@@ -428,8 +429,13 @@ export class OverlayController {
     }
     this.relayout(options.forceLayout)
     if (!this.window.isVisible()) {
-      this.window.setAlwaysOnTop(true, 'screen-saver')
-      this.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+      const platformOpts = overlayWindowOptionsForPlatform()
+      this.window.setAlwaysOnTop(true, platformOpts.alwaysOnTopLevel)
+      if (platformOpts.visibleOnAllWorkspaces) {
+        this.window.setVisibleOnAllWorkspaces(true, {
+          visibleOnFullScreen: platformOpts.visibleOnFullScreen
+        })
+      }
       this.window.showInactive()
     }
     this.broadcastLifecycle(options.kind)

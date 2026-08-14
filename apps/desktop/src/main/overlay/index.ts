@@ -37,8 +37,18 @@ export {
 } from './placement'
 export {
   displayModeSwitchPolicy,
-  BORDERLESS_REQUIRED_MESSAGE
+  BORDERLESS_REQUIRED_MESSAGE,
+  MAC_BORDERLESS_STEPS
 } from './displayModeAssist'
+export {
+  overlayCompanionSupported,
+  overlayWindowOptionsForPlatform
+} from './platform'
+export {
+  OVERLAY_HOTKEY_HELP,
+  resolveOverlayHotkey,
+  type OverlayHotkeyAction
+} from './hotkeys'
 export {
   effectiveOverlayPresentation,
   nextUserIntent,

@@ -94,6 +94,9 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
     })
   }, [])
 
+  const overlayCompanionSupported = platformQuery.data?.overlayCompanionSupported === true
+
+
   const refreshGameplay = useCallback(async (matchId: string, sourceId?: string | null) => {
     const result = await window.rift.getGameplayStatus(matchId, sourceId)
     if (result.ok) {
@@ -280,7 +283,13 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
     }
     const ready = nativeSessionReady(gameplayStatus)
     const sourceId = gameplayStatus?.active_source_id
-    if (!ready || sourceId === null || sourceId === undefined || !preferNative) {
+    if (
+      !overlayCompanionSupported ||
+      !ready ||
+      sourceId === null ||
+      sourceId === undefined ||
+      !preferNative
+    ) {
       return
     }
     let cancelled = false
@@ -309,6 +318,7 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
     gameplayStatus?.active_source_id,
     gameplayStatus?.session_phase,
     gameplayStatus,
+    overlayCompanionSupported,
     preferNative,
     review,
     reviewId

@@ -1,0 +1,82 @@
+{
+  "match_id": "NA1_5620410094",
+  "fixture_involved": false,
+  "sync_map_involved": false,
+  "overlay_companion_supported_darwin": true,
+  "overlay_window_options": {
+    "alwaysOnTop": true,
+    "frame": false,
+    "transparent": true,
+    "skipTaskbar": true,
+    "fullscreenable": false,
+    "focusable": true,
+    "hasShadow": false,
+    "resizable": false,
+    "maximizable": false,
+    "minimizable": false,
+    "alwaysOnTopLevel": "floating",
+    "visibleOnAllWorkspaces": true,
+    "visibleOnFullScreen": true,
+    "type": "panel"
+  },
+  "replay_only": {
+    "playing_ready": true,
+    "idle_blocked": true,
+    "live_not_used": true
+  },
+  "placement": {
+    "league": {
+      "x": 0,
+      "y": 0,
+      "width": 1512,
+      "height": 982
+    },
+    "overlay": {
+      "x": 1200,
+      "y": 88.38,
+      "width": 300,
+      "height": 440
+    },
+    "launcher": {
+      "x": 1322,
+      "y": 88.38,
+      "width": 178,
+      "height": 42
+    },
+    "overlay_hud_safe": true,
+    "launcher_hud_safe": true
+  },
+  "hotkeys": {
+    "prev": "prev_item",
+    "next": "next_item",
+    "seek": "seek_selected",
+    "minimize": "minimize"
+  },
+  "seek_plan": [
+    {
+      "index": 1,
+      "title": "Stop dying to an unseen jungler",
+      "expected_t_ms": 1468841,
+      "t_mmss": "24:28",
+      "lead_in_ms": 8000,
+      "expected_replay_target_ms": 1460841
+    },
+    {
+      "index": 2,
+      "title": "Do not start fogged fights",
+      "expected_t_ms": 1446861,
+      "t_mmss": "24:06",
+      "lead_in_ms": 8000,
+      "expected_replay_target_ms": 1438861
+    },
+    {
+      "index": 3,
+      "title": "Spend tempo after a won fight",
+      "expected_t_ms": 1687957,
+      "t_mmss": "28:07",
+      "lead_in_ms": 8000,
+      "expected_replay_target_ms": 1679957
+    }
+  ],
+  "note": "Live Open Replay + verified clock deltas are recorded by mac_install_seek_acceptance.py; this report locks overlay contracts for the same review."
+}

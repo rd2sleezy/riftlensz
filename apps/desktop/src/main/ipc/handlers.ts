@@ -53,6 +53,7 @@ import {
 import { mediaUrlForPath } from '../media/protocol'
 import { logger } from '../logging'
 import type { OverlayController } from '../overlay'
+import { overlayCompanionSupported } from '../overlay/platform'
 import type { AuthService } from '../auth/authService'
 import { PLACEHOLDER_FIXTURE_B_REVIEW_ID, buildPlaceholderFixtureBReview } from '../fixtures/placeholderReview'
 import { SidecarRequestError } from '../sidecar/client'
@@ -191,6 +192,7 @@ export function registerIpcHandlers(
     return DesktopPlatformSchema.parse({
       platform: process.platform,
       nativeReplaySupported: process.platform === 'win32' || process.platform === 'darwin',
+      overlayCompanionSupported: overlayCompanionSupported(),
       e2eMode: process.env['RIFTLENS_E2E'] === '1'
     })
   })

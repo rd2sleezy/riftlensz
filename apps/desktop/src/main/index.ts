@@ -68,6 +68,10 @@ app.whenReady().then(() => {
   })
 })
 
+app.on('before-quit', () => {
+  overlay.close()
+})
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     overlay.close()
