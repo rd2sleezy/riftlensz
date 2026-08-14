@@ -239,6 +239,9 @@ const rift = {
       .invoke(IPC.overlayRecheckDisplay)
       .then((value) => OverlayLifecycleEventSchema.parse(value))
   },
+  overlayAllowInteractionFocus(): Promise<{ ok: true } | { ok: false; reason: string }> {
+    return ipcRenderer.invoke(IPC.overlayAllowInteractionFocus)
+  },
   overlayGetPrefs(): Promise<OverlayPrefsPayload> {
     return ipcRenderer
       .invoke(IPC.overlayGetPrefs)

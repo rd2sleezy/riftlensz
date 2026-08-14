@@ -232,6 +232,13 @@ export function OverlayApp(): ReactElement {
     void window.rift.overlaySetPresentation('launcher').then(applyLifecycle)
   }, [applyLifecycle])
 
+  const requestInteractionFocus = useCallback((): void => {
+    if (presentation !== 'OVERLAY_OPEN') {
+      return
+    }
+    void window.rift.overlayAllowInteractionFocus()
+  }, [presentation])
+
   const recheckDisplay = (): void => {
     void window.rift.overlayRecheckDisplay().then(applyLifecycle)
   }
@@ -362,7 +369,11 @@ export function OverlayApp(): ReactElement {
 
   if (needsCompat) {
     return (
-      <div className="overlay-shell" data-testid="overlay-compat-root">
+      <div
+        className="overlay-shell"
+        data-testid="overlay-compat-root"
+        onPointerDownCapture={requestInteractionFocus}
+      >
         <section className="overlay-compat" data-testid="overlay-compat">
           <header className="overlay-drag">
             <span className="overlay-badge">RiftLens</span>
@@ -397,7 +408,11 @@ export function OverlayApp(): ReactElement {
   }
 
   return (
-    <div className="overlay-shell" data-testid="overlay-root">
+    <div
+      className="overlay-shell"
+      data-testid="overlay-root"
+      onPointerDownCapture={requestInteractionFocus}
+    >
       <div className="overlay-chrome" style={{ opacity: prefs?.opacity ?? 0.94 }}>
         <aside className="overlay-navigator" data-testid="overlay-navigator">
           <header className="overlay-drag" data-testid="overlay-drag">

@@ -30,15 +30,18 @@ describe('macOS overlay platform capability', () => {
     expect(mac.visibleOnAllWorkspaces).toBe(true)
     expect(mac.visibleOnFullScreen).toBe(true)
     expect(mac.fullscreenable).toBe(false)
+    // Non-focusable by default so Access Overlay does not key the RiftLens main window.
+    expect(mac.focusable).toBe(false)
   })
 
   it('preserves Windows screen-saver always-on-top level', () => {
     const win = overlayWindowOptionsForPlatform('win32')
     expect(win.type).toBeUndefined()
     expect(win.alwaysOnTopLevel).toBe('screen-saver')
+    expect(win.focusable).toBe(true)
   })
 
-  it('applies chrome without parenting and raises always-on-top after show', () => {
+  it('applies chrome without parenting and skips moveTop on darwin', () => {
     const calls: string[] = []
     const win = {
       setFullScreenable: (v: boolean) => calls.push(`fullscreenable:${v}`),
@@ -46,6 +49,7 @@ describe('macOS overlay platform capability', () => {
         calls.push(`workspaces:${v}:${opts?.visibleOnFullScreen === true}`),
       setAlwaysOnTop: (flag: boolean, level?: string, relative?: number) =>
         calls.push(`aot:${flag}:${level}:${relative ?? 0}`),
+      setFocusable: (v: boolean) => calls.push(`focusable:${v}`),
       moveTop: () => calls.push('moveTop'),
       setIgnoreMouseEvents: (ignore: boolean) => calls.push(`ignore:${ignore}`)
     }
@@ -53,8 +57,38 @@ describe('macOS overlay platform capability', () => {
     expect(calls).toContain('fullscreenable:false')
     expect(calls).toContain('workspaces:true:true')
     expect(calls).toContain('aot:true:screen-saver:1')
-    expect(calls).toContain('moveTop')
+    expect(calls).not.toContain('moveTop')
+    expect(calls).not.toContain('focusable:false')
     expect(calls).toContain('ignore:false')
+
+    const win32Calls: string[] = []
+    applyOverlayWindowChrome(
+      {
+        setFullScreenable: () => undefined,
+        setVisibleOnAllWorkspaces: () => undefined,
+        setAlwaysOnTop: () => undefined,
+        moveTop: () => win32Calls.push('moveTop'),
+        setIgnoreMouseEvents: () => undefined
+      },
+      'win32'
+    )
+    expect(win32Calls).toContain('moveTop')
+  })
+
+  it('restores focusable only when explicitly requested', () => {
+    const calls: string[] = []
+    applyOverlayWindowChrome(
+      {
+        setFullScreenable: () => undefined,
+        setVisibleOnAllWorkspaces: () => undefined,
+        setAlwaysOnTop: () => undefined,
+        setFocusable: (v: boolean) => calls.push(`focusable:${v}`),
+        setIgnoreMouseEvents: () => undefined
+      },
+      'darwin',
+      { resetFocusable: true }
+    )
+    expect(calls).toEqual(['focusable:false'])
   })
 })
 

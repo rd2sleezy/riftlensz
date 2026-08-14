@@ -280,6 +280,10 @@ export function registerIpcHandlers(
     return OverlayLifecycleEventSchema.parse(overlay.recheckDisplay())
   })
 
+  ipcMain.handle(IPC.overlayAllowInteractionFocus, () => {
+    return overlay.allowInteractionFocus()
+  })
+
   ipcMain.handle(IPC.overlayGetPrefs, () => {
     return OverlayPrefsSchema.parse(overlay.getPrefs())
   })

@@ -39,7 +39,8 @@ export const IPC = {
   overlayGetLifecycle: 'rift:overlay:get-lifecycle',
   overlayLifecycleEvent: 'rift:overlay:lifecycle',
   overlaySetPresentation: 'rift:overlay:set-presentation',
-  overlayRecheckDisplay: 'rift:overlay:recheck-display'
+  overlayRecheckDisplay: 'rift:overlay:recheck-display',
+  overlayAllowInteractionFocus: 'rift:overlay:allow-interaction-focus'
 } as const
 
 export const IPC_RENDERER_ALLOWLIST = [
@@ -81,7 +82,8 @@ export const IPC_RENDERER_ALLOWLIST = [
   'overlayGetLifecycle',
   'onOverlayLifecycle',
   'overlaySetPresentation',
-  'overlayRecheckDisplay'
+  'overlayRecheckDisplay',
+  'overlayAllowInteractionFocus'
 ] as const
 
 export const SidecarStateSchema = z.enum([

@@ -80,6 +80,7 @@ export interface RiftApi {
   overlayHide: () => Promise<OverlayLifecycleEventPayload>
   overlaySetPresentation: (intent: OverlayUserIntentPayload) => Promise<OverlayLifecycleEventPayload>
   overlayRecheckDisplay: () => Promise<OverlayLifecycleEventPayload>
+  overlayAllowInteractionFocus: () => Promise<{ ok: true } | { ok: false; reason: string }>
   overlayGetPrefs: () => Promise<OverlayPrefsPayload>
   overlaySetPrefs: (patch: Partial<OverlayPrefsPayload>) => Promise<OverlayPrefsPayload>
   overlayGetContext: () => Promise<OverlayContextResult>

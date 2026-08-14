@@ -47,7 +47,7 @@ export function createOverlayWindow(options: CreateOverlayWindowOptions): Browse
     }
   })
 
-  applyOverlayWindowChrome(win, platform)
+  applyOverlayWindowChrome(win, platform, { resetFocusable: true })
 
   let dragMoved = false
   win.on('move', () => {

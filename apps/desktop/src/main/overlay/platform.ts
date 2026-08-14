@@ -6,7 +6,7 @@ export type OverlayWindowPlatformOptions = {
   transparent: true
   skipTaskbar: true
   fullscreenable: false
-  focusable: true
+  focusable: boolean
   hasShadow: false
   resizable: false
   maximizable: false
@@ -28,6 +28,10 @@ export type OverlayWindowPlatformOptions = {
  * macOS note: levels from `floating` through `status` sit *below* the Dock and
  * typically below a Metal game window. Use `screen-saver` so the companion sits
  * above League in Windowed/Borderless.
+ *
+ * macOS focus: keep the overlay non-focusable by default so Access Overlay /
+ * showInactive does not hand key focus to the RiftLens main window. Explicit
+ * clicks can raise focusability in the controller.
  */
 export function overlayWindowOptionsForPlatform(
   platform: NodeJS.Platform = process.platform
@@ -39,7 +43,7 @@ export function overlayWindowOptionsForPlatform(
       transparent: true,
       skipTaskbar: true,
       fullscreenable: false,
-      focusable: true,
+      focusable: false,
       hasShadow: false,
       resizable: false,
       maximizable: false,
@@ -79,6 +83,9 @@ export function overlayCompanionSupported(
 /**
  * Apply macOS/Windows chrome that must stick after create/show/relayout.
  * Never parents the overlay to the main BrowserWindow.
+ *
+ * On darwin, skip moveTop() — it can activate RiftLens and pull focus out of League.
+ * z-order is maintained by setAlwaysOnTop(screen-saver).
  */
 export function applyOverlayWindowChrome(
   win: {
@@ -92,10 +99,12 @@ export function applyOverlayWindowChrome(
       level?: OverlayWindowPlatformOptions['alwaysOnTopLevel'],
       relativeLevel?: number
     ) => void
+    setFocusable?: (focusable: boolean) => void
     moveTop?: () => void
     setIgnoreMouseEvents: (ignore: boolean) => void
   },
-  platform: NodeJS.Platform = process.platform
+  platform: NodeJS.Platform = process.platform,
+  options?: { allowMoveTop?: boolean; resetFocusable?: boolean }
 ): OverlayWindowPlatformOptions {
   const opts = overlayWindowOptionsForPlatform(platform)
   // FullScreenAuxiliary collection behavior (required for Space/fullscreen compositing).
@@ -106,8 +115,14 @@ export function applyOverlayWindowChrome(
     })
   }
   win.setAlwaysOnTop(true, opts.alwaysOnTopLevel, opts.alwaysOnTopRelativeLevel)
+  // Do not reset focusable on every chrome refresh — expand/minimize own that,
+  // and explicit user clicks may temporarily enable focus for hotkeys.
+  if (options?.resetFocusable === true && typeof win.setFocusable === 'function') {
+    win.setFocusable(opts.focusable)
+  }
   win.setIgnoreMouseEvents(false)
-  if (typeof win.moveTop === 'function') {
+  const allowMoveTop = options?.allowMoveTop === true || platform !== 'darwin'
+  if (allowMoveTop && typeof win.moveTop === 'function') {
     win.moveTop()
   }
   return opts

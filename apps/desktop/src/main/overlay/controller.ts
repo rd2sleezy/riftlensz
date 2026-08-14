@@ -12,6 +12,7 @@ import {
   workAreaForRect
 } from './createOverlayWindow'
 import { overlayWindowOptionsForPlatform, applyOverlayWindowChrome } from './platform'
+import { restoreLeagueReplayFocusDarwin } from './leagueFocus.darwin'
 import {
   classifyDisplayMode,
   findLeagueClientWindow,
@@ -203,6 +204,7 @@ export class OverlayController {
       }
       this.ensureWindow()
       this.tick()
+      this.scheduleReplayFocusRestore('open')
     })()
     return { ok: true }
   }
@@ -259,19 +261,47 @@ export class OverlayController {
   /** Explicit minimize → Access Overlay launcher. Does not touch replay/session. */
   minimize(): OverlayLifecycleEvent {
     this.userIntent = nextUserIntent({ current: this.userIntent, action: 'minimize' })
-    this.applyDecision(this.evaluate(), { forceLayout: true, kind: 'presentation' })
+    this.applyDecision(this.evaluate(), {
+      forceLayout: true,
+      kind: 'presentation',
+      resetFocusable: true
+    })
+    this.scheduleReplayFocusRestore('minimize')
     return this.getLifecycleSnapshot()
   }
 
   /** Explicit Access Overlay → full coaching (or compat guide). */
   expand(): OverlayLifecycleEvent {
     this.userIntent = nextUserIntent({ current: this.userIntent, action: 'expand' })
-    this.applyDecision(this.evaluate(), { forceLayout: true, kind: 'presentation' })
+    this.applyDecision(this.evaluate(), {
+      forceLayout: true,
+      kind: 'presentation',
+      resetFocusable: true
+    })
+    this.scheduleReplayFocusRestore('expand')
     return this.getLifecycleSnapshot()
   }
 
   setPresentation(intent: OverlayUserIntent): OverlayLifecycleEvent {
     return intent === 'overlay' ? this.expand() : this.minimize()
+  }
+
+  /**
+   * User explicitly clicked the overlay surface — allow keyboard focus for hotkeys.
+   * Access Overlay expand/minimize keep the window non-focusable and restore League.
+   */
+  allowInteractionFocus(): { ok: true } | { ok: false; reason: string } {
+    if (this.window === null || this.window.isDestroyed()) {
+      return { ok: false, reason: 'no_window' }
+    }
+    if (this.presentation !== 'OVERLAY_OPEN') {
+      return { ok: false, reason: 'not_interactive_presentation' }
+    }
+    if (typeof this.window.setFocusable === 'function') {
+      this.window.setFocusable(true)
+    }
+    this.window.focus()
+    return { ok: true }
   }
 
   /** Re-read exclusive-fullscreen / League bounds after the player changes display mode. */
@@ -447,7 +477,11 @@ export class OverlayController {
 
   private applyDecision(
     decision: OverlayVisibilityDecision,
-    options: { forceLayout: boolean; kind: OverlayLifecycleEvent['kind'] }
+    options: {
+      forceLayout: boolean
+      kind: OverlayLifecycleEvent['kind']
+      resetFocusable?: boolean
+    }
   ): void {
     this.lastReason = decision.reason
     this.needsCompat = decision.needsCompat
@@ -464,12 +498,50 @@ export class OverlayController {
       return
     }
     this.relayout(options.forceLayout)
-    applyOverlayWindowChrome(this.window)
+    const chromeOpts = {
+      resetFocusable: options.resetFocusable === true
+    }
+    applyOverlayWindowChrome(this.window, process.platform, chromeOpts)
     if (!this.window.isVisible()) {
+      // Non-activating show — do not steal League replay focus.
       this.window.showInactive()
-      applyOverlayWindowChrome(this.window)
+      applyOverlayWindowChrome(this.window, process.platform, chromeOpts)
     }
     this.broadcastLifecycle(options.kind)
+  }
+
+  /**
+   * After Access Overlay expand/minimize the click has usually activated RiftLens.
+   * Restore League in replay context only. Fail soft if League is not running.
+   */
+  private scheduleReplayFocusRestore(reason: 'expand' | 'minimize' | 'open'): void {
+    if (process.platform !== 'darwin') {
+      return
+    }
+    if (this.session.liveGame) {
+      return
+    }
+    if (
+      !isReplaySessionActive(this.session.sessionPhase, this.session.sessionReachedReady)
+    ) {
+      return
+    }
+    // Defer past Electron's click-activation so League ends frontmost.
+    setTimeout(() => {
+      void restoreLeagueReplayFocusDarwin().then((result) => {
+        if (result.ok) {
+          logger.info(
+            { reason, appName: result.appName, method: result.method },
+            'overlay restored league replay focus'
+          )
+          return
+        }
+        logger.info(
+          { reason, error: result.error },
+          'overlay league focus restore skipped'
+        )
+      })
+    }, 50)
   }
 
   private relayout(force: boolean): void {
