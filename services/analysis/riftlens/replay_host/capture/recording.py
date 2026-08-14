@@ -28,6 +28,9 @@ from riftlens.replay_host.timing import SleepClock, WallClock
 
 DEFAULT_POLL_INTERVAL_S = DEFAULT_CAPTURE_POLL_S
 START_GRACE_POLLS = 3
+SEEK_BEFORE_RECORD_TIMEOUT_S = 90.0
+SEEK_LANDING_TOLERANCE_S = 1.5
+TEMP_STABLE_POLLS = 3
 
 ProgressSink = Callable[[CaptureProgress], None]
 
@@ -50,6 +53,7 @@ class RecordingClient(Protocol):
         paused: bool | None = None,
         time: float | None = None,
         speed: float | None = None,
+        readback: bool = True,
     ) -> ReplayPlayback | None:
         """POST /replay/playback."""
 
@@ -71,6 +75,7 @@ class RecordingOrchestrator:
         self._clock = clock if clock is not None else WallClock()
         self._start_s = 0.0
         self._end_s = 0.0
+        self._output_path: Path | None = None
 
     def start(
         self,
@@ -85,19 +90,39 @@ class RecordingOrchestrator:
         """Seek to ``start_s``, unpause, then POST ``recording=true``. Times are source seconds."""
         self._start_s = float(start_s)
         self._end_s = float(end_s)
-        self._client.set_playback(paused=False, time=float(start_s))
-        return self._client.set_recording(
-            {
-                "recording": True,
-                "codec": codec,
-                "path": str(path),
-                "startTime": float(start_s),
-                "endTime": float(end_s),
-                "framesPerSecond": float(fps),
-                "enforceFrameRate": True,
-                "lossless": bool(lossless),
-            }
-        )
+        self._output_path = Path(path)
+        # Land the seek before encode — starting mid-seek crashes macOS League encode.
+        self._await_seek_landing(float(start_s))
+        self._client.set_playback(paused=False, readback=False)
+        patch = {
+            "recording": True,
+            "codec": codec,
+            "path": str(path),
+            "startTime": float(start_s),
+            "endTime": float(end_s),
+            "framesPerSecond": float(fps),
+            "enforceFrameRate": True,
+            "lossless": bool(lossless),
+        }
+        try:
+            return self._client.set_recording(patch)
+        except ReplayError as exc:
+            # POST often succeeds; the follow-up GET /replay/recording times out mid-encode.
+            if not _is_transient_recording_poll(exc):
+                raise
+            recovered = self._recover_recording_after_start_timeout()
+            if recovered is not None:
+                return recovered
+            return ReplayRecording(
+                recording=True,
+                codec=codec,
+                path=str(path),
+                startTime=float(start_s),
+                endTime=float(end_s),
+                framesPerSecond=float(fps),
+                enforceFrameRate=True,
+                lossless=bool(lossless),
+            )
 
     def poll(self) -> RecordingProgress:
         """Return one progress sample. Assumes ``start`` already ran."""
@@ -119,6 +144,8 @@ class RecordingOrchestrator:
         deadline = self._clock.monotonic() + max(0.0, timeout_s)
         started = False
         idle_polls = 0
+        stable_bytes: int | None = None
+        stable_count = 0
         while True:
             if cancel is not None and cancel.is_set():
                 self._safe_stop()
@@ -138,6 +165,29 @@ class RecordingOrchestrator:
                             "underlying": exc.code.value,
                         },
                     ) from exc
+                # macOS: GET stalls / drops while ``clip.webm.tmp`` is already written.
+                size = (
+                    0
+                    if self._output_path is None
+                    else artifact_store.recorder_output_bytes(self._output_path)
+                )
+                if size > 0 and size == stable_bytes:
+                    stable_count += 1
+                elif size > 0:
+                    stable_bytes = size
+                    stable_count = 1
+                else:
+                    stable_bytes = None
+                    stable_count = 0
+                recovered = self._recover_from_temp_output(
+                    previous_bytes=stable_bytes,
+                    stable_count=stable_count,
+                )
+                if recovered is not None:
+                    return recovered
+                if _is_transient_recording_poll(exc) and self._clock.monotonic() < deadline:
+                    self._clock.sleep(max(0.01, poll_s))
+                    continue
                 raise
             progress = self._progress(recording)
             if on_progress is not None:
@@ -149,6 +199,12 @@ class RecordingOrchestrator:
                 if started or idle_polls >= START_GRACE_POLLS or self._reached_end(progress):
                     return recording
             if self._clock.monotonic() >= deadline:
+                recovered = self._recover_from_temp_output(
+                    previous_bytes=stable_bytes,
+                    stable_count=max(stable_count, TEMP_STABLE_POLLS),
+                )
+                if recovered is not None:
+                    return recovered
                 self._safe_stop()
                 raise ReplayError(
                     ReplayErrorCode.CAPTURE_TIMEOUT,
@@ -181,6 +237,75 @@ class RecordingOrchestrator:
             self.stop()
         except ReplayError:
             return
+
+    def _await_seek_landing(self, start_s: float) -> None:
+        """Pause and seek until playback lands near ``start_s``."""
+        self._client.set_playback(paused=True, time=float(start_s), readback=False)
+        deadline = self._clock.monotonic() + SEEK_BEFORE_RECORD_TIMEOUT_S
+        while self._clock.monotonic() < deadline:
+            try:
+                playback = self._client.get_playback()
+            except ReplayError as exc:
+                if _is_transient_recording_poll(exc):
+                    self._clock.sleep(max(0.01, DEFAULT_POLL_INTERVAL_S))
+                    continue
+                raise
+            if (not playback.seeking) and abs(float(playback.time) - float(start_s)) <= (
+                SEEK_LANDING_TOLERANCE_S
+            ):
+                return
+            self._clock.sleep(0.25)
+        raise ReplayError(
+            ReplayErrorCode.SEEK_FAILED,
+            details={
+                "reason": "capture_seek_timeout",
+                "target_source_s": float(start_s),
+                "timeout_s": SEEK_BEFORE_RECORD_TIMEOUT_S,
+            },
+        )
+
+    def _recover_recording_after_start_timeout(self) -> ReplayRecording | None:
+        """Retry GET /replay/recording briefly after a start-time read timeout."""
+        for _ in range(START_GRACE_POLLS * 4):
+            try:
+                return self._client.get_recording()
+            except ReplayError as exc:
+                if not _is_transient_recording_poll(exc):
+                    raise
+                self._clock.sleep(max(0.01, DEFAULT_POLL_INTERVAL_S))
+        return None
+
+    def _recover_from_temp_output(
+        self,
+        *,
+        previous_bytes: int | None,
+        stable_count: int,
+    ) -> ReplayRecording | None:
+        """If League left a stable ``*.webm.tmp``, treat encode as finished."""
+        if self._output_path is None:
+            return None
+        size = artifact_store.recorder_output_bytes(self._output_path)
+        if size <= 0:
+            return None
+        if previous_bytes == size and stable_count >= TEMP_STABLE_POLLS:
+            promoted = artifact_store.promote_temp_recorder_output(self._output_path)
+            path = str(promoted or self._output_path)
+            return ReplayRecording(
+                recording=False,
+                path=path,
+                currentTime=self._end_s,
+                startTime=self._start_s,
+                endTime=self._end_s,
+            )
+        return None
+
+
+def _is_transient_recording_poll(exc: ReplayError) -> bool:
+    """Timeouts and mid-encode connection drops are transient while a tmp file may exist."""
+    if exc.code is not ReplayErrorCode.REPLAY_API_UNAVAILABLE:
+        return False
+    reason = str(exc.details.get("reason", ""))
+    return reason in {"timeout", "http_error", "connect_failed"}
 
 
 def run_capture(
@@ -227,19 +352,26 @@ def run_capture(
             fps=settings.fps,
             lossless=lossless,
         )
-        orchestrator.wait_until_complete(
-            timeout_s=timeout_s,
-            poll_s=poll_s,
-            cancel=cancel,
-            on_progress=lambda sample: _emit(
-                on_progress,
-                capture_id,
-                CaptureStatus.RUNNING,
-                sample.fraction,
-                "recording",
-                sample.current_source_ms,
-            ),
-        )
+        try:
+            orchestrator.wait_until_complete(
+                timeout_s=timeout_s,
+                poll_s=poll_s,
+                cancel=cancel,
+                on_progress=lambda sample: _emit(
+                    on_progress,
+                    capture_id,
+                    CaptureStatus.RUNNING,
+                    sample.fraction,
+                    "recording",
+                    sample.current_source_ms,
+                ),
+            )
+        except ReplayError as wait_exc:
+            # macOS may drop the API after writing clip.webm.tmp; promote and continue.
+            if artifact_store.promote_temp_recorder_output(output) is None:
+                raise wait_exc
+        else:
+            artifact_store.promote_temp_recorder_output(output)
         if cancel is not None and cancel.is_set():
             raise ReplayError(
                 ReplayErrorCode.CAPTURE_CANCELLED, details={"reason": "cancelled_after_recording"}

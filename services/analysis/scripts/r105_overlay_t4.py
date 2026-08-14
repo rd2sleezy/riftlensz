@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import asyncio
 import os
-import sys
 import time
 from pathlib import Path
 
@@ -21,7 +20,12 @@ MATCH = "NA1_5617764200"
 
 
 def _resolve_rofl() -> Path | None:
-    for key in ("RIFTLENS_R105_ROFL", "RIFTLENS_R10_ROFL", "RIFTLENS_R6_ROFL", "RIFTLENS_REPLAY_ROFL"):
+    for key in (
+        "RIFTLENS_R105_ROFL",
+        "RIFTLENS_R10_ROFL",
+        "RIFTLENS_R6_ROFL",
+        "RIFTLENS_REPLAY_ROFL",
+    ):
         raw = os.environ.get(key)
         if raw:
             path = Path(raw)
@@ -63,7 +67,9 @@ async def _main() -> int:
         if env.live_game:
             print("FAIL: live game in progress — overlay must stay off")
             return 3
-        imported = await service.import_rofl(str(rofl), now_ms=int(time.time() * 1000), match_id=MATCH)
+        imported = await service.import_rofl(
+            str(rofl), now_ms=int(time.time() * 1000), match_id=MATCH
+        )
         if not imported.ok or not imported.source_id:
             print("FAIL import", imported)
             return 4

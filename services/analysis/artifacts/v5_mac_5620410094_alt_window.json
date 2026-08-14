@@ -1,0 +1,77 @@
+{
+  "death_t_ms": 1062798,
+  "v4": {
+    "status": "UNKNOWN",
+    "track_id": null,
+    "confidence": 0.0,
+    "method": "none",
+    "reasons": [
+      "no stable champion-like tracks"
+    ],
+    "tracks": [],
+    "calibration": {
+      "version": "v4.0",
+      "confidence": "WEAK",
+      "subject_team": 200,
+      "red_like_team": 200,
+      "blue_like_team": 100,
+      "green_like_team": null,
+      "anchor_count": 0,
+      "anchors": [],
+      "reasons": [
+        "no anchors; using spectator team-absolute prior (WEAK)"
+      ]
+    },
+    "timing": {
+      "extract_ms": 248.9,
+      "detect_ms": 194.5,
+      "track_ms": 0.0,
+      "align_ms": 0.1,
+      "color_sample_ms": 0.0,
+      "calibrate_ms": 0.0,
+      "total_ms": 444.0,
+      "frames": 17
+    },
+    "subject_deaths_in_window": [
+      1062798
+    ],
+    "camera_note": "camera uncontrolled; reviewed-player visibility cannot be inferred from capture ownership",
+    "informative_frames": 17,
+    "confirmed_detections": 0
+  },
+  "v5": {
+    "status": "UNKNOWN",
+    "track_id": null,
+    "confidence": 0.0,
+    "method": "none",
+    "identity_change": "unchanged",
+    "contributing_cues": [],
+    "rejected_cues": [
+      "no_base_likely_track"
+    ],
+    "continuity_ms": 0.004,
+    "bundle": null,
+    "cues": [],
+    "base": {
+      "status": "UNKNOWN",
+      "track_id": null,
+      "confidence": 0.0
+    }
+  },
+  "runtime": {
+    "v4_wall_s": 0.44,
+    "v5_refine_wall_s": 0.0,
+    "detect_ms": 194.5,
+    "track_ms": 0.0,
+    "calibrate_ms": 0.0,
+    "color_sample_ms": 0.0,
+    "continuity_ms": 0.004
+  },
+  "fail_closed_checks": {
+    "no_correlated_under_uncontrolled": true,
+    "capture_ownership_ignored_in_reasons": true,
+    "no_silent_track_swap": true,
+    "unknown_base_not_invented": true
+  },
+  "pixels_usable": false
+}

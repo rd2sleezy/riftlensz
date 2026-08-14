@@ -20,6 +20,7 @@ CLIP_SUFFIXES: frozenset[str] = frozenset({".webm", ".mp4", ".avi", ".mkv"})
 MEDIA_SUFFIXES: frozenset[str] = IMAGE_SUFFIXES | CLIP_SUFFIXES
 FRAMES_DIRNAME = "frames"
 CLIP_FILENAME = "clip.webm"
+TEMP_CLIP_SUFFIX = ".webm.tmp"
 _HASH_CHUNK = 1024 * 1024
 
 
@@ -48,9 +49,14 @@ def allocate_output_path(directory: Path, codec: str) -> Path:
 def list_output_files(path: Path) -> tuple[Path, ...]:
     """Return recorded media files under ``path``, name-sorted. Missing paths yield ()."""
     target = Path(path)
+    promote_temp_recorder_output(target)
     if target.is_file():
         return (target,)
     if not target.is_dir():
+        # clip.webm may still be missing while clip.webm.tmp was just promoted beside it
+        promoted = promote_temp_recorder_output(target)
+        if promoted is not None and promoted.is_file():
+            return (promoted,)
         return ()
     found = [
         item
@@ -58,6 +64,61 @@ def list_output_files(path: Path) -> tuple[Path, ...]:
         if item.is_file() and item.suffix.lower() in MEDIA_SUFFIXES
     ]
     return tuple(sorted(found, key=lambda item: item.name))
+
+
+def temp_recorder_sidecar(output: Path) -> Path:
+    """Return League's macOS sidecar path (``clip.webm`` → ``clip.webm.tmp``)."""
+    return Path(str(Path(output)) + ".tmp")
+
+
+def promote_temp_recorder_output(output: Path) -> Path | None:
+    """Promote a non-empty ``*.webm.tmp`` sidecar to the final clip path.
+
+    macOS League often finishes encoding into ``clip.webm.tmp`` and never renames
+    when ``GET /replay/recording`` stalls. Returns the usable final path, or None.
+    """
+    final = Path(output)
+    if final.is_file() and file_size(final) > 0:
+        return final
+    candidates: list[Path] = []
+    if final.suffix.lower() in CLIP_SUFFIXES or final.name.endswith(TEMP_CLIP_SUFFIX):
+        candidates.append(temp_recorder_sidecar(final))
+        candidates.append(final.with_name(final.name + ".tmp"))
+    parent = final if final.is_dir() else final.parent
+    if parent.is_dir():
+        candidates.extend(sorted(parent.glob(f"*{TEMP_CLIP_SUFFIX}")))
+    seen: set[Path] = set()
+    for tmp in candidates:
+        try:
+            resolved = tmp.resolve()
+        except OSError:
+            resolved = tmp
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        if not tmp.is_file() or file_size(tmp) <= 0:
+            continue
+        target = final
+        if target.is_dir() or target.suffix.lower() not in CLIP_SUFFIXES:
+            target = parent / CLIP_FILENAME
+        if target.exists() and file_size(target) > 0:
+            return target
+        try:
+            tmp.replace(target)
+        except OSError:
+            continue
+        if target.is_file() and file_size(target) > 0:
+            return target
+    return None
+
+
+def recorder_output_bytes(output: Path) -> int:
+    """Return bytes written for ``output``, including a League ``.tmp`` sidecar."""
+    final = Path(output)
+    size = file_size(final) if final.is_file() else directory_size(final) if final.is_dir() else 0
+    if size > 0:
+        return size
+    return file_size(temp_recorder_sidecar(final))
 
 
 def sha256_file(path: Path) -> str:

@@ -464,7 +464,8 @@ class MacReplayHost:
                 self._supervisor = self._supervisor_factory()
             else:
                 if self._transport is None:
-                    created = default_api_transport()
+                    # macOS Replay API commonly stalls >2s during seek/encode.
+                    created = default_api_transport(timeout_s=15.0, connect_timeout_s=2.0)
                     self._transport = created
                     transport: PlaybackTransport = created
                 else:

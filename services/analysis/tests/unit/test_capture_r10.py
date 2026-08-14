@@ -40,7 +40,11 @@ from riftlens.main import create_app
 from riftlens.replay_host.api.replay_client import ReplayApiClient
 from riftlens.replay_host.capture import artifact_store
 from riftlens.replay_host.capture.capture_service import CaptureService
-from riftlens.replay_host.capture.recording import RecordingOrchestrator, run_capture
+from riftlens.replay_host.capture.recording import (
+    TEMP_STABLE_POLLS,
+    RecordingOrchestrator,
+    run_capture,
+)
 from riftlens.replay_host.capture.retention import RetentionPolicy, RetentionService
 from sqlalchemy import Engine
 from tests.fakes.fake_replay_host import FakeReplayHost
@@ -233,6 +237,106 @@ def test_orchestrator_polls_until_recording_stops(tmp_path: Path) -> None:
     assert posted[0]["startTime"] == 100.0
     assert posted[0]["endTime"] == 110.0
     assert posted[0]["enforceFrameRate"] is True
+
+
+def test_orchestrator_retries_recording_read_timeouts(tmp_path: Path) -> None:
+    """Mac League can stall GET /replay/recording mid-encode; treat as transient."""
+    behavior = FakeReplayBehavior(recording_poll_steps=3)
+    with FakeReplayApiServer(behavior) as server:
+        client = _client(server)
+        orchestrator = RecordingOrchestrator(client, clock=FakeClock())
+        orchestrator.start(
+            tmp_path / "clip.webm",
+            start_s=1.0,
+            end_s=2.0,
+            codec="webm",
+            fps=30.0,
+        )
+        calls = {"n": 0}
+        real_get = client.get_recording
+
+        def flaky_get() -> object:
+            calls["n"] += 1
+            if calls["n"] <= 2:
+                raise ReplayError(
+                    ReplayErrorCode.REPLAY_API_UNAVAILABLE,
+                    details={"reason": "timeout", "url": "/replay/recording"},
+                )
+            return real_get()
+
+        client.get_recording = flaky_get  # type: ignore[method-assign]
+        final = orchestrator.wait_until_complete(timeout_s=30.0, poll_s=0.1)
+    assert final.recording is False
+    assert calls["n"] >= 3
+
+
+def test_orchestrator_recovers_when_start_readback_times_out(tmp_path: Path) -> None:
+    """POST /replay/recording can succeed while the immediate GET times out."""
+    behavior = FakeReplayBehavior(recording_poll_steps=2)
+    with FakeReplayApiServer(behavior) as server:
+        client = _client(server)
+        real_set = client.set_recording
+        calls = {"set": 0}
+
+        def flaky_set(patch: object) -> object:
+            calls["set"] += 1
+            real_set(patch)  # type: ignore[arg-type]
+            raise ReplayError(
+                ReplayErrorCode.REPLAY_API_UNAVAILABLE,
+                details={"reason": "timeout", "url": "/replay/recording"},
+            )
+
+        client.set_recording = flaky_set  # type: ignore[method-assign]
+        orchestrator = RecordingOrchestrator(client, clock=FakeClock())
+        started = orchestrator.start(
+            tmp_path / "clip.webm",
+            start_s=1.0,
+            end_s=2.0,
+            codec="webm",
+            fps=30.0,
+        )
+        assert calls["set"] == 1
+        # Fast fake may already finish between POST and recovery GET.
+        assert started.path is not None or started.recording is True
+        final = orchestrator.wait_until_complete(timeout_s=30.0, poll_s=0.1)
+    assert final.recording is False
+
+
+def test_promote_temp_recorder_output_renames_webm_tmp(tmp_path: Path) -> None:
+    final = tmp_path / "clip.webm"
+    tmp = Path(str(final) + ".tmp")
+    tmp.write_bytes(b"webm-bytes")
+    promoted = artifact_store.promote_temp_recorder_output(final)
+    assert promoted == final
+    assert final.is_file()
+    assert final.read_bytes() == b"webm-bytes"
+    assert not tmp.exists()
+
+
+def test_orchestrator_completes_from_stable_webm_tmp(tmp_path: Path) -> None:
+    """When GET /recording dies after encode, a stable clip.webm.tmp is success."""
+    behavior = FakeReplayBehavior(recording_poll_steps=20)
+    output = tmp_path / "clip.webm"
+    with FakeReplayApiServer(behavior) as server:
+        client = _client(server)
+        orchestrator = RecordingOrchestrator(client, clock=FakeClock())
+        orchestrator.start(output, start_s=1.0, end_s=2.0, codec="webm", fps=30.0)
+        Path(str(output) + ".tmp").write_bytes(b"x" * 2048)
+        calls = {"n": 0}
+
+        def always_timeout() -> object:
+            calls["n"] += 1
+            raise ReplayError(
+                ReplayErrorCode.REPLAY_API_UNAVAILABLE,
+                details={"reason": "timeout", "url": "/replay/recording"},
+            )
+
+        client.get_recording = always_timeout  # type: ignore[method-assign]
+        final = orchestrator.wait_until_complete(timeout_s=30.0, poll_s=0.1)
+    assert final.recording is False
+    assert output.is_file()
+    assert output.read_bytes() == b"x" * 2048
+    assert calls["n"] >= TEMP_STABLE_POLLS
 
 
 def test_run_capture_clip_writes_one_hashed_artifact(tmp_path: Path) -> None:
