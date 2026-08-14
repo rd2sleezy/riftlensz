@@ -1,4 +1,4 @@
-"""Visual clip-analysis spike (V.0–V.4). Isolated from coaching.
+"""Visual clip-analysis spike (V.0–V.5). Isolated from coaching.
 
 Depends on the R.11 observation contract. The observation contract does not
 depend on this package. Do not import this module from H.6/H.7/H.8.
@@ -14,7 +14,9 @@ from riftlens.visual.analyze import (
     analyze_capture_dir,
     analyze_manifest,
 )
+from riftlens.visual.continuity import ContinuityBundle, ContinuityCue, CueType, CueVerdict
 from riftlens.visual.correlate import CorrelationStatus, SubjectCorrelation, correlate_subject
+from riftlens.visual.correlate_v5 import V5CorrelationResult, refine_subject_correlation
 from riftlens.visual.detect import (
     MAX_PLAUSIBLE_CHAMPIONS,
     DetectedBar,
@@ -50,6 +52,7 @@ from riftlens.visual.track import (
     TrackLifecycle,
     track_candidates,
 )
+from riftlens.visual.trajectory import MotionClass, TrajectoryCue, measure_trajectory
 from riftlens.visual.v1_analyze import (
     DEFAULT_V1_SAMPLE_FPS,
     V1_ANALYZER_ID,
@@ -74,6 +77,15 @@ from riftlens.visual.v4_analyze import (
     analyze_capture_dir_v4,
     analyze_manifest_v4,
 )
+from riftlens.visual.v5_analyze import (
+    DEFAULT_V5_SAMPLE_FPS,
+    V5_ANALYZER_ID,
+    V5_ANALYZER_VERSION,
+    V5AnalysisResult,
+    analyze_capture_dir_v5,
+    analyze_manifest_v5,
+    refine_v4_result,
+)
 from riftlens.visual.window import (
     FindingStamp,
     PlannedCapture,
@@ -89,19 +101,25 @@ __all__ = [
     "DEFAULT_V1_SAMPLE_FPS",
     "DEFAULT_V2_SAMPLE_FPS",
     "DEFAULT_V4_SAMPLE_FPS",
+    "DEFAULT_V5_SAMPLE_FPS",
     "ArtifactMissing",
     "MAX_PLAUSIBLE_CHAMPIONS",
     "CalibrationConfidence",
     "CandidateKind",
     "CaptureNotRequested",
     "CaptureWindowError",
+    "ContinuityBundle",
+    "ContinuityCue",
     "CorrelationStatus",
+    "CueType",
+    "CueVerdict",
     "DetectedBar",
     "EmptyClip",
     "EntityTrack",
     "FindingStamp",
     "GstAlignment",
     "MalformedVideo",
+    "MotionClass",
     "PlannedCapture",
     "SampledFrame",
     "StructuredClaim",
@@ -109,6 +127,7 @@ __all__ = [
     "TeamCalibration",
     "TeamEstimate",
     "TrackLifecycle",
+    "TrajectoryCue",
     "V1_ANALYZER_ID",
     "V1_ANALYZER_VERSION",
     "V1AnalysisResult",
@@ -118,6 +137,10 @@ __all__ = [
     "V4_ANALYZER_ID",
     "V4_ANALYZER_VERSION",
     "V4AnalysisResult",
+    "V5_ANALYZER_ID",
+    "V5_ANALYZER_VERSION",
+    "V5AnalysisResult",
+    "V5CorrelationResult",
     "ViewportCoverage",
     "VisualAnalysisResult",
     "VisualRuleDiagnostic",
@@ -127,10 +150,12 @@ __all__ = [
     "analyze_capture_dir_v1",
     "analyze_capture_dir_v2",
     "analyze_capture_dir_v4",
+    "analyze_capture_dir_v5",
     "analyze_manifest",
     "analyze_manifest_v1",
     "analyze_manifest_v2",
     "analyze_manifest_v4",
+    "analyze_manifest_v5",
     "capture_request_for_window",
     "capture_window_for_finding",
     "classify_against_claim",
@@ -142,6 +167,9 @@ __all__ = [
     "format_timeline",
     "format_v1_timeline",
     "format_v2_timeline",
+    "measure_trajectory",
+    "refine_subject_correlation",
+    "refine_v4_result",
     "sample_clip",
     "select_finding",
     "track_candidates",
