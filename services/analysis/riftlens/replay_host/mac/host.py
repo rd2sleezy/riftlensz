@@ -429,6 +429,7 @@ class MacReplayHost:
             sleep_clock=self._clock,
             camera_framing=camera_framing,
             allow_capture_without_framing=allow_capture_without_framing,
+            enforce_frame_rate=False,
         )
 
     def recording_client(self) -> ReplayApiClient | None:

@@ -18,6 +18,7 @@ from riftlens.domain.capture import (
     TERMINAL_STATUSES,
     CaptureArtifactSpec,
     CaptureBudget,
+    CaptureCoverage,
     CaptureManifest,
     CaptureMode,
     CaptureProgress,
@@ -332,6 +333,7 @@ class CaptureService:
             artifacts=result.artifacts,
             completed_at_ms=completed_at,
             camera_framing=result.camera_framing,
+            capture_coverage=result.capture_coverage,
         )
         artifact_store.write_manifest(job.directory, manifest)
         rows = [
@@ -530,6 +532,7 @@ def _build_manifest(
     artifacts: tuple[CaptureArtifactSpec, ...],
     completed_at_ms: int,
     camera_framing: CameraFramingMetadata | None = None,
+    capture_coverage: CaptureCoverage | None = None,
 ) -> CaptureManifest:
     codec = request.codec or (
         "webm" if artifacts and artifacts[0].kind == ARTIFACT_KIND_CLIP else "png"
@@ -565,6 +568,7 @@ def _build_manifest(
         declared_patch=None if snapshot.rofl is None else snapshot.rofl.declared_patch,
         camera_controlled=controlled,
         camera_framing=camera_framing,
+        capture_coverage=capture_coverage,
         artifacts=artifacts,
     )
 

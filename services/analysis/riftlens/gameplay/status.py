@@ -57,6 +57,7 @@ _DEFAULT_ACTION: dict[ReplayErrorCode, str] = {
     ReplayErrorCode.CAPTURE_TIMEOUT: "retry",
     ReplayErrorCode.CAPTURE_OUTPUT_MISSING: "retry",
     ReplayErrorCode.CAPTURE_OUTPUT_EMPTY: "retry",
+    ReplayErrorCode.CAPTURE_TRUNCATED: "retry",
     ReplayErrorCode.CAPTURE_RECORDING_FAILED: "retry",
     ReplayErrorCode.CAPTURE_DISK_FAILED: "free_disk_space",
 }

@@ -15,14 +15,20 @@ from riftlens.domain.camera_framing import (
     metadata_for_plan,
 )
 from riftlens.domain.capture import (
+    ARTIFACT_KIND_CLIP,
     DEFAULT_CAPTURE_POLL_S,
     DEFAULT_CAPTURE_TIMEOUT_S,
     DEFAULT_MAX_ARTIFACTS,
     CaptureArtifactSpec,
+    CaptureCoverage,
+    CaptureCoverageVerdict,
     CaptureMode,
     CaptureProgress,
     CaptureResult,
     CaptureStatus,
+    RecordingCompletionMethod,
+    capture_duration_covers,
+    min_acceptable_capture_duration_ms,
     resolve_mode_settings,
     validate_interval,
 )
@@ -38,6 +44,7 @@ from riftlens.replay_host.capture.camera_framing import (
     apply_framing,
     restore_framing,
 )
+from riftlens.replay_host.capture.media_probe import probe_clip_media
 from riftlens.replay_host.timing import SleepClock, WallClock
 
 DEFAULT_POLL_INTERVAL_S = DEFAULT_CAPTURE_POLL_S
@@ -45,6 +52,7 @@ START_GRACE_POLLS = 3
 SEEK_BEFORE_RECORD_TIMEOUT_S = 90.0
 SEEK_LANDING_TOLERANCE_S = 1.5
 TEMP_STABLE_POLLS = 3
+PLAYBACK_END_TOLERANCE_S = 0.75
 
 ProgressSink = Callable[[CaptureProgress], None]
 
@@ -90,6 +98,11 @@ class RecordingOrchestrator:
         self._start_s = 0.0
         self._end_s = 0.0
         self._output_path: Path | None = None
+        self.api_dropout_count = 0
+        self.completion_method: RecordingCompletionMethod | None = None
+        self.temp_promotion_method: str | None = None
+        self._last_progress: RecordingProgress | None = None
+        self._started_mono = 0.0
 
     def start(
         self,
@@ -100,14 +113,24 @@ class RecordingOrchestrator:
         codec: str,
         fps: float,
         lossless: bool = False,
+        enforce_frame_rate: bool = True,
     ) -> ReplayRecording:
-        """Seek to ``start_s``, unpause, then POST ``recording=true``. Times are source seconds."""
+        """Seek to ``start_s``, unpause, then POST ``recording=true``. Times are source seconds.
+
+        ``enforce_frame_rate`` must be False on macOS: True makes League accelerate
+        playback ~5x during encode, so a 17s game interval becomes ~4s of media.
+        """
         self._start_s = float(start_s)
         self._end_s = float(end_s)
         self._output_path = Path(path)
+        self.api_dropout_count = 0
+        self.completion_method = None
+        self.temp_promotion_method = None
+        self._last_progress = None
+        self._started_mono = self._clock.monotonic()
         # Land the seek before encode — starting mid-seek crashes macOS League encode.
         self._await_seek_landing(float(start_s))
-        self._client.set_playback(paused=False, readback=False)
+        self._client.set_playback(paused=False, speed=1.0, readback=False)
         patch = {
             "recording": True,
             "codec": codec,
@@ -115,8 +138,9 @@ class RecordingOrchestrator:
             "startTime": float(start_s),
             "endTime": float(end_s),
             "framesPerSecond": float(fps),
-            "enforceFrameRate": True,
+            "enforceFrameRate": bool(enforce_frame_rate),
             "lossless": bool(lossless),
+            "replaySpeed": 1.0,
         }
         try:
             return self._client.set_recording(patch)
@@ -134,8 +158,9 @@ class RecordingOrchestrator:
                 startTime=float(start_s),
                 endTime=float(end_s),
                 framesPerSecond=float(fps),
-                enforceFrameRate=True,
+                enforceFrameRate=bool(enforce_frame_rate),
                 lossless=bool(lossless),
+                replaySpeed=1.0,
             )
 
     def poll(self) -> RecordingProgress:
@@ -154,12 +179,13 @@ class RecordingOrchestrator:
         cancel: threading.Event | None = None,
         on_progress: Callable[[RecordingProgress], None] | None = None,
     ) -> ReplayRecording:
-        """Poll until the client reports ``recording=false``. Raises typed capture errors."""
+        """Poll until replay covered the interval and encode finished. Raises typed errors."""
         deadline = self._clock.monotonic() + max(0.0, timeout_s)
         started = False
         idle_polls = 0
         stable_bytes: int | None = None
         stable_count = 0
+        source_budget_s = max(5.0, (self._end_s - self._start_s) + 30.0)
         while True:
             if cancel is not None and cancel.is_set():
                 self._safe_stop()
@@ -179,7 +205,7 @@ class RecordingOrchestrator:
                             "underlying": exc.code.value,
                         },
                     ) from exc
-                # macOS: GET stalls / drops while ``clip.webm.tmp`` is already written.
+                self.api_dropout_count += 1
                 size = (
                     0
                     if self._output_path is None
@@ -196,6 +222,10 @@ class RecordingOrchestrator:
                 recovered = self._recover_from_temp_output(
                     previous_bytes=stable_bytes,
                     stable_count=stable_count,
+                    near_deadline=(
+                        self._clock.monotonic() >= deadline
+                        or (self._clock.monotonic() - self._started_mono) >= source_budget_s
+                    ),
                 )
                 if recovered is not None:
                     return recovered
@@ -204,18 +234,27 @@ class RecordingOrchestrator:
                     continue
                 raise
             progress = self._progress(recording)
+            self._last_progress = progress
             if on_progress is not None:
                 on_progress(progress)
             if progress.recording:
                 started = True
+                idle_polls = 0
             else:
                 idle_polls += 1
-                if started or idle_polls >= START_GRACE_POLLS or self._reached_end(progress):
+                if self._interval_covered(progress):
+                    self.completion_method = RecordingCompletionMethod.API_RECORDING_FALSE
                     return recording
+                if started or idle_polls >= START_GRACE_POLLS:
+                    # recording=false before end is not success; wait for replay clock or timeout.
+                    if self._playback_reached_end():
+                        self.completion_method = RecordingCompletionMethod.API_RECORDING_FALSE
+                        return recording
             if self._clock.monotonic() >= deadline:
                 recovered = self._recover_from_temp_output(
                     previous_bytes=stable_bytes,
                     stable_count=max(stable_count, TEMP_STABLE_POLLS),
+                    near_deadline=True,
                 )
                 if recovered is not None:
                     return recovered
@@ -225,7 +264,10 @@ class RecordingOrchestrator:
                     details={
                         "reason": "recording_did_not_finish",
                         "timeout_s": timeout_s,
-                        "fraction": progress.fraction,
+                        "fraction": (
+                            0.0 if self._last_progress is None else self._last_progress.fraction
+                        ),
+                        "api_dropout_count": self.api_dropout_count,
                     },
                 )
             self._clock.sleep(max(0.01, poll_s))
@@ -243,8 +285,22 @@ class RecordingOrchestrator:
             fraction=min(1.0, max(0.0, fraction)),
         )
 
-    def _reached_end(self, progress: RecordingProgress) -> bool:
-        return progress.current_source_ms is not None and progress.fraction >= 1.0
+    def _interval_covered(self, progress: RecordingProgress) -> bool:
+        if progress.current_source_ms is None:
+            return False
+        return progress.fraction >= 1.0 or (
+            float(progress.current_source_ms) / 1000.0 >= self._end_s - PLAYBACK_END_TOLERANCE_S
+        )
+
+    def _playback_reached_end(self) -> bool:
+        try:
+            playback = self._client.get_playback()
+        except ReplayError as exc:
+            if _is_transient_recording_poll(exc):
+                self.api_dropout_count += 1
+                return False
+            raise
+        return float(playback.time) >= self._end_s - PLAYBACK_END_TOLERANCE_S
 
     def _safe_stop(self) -> None:
         try:
@@ -286,6 +342,7 @@ class RecordingOrchestrator:
             except ReplayError as exc:
                 if not _is_transient_recording_poll(exc):
                     raise
+                self.api_dropout_count += 1
                 self._clock.sleep(max(0.01, DEFAULT_POLL_INTERVAL_S))
         return None
 
@@ -294,24 +351,43 @@ class RecordingOrchestrator:
         *,
         previous_bytes: int | None,
         stable_count: int,
+        near_deadline: bool,
     ) -> ReplayRecording | None:
-        """If League left a stable ``*.webm.tmp``, treat encode as finished."""
+        """Promote a stable ``*.webm.tmp`` only after the requested interval was covered.
+
+        Size stability alone is not completion — promoting mid-encode truncates Mac captures.
+        """
         if self._output_path is None:
             return None
         size = artifact_store.recorder_output_bytes(self._output_path)
         if size <= 0:
             return None
-        if previous_bytes == size and stable_count >= TEMP_STABLE_POLLS:
-            promoted = artifact_store.promote_temp_recorder_output(self._output_path)
-            path = str(promoted or self._output_path)
-            return ReplayRecording(
-                recording=False,
-                path=path,
-                currentTime=self._end_s,
-                startTime=self._start_s,
-                endTime=self._end_s,
-            )
-        return None
+        if previous_bytes != size or stable_count < TEMP_STABLE_POLLS:
+            return None
+        covered = (
+            self._last_progress is not None and self._interval_covered(self._last_progress)
+        ) or self._playback_reached_end()
+        if not covered and not near_deadline:
+            return None
+        promoted = artifact_store.promote_temp_recorder_output(self._output_path)
+        path = str(promoted or self._output_path)
+        self.temp_promotion_method = "stable_webm_tmp"
+        if covered:
+            self.completion_method = RecordingCompletionMethod.TEMP_STABLE_AFTER_END
+            current = self._end_s
+            last = self._last_progress
+            if last is not None and last.current_source_ms is not None:
+                current = float(last.current_source_ms) / 1000.0
+        else:
+            self.completion_method = RecordingCompletionMethod.TIMEOUT_TEMP_PROMOTE
+            current = None
+        return ReplayRecording(
+            recording=False,
+            path=path,
+            currentTime=current,
+            startTime=self._start_s,
+            endTime=self._end_s,
+        )
 
 
 def _is_transient_recording_poll(exc: ReplayError) -> bool:
@@ -341,15 +417,20 @@ def run_capture(
     sleep_clock: SleepClock | None = None,
     camera_framing: CameraFramingPlan | None = None,
     allow_capture_without_framing: bool = True,
+    enforce_frame_rate: bool = True,
 ) -> CaptureResult:
     """Record one interval and return timestamped artifacts. Blocks; never touches the DB.
 
     When ``camera_framing`` is set (automated visual captures only), applies path+GST
     framing, re-applies after capture seek, then restores prior ``/replay/render``.
+
+    A capture is COMPLETE only when the requested interval was covered and clip media
+    (when applicable) probes to an acceptable duration. File existence alone is not enough.
     """
     framing_meta: CameraFramingMetadata | None = None
     saved_render: SavedRenderState | None = None
     active: RecordingClient = client
+    coverage: CaptureCoverage | None = None
     try:
         if camera_framing is not None:
             framing_meta, saved_render, active = _prepare_framing(
@@ -392,6 +473,7 @@ def run_capture(
             codec=settings.codec,
             fps=settings.fps,
             lossless=lossless,
+            enforce_frame_rate=enforce_frame_rate,
         )
         try:
             orchestrator.wait_until_complete(
@@ -408,14 +490,56 @@ def run_capture(
                 ),
             )
         except ReplayError as wait_exc:
-            # macOS may drop the API after writing clip.webm.tmp; promote and continue.
-            if artifact_store.promote_temp_recorder_output(output) is None:
+            # macOS may drop the API after writing clip.webm.tmp; promote only for verification.
+            if wait_exc.code is ReplayErrorCode.CAPTURE_CANCELLED:
+                raise
+            promoted = artifact_store.promote_temp_recorder_output(output)
+            if promoted is None:
                 raise wait_exc
+            orchestrator.temp_promotion_method = (
+                orchestrator.temp_promotion_method or "wait_exception_temp_promote"
+            )
+            if wait_exc.code is ReplayErrorCode.CAPTURE_TIMEOUT:
+                orchestrator.completion_method = RecordingCompletionMethod.TIMEOUT_TEMP_PROMOTE
+            else:
+                orchestrator.completion_method = (
+                    RecordingCompletionMethod.WAIT_EXCEPTION_TEMP_PROMOTE
+                )
+            # Fall through: duration verification decides COMPLETE vs CAPTURE_TRUNCATED.
         else:
             artifact_store.promote_temp_recorder_output(output)
         if cancel is not None and cancel.is_set():
             raise ReplayError(
                 ReplayErrorCode.CAPTURE_CANCELLED, details={"reason": "cancelled_after_recording"}
+            )
+        coverage = _verify_and_build_coverage(
+            output_path=output,
+            kind=settings.kind,
+            start_game_ms=int(start_game_ms),
+            end_game_ms=int(end_game_ms),
+            orchestrator=orchestrator,
+            api_fraction_complete=_last_fraction_complete(orchestrator),
+        )
+        if coverage.coverage_verdict is CaptureCoverageVerdict.TRUNCATED:
+            raise ReplayError(
+                ReplayErrorCode.CAPTURE_TRUNCATED,
+                details={
+                    "reason": "media_shorter_than_requested"
+                    if coverage.actual_duration_ms is not None
+                    else "unprobed_insufficient_evidence",
+                    "requested_duration_ms": coverage.requested_duration_ms,
+                    "actual_duration_ms": coverage.actual_duration_ms,
+                    "min_acceptable_duration_ms": coverage.min_acceptable_duration_ms,
+                    "requested_start_game_ms": coverage.requested_start_game_ms,
+                    "requested_end_game_ms": coverage.requested_end_game_ms,
+                    "actual_frame_count": coverage.actual_frame_count,
+                    "completion_method": (
+                        None
+                        if coverage.completion_method is None
+                        else coverage.completion_method.value
+                    ),
+                    "api_dropout_count": coverage.api_dropout_count,
+                },
             )
         artifacts = frames.collect_artifacts(
             output_path=output,
@@ -428,9 +552,7 @@ def run_capture(
             fps=settings.fps,
         )
     except ReplayError as exc:
-        framing_meta = _restore_after_capture(
-            client, camera_framing, saved_render, framing_meta
-        )
+        framing_meta = _restore_after_capture(client, camera_framing, saved_render, framing_meta)
         _cleanup_partials(Path(directory))
         cancelled = exc.code is ReplayErrorCode.CAPTURE_CANCELLED or (
             cancel is not None and cancel.is_set()
@@ -448,10 +570,9 @@ def run_capture(
             status=status,
             error=error,
             camera_framing=framing_meta,
+            capture_coverage=coverage if exc.code is ReplayErrorCode.CAPTURE_TRUNCATED else None,
         )
-    framing_meta = _restore_after_capture(
-        client, camera_framing, saved_render, framing_meta
-    )
+    framing_meta = _restore_after_capture(client, camera_framing, saved_render, framing_meta)
     _cleanup_output(Path(directory))
     _emit(on_progress, capture_id, CaptureStatus.COMPLETE, 1.0, "complete", end_source_ms)
     return CaptureResult(
@@ -467,6 +588,87 @@ def run_capture(
             current_source_ms=end_source_ms,
         ),
         camera_framing=framing_meta,
+        capture_coverage=coverage,
+    )
+
+
+def _last_fraction_complete(orchestrator: RecordingOrchestrator) -> bool:
+    progress = orchestrator._last_progress  # noqa: SLF001 - same module
+    return progress is not None and progress.fraction >= 1.0
+
+
+def _verify_and_build_coverage(
+    *,
+    output_path: Path,
+    kind: str,
+    start_game_ms: int,
+    end_game_ms: int,
+    orchestrator: RecordingOrchestrator,
+    api_fraction_complete: bool,
+) -> CaptureCoverage:
+    """Probe clip duration. Caller raises ``CAPTURE_TRUNCATED`` when verdict is truncated."""
+    requested = int(end_game_ms) - int(start_game_ms)
+    min_ok = min_acceptable_capture_duration_ms(requested)
+    method = orchestrator.completion_method
+    temp_method = orchestrator.temp_promotion_method
+    dropouts = int(orchestrator.api_dropout_count)
+    if kind != ARTIFACT_KIND_CLIP:
+        return CaptureCoverage(
+            requested_start_game_ms=int(start_game_ms),
+            requested_end_game_ms=int(end_game_ms),
+            requested_duration_ms=requested,
+            actual_duration_ms=None,
+            actual_frame_count=None,
+            coverage_verdict=CaptureCoverageVerdict.NOT_APPLICABLE,
+            completion_method=method,
+            temp_promotion_method=temp_method,
+            api_dropout_count=dropouts,
+            min_acceptable_duration_ms=min_ok,
+        )
+    probe = probe_clip_media(Path(output_path))
+    if probe is None:
+        # Placeholder / unreadable bytes: accept only when the API itself reported full coverage.
+        if api_fraction_complete and method is RecordingCompletionMethod.API_RECORDING_FALSE:
+            return CaptureCoverage(
+                requested_start_game_ms=int(start_game_ms),
+                requested_end_game_ms=int(end_game_ms),
+                requested_duration_ms=requested,
+                actual_duration_ms=None,
+                actual_frame_count=None,
+                coverage_verdict=CaptureCoverageVerdict.UNPROBED_API_COMPLETE,
+                completion_method=method,
+                temp_promotion_method=temp_method,
+                api_dropout_count=dropouts,
+                min_acceptable_duration_ms=min_ok,
+            )
+        return CaptureCoverage(
+            requested_start_game_ms=int(start_game_ms),
+            requested_end_game_ms=int(end_game_ms),
+            requested_duration_ms=requested,
+            actual_duration_ms=None,
+            actual_frame_count=None,
+            coverage_verdict=CaptureCoverageVerdict.TRUNCATED,
+            completion_method=method,
+            temp_promotion_method=temp_method,
+            api_dropout_count=dropouts,
+            min_acceptable_duration_ms=min_ok,
+        )
+    covered = capture_duration_covers(
+        requested_duration_ms=requested, actual_duration_ms=probe.duration_ms
+    )
+    return CaptureCoverage(
+        requested_start_game_ms=int(start_game_ms),
+        requested_end_game_ms=int(end_game_ms),
+        requested_duration_ms=requested,
+        actual_duration_ms=probe.duration_ms,
+        actual_frame_count=probe.frame_count,
+        coverage_verdict=(
+            CaptureCoverageVerdict.COVERED if covered else CaptureCoverageVerdict.TRUNCATED
+        ),
+        completion_method=method,
+        temp_promotion_method=temp_method,
+        api_dropout_count=dropouts,
+        min_acceptable_duration_ms=min_ok,
     )
 
 

@@ -25,6 +25,28 @@ CODEC_WEBM = "webm"
 ARTIFACT_KIND_IMAGE = "image"
 ARTIFACT_KIND_CLIP = "clip"
 
+# Clip coverage: actual duration must meet both a ratio floor and an absolute slack.
+CAPTURE_DURATION_MIN_RATIO = 0.90
+CAPTURE_DURATION_ABS_SLACK_MS = 2_000
+
+
+class CaptureCoverageVerdict(StrEnum):
+    """Whether finalized media covers the requested game-time interval."""
+
+    COVERED = "covered"
+    TRUNCATED = "truncated"
+    UNPROBED_API_COMPLETE = "unprobed_api_complete"
+    NOT_APPLICABLE = "not_applicable"
+
+
+class RecordingCompletionMethod(StrEnum):
+    """How the recording wait loop decided encode finished."""
+
+    API_RECORDING_FALSE = "api_recording_false"
+    TEMP_STABLE_AFTER_END = "temp_stable_after_end"
+    TIMEOUT_TEMP_PROMOTE = "timeout_temp_promote"
+    WAIT_EXCEPTION_TEMP_PROMOTE = "wait_exception_temp_promote"
+
 
 class CaptureMode(StrEnum):
     """Requested capture shape. STILL is a degenerate SAMPLED, not a separate path."""
@@ -124,6 +146,78 @@ class CaptureProgress:
 
 
 @dataclass(frozen=True)
+class CaptureCoverage:
+    """Post-finalize duration / completion evidence for one capture."""
+
+    requested_start_game_ms: int
+    requested_end_game_ms: int
+    requested_duration_ms: int
+    actual_duration_ms: int | None
+    actual_frame_count: int | None
+    coverage_verdict: CaptureCoverageVerdict
+    completion_method: RecordingCompletionMethod | None
+    temp_promotion_method: str | None
+    api_dropout_count: int
+    min_acceptable_duration_ms: int
+
+    def to_dict(self) -> dict[str, Any]:
+        """Return a JSON-ready mapping for the capture manifest."""
+        return {
+            "requested_start_game_ms": self.requested_start_game_ms,
+            "requested_end_game_ms": self.requested_end_game_ms,
+            "requested_duration_ms": self.requested_duration_ms,
+            "actual_duration_ms": self.actual_duration_ms,
+            "actual_frame_count": self.actual_frame_count,
+            "coverage_verdict": self.coverage_verdict.value,
+            "completion_method": (
+                None if self.completion_method is None else self.completion_method.value
+            ),
+            "temp_promotion_method": self.temp_promotion_method,
+            "api_dropout_count": self.api_dropout_count,
+            "min_acceptable_duration_ms": self.min_acceptable_duration_ms,
+        }
+
+    @classmethod
+    def from_dict(cls, payload: Mapping[str, Any]) -> CaptureCoverage:
+        """Parse a mapping produced by ``to_dict``."""
+        method_raw = payload.get("completion_method")
+        method = RecordingCompletionMethod(str(method_raw)) if method_raw is not None else None
+        return cls(
+            requested_start_game_ms=int(payload["requested_start_game_ms"]),
+            requested_end_game_ms=int(payload["requested_end_game_ms"]),
+            requested_duration_ms=int(payload["requested_duration_ms"]),
+            actual_duration_ms=_opt_int(payload.get("actual_duration_ms")),
+            actual_frame_count=_opt_int(payload.get("actual_frame_count")),
+            coverage_verdict=CaptureCoverageVerdict(str(payload["coverage_verdict"])),
+            completion_method=method,
+            temp_promotion_method=_opt_str(payload.get("temp_promotion_method")),
+            api_dropout_count=int(payload.get("api_dropout_count") or 0),
+            min_acceptable_duration_ms=int(payload["min_acceptable_duration_ms"]),
+        )
+
+
+def min_acceptable_capture_duration_ms(requested_duration_ms: int) -> int:
+    """Return the shortest media duration that still counts as covering ``requested``."""
+    requested = max(0, int(requested_duration_ms))
+    if requested <= 0:
+        return 0
+    ratio_floor = int(round(requested * CAPTURE_DURATION_MIN_RATIO))
+    abs_floor = max(0, requested - CAPTURE_DURATION_ABS_SLACK_MS)
+    return max(ratio_floor, abs_floor)
+
+
+def capture_duration_covers(
+    *,
+    requested_duration_ms: int,
+    actual_duration_ms: int | None,
+) -> bool:
+    """Return True when probed media duration meets the explicit coverage tolerance."""
+    if actual_duration_ms is None:
+        return False
+    return int(actual_duration_ms) >= min_acceptable_capture_duration_ms(requested_duration_ms)
+
+
+@dataclass(frozen=True)
 class CaptureArtifactSpec:
     """One written file. ``game_t_ms`` is authoritative and also encoded in the filename."""
 
@@ -195,6 +289,7 @@ class CaptureManifest:
     declared_patch: str | None = None
     camera_controlled: bool = False
     camera_framing: CameraFramingMetadata | None = None
+    capture_coverage: CaptureCoverage | None = None
     engine_version: str = CAPTURE_ENGINE_VERSION
     artifacts: tuple[CaptureArtifactSpec, ...] = ()
 
@@ -226,6 +321,8 @@ class CaptureManifest:
         }
         if self.camera_framing is not None:
             body["camera_framing"] = self.camera_framing.to_dict()
+        if self.capture_coverage is not None:
+            body["capture_coverage"] = self.capture_coverage.to_dict()
         return body
 
     @classmethod
@@ -241,6 +338,10 @@ class CaptureManifest:
         camera_controlled = bool(payload.get("camera_controlled", False))
         if framing is not None:
             camera_controlled = bool(framing.camera_controlled)
+        coverage_raw = payload.get("capture_coverage")
+        coverage = (
+            CaptureCoverage.from_dict(coverage_raw) if isinstance(coverage_raw, Mapping) else None
+        )
         return cls(
             capture_id=str(payload["capture_id"]),
             source_id=str(payload["source_id"]),
@@ -263,6 +364,7 @@ class CaptureManifest:
             declared_patch=_opt_str(payload.get("declared_patch")),
             camera_controlled=camera_controlled,
             camera_framing=framing,
+            capture_coverage=coverage,
             engine_version=str(payload.get("engine_version", CAPTURE_ENGINE_VERSION)),
             artifacts=tuple(
                 CaptureArtifactSpec.from_dict(item)
@@ -284,6 +386,7 @@ class CaptureResult:
     error: ReplayError | None = None
     progress: CaptureProgress | None = None
     camera_framing: CameraFramingMetadata | None = None
+    capture_coverage: CaptureCoverage | None = None
 
 
 @dataclass(frozen=True)

@@ -4,13 +4,40 @@
 **Date:** 2026-08-14  
 **Branch:** `integrate/ui-r1`  
 **Spike:** `spikes/v6_track_loss_diagnostic/`  
-**Capture:** `~/.riftlens/captures/NA1_5620410094/01KZZCQ1C9W831FNC40H2R8MS2`  
+
+## Capture-duration fix rerun (same diagnostic, new media)
+
+**Capture:** `~/.riftlens/captures/NA1_5620410094/01M00NSCH421BEY2SP3PADQT8A`  
 **Match / subject / death:** `NA1_5620410094` · Vladimir pid 6 · GST death `839881`  
-**Framing:** production `path` + GST position · `camera_controlled=true` · placement delta 0  
+**Framing:** production `path` + GST · `camera_controlled=true` · placement delta 0
 
-## Verdict
+After the R.10 Mac duration fix (`enforceFrameRate=false` so encode stays 1x):
 
-### `TRACK_CONTINUITY_NOT_FIXABLE` (on this capture)
+| Field | Before (Case D clip) | After |
+|---|---|---|
+| Requested | 829881–846881 (17 s) | same |
+| Decoded frames | 132 | **468** |
+| Duration | ~4.366 s | **16.788 s** |
+| Implied end | ~834247 | **846669** |
+| `death_in_file` | false | **true** |
+| Longest track | ~4266 ms | **16717 ms** (829917–846634) |
+| End→death (tracks that end before death) | 5734 ms | **2724 ms** |
+| Tracks continuing past death | n/a | trk_0002 / trk_0003 last_seen 846634 (**−6753 ms**) |
+| Unique disappearance ±2000 ms | no | **no** (`disappearing_near_death=[]`) |
+| V.4 / V.5 | UNKNOWN | **UNKNOWN** (no identity-rule changes) |
+| Verdict | `TRACK_CONTINUITY_NOT_FIXABLE` Case D | **`TRACK_CONTINUITY_PARTIAL`** Case D (EOF vs identity disappearance) |
+
+Death is now in the file. V.4 still does not reach LIKELY: no unique champion-like disappearance within `DEATH_ALIGN_MS`. Longest tracks continue **through** death rather than disappearing at it. Do not implement V.6 ranking from this rerun.
+
+Original short-clip writeup retained below.
+
+---
+
+**Original capture:** `~/.riftlens/captures/NA1_5620410094/01KZZCQ1C9W831FNC40H2R8MS2`
+
+## Original verdict (short clip)
+
+### `TRACK_CONTINUITY_NOT_FIXABLE` (on the truncated capture)
 
 **Primary case: D — capture/media ends before GST death.**
 

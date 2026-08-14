@@ -3,421 +3,54 @@
   "subject_pid": 6,
   "subject_champion": "Vladimir",
   "rofl": "/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5620410094.rofl",
-  "open_phase": "PLAYING",
-  "ready_phase": "PLAYING",
-  "clock": {
-    "confidence": "GOOD",
-    "mode": "IDENTITY",
-    "verified": true,
-    "offset_ms": 0,
-    "playback_length_ms": 2484308,
-    "calibrate_mode": "identity_from_playback_length"
-  },
-  "capture_id": "01KZZCQ1C9W831FNC40H2R8MS2",
-  "capture_dir": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/01KZZCQ1C9W831FNC40H2R8MS2",
-  "requested_start_game_ms": 829881,
-  "requested_end_game_ms": 846881,
   "death_t_ms": 839881,
-  "playback_length_s": 2484.3076171875,
-  "playback_time_s": 3.0472850799560547,
-  "camera_target": {
-    "participant_id": 6,
-    "target_game_t_ms": 839881,
-    "source_game_t_ms": 839881,
-    "position": {
-      "x": 1591.0,
-      "y": 9726.0
-    },
-    "confidence": 1.0,
-    "interpolated": false,
-    "basis": "champion_kill position at t=839881"
-  },
-  "camera_plan": {
-    "strategy": "path_gst_position",
-    "camera_mode": "path",
-    "camera_position": {
-      "x": 1591.0,
-      "y": 1910.0,
-      "z": 9726.0
-    },
-    "target": {
-      "participant_id": 6,
-      "target_game_t_ms": 839881,
-      "source_game_t_ms": 839881,
-      "position": {
-        "x": 1591.0,
-        "y": 9726.0
-      },
-      "confidence": 1.0,
-      "interpolated": false,
-      "basis": "champion_kill position at t=839881"
-    },
-    "stabilize_s": 1.5,
-    "camera_attached": false,
-    "field_of_view": 40.0,
-    "camera_rotation": null
-  },
+  "requested_interval": [829881, 846881],
+  "requested_duration_ms": 17000,
+  "capture_id": "01M00NSCH421BEY2SP3PADQT8A",
+  "capture_dir": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/01M00NSCH421BEY2SP3PADQT8A",
   "capture_ok": true,
   "capture_status": "complete",
-  "camera_framing": {
-    "camera_controlled": true,
-    "camera_strategy": "path_gst_position",
-    "status": "placed",
-    "target_participant_id": 6,
-    "gst_target_t_ms": 839881,
-    "gst_source_t_ms": 839881,
-    "gst_position": {
-      "x": 1591.0,
-      "y": 9726.0
-    },
-    "gst_confidence": 1.0,
-    "gst_interpolated": false,
-    "gst_basis": "champion_kill position at t=839881",
-    "replay_camera_position": {
-      "x": 1591.0,
-      "y": 1910.0,
-      "z": 9726.0
-    },
-    "camera_mode": "path",
-    "stabilize_s": 1.5,
-    "restore_status": "restore_failed",
-    "placement_error": null,
-    "restore_error": "Local Replay API is not reachable."
-  },
+  "camera_controlled": true,
   "placement_delta": 0.0,
-  "capture_error": null,
-  "capture_error_details": null,
-  "manifest": {
-    "capture_id": "01KZZCQ1C9W831FNC40H2R8MS2",
-    "clock_map_id": "01KZZCS3DSVAHSWEBJ7F00M3R4",
-    "clock_confidence": "GOOD",
-    "clock_mode": "IDENTITY",
-    "clock_verified": true,
-    "offset_ms": 0,
-    "camera_controlled": true,
-    "camera_framing": {
-      "camera_controlled": true,
-      "camera_strategy": "path_gst_position",
-      "status": "placed",
-      "target_participant_id": 6,
-      "gst_target_t_ms": 839881,
-      "gst_source_t_ms": 839881,
-      "gst_position": {
-        "x": 1591.0,
-        "y": 9726.0
-      },
-      "gst_confidence": 1.0,
-      "gst_interpolated": false,
-      "gst_basis": "champion_kill position at t=839881",
-      "replay_camera_position": {
-        "x": 1591.0,
-        "y": 1910.0,
-        "z": 9726.0
-      },
-      "camera_mode": "path",
-      "stabilize_s": 1.5,
-      "restore_status": "restore_failed",
-      "placement_error": null,
-      "restore_error": "Local Replay API is not reachable."
-    },
-    "game_interval": [
-      829881,
-      846881
-    ],
-    "source_interval": [
-      829881,
-      846881
-    ],
-    "artifacts": [
-      {
-        "id": "01KZZCRMRVXS22R3BSCGG208VB",
-        "kind": "clip",
-        "relative_path": "clip_g829881.webm",
-        "game_t_ms": 829881,
-        "source_t_ms": 829881,
-        "sha256": "e6f0e7925ac52dc74757b587e80deb416d3e7b60a127f4b8645e22d8730a336b",
-        "bytes": 3158097,
-        "width": null,
-        "height": null,
-        "frame_index": 0
-      }
-    ],
-    "duration_ms": 17000
+  "wall_s": 20.93,
+  "coverage": {
+    "requested_duration_ms": 17000,
+    "actual_duration_ms": 16992,
+    "actual_frame_count": 468,
+    "effective_fps": 27.54,
+    "first_game_ms": 829881,
+    "last_game_ms": 846669,
+    "death_in_file": true,
+    "coverage_verdict": "covered",
+    "completion_method": "api_recording_false",
+    "temp_promotion_method": null,
+    "api_dropout_count": 0
   },
   "v4": {
     "status": "UNKNOWN",
     "track_id": null,
     "confidence": 0.0,
-    "method": "none",
     "reasons": [
       "capture_review_pid_ignored_for_identity",
       "subject_death_game_t_ms=839881",
       "disappearing_tracks=0",
       "no champion-like track disappeared near subject death",
       "death-time alignment insufficient; capture ownership ignored"
-    ],
-    "tracks": [
-      {
-        "track_id": "trk_0001",
-        "kind": "CHAMPION_LIKE",
-        "team": "ALLY",
-        "obs": 1,
-        "first_ms": 829881,
-        "last_ms": 829881,
-        "duration_ms": 0,
-        "confidence": 0.85
-      },
-      {
-        "track_id": "trk_0002",
-        "kind": "CHAMPION_LIKE",
-        "team": "ENEMY",
-        "obs": 1,
-        "first_ms": 829881,
-        "last_ms": 829881,
-        "duration_ms": 0,
-        "confidence": 0.8
-      },
-      {
-        "track_id": "trk_0003",
-        "kind": "CHAMPION_LIKE",
-        "team": "ENEMY",
-        "obs": 18,
-        "first_ms": 829881,
-        "last_ms": 834147,
-        "duration_ms": 4266,
-        "confidence": 0.8
-      },
-      {
-        "track_id": "trk_0004",
-        "kind": "CHAMPION_LIKE",
-        "team": "ENEMY",
-        "obs": 18,
-        "first_ms": 829881,
-        "last_ms": 834147,
-        "duration_ms": 4266,
-        "confidence": 0.8
-      },
-      {
-        "track_id": "trk_0005",
-        "kind": "CHAMPION_LIKE",
-        "team": "ENEMY",
-        "obs": 2,
-        "first_ms": 831381,
-        "last_ms": 831647,
-        "duration_ms": 266,
-        "confidence": 0.8
-      },
-      {
-        "track_id": "trk_0006",
-        "kind": "CHAMPION_LIKE",
-        "team": "ENEMY",
-        "obs": 2,
-        "first_ms": 832147,
-        "last_ms": 832381,
-        "duration_ms": 234,
-        "confidence": 0.8
-      }
-    ],
-    "calibration": {
-      "version": "v4.0",
-      "confidence": "WEAK",
-      "subject_team": 200,
-      "red_like_team": 200,
-      "blue_like_team": 100,
-      "green_like_team": null,
-      "anchor_count": 0,
-      "anchors": [],
-      "reasons": [
-        "no anchors; using spectator team-absolute prior (WEAK)"
-      ]
-    },
-    "timing": {
-      "extract_ms": 285.1,
-      "detect_ms": 372.2,
-      "track_ms": 0.8,
-      "align_ms": 0.2,
-      "color_sample_ms": 8.9,
-      "calibrate_ms": 0.1,
-      "total_ms": 668.0,
-      "frames": 18
-    },
-    "subject_deaths_in_window": [
-      839881
-    ],
-    "camera_note": "camera control=UNKNOWN; subject target unresolved",
-    "informative_frames": 18,
-    "confirmed_detections": 42
+    ]
   },
   "v5": {
     "status": "UNKNOWN",
-    "track_id": null,
-    "confidence": 0.0,
-    "method": "none",
-    "identity_change": "unchanged",
-    "contributing_cues": [],
-    "rejected_cues": [
-      "no_base_likely_track"
-    ],
-    "continuity_ms": 0.003,
-    "bundle": null,
-    "cues": [],
-    "base": {
-      "status": "UNKNOWN",
-      "track_id": null,
-      "confidence": 0.0
-    }
+    "identity_change": "unchanged"
   },
-  "runtime": {
-    "v4_wall_s": 0.67,
-    "v5_refine_wall_s": 0.0,
-    "detect_ms": 372.2,
-    "track_ms": 0.8,
-    "calibrate_ms": 0.1,
-    "color_sample_ms": 8.9,
-    "continuity_ms": 0.003
-  },
-  "fail_closed_checks": {
-    "no_correlated_under_uncontrolled": true,
-    "capture_ownership_ignored_in_reasons": true,
-    "no_silent_track_swap": true,
-    "unknown_base_not_invented": true
-  },
-  "pixels_usable": true,
-  "attempts": [
-    {
-      "capture_id": "01KZZCQ1C9W831FNC40H2R8MS2",
-      "capture_dir": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/01KZZCQ1C9W831FNC40H2R8MS2",
-      "requested_start_game_ms": 829881,
-      "requested_end_game_ms": 846881,
-      "death_t_ms": 839881,
-      "playback_length_s": 2484.3076171875,
-      "playback_time_s": 3.0472850799560547,
-      "camera_target": {
-        "participant_id": 6,
-        "target_game_t_ms": 839881,
-        "source_game_t_ms": 839881,
-        "position": {
-          "x": 1591.0,
-          "y": 9726.0
-        },
-        "confidence": 1.0,
-        "interpolated": false,
-        "basis": "champion_kill position at t=839881"
-      },
-      "camera_plan": {
-        "strategy": "path_gst_position",
-        "camera_mode": "path",
-        "camera_position": {
-          "x": 1591.0,
-          "y": 1910.0,
-          "z": 9726.0
-        },
-        "target": {
-          "participant_id": 6,
-          "target_game_t_ms": 839881,
-          "source_game_t_ms": 839881,
-          "position": {
-            "x": 1591.0,
-            "y": 9726.0
-          },
-          "confidence": 1.0,
-          "interpolated": false,
-          "basis": "champion_kill position at t=839881"
-        },
-        "stabilize_s": 1.5,
-        "camera_attached": false,
-        "field_of_view": 40.0,
-        "camera_rotation": null
-      },
-      "capture_ok": true,
-      "capture_status": "complete",
-      "camera_framing": {
-        "camera_controlled": true,
-        "camera_strategy": "path_gst_position",
-        "status": "placed",
-        "target_participant_id": 6,
-        "gst_target_t_ms": 839881,
-        "gst_source_t_ms": 839881,
-        "gst_position": {
-          "x": 1591.0,
-          "y": 9726.0
-        },
-        "gst_confidence": 1.0,
-        "gst_interpolated": false,
-        "gst_basis": "champion_kill position at t=839881",
-        "replay_camera_position": {
-          "x": 1591.0,
-          "y": 1910.0,
-          "z": 9726.0
-        },
-        "camera_mode": "path",
-        "stabilize_s": 1.5,
-        "restore_status": "restore_failed",
-        "placement_error": null,
-        "restore_error": "Local Replay API is not reachable."
-      },
-      "placement_delta": 0.0,
-      "capture_error": null,
-      "capture_error_details": null,
-      "manifest": {
-        "capture_id": "01KZZCQ1C9W831FNC40H2R8MS2",
-        "clock_map_id": "01KZZCS3DSVAHSWEBJ7F00M3R4",
-        "clock_confidence": "GOOD",
-        "clock_mode": "IDENTITY",
-        "clock_verified": true,
-        "offset_ms": 0,
-        "camera_controlled": true,
-        "camera_framing": {
-          "camera_controlled": true,
-          "camera_strategy": "path_gst_position",
-          "status": "placed",
-          "target_participant_id": 6,
-          "gst_target_t_ms": 839881,
-          "gst_source_t_ms": 839881,
-          "gst_position": {
-            "x": 1591.0,
-            "y": 9726.0
-          },
-          "gst_confidence": 1.0,
-          "gst_interpolated": false,
-          "gst_basis": "champion_kill position at t=839881",
-          "replay_camera_position": {
-            "x": 1591.0,
-            "y": 1910.0,
-            "z": 9726.0
-          },
-          "camera_mode": "path",
-          "stabilize_s": 1.5,
-          "restore_status": "restore_failed",
-          "placement_error": null,
-          "restore_error": "Local Replay API is not reachable."
-        },
-        "game_interval": [
-          829881,
-          846881
-        ],
-        "source_interval": [
-          829881,
-          846881
-        ],
-        "artifacts": [
-          {
-            "id": "01KZZCRMRVXS22R3BSCGG208VB",
-            "kind": "clip",
-            "relative_path": "clip_g829881.webm",
-            "game_t_ms": 829881,
-            "source_t_ms": 829881,
-            "sha256": "e6f0e7925ac52dc74757b587e80deb416d3e7b60a127f4b8645e22d8730a336b",
-            "bytes": 3158097,
-            "width": null,
-            "height": null,
-            "frame_index": 0
-          }
-        ],
-        "duration_ms": 17000
-      },
-      "pixels_usable": true
-    }
-  ],
-  "research_verdict": "PARTIALLY_SUPPORTED"
+  "v6_diagnostic": {
+    "verdict": "TRACK_CONTINUITY_PARTIAL",
+    "death_in_file": true,
+    "decoded_frames": 468,
+    "duration_s": 16.788,
+    "implied_end_game_ms": 846669,
+    "baseline_end_to_death_ms": 2724,
+    "best_legitimate_end_to_death_ms": -6753,
+    "unique_disappearance_within_2000ms": false,
+    "v4_likely_without_identity_changes": false
+  }
 }

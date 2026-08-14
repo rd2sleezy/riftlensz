@@ -54,6 +54,7 @@ class ReplayErrorCode(StrEnum):
     CAPTURE_TIMEOUT = "CAPTURE_TIMEOUT"
     CAPTURE_OUTPUT_MISSING = "CAPTURE_OUTPUT_MISSING"
     CAPTURE_OUTPUT_EMPTY = "CAPTURE_OUTPUT_EMPTY"
+    CAPTURE_TRUNCATED = "CAPTURE_TRUNCATED"
     CAPTURE_RECORDING_FAILED = "CAPTURE_RECORDING_FAILED"
     CAPTURE_DISK_FAILED = "CAPTURE_DISK_FAILED"
 
@@ -127,6 +128,9 @@ _DEFAULT_MESSAGE: dict[ReplayErrorCode, str] = {
     ReplayErrorCode.CAPTURE_TIMEOUT: "The replay client did not finish recording in time.",
     ReplayErrorCode.CAPTURE_OUTPUT_MISSING: "The replay client wrote no capture output.",
     ReplayErrorCode.CAPTURE_OUTPUT_EMPTY: "Capture output exists but contains no usable frames.",
+    ReplayErrorCode.CAPTURE_TRUNCATED: (
+        "Capture media exists but does not cover the requested game-time interval."
+    ),
     ReplayErrorCode.CAPTURE_RECORDING_FAILED: "The replay client refused or aborted the recording.",
     ReplayErrorCode.CAPTURE_DISK_FAILED: "Capture files could not be written to disk.",
 }
@@ -176,6 +180,7 @@ _SEVERITY: dict[ReplayErrorCode, ReplayErrorSeverity] = {
     ReplayErrorCode.CAPTURE_TIMEOUT: "retryable",
     ReplayErrorCode.CAPTURE_OUTPUT_MISSING: "retryable",
     ReplayErrorCode.CAPTURE_OUTPUT_EMPTY: "retryable",
+    ReplayErrorCode.CAPTURE_TRUNCATED: "retryable",
     ReplayErrorCode.CAPTURE_RECORDING_FAILED: "retryable",
     ReplayErrorCode.CAPTURE_DISK_FAILED: "fatal",
 }

@@ -4,6 +4,8 @@ import json
 import ssl
 import time
 from collections.abc import Mapping
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FutureTimeout
 from typing import Any
 
 import httpx
@@ -63,7 +65,35 @@ class LoopbackHttpsClient:
         raise last_error or ReplayError(ReplayErrorCode.REPLAY_API_UNAVAILABLE)
 
     def _once(self, method: str, url: str, json_body: Mapping[str, Any] | None) -> Any:
-        """Issue one HTTP call. Assumes origin/TLS were already validated."""
+        """Issue one HTTP call. Assumes origin/TLS were already validated.
+
+        Mac Replay API can complete TLS then hang forever on the HTTP body; httpx
+        timeouts do not always interrupt that SSL read, so enforce a hard deadline.
+        """
+        timeout_s = self._hard_timeout_s()
+        executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="replay-api")
+        try:
+            future = executor.submit(self._request_blocking, method, url, json_body)
+            try:
+                return future.result(timeout=timeout_s)
+            except FutureTimeout as exc:
+                raise ReplayError(
+                    ReplayErrorCode.REPLAY_API_UNAVAILABLE,
+                    details={"reason": "timeout", "url": url},
+                ) from exc
+        finally:
+            executor.shutdown(wait=False, cancel_futures=True)
+
+    def _hard_timeout_s(self) -> float:
+        read = self._timeout.read
+        if read is not None and float(read) > 0:
+            return float(read)
+        return 5.0
+
+    def _request_blocking(
+        self, method: str, url: str, json_body: Mapping[str, Any] | None
+    ) -> Any:
+        """Blocking httpx call used by ``_once``. Must not be invoked without a deadline."""
         try:
             with httpx.Client(
                 verify=self._ctx, timeout=self._timeout, trust_env=False

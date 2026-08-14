@@ -237,6 +237,27 @@ def test_orchestrator_polls_until_recording_stops(tmp_path: Path) -> None:
     assert posted[0]["startTime"] == 100.0
     assert posted[0]["endTime"] == 110.0
     assert posted[0]["enforceFrameRate"] is True
+    assert posted[0]["replaySpeed"] == 1.0
+
+
+def test_orchestrator_posts_enforce_frame_rate_false_when_requested(tmp_path: Path) -> None:
+    """macOS must POST enforceFrameRate=false; True accelerates playback ~5x."""
+    behavior = FakeReplayBehavior(recording_instant=True)
+    with FakeReplayApiServer(behavior) as server:
+        orchestrator = RecordingOrchestrator(_client(server), clock=FakeClock())
+        orchestrator.start(
+            tmp_path / "clip.webm",
+            start_s=100.0,
+            end_s=117.0,
+            codec="webm",
+            fps=30.0,
+            enforce_frame_rate=False,
+        )
+    posted = [body for path, body in behavior.post_log if path == "/replay/recording"]
+    assert posted[0]["enforceFrameRate"] is False
+    assert posted[0]["replaySpeed"] == 1.0
+    assert posted[0]["startTime"] == 100.0
+    assert posted[0]["endTime"] == 117.0
 
 
 def test_orchestrator_retries_recording_read_timeouts(tmp_path: Path) -> None:
@@ -313,9 +334,10 @@ def test_promote_temp_recorder_output_renames_webm_tmp(tmp_path: Path) -> None:
     assert not tmp.exists()
 
 
-def test_orchestrator_completes_from_stable_webm_tmp(tmp_path: Path) -> None:
-    """When GET /recording dies after encode, a stable clip.webm.tmp is success."""
+def test_orchestrator_completes_from_stable_webm_tmp_after_playback_end(tmp_path: Path) -> None:
+    """API dropout + stable tmp is success only after playback reaches the requested end."""
     behavior = FakeReplayBehavior(recording_poll_steps=20)
+    behavior.time_frozen = False
     output = tmp_path / "clip.webm"
     with FakeReplayApiServer(behavior) as server:
         client = _client(server)
@@ -337,6 +359,39 @@ def test_orchestrator_completes_from_stable_webm_tmp(tmp_path: Path) -> None:
     assert output.is_file()
     assert output.read_bytes() == b"x" * 2048
     assert calls["n"] >= TEMP_STABLE_POLLS
+    assert orchestrator.completion_method is not None
+    assert orchestrator.completion_method.value == "temp_stable_after_end"
+    assert orchestrator.api_dropout_count >= TEMP_STABLE_POLLS
+
+
+def test_orchestrator_does_not_promote_stable_tmp_before_playback_end(tmp_path: Path) -> None:
+    """Mid-encode size-stable tmp must not be treated as completion (Case D root cause)."""
+    behavior = FakeReplayBehavior(recording_poll_steps=20)
+    # Freeze playback so recovery never sees end coverage before timeout.
+    behavior.time_frozen = True
+    behavior.playback["time"] = 1.0
+    behavior.playback["paused"] = False
+    output = tmp_path / "clip.webm"
+    with FakeReplayApiServer(behavior) as server:
+        client = _client(server)
+        orchestrator = RecordingOrchestrator(client, clock=FakeClock())
+        orchestrator.start(output, start_s=1.0, end_s=18.0, codec="webm", fps=30.0)
+        Path(str(output) + ".tmp").write_bytes(b"x" * 2048)
+
+        def always_timeout() -> object:
+            raise ReplayError(
+                ReplayErrorCode.REPLAY_API_UNAVAILABLE,
+                details={"reason": "timeout", "url": "/replay/recording"},
+            )
+
+        client.get_recording = always_timeout  # type: ignore[method-assign]
+        # Near-deadline recovery may still promote for later duration verification.
+        final = orchestrator.wait_until_complete(timeout_s=1.0, poll_s=0.1)
+    assert final.recording is False
+    assert orchestrator.completion_method is not None
+    assert orchestrator.completion_method.value == "timeout_temp_promote"
+    # Must not claim the requested end was reached.
+    assert final.currentTime is None
 
 
 def test_run_capture_clip_writes_one_hashed_artifact(tmp_path: Path) -> None:
@@ -813,9 +868,7 @@ async def test_startup_gc_removes_partials_and_orphans(
         retention=RetentionClass.REVIEW,
         status=CaptureStatus.FAILED,
     )
-    kept = await _seed_capture_row(
-        repo, root, source_id=source_id, retention=RetentionClass.REVIEW
-    )
+    kept = await _seed_capture_row(repo, root, source_id=source_id, retention=RetentionClass.REVIEW)
     orphan = artifact_store.ensure_capture_dir(root, _MATCH, "orphan_capture")
     (orphan / "clip_g0.webm").write_bytes(b"junk")
 
@@ -923,9 +976,7 @@ def test_capture_endpoints_roundtrip(capture_settings: Settings, tmp_path: Path)
             capture_id = created["capture_id"]
             fetched = _poll_capture(client, capture_id)
             unknown = client.get("/gameplay/captures/nope", headers=_AUTH).json()
-            cancelled = client.post(
-                f"/gameplay/captures/{capture_id}/cancel", headers=_AUTH
-            ).json()
+            cancelled = client.post(f"/gameplay/captures/{capture_id}/cancel", headers=_AUTH).json()
     assert fetched["status"] == CaptureStatus.COMPLETE.value
     assert fetched["progress"] == pytest.approx(1.0)
     assert len(fetched["artifacts"]) == 3

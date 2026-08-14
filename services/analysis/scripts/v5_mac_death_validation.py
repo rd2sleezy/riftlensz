@@ -27,6 +27,7 @@ from riftlens.domain.capture import (
     CAPTURE_ENGINE_VERSION,
     CAPTURE_MANIFEST_NAME,
     CaptureArtifactSpec,
+    CaptureCoverage,
     CaptureManifest,
     CaptureMode,
     CaptureStatus,
@@ -159,6 +160,7 @@ def _write_manifest(
     start_game_ms: int,
     end_game_ms: int,
     camera_framing: CameraFramingMetadata | None = None,
+    capture_coverage: CaptureCoverage | None = None,
 ) -> CaptureManifest:
     start_source = clock.game_to_source(start_game_ms)
     end_source = clock.game_to_source(end_game_ms)
@@ -187,6 +189,7 @@ def _write_manifest(
         completed_at_ms=int(time.time() * 1000),
         camera_controlled=controlled,
         camera_framing=camera_framing,
+        capture_coverage=capture_coverage,
         engine_version=CAPTURE_ENGINE_VERSION,
         artifacts=artifacts,
     )
@@ -394,6 +397,22 @@ def _capture_window(
     )
     meta["capture_ok"] = result.ok
     meta["capture_status"] = result.status.value
+    if result.capture_coverage is not None:
+        meta["capture_coverage"] = result.capture_coverage.to_dict()
+        print(
+            "COVERAGE",
+            result.capture_coverage.coverage_verdict.value,
+            "requested",
+            result.capture_coverage.requested_duration_ms,
+            "actual",
+            result.capture_coverage.actual_duration_ms,
+            "dropouts",
+            result.capture_coverage.api_dropout_count,
+            "method",
+            None
+            if result.capture_coverage.completion_method is None
+            else result.capture_coverage.completion_method.value,
+        )
     if result.camera_framing is not None:
         framing = result.camera_framing
         gst_xy = None
@@ -437,6 +456,7 @@ def _capture_window(
         start_game_ms=start_ms,
         end_game_ms=end_ms,
         camera_framing=result.camera_framing,
+        capture_coverage=result.capture_coverage,
     )
     meta["manifest"] = {
         "capture_id": manifest.capture_id,
@@ -449,6 +469,9 @@ def _capture_window(
         "camera_framing": None
         if manifest.camera_framing is None
         else manifest.camera_framing.to_dict(),
+        "capture_coverage": None
+        if manifest.capture_coverage is None
+        else manifest.capture_coverage.to_dict(),
         "game_interval": [start_ms, end_ms],
         "source_interval": [manifest.start_source_ms, manifest.end_source_ms],
         "artifacts": [a.to_dict() for a in manifest.artifacts],
