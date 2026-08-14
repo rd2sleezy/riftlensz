@@ -7,6 +7,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Protocol
 
+from riftlens.domain.camera_framing import CameraFramingPlan
 from riftlens.domain.capture import (
     DEFAULT_CAPTURE_POLL_S,
     DEFAULT_CAPTURE_TIMEOUT_S,
@@ -114,5 +115,7 @@ class ReplayHostPort(Protocol):
         poll_s: float = DEFAULT_CAPTURE_POLL_S,
         cancel: threading.Event | None = None,
         on_progress: CaptureProgressSink | None = None,
+        camera_framing: CameraFramingPlan | None = None,
+        allow_capture_without_framing: bool = True,
     ) -> CaptureResult:
         """Record ``[start, end)`` game ms into ``output_dir`` (R.10). Blocks; never persists."""

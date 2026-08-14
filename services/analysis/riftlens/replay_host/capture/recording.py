@@ -6,8 +6,14 @@ import threading
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any, Protocol, cast
 
+from riftlens.domain.camera_framing import (
+    CameraFramingMetadata,
+    CameraFramingPlan,
+    CameraFramingStatus,
+    metadata_for_plan,
+)
 from riftlens.domain.capture import (
     DEFAULT_CAPTURE_POLL_S,
     DEFAULT_CAPTURE_TIMEOUT_S,
@@ -24,6 +30,14 @@ from riftlens.domain.clock_map import ClockMap
 from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 from riftlens.replay_host.api.models import ReplayPlayback, ReplayRecording
 from riftlens.replay_host.capture import artifact_store, frames
+from riftlens.replay_host.capture.camera_framing import (
+    FramingApiClient,
+    FramingStickyClient,
+    RenderClient,
+    SavedRenderState,
+    apply_framing,
+    restore_framing,
+)
 from riftlens.replay_host.timing import SleepClock, WallClock
 
 DEFAULT_POLL_INTERVAL_S = DEFAULT_CAPTURE_POLL_S
@@ -325,9 +339,36 @@ def run_capture(
     cancel: threading.Event | None = None,
     on_progress: ProgressSink | None = None,
     sleep_clock: SleepClock | None = None,
+    camera_framing: CameraFramingPlan | None = None,
+    allow_capture_without_framing: bool = True,
 ) -> CaptureResult:
-    """Record one interval and return timestamped artifacts. Blocks; never touches the DB."""
+    """Record one interval and return timestamped artifacts. Blocks; never touches the DB.
+
+    When ``camera_framing`` is set (automated visual captures only), applies path+GST
+    framing, re-applies after capture seek, then restores prior ``/replay/render``.
+    """
+    framing_meta: CameraFramingMetadata | None = None
+    saved_render: SavedRenderState | None = None
+    active: RecordingClient = client
     try:
+        if camera_framing is not None:
+            framing_meta, saved_render, active = _prepare_framing(
+                client,
+                camera_framing,
+                sleep_clock=sleep_clock,
+                allow_without=allow_capture_without_framing,
+            )
+            if framing_meta is not None and framing_meta.status is CameraFramingStatus.APPLY_FAILED:
+                if not allow_capture_without_framing:
+                    raise ReplayError(
+                        ReplayErrorCode.CAPTURE_RECORDING_FAILED,
+                        details={
+                            "reason": "camera_framing_apply_failed",
+                            "error": framing_meta.placement_error,
+                        },
+                    )
+                active = client
+                saved_render = None
         validate_interval(start_game_ms, end_game_ms)
         settings = resolve_mode_settings(mode, fps, start_game_ms, end_game_ms)
         start_source_ms = clock.game_to_source(int(start_game_ms))
@@ -342,7 +383,7 @@ def run_capture(
                 },
             )
         output = artifact_store.allocate_output_path(Path(directory), settings.codec)
-        orchestrator = RecordingOrchestrator(client, clock=sleep_clock)
+        orchestrator = RecordingOrchestrator(active, clock=sleep_clock)
         _emit(on_progress, capture_id, CaptureStatus.RUNNING, 0.0, "recording_started", None)
         orchestrator.start(
             output,
@@ -387,6 +428,9 @@ def run_capture(
             fps=settings.fps,
         )
     except ReplayError as exc:
+        framing_meta = _restore_after_capture(
+            client, camera_framing, saved_render, framing_meta
+        )
         _cleanup_partials(Path(directory))
         cancelled = exc.code is ReplayErrorCode.CAPTURE_CANCELLED or (
             cancel is not None and cancel.is_set()
@@ -398,7 +442,16 @@ def run_capture(
             else exc
         )
         _emit(on_progress, capture_id, status, 0.0, error.code.value, None)
-        return CaptureResult(ok=False, capture_id=capture_id, status=status, error=error)
+        return CaptureResult(
+            ok=False,
+            capture_id=capture_id,
+            status=status,
+            error=error,
+            camera_framing=framing_meta,
+        )
+    framing_meta = _restore_after_capture(
+        client, camera_framing, saved_render, framing_meta
+    )
     _cleanup_output(Path(directory))
     _emit(on_progress, capture_id, CaptureStatus.COMPLETE, 1.0, "complete", end_source_ms)
     return CaptureResult(
@@ -413,7 +466,44 @@ def run_capture(
             message="complete",
             current_source_ms=end_source_ms,
         ),
+        camera_framing=framing_meta,
     )
+
+
+def _prepare_framing(
+    client: RecordingClient,
+    plan: CameraFramingPlan,
+    *,
+    sleep_clock: SleepClock | None,
+    allow_without: bool,
+) -> tuple[CameraFramingMetadata, SavedRenderState | None, RecordingClient]:
+    """Apply framing or return APPLY_FAILED metadata. ``allow_without`` is for callers."""
+    del allow_without
+    render_client = cast(RenderClient, client)
+    try:
+        saved, meta = apply_framing(render_client, plan, clock=sleep_clock)
+    except ReplayError as exc:
+        failed = metadata_for_plan(
+            plan,
+            status=CameraFramingStatus.APPLY_FAILED,
+            placement_error=str(exc),
+        )
+        return failed, None, client
+    return meta, saved, FramingStickyClient(cast(FramingApiClient, client), plan)
+
+
+def _restore_after_capture(
+    client: RecordingClient,
+    plan: CameraFramingPlan | None,
+    saved: SavedRenderState | None,
+    placed: CameraFramingMetadata | None,
+) -> CameraFramingMetadata | None:
+    """Restore prior render when framing was applied. Logs failures inside restore_framing."""
+    if plan is None or saved is None or placed is None:
+        return placed
+    if not placed.camera_controlled:
+        return placed
+    return restore_framing(cast(RenderClient, client), saved, plan=plan, placed_meta=placed)
 
 
 def total_bytes(artifacts: tuple[CaptureArtifactSpec, ...]) -> int:

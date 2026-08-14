@@ -3,6 +3,7 @@ from __future__ import annotations
 import threading
 from collections.abc import Sequence
 
+from riftlens.domain.camera_framing import CameraFramingPlan
 from riftlens.domain.capture import (
     DEFAULT_CAPTURE_POLL_S,
     DEFAULT_CAPTURE_TIMEOUT_S,
@@ -137,9 +138,11 @@ class UnsupportedReplayHost:
         poll_s: float = DEFAULT_CAPTURE_POLL_S,
         cancel: threading.Event | None = None,
         on_progress: CaptureProgressSink | None = None,
+        camera_framing: CameraFramingPlan | None = None,
+        allow_capture_without_framing: bool = True,
     ) -> CaptureResult:
         del start_game_ms, end_game_ms, clock, output_dir, mode, fps, max_artifacts
-        del timeout_s, poll_s, cancel, on_progress
+        del timeout_s, poll_s, cancel, on_progress, camera_framing, allow_capture_without_framing
         return CaptureResult(
             ok=False,
             capture_id=capture_id,

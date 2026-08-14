@@ -4,6 +4,7 @@ import threading
 from collections.abc import Sequence
 from pathlib import Path
 
+from riftlens.domain.camera_framing import CameraFramingPlan
 from riftlens.domain.capture import (
     DEFAULT_CAPTURE_POLL_S,
     DEFAULT_CAPTURE_TIMEOUT_S,
@@ -251,6 +252,8 @@ class FakeReplayHost:
         poll_s: float = DEFAULT_CAPTURE_POLL_S,
         cancel: threading.Event | None = None,
         on_progress: CaptureProgressSink | None = None,
+        camera_framing: CameraFramingPlan | None = None,
+        allow_capture_without_framing: bool = True,
     ) -> CaptureResult:
         """Run the real R.10 engine when a recording client was injected, else refuse."""
         self.capture_count += 1
@@ -286,6 +289,8 @@ class FakeReplayHost:
             cancel=cancel,
             on_progress=on_progress,
             sleep_clock=self.sleep_clock,
+            camera_framing=camera_framing,
+            allow_capture_without_framing=allow_capture_without_framing,
         )
 
     def reset_live_session(self) -> None:

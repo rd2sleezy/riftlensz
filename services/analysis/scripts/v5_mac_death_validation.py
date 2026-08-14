@@ -15,6 +15,14 @@ import time
 from pathlib import Path
 
 from riftlens.config import Settings, default_captures_dir
+from riftlens.domain.camera_framing import (
+    CameraFramingMetadata,
+    DEFAULT_STABILIZE_S,
+    build_path_gst_framing_plan,
+    camera_position_to_riot_xy,
+    ground_distance,
+    resolve_gst_camera_target,
+)
 from riftlens.domain.capture import (
     CAPTURE_ENGINE_VERSION,
     CAPTURE_MANIFEST_NAME,
@@ -106,8 +114,12 @@ def gst_from_db(match_id: str) -> GameStateTimeline:
                 loaded = json.loads(raw)
             except json.JSONDecodeError:
                 loaded = {}
-            if isinstance(loaded, dict) and loaded.get("assistingParticipantIds") is not None:
-                payload["assistingParticipantIds"] = loaded["assistingParticipantIds"]
+            if isinstance(loaded, dict):
+                if loaded.get("assistingParticipantIds") is not None:
+                    payload["assistingParticipantIds"] = loaded["assistingParticipantIds"]
+                # Capture camera framing needs on-victim kill world position.
+                if isinstance(loaded.get("position"), dict):
+                    payload["position"] = loaded["position"]
         facts.append(
             Fact(
                 t_ms=int(row["t_ms"]),
@@ -146,12 +158,14 @@ def _write_manifest(
     artifacts: tuple[CaptureArtifactSpec, ...],
     start_game_ms: int,
     end_game_ms: int,
+    camera_framing: CameraFramingMetadata | None = None,
 ) -> CaptureManifest:
     start_source = clock.game_to_source(start_game_ms)
     end_source = clock.game_to_source(end_game_ms)
     codec = "webm"
     if artifacts and artifacts[0].kind == "image":
         codec = "png"
+    controlled = False if camera_framing is None else bool(camera_framing.camera_controlled)
     manifest = CaptureManifest(
         capture_id=capture_id,
         source_id=source_id,
@@ -171,7 +185,8 @@ def _write_manifest(
         clock_verified=bool(clock.verified),
         review_id=None,
         completed_at_ms=int(time.time() * 1000),
-        camera_controlled=False,
+        camera_controlled=controlled,
+        camera_framing=camera_framing,
         engine_version=CAPTURE_ENGINE_VERSION,
         artifacts=artifacts,
     )
@@ -313,6 +328,7 @@ def _capture_window(
     host: MacReplayHost,
     *,
     clock: ClockMap,
+    gst: GameStateTimeline,
     death_t_ms: int,
     start_ms: int,
     end_ms: int,
@@ -343,7 +359,28 @@ def _capture_window(
         meta["capture_error"] = f"playback_probe_failed:{exc}"
         return capture_dir, capture_id, None, meta
 
-    print("CAPTURE", capture_id, start_ms, end_ms)
+    target = resolve_gst_camera_target(
+        gst, participant_id=PID, target_game_t_ms=int(death_t_ms)
+    )
+    framing_plan = None if target is None else build_path_gst_framing_plan(
+        target, stabilize_s=DEFAULT_STABILIZE_S
+    )
+    if target is None:
+        meta["camera_target"] = None
+        meta["camera_plan"] = None
+    else:
+        meta["camera_target"] = target.to_dict()
+        meta["camera_plan"] = framing_plan.to_dict() if framing_plan is not None else None
+        print(
+            "CAMERA_TARGET",
+            target.position.x,
+            target.position.y,
+            "conf",
+            target.confidence,
+            target.basis,
+        )
+
+    print("CAPTURE", capture_id, start_ms, end_ms, "framing", framing_plan is not None)
     result = host.capture_interval(
         start_ms,
         end_ms,
@@ -352,9 +389,34 @@ def _capture_window(
         capture_id=capture_id,
         mode=CaptureMode.CLIP,
         timeout_s=600.0,
+        camera_framing=framing_plan,
+        allow_capture_without_framing=True,
     )
     meta["capture_ok"] = result.ok
     meta["capture_status"] = result.status.value
+    if result.camera_framing is not None:
+        framing = result.camera_framing
+        gst_xy = None
+        if framing.gst_position is not None:
+            gst_xy = (float(framing.gst_position["x"]), float(framing.gst_position["y"]))
+        render_xy = camera_position_to_riot_xy(framing.replay_camera_position)
+        delta = None
+        if gst_xy is not None and render_xy is not None:
+            delta = ground_distance(gst_xy, render_xy)
+        meta["camera_framing"] = framing.to_dict()
+        meta["placement_delta"] = delta
+        print(
+            "CAMERA_FRAMING",
+            framing.status.value,
+            "controlled",
+            framing.camera_controlled,
+            "mode",
+            framing.camera_mode,
+            "delta",
+            delta,
+            "restore",
+            None if framing.restore_status is None else framing.restore_status.value,
+        )
     if result.error is None:
         meta["capture_error"] = None
         meta["capture_error_details"] = None
@@ -374,6 +436,7 @@ def _capture_window(
         artifacts=result.artifacts,
         start_game_ms=start_ms,
         end_game_ms=end_ms,
+        camera_framing=result.camera_framing,
     )
     meta["manifest"] = {
         "capture_id": manifest.capture_id,
@@ -383,6 +446,9 @@ def _capture_window(
         "clock_verified": clock.verified,
         "offset_ms": clock.offset_ms,
         "camera_controlled": manifest.camera_controlled,
+        "camera_framing": None
+        if manifest.camera_framing is None
+        else manifest.camera_framing.to_dict(),
         "game_interval": [start_ms, end_ms],
         "source_interval": [manifest.start_source_ms, manifest.end_source_ms],
         "artifacts": [a.to_dict() for a in manifest.artifacts],
@@ -520,6 +586,7 @@ def main() -> int:
             capture_dir, capture_id, manifest, meta = _capture_window(
                 host,
                 clock=clock,
+                gst=gst,
                 death_t_ms=death_t,
                 start_ms=start_ms,
                 end_ms=end_ms,

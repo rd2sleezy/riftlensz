@@ -5,6 +5,7 @@ from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Literal
 
+from riftlens.domain.camera_framing import CameraFramingPlan
 from riftlens.domain.capture import (
     DEFAULT_CAPTURE_POLL_S,
     DEFAULT_CAPTURE_TIMEOUT_S,
@@ -379,6 +380,8 @@ class MacReplayHost:
         poll_s: float = DEFAULT_CAPTURE_POLL_S,
         cancel: threading.Event | None = None,
         on_progress: CaptureProgressSink | None = None,
+        camera_framing: CameraFramingPlan | None = None,
+        allow_capture_without_framing: bool = True,
     ) -> CaptureResult:
         """Record the interval through ``/replay/recording`` (R.10). Blocks the calling thread."""
         health = self.poll_health()
@@ -424,6 +427,8 @@ class MacReplayHost:
             cancel=cancel,
             on_progress=on_progress,
             sleep_clock=self._clock,
+            camera_framing=camera_framing,
+            allow_capture_without_framing=allow_capture_without_framing,
         )
 
     def recording_client(self) -> ReplayApiClient | None:

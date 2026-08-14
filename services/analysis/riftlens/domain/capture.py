@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any
 
+from riftlens.domain.camera_framing import CameraFramingMetadata, CameraFramingPlan
 from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 
 CAPTURE_MANIFEST_NAME = "manifest.json"
@@ -61,7 +62,12 @@ PARTIAL_STATUSES: frozenset[CaptureStatus] = frozenset(
 
 @dataclass(frozen=True)
 class CaptureRequest:
-    """One explicit user/rule capture ask. Times are canonical game milliseconds."""
+    """One explicit user/rule capture ask. Times are canonical game milliseconds.
+
+    ``camera_framing`` is capture-only opt-in. Ordinary reveal/seek/viewing never
+    constructs a plan. When a plan is set and apply fails, capture continues only if
+    ``allow_capture_without_framing`` is True.
+    """
 
     source_id: str
     start_game_ms: int
@@ -72,6 +78,8 @@ class CaptureRequest:
     retention: RetentionClass = RetentionClass.REVIEW
     review_id: str | None = None
     codec: str | None = None
+    camera_framing: CameraFramingPlan | None = None
+    allow_capture_without_framing: bool = True
 
     def __post_init__(self) -> None:
         if self.max_artifacts <= 0:
@@ -186,12 +194,13 @@ class CaptureManifest:
     completed_at_ms: int | None = None
     declared_patch: str | None = None
     camera_controlled: bool = False
+    camera_framing: CameraFramingMetadata | None = None
     engine_version: str = CAPTURE_ENGINE_VERSION
     artifacts: tuple[CaptureArtifactSpec, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         """Return the JSON body written to ``manifest.json``."""
-        return {
+        body: dict[str, Any] = {
             "capture_id": self.capture_id,
             "source_id": self.source_id,
             "match_id": self.match_id,
@@ -215,11 +224,23 @@ class CaptureManifest:
             "engine_version": self.engine_version,
             "artifacts": [item.to_dict() for item in self.artifacts],
         }
+        if self.camera_framing is not None:
+            body["camera_framing"] = self.camera_framing.to_dict()
+        return body
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> CaptureManifest:
         """Parse a mapping produced by ``to_dict``. Assumes the manifest was written by R.10."""
         raw_artifacts = payload.get("artifacts") or []
+        framing_raw = payload.get("camera_framing")
+        framing = (
+            CameraFramingMetadata.from_dict(framing_raw)
+            if isinstance(framing_raw, Mapping)
+            else None
+        )
+        camera_controlled = bool(payload.get("camera_controlled", False))
+        if framing is not None:
+            camera_controlled = bool(framing.camera_controlled)
         return cls(
             capture_id=str(payload["capture_id"]),
             source_id=str(payload["source_id"]),
@@ -240,7 +261,8 @@ class CaptureManifest:
             review_id=_opt_str(payload.get("review_id")),
             completed_at_ms=_opt_int(payload.get("completed_at_ms")),
             declared_patch=_opt_str(payload.get("declared_patch")),
-            camera_controlled=bool(payload.get("camera_controlled", False)),
+            camera_controlled=camera_controlled,
+            camera_framing=framing,
             engine_version=str(payload.get("engine_version", CAPTURE_ENGINE_VERSION)),
             artifacts=tuple(
                 CaptureArtifactSpec.from_dict(item)
@@ -261,6 +283,7 @@ class CaptureResult:
     artifacts: tuple[CaptureArtifactSpec, ...] = ()
     error: ReplayError | None = None
     progress: CaptureProgress | None = None
+    camera_framing: CameraFramingMetadata | None = None
 
 
 @dataclass(frozen=True)

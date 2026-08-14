@@ -10,6 +10,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 
+from riftlens.domain.camera_framing import CameraFramingMetadata
 from riftlens.domain.capture import (
     ARTIFACT_KIND_CLIP,
     DEFAULT_CAPTURE_BUDGET,
@@ -298,6 +299,8 @@ class CaptureService:
                 poll_s=self._poll_s,
                 cancel=job.cancel,
                 on_progress=note,
+                camera_framing=request.camera_framing,
+                allow_capture_without_framing=request.allow_capture_without_framing,
             )
         except ReplayError as exc:
             result = CaptureResult(
@@ -328,6 +331,7 @@ class CaptureService:
             calibration=calibration,
             artifacts=result.artifacts,
             completed_at_ms=completed_at,
+            camera_framing=result.camera_framing,
         )
         artifact_store.write_manifest(job.directory, manifest)
         rows = [
@@ -525,6 +529,7 @@ def _build_manifest(
     calibration: ClockCalibrationRecord,
     artifacts: tuple[CaptureArtifactSpec, ...],
     completed_at_ms: int,
+    camera_framing: CameraFramingMetadata | None = None,
 ) -> CaptureManifest:
     codec = request.codec or (
         "webm" if artifacts and artifacts[0].kind == ARTIFACT_KIND_CLIP else "png"
@@ -537,6 +542,7 @@ def _build_manifest(
             record.t_start_ms,
             record.t_end_ms,
         ).fps
+    controlled = False if camera_framing is None else bool(camera_framing.camera_controlled)
     return CaptureManifest(
         capture_id=record.id,
         source_id=record.gameplay_source_id,
@@ -557,6 +563,8 @@ def _build_manifest(
         review_id=record.review_id,
         completed_at_ms=completed_at_ms,
         declared_patch=None if snapshot.rofl is None else snapshot.rofl.declared_patch,
+        camera_controlled=controlled,
+        camera_framing=camera_framing,
         artifacts=artifacts,
     )
 
