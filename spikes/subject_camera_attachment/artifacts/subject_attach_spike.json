@@ -1,0 +1,2310 @@
+{
+  "match_id": "NA1_5620410094",
+  "subject_pid": 6,
+  "subject_champion": "Vladimir",
+  "death_t_ms": 839881,
+  "roster": [
+    {
+      "participant_id": 1,
+      "champion_name": "Ezreal",
+      "riot_id_game_name": "Slaydslayer7",
+      "riot_id_tagline": "NA1",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 2,
+      "champion_name": "DrMundo",
+      "riot_id_game_name": "ronamid",
+      "riot_id_tagline": "3818",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 3,
+      "champion_name": "Fizz",
+      "riot_id_game_name": "Hittheclub09",
+      "riot_id_tagline": "4056",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 4,
+      "champion_name": "Jhin",
+      "riot_id_game_name": "dodo2238ala19669",
+      "riot_id_tagline": "NA1",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 5,
+      "champion_name": "TahmKench",
+      "riot_id_game_name": "Dble D",
+      "riot_id_tagline": "NA1",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 6,
+      "champion_name": "Vladimir",
+      "riot_id_game_name": "immynator",
+      "riot_id_tagline": "loler",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 7,
+      "champion_name": "Amumu",
+      "riot_id_game_name": "Saxon",
+      "riot_id_tagline": "LoL",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 8,
+      "champion_name": "Katarina",
+      "riot_id_game_name": "retronixxxx",
+      "riot_id_tagline": "NA1",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 9,
+      "champion_name": "KogMaw",
+      "riot_id_game_name": "The Rock Troll",
+      "riot_id_tagline": "NA1",
+      "summoner_name": null
+    },
+    {
+      "participant_id": 10,
+      "champion_name": "Morgana",
+      "riot_id_game_name": "ViegosBathwater",
+      "riot_id_tagline": "Feral",
+      "summoner_name": null
+    }
+  ],
+  "selection_plan": {
+    "status": "unique",
+    "attach_allowed": true,
+    "preferred": [
+      {
+        "kind": "riot_display",
+        "value": "immynator",
+        "unique": true
+      },
+      {
+        "kind": "riot_display_tagged",
+        "value": "immynator#loler",
+        "unique": true
+      },
+      {
+        "kind": "champion_display",
+        "value": "Vladimir",
+        "unique": true
+      }
+    ],
+    "rejected_reason": null
+  },
+  "hypothesis": "selectionName + cameraAttached can deterministically follow the analyzed participant when the selection token uniquely reverse-maps to that pid.",
+  "launch": {
+    "enable_ok": true,
+    "launched": false,
+    "ready": true
+  },
+  "render_schema": {
+    "keys": [
+      "banners",
+      "cameraAttached",
+      "cameraLockX",
+      "cameraLockY",
+      "cameraLockZ",
+      "cameraLookSpeed",
+      "cameraMode",
+      "cameraMoveSpeed",
+      "cameraPosition",
+      "cameraRotation",
+      "champions",
+      "characters",
+      "depthFogColor",
+      "depthFogEnabled",
+      "depthFogEnd",
+      "depthFogIntensity",
+      "depthFogStart",
+      "depthOfFieldCircle",
+      "depthOfFieldDebug",
+      "depthOfFieldEnabled",
+      "depthOfFieldFar",
+      "depthOfFieldMid",
+      "depthOfFieldNear",
+      "depthOfFieldWidth",
+      "environment",
+      "farClip",
+      "fieldOfView",
+      "floatingText",
+      "fogOfWar",
+      "healthBarChampions",
+      "healthBarMinions",
+      "healthBarPets",
+      "healthBarStructures",
+      "healthBarWards",
+      "heightFogColor",
+      "heightFogEnabled",
+      "heightFogEnd",
+      "heightFogIntensity",
+      "heightFogStart",
+      "interfaceAll",
+      "interfaceAnnounce",
+      "interfaceChat",
+      "interfaceFrames",
+      "interfaceKillCallouts",
+      "interfaceMinimap",
+      "interfaceNeutralTimers",
+      "interfaceQuests",
+      "interfaceReplay",
+      "interfaceScore",
+      "interfaceScoreboard",
+      "interfaceTarget",
+      "interfaceTimeline",
+      "minions",
+      "navGridOffset",
+      "nearClip",
+      "outlineHover",
+      "outlineSelect",
+      "particles",
+      "selectionName",
+      "selectionOffset",
+      "simulateAllParticlesWhileOffScreen",
+      "skyboxOffset",
+      "skyboxPath",
+      "skyboxRadius",
+      "skyboxRotation",
+      "sunDirection"
+    ],
+    "identity_fields": {
+      "selectionName": "",
+      "selectionOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    "has_participant_id": false,
+    "champions_field_type": "bool",
+    "characters_field_type": "bool",
+    "baseline": {
+      "cameraMode": "top",
+      "cameraAttached": true,
+      "selectionName": "",
+      "cameraPosition": {
+        "x": 12767.1220703125,
+        "y": 1911.8480224609375,
+        "z": 933.6571044921875
+      },
+      "cameraRotation": {
+        "x": 0.0,
+        "y": 56.0,
+        "z": 0.0
+      },
+      "selectionOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    }
+  },
+  "openapi": {
+    "paths": {
+      "/swagger/v1/swagger.json": false,
+      "/swagger/v2/swagger.json": true
+    },
+    "render_path": {
+      "get": {
+        "description": "Returns the current render properties.",
+        "operationId": "GetReplayRender",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/Render"
+            }
+          }
+        },
+        "summary": "Returns the current render properties.",
+        "tags": [
+          "replay"
+        ]
+      },
+      "post": {
+        "description": "Allows modifying the current render properties. All values are optional.",
+        "operationId": "PostReplayRender",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "render",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Render"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "$ref": "#/definitions/Render"
+            }
+          }
+        },
+        "summary": "Allows modifying the current render properties. All values are optional.",
+        "tags": [
+          "replay"
+        ]
+      }
+    },
+    "render_schema_name": "Sequence",
+    "render_property_names": [
+      "cameraPosition",
+      "cameraRotation",
+      "depthFogColor",
+      "depthFogEnabled",
+      "depthFogEnd",
+      "depthFogIntensity",
+      "depthFogStart",
+      "depthOfFieldCircle",
+      "depthOfFieldEnabled",
+      "depthOfFieldFar",
+      "depthOfFieldMid",
+      "depthOfFieldNear",
+      "depthOfFieldWidth",
+      "farClip",
+      "fieldOfView",
+      "heightFogColor",
+      "heightFogEnabled",
+      "heightFogEnd",
+      "heightFogIntensity",
+      "heightFogStart",
+      "navGridOffset",
+      "nearClip",
+      "playbackSpeed",
+      "selectionName",
+      "selectionOffset",
+      "skyboxOffset",
+      "skyboxRadius",
+      "skyboxRotation",
+      "sunDirection"
+    ]
+  },
+  "lcd": {
+    "playerlist_count": 10,
+    "playerlist_keys": [
+      "championName",
+      "isBot",
+      "isDead",
+      "items",
+      "level",
+      "position",
+      "rawChampionName",
+      "rawSkinName",
+      "respawnTimer",
+      "riotId",
+      "riotIdGameName",
+      "riotIdTagLine",
+      "runes",
+      "scores",
+      "screenPositionBottom",
+      "screenPositionCenter",
+      "skinID",
+      "skinName",
+      "summonerName",
+      "summonerSpells",
+      "team"
+    ],
+    "activeplayername": "Unknown",
+    "players": [
+      {
+        "championName": "Ezreal",
+        "summonerName": "Slaydslayer7#NA1",
+        "riotId": "Slaydslayer7#NA1",
+        "team": "ORDER"
+      },
+      {
+        "championName": "Dr. Mundo",
+        "summonerName": "ronamid#3818",
+        "riotId": "ronamid#3818",
+        "team": "ORDER"
+      },
+      {
+        "championName": "Fizz",
+        "summonerName": "Hittheclub09#4056",
+        "riotId": "Hittheclub09#4056",
+        "team": "ORDER"
+      },
+      {
+        "championName": "Jhin",
+        "summonerName": "dodo2238ala19669#NA1",
+        "riotId": "dodo2238ala19669#NA1",
+        "team": "ORDER"
+      },
+      {
+        "championName": "Tahm Kench",
+        "summonerName": "Dble D#NA1",
+        "riotId": "Dble D#NA1",
+        "team": "ORDER"
+      },
+      {
+        "championName": "Vladimir",
+        "summonerName": "immynator#loler",
+        "riotId": "immynator#loler",
+        "team": "CHAOS"
+      },
+      {
+        "championName": "Amumu",
+        "summonerName": "Saxon#LoL",
+        "riotId": "Saxon#LoL",
+        "team": "CHAOS"
+      },
+      {
+        "championName": "Katarina",
+        "summonerName": "retronixxxx#NA1",
+        "riotId": "retronixxxx#NA1",
+        "team": "CHAOS"
+      },
+      {
+        "championName": "Kog'Maw",
+        "summonerName": "The Rock Troll#NA1",
+        "riotId": "The Rock Troll#NA1",
+        "team": "CHAOS"
+      },
+      {
+        "championName": "Morgana",
+        "summonerName": "ViegosBathwater#Feral",
+        "riotId": "ViegosBathwater#Feral",
+        "team": "CHAOS"
+      }
+    ]
+  },
+  "selection_tests": [
+    {
+      "label": "champion_Vladimir",
+      "patch": {
+        "selectionName": "Vladimir",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "accepted",
+      "mapping_status": "unique",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "champion_vladimir_lower",
+      "patch": {
+        "selectionName": "vladimir",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "partial",
+      "mapping_status": "unique",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "champion_VLADIMIR_upper",
+      "patch": {
+        "selectionName": "VLADIMIR",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "partial",
+      "mapping_status": "unique",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "riot_immynator",
+      "patch": {
+        "selectionName": "immynator",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "accepted",
+      "mapping_status": "unique",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "riot_tagged",
+      "patch": {
+        "selectionName": "immynator#loler",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "partial",
+      "mapping_status": "unique",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "pid_string_6",
+      "patch": {
+        "selectionName": "6",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "partial",
+      "mapping_status": "unique",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "invalid_NotAChampion",
+      "patch": {
+        "selectionName": "NotAChampion",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "partial",
+      "mapping_status": "unique",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "format_DrMundo",
+      "patch": {
+        "selectionName": "DrMundo",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "ronamid",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "accepted",
+      "mapping_status": "unique",
+      "resolved_selectionName": "ronamid",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "format_Dr_Mundo",
+      "patch": {
+        "selectionName": "Dr. Mundo",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "ronamid",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "ronamid",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "partial",
+      "mapping_status": "unique",
+      "resolved_selectionName": "ronamid",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "switch_Fizz",
+      "patch": {
+        "selectionName": "Fizz",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "ronamid",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "Hittheclub09",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "accepted",
+      "mapping_status": "unique",
+      "resolved_selectionName": "Hittheclub09",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "switch_back_Vladimir",
+      "patch": {
+        "selectionName": "Vladimir",
+        "cameraAttached": true
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "Hittheclub09",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "accepted",
+      "mapping_status": "unique",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": true,
+      "has_participant_id": false
+    },
+    {
+      "label": "clear_empty",
+      "patch": {
+        "selectionName": "",
+        "cameraAttached": false
+      },
+      "before": {
+        "cameraMode": "top",
+        "cameraAttached": true,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after": {
+        "cameraMode": "top",
+        "cameraAttached": false,
+        "selectionName": "immynator",
+        "cameraPosition": {
+          "x": 12767.1220703125,
+          "y": 1911.8480224609375,
+          "z": 933.6571044921875
+        },
+        "cameraRotation": {
+          "x": 0.0,
+          "y": 56.0,
+          "z": 0.0
+        },
+        "selectionOffset": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      },
+      "after_full_keys": [
+        "banners",
+        "cameraAttached",
+        "cameraLockX",
+        "cameraLockY",
+        "cameraLockZ",
+        "cameraLookSpeed",
+        "cameraMode",
+        "cameraMoveSpeed",
+        "cameraPosition",
+        "cameraRotation",
+        "champions",
+        "characters",
+        "depthFogColor",
+        "depthFogEnabled",
+        "depthFogEnd",
+        "depthFogIntensity",
+        "depthFogStart",
+        "depthOfFieldCircle",
+        "depthOfFieldDebug",
+        "depthOfFieldEnabled",
+        "depthOfFieldFar",
+        "depthOfFieldMid",
+        "depthOfFieldNear",
+        "depthOfFieldWidth",
+        "environment",
+        "farClip",
+        "fieldOfView",
+        "floatingText",
+        "fogOfWar",
+        "healthBarChampions",
+        "healthBarMinions",
+        "healthBarPets",
+        "healthBarStructures",
+        "healthBarWards",
+        "heightFogColor",
+        "heightFogEnabled",
+        "heightFogEnd",
+        "heightFogIntensity",
+        "heightFogStart",
+        "interfaceAll",
+        "interfaceAnnounce",
+        "interfaceChat",
+        "interfaceFrames",
+        "interfaceKillCallouts",
+        "interfaceMinimap",
+        "interfaceNeutralTimers",
+        "interfaceQuests",
+        "interfaceReplay",
+        "interfaceScore",
+        "interfaceScoreboard",
+        "interfaceTarget",
+        "interfaceTimeline",
+        "minions",
+        "navGridOffset",
+        "nearClip",
+        "outlineHover",
+        "outlineSelect",
+        "particles",
+        "selectionName",
+        "selectionOffset",
+        "simulateAllParticlesWhileOffScreen",
+        "skyboxOffset",
+        "skyboxPath",
+        "skyboxRadius",
+        "skyboxRotation",
+        "sunDirection"
+      ],
+      "request_status": "partial",
+      "mapping_status": "unresolved",
+      "resolved_selectionName": "immynator",
+      "cameraAttached": false,
+      "has_participant_id": false
+    }
+  ],
+  "participant_mapping": {
+    "riot_pid": 6,
+    "match_v5_champion": "Vladimir",
+    "match_v5_riot_id": "immynator",
+    "replay_selection_target": "immynator",
+    "readback_cameraAttached": true,
+    "reverse_mapped": true,
+    "champion_unique_in_match": true,
+    "api_has_participant_id": false,
+    "limitation": "Replay API exposes selectionName only; no participant/entity id. Identity is proven by unique reverse-map of resolved name onto MATCH-V5."
+  },
+  "seek_attach_then_seek": {
+    "selectionName": "",
+    "cameraAttached": true,
+    "survived": false
+  },
+  "attachment_semantics": {
+    "samples": [
+      {
+        "playback_s": 829.8894653320312,
+        "selectionName": "",
+        "cameraAttached": true,
+        "cameraMode": "top",
+        "camera_xy": [
+          12767.1220703125,
+          933.6571044921875
+        ],
+        "nearest_pid": 4,
+        "nearest_dist": 1365.4,
+        "subject_dist": 14467.8
+      },
+      {
+        "playback_s": 830.423095703125,
+        "selectionName": "",
+        "cameraAttached": true,
+        "cameraMode": "top",
+        "camera_xy": [
+          1883.072265625,
+          9576.59375
+        ],
+        "nearest_pid": 2,
+        "nearest_dist": 526.6,
+        "subject_dist": 667.9
+      },
+      {
+        "playback_s": 830.955810546875,
+        "selectionName": "",
+        "cameraAttached": true,
+        "cameraMode": "top",
+        "camera_xy": [
+          1722.0794677734375,
+          9991.181640625
+        ],
+        "nearest_pid": 6,
+        "nearest_dist": 201.3,
+        "subject_dist": 201.3
+      },
+      {
+        "playback_s": 831.4986572265625,
+        "selectionName": "",
+        "cameraAttached": true,
+        "cameraMode": "top",
+        "camera_xy": [
+          1767.0335693359375,
+          10217.447265625
+        ],
+        "nearest_pid": 6,
+        "nearest_dist": 107.7,
+        "subject_dist": 107.7
+      },
+      {
+        "playback_s": 832.0321044921875,
+        "selectionName": "",
+        "cameraAttached": true,
+        "cameraMode": "top",
+        "camera_xy": [
+          1776.7901611328125,
+          10380.6982421875
+        ],
+        "nearest_pid": 6,
+        "nearest_dist": 268.1,
+        "subject_dist": 268.1
+      },
+      {
+        "playback_s": 832.5632934570312,
+        "selectionName": "",
+        "cameraAttached": true,
+        "cameraMode": "top",
+        "camera_xy": [
+          1744.040283203125,
+          10454.32421875
+        ],
+        "nearest_pid": 6,
+        "nearest_dist": 354.8,
+        "subject_dist": 354.8
+      },
+      {
+        "playback_s": 833.08837890625,
+        "selectionName": "",
+        "cameraAttached": true,
+        "cameraMode": "top",
+        "camera_xy": [
+          1685.9976806640625,
+          10459.3125
+        ],
+        "nearest_pid": 6,
+        "nearest_dist": 377.7,
+        "subject_dist": 377.7
+      },
+      {
+        "playback_s": 833.6209106445312,
+        "selectionName": "",
+        "cameraAttached": true,
+        "cameraMode": "top",
+        "camera_xy": [
+          1609.4532470703125,
+          10359.576171875
+        ],
+        "nearest_pid": 1,
+        "nearest_dist": 284.7,
+        "subject_dist": 306.9
+      }
+    ],
+    "camera_moved": true,
+    "subject_nearest_fraction": 0.625,
+    "subject_is_nearest_majority": true
+  },
+  "attach_visually_works": true,
+  "at_death": {
+    "selectionName": "",
+    "cameraAttached": true,
+    "camera_xy": [
+      1480.975830078125,
+      10064.1689453125
+    ],
+    "gst_death_xy": [
+      1591.0,
+      9726.0
+    ],
+    "distance_to_death": 355.6
+  },
+  "after_death": {
+    "cameraMode": "top",
+    "cameraAttached": true,
+    "selectionName": "",
+    "cameraPosition": {
+      "x": 7494.0751953125,
+      "y": 1911.8480224609375,
+      "z": 6669.48828125
+    },
+    "cameraRotation": {
+      "x": 0.0,
+      "y": 56.0,
+      "z": 0.0
+    },
+    "selectionOffset": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    }
+  },
+  "after_camera_mode_path": {
+    "cameraMode": "path",
+    "cameraAttached": true,
+    "selectionName": ""
+  },
+  "seek_behavior": {
+    "attach_survives_seek": false,
+    "seek_then_attach_works": true,
+    "ranked_sequences": [
+      "seek_then_attach",
+      "seek_wait_attach"
+    ],
+    "preferred": "seek_then_attach"
+  },
+  "capture": {
+    "skipped": false,
+    "ok": true,
+    "status": "complete",
+    "capture_id": "attach_01M00QHPQ8D016HW6CQT8MEA2Q",
+    "capture_dir": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/attach_01M00QHPQ8D016HW6CQT8MEA2Q",
+    "wall_s": 18.04,
+    "error": null,
+    "coverage": {
+      "requested_start_game_ms": 829881,
+      "requested_end_game_ms": 846881,
+      "requested_duration_ms": 17000,
+      "actual_duration_ms": 16804,
+      "actual_frame_count": 440,
+      "coverage_verdict": "covered",
+      "completion_method": "api_recording_false",
+      "temp_promotion_method": null,
+      "api_dropout_count": 0,
+      "min_acceptable_duration_ms": 15300
+    },
+    "after_capture_render": {
+      "cameraMode": "top",
+      "cameraAttached": true,
+      "selectionName": "",
+      "cameraPosition": {
+        "x": 8419.92578125,
+        "y": 1911.8480224609375,
+        "z": 7078.0791015625
+      },
+      "cameraRotation": {
+        "x": 0.0,
+        "y": 56.0,
+        "z": 0.0
+      },
+      "selectionOffset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    "frames": [
+      "artifacts/frames/attach/frame_0000.jpg",
+      "artifacts/frames/attach/frame_0030.jpg",
+      "artifacts/frames/attach/frame_0090.jpg",
+      "artifacts/frames/attach/frame_0150.jpg"
+    ],
+    "analysis": {
+      "v4_status": "UNKNOWN",
+      "v4_confidence": 0.0,
+      "v4_track_id": null,
+      "v4_reasons": [
+        "capture_review_pid_ignored_for_identity",
+        "subject_death_game_t_ms=839881",
+        "disappearing_tracks=3",
+        "conflicting evidence"
+      ],
+      "v5_status": "UNKNOWN",
+      "v5_identity_change": "unchanged",
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "obs": 4,
+          "duration_ms": 1733,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "obs": 3,
+          "duration_ms": 493,
+          "team": "ALLY"
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "obs": 11,
+          "duration_ms": 2491,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "obs": 2,
+          "duration_ms": 224,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "obs": 3,
+          "duration_ms": 500,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0007",
+          "kind": "CHAMPION_LIKE",
+          "obs": 3,
+          "duration_ms": 1017,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0008",
+          "kind": "CHAMPION_LIKE",
+          "obs": 5,
+          "duration_ms": 992,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0009",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0010",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ALLY"
+        },
+        {
+          "track_id": "trk_0011",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0012",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ALLY"
+        },
+        {
+          "track_id": "trk_0013",
+          "kind": "CHAMPION_LIKE",
+          "obs": 19,
+          "duration_ms": 4509,
+          "team": "ALLY"
+        },
+        {
+          "track_id": "trk_0014",
+          "kind": "CHAMPION_LIKE",
+          "obs": 3,
+          "duration_ms": 2525,
+          "team": "ALLY"
+        },
+        {
+          "track_id": "trk_0015",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ALLY"
+        },
+        {
+          "track_id": "trk_0016",
+          "kind": "CHAMPION_LIKE",
+          "obs": 4,
+          "duration_ms": 766,
+          "team": "ALLY"
+        }
+      ],
+      "track_count": 16,
+      "longest_track_ms": 4509,
+      "confirmed_detections": 63,
+      "analyzed_frames": 68
+    }
+  },
+  "path_gst_comparison": {
+    "path": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/01M00NSCH421BEY2SP3PADQT8A",
+    "present": true,
+    "analysis": {
+      "v4_status": "UNKNOWN",
+      "v4_confidence": 0.0,
+      "v4_track_id": null,
+      "v4_reasons": [
+        "capture_review_pid_ignored_for_identity",
+        "subject_death_game_t_ms=839881",
+        "disappearing_tracks=0",
+        "no champion-like track disappeared near subject death",
+        "death-time alignment insufficient; capture ownership ignored"
+      ],
+      "v5_status": "UNKNOWN",
+      "v5_identity_change": "unchanged",
+      "tracks": [
+        {
+          "track_id": "trk_0001",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ALLY"
+        },
+        {
+          "track_id": "trk_0002",
+          "kind": "CHAMPION_LIKE",
+          "obs": 68,
+          "duration_ms": 16717,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0003",
+          "kind": "CHAMPION_LIKE",
+          "obs": 68,
+          "duration_ms": 16717,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0004",
+          "kind": "CHAMPION_LIKE",
+          "obs": 3,
+          "duration_ms": 508,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0005",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0006",
+          "kind": "CHAMPION_LIKE",
+          "obs": 2,
+          "duration_ms": 244,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0007",
+          "kind": "CHAMPION_LIKE",
+          "obs": 2,
+          "duration_ms": 2009,
+          "team": "ENEMY"
+        },
+        {
+          "track_id": "trk_0008",
+          "kind": "CHAMPION_LIKE",
+          "obs": 1,
+          "duration_ms": 0,
+          "team": "ENEMY"
+        }
+      ],
+      "track_count": 8,
+      "longest_track_ms": 16717,
+      "confirmed_detections": 146,
+      "analyzed_frames": 68
+    }
+  },
+  "research_verdict": "SUBJECT_ATTACH_PARTIAL",
+  "verdict_rationale": "Attach-time POST Vladimir/immynator reverse-maps uniquely to pid 6 and the camera follows Vladimir visually, but selectionName clears during playback, seek clears attachment, invalid/pid/tagged tokens are silent no-ops, after-death Directed camera jumps, and the API has no participant id. Not enough for CONTROLLED_SUBJECT.",
+  "isolated_probes": [
+    {
+      "label": "isolated_lower_vladimir",
+      "requested": "vladimir",
+      "resolved": "immynator",
+      "changed": true,
+      "accepted": true
+    },
+    {
+      "label": "isolated_invalid",
+      "requested": "NotAChampion",
+      "resolved": "",
+      "changed": false,
+      "accepted": false
+    },
+    {
+      "label": "isolated_tagged",
+      "requested": "immynator#loler",
+      "resolved": "",
+      "changed": false,
+      "accepted": false
+    },
+    {
+      "label": "isolated_pid6",
+      "requested": "6",
+      "resolved": "Slaydslayer7",
+      "changed": false,
+      "accepted": false
+    },
+    {
+      "label": "isolated_Ezreal",
+      "requested": "Ezreal",
+      "resolved": "Slaydslayer7",
+      "changed": true,
+      "accepted": true
+    }
+  ],
+  "openapi_render_properties": [
+    "banners",
+    "cameraAttached",
+    "cameraLockX",
+    "cameraLockY",
+    "cameraLockZ",
+    "cameraLookSpeed",
+    "cameraMode",
+    "cameraMoveSpeed",
+    "cameraPosition",
+    "cameraRotation",
+    "champions",
+    "characters",
+    "selectionName",
+    "selectionOffset"
+  ],
+  "openapi_has_participant_id": false
+}
