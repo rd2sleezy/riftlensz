@@ -64,9 +64,15 @@ def test_v3_capture_script_is_attach_only() -> None:
     assert "ultralytics" not in source.lower()
 
 
-def test_v3_did_not_add_continuity_module_when_unneeded() -> None:
+def test_v3_deferred_continuity_to_later_phase() -> None:
+    """V.3 measured the real clip and declined a tracker continuity rewrite.
+
+    V.5 later added ``continuity.py`` for subject identity cues — that is
+    intentional and must not reintroduce a parallel ``v3_track`` tracker.
+    """
     visual = Path("riftlens/visual")
-    assert not (visual / "continuity.py").exists()
     assert not (visual / "v3_track.py").exists()
     assert (visual / "detect_v2.py").is_file()
     assert (visual / "track.py").is_file()
+    # V.5 cue module is allowed; V.3 itself still did not ship a tracker fork.
+    assert (visual / "continuity.py").is_file()
