@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from riftlens.domain.clock_map import ClockConfidence, ClockMap, ClockMode
+from riftlens.domain.clock_reading import ClockReading
 from riftlens.domain.clock_store import (
     CALIBRATION_METHOD_EVENT_ANCHOR_V1,
     SOURCE_STATUS_LINKED,
@@ -36,6 +37,7 @@ from riftlens.domain.gameplay_source import (
 )
 from riftlens.domain.geometry import Point, TurretRef, Zone, zone_of
 from riftlens.domain.ids import is_ulid, new_ulid
+from riftlens.domain.layout_profile import LayoutProfile, PixelRect
 from riftlens.domain.replay_errors import ReplayError, ReplayErrorCode
 from riftlens.domain.review import (
     CoachingItem,
@@ -67,6 +69,7 @@ __all__ = [
     "ClockConfidence",
     "ClockMap",
     "ClockMode",
+    "ClockReading",
     "SOURCE_STATUS_LINKED",
     "SOURCE_STATUS_UNAVAILABLE",
     "SOURCE_TYPE_ROFL",
@@ -84,9 +87,11 @@ __all__ = [
     "GamePhase",
     "GroupingDecision",
     "IssueType",
+    "LayoutProfile",
     "MetricSnapshot",
     "NATIVE_REPLAY_CAPABILITIES",
     "PauseInterval",
+    "PixelRect",
     "PlaybackState",
     "RankTier",
     "ReplayError",

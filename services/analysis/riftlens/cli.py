@@ -369,6 +369,38 @@ def _configure_stdio() -> None:
             continue
 
 
+@app.command("read-clock")
+def read_clock_cmd(
+    video: Annotated[Path, typer.Argument(help="Path to a VIDEO VOD (not ROFL).")],
+    hz: Annotated[float, typer.Option("--hz", help="Sample rate for clock OCR.")] = 1.0,
+    max_samples: Annotated[
+        int | None, typer.Option("--max-samples", help="Optional cap for smoke runs.")
+    ] = None,
+) -> None:
+    """H.9.1: print PTS-sampled clock readings. Does not fit SyncMaps (H.10)."""
+    configure_logging()
+    from riftlens.vision.pipeline import collect_clock_readings
+
+    if not video.is_file():
+        raise typer.BadParameter(f"video not found: {video}")
+    try:
+        layout, readings = collect_clock_readings(video, hz=hz, max_samples=max_samples)
+    except Exception as exc:  # noqa: BLE001 — CLI surface
+        typer.echo(f"read-clock failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    print(
+        f"layout {layout.width}x{layout.height} ui_scale={layout.ui_scale:.3f} "
+        f"conf={layout.confidence:.3f} clock={layout.clock_rect.to_list()}"
+    )
+    print(f"{'t_video_ms':>12}  {'t_game_ms':>12}  {'conf':>6}  in_game  reason")
+    for item in readings:
+        game = "—" if item.t_game_ms is None else str(item.t_game_ms)
+        print(
+            f"{item.t_video_ms:12d}  {game:>12}  {item.confidence:6.3f}  "
+            f"{str(item.in_game):<7}  {item.reason or ''}"
+        )
+
+
 def main() -> None:
     """CLI entrypoint. Assumes invocation via python -m riftlens.cli."""
     _configure_stdio()

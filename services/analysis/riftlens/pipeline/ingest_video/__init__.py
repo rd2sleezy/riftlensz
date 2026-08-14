@@ -9,13 +9,21 @@ from riftlens.pipeline.ingest_video.probe import (
     probe,
     validate_probe,
 )
+from riftlens.pipeline.ingest_video.reader import (
+    SampledVideoFrame,
+    VideoReaderError,
+    iter_samples,
+)
 
 __all__ = [
     "HandlingDecision",
     "MediaProbe",
     "MediaProbeError",
+    "SampledVideoFrame",
+    "VideoReaderError",
     "content_hash",
     "decide_handling",
+    "iter_samples",
     "probe",
     "validate_probe",
 ]

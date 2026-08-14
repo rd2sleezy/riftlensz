@@ -79,6 +79,7 @@ forbidden_modules = [
     "riftlens.replay_host",
     "riftlens.gameplay",
     "riftlens.visual",
+    "riftlens.vision",
 ]
 
 [[tool.importlinter.contracts]]
@@ -94,6 +95,7 @@ forbidden_modules = [
     "anthropic",
     "electron",
     "riftlens.visual",
+    "riftlens.vision",
 ]
 
 [[tool.importlinter.contracts]]
@@ -107,8 +109,28 @@ forbidden_modules = [
     "riftlens.api",
     "riftlens.replay_host",
     "riftlens.gameplay",
+    "riftlens.vision",
     "openai",
     "anthropic",
+]
+
+[[tool.importlinter.contracts]]
+name = "h9.1 vision isolation"
+type = "forbidden"
+source_modules = ["riftlens.vision"]
+forbidden_modules = [
+    "riftlens.analysis",
+    "riftlens.coaching",
+    "riftlens.api",
+    "riftlens.replay_host",
+    "riftlens.gameplay",
+    "riftlens.visual",
+    "riftlens.rofl",
+    "openai",
+    "anthropic",
+    "tesseract",
+    "onnxruntime",
+    "torch",
 ]
 
 [[tool.importlinter.contracts]]
