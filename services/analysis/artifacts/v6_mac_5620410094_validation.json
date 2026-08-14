@@ -1,0 +1,729 @@
+{
+  "match_id": "NA1_5620410094",
+  "subject_pid": 6,
+  "subject_champion": "Vladimir",
+  "primary": {
+    "capture_dir": "/Users/rylanddunn/.riftlens/captures/NA1_5620410094/01M00NSCH421BEY2SP3PADQT8A",
+    "death_t_ms": 839881,
+    "wall_ms": 1684.7,
+    "ranking_ms": 0.328,
+    "continuity_ms": 0.005,
+    "timing": {
+      "total_ms": 1681.0022499994375,
+      "detect_ms": 1025.4971670074156,
+      "track_ms": 1.0062920046038926,
+      "frames": 68
+    },
+    "v4": {
+      "status": "UNKNOWN",
+      "track_id": null,
+      "confidence": 0.0,
+      "method": "none"
+    },
+    "v5": {
+      "status": "UNKNOWN",
+      "track_id": null,
+      "confidence": 0.0,
+      "identity_change": "unchanged"
+    },
+    "v6": {
+      "status": "UNKNOWN",
+      "track_id": null,
+      "confidence": 0.0,
+      "method": "none",
+      "identity_change": "unchanged",
+      "winner_margin": 0.0,
+      "reasons": [
+        "capture_review_pid_ignored_for_identity",
+        "subject_death_game_t_ms=839881",
+        "disappearing_tracks=0",
+        "no champion-like track disappeared near subject death",
+        "death-time alignment insufficient; capture ownership ignored"
+      ],
+      "conflicts": [],
+      "reject_reason": "temporal_candidates_conflicted_or_weak"
+    },
+    "candidates": [
+      {
+        "track_id": "trk_0007",
+        "team_label": "ENEMY",
+        "first_seen_ms": 835148,
+        "last_seen_ms": 837157,
+        "duration_ms": 2009,
+        "death_t_ms": 839881,
+        "death_delta_ms": -2724,
+        "abs_death_delta_ms": 2724,
+        "temporal_join": true,
+        "temporal_score": 0.1821,
+        "unique_disappearance": false,
+        "continuity_duration_ms": 0,
+        "longest_gap_ms": 0,
+        "continuity_support": false,
+        "trajectory_class": "UNCERTAIN",
+        "trajectory_support": false,
+        "team_agrees": false,
+        "alive_after_death": false,
+        "reappearance_after_death": false,
+        "fragmented": false,
+        "competing_near_death": 0,
+        "supports": [
+          "gst_death",
+          "track_span"
+        ],
+        "conflicts": [
+          "team_mismatch"
+        ],
+        "eligible": false,
+        "score": 0.1821,
+        "rank": 1,
+        "raw": {
+          "score_terms": {
+            "temporal": 0.1821,
+            "unique_disappear": 0.0,
+            "continuity": 0.0,
+            "trajectory": 0.0,
+            "team": 0.0
+          },
+          "weights": {
+            "W_TEMPORAL": 0.4,
+            "W_UNIQUE_DISAPPEAR": 0.2,
+            "W_CONTINUITY": 0.15,
+            "W_TRAJECTORY": 0.1,
+            "W_TEAM": 0.1
+          },
+          "pool_ms": 5000,
+          "death_align_ms": 2000,
+          "observation_count": 2,
+          "continuity_bundle": {
+            "track_id": "trk_0007",
+            "death_t_ms": 839881,
+            "trajectory": {
+              "track_id": "trk_0007",
+              "game_t_ms": 837157,
+              "cue_type": "MOTION_CONTINUITY",
+              "motion_class": "UNCERTAIN",
+              "observation_count": 2,
+              "mean_step_px": 27.514,
+              "max_step_px": 27.514,
+              "total_path_px": 27.514,
+              "direction_consistency": 0.0,
+              "confidence": 0.4,
+              "claim_kind": "OBSERVED",
+              "raw": {
+                "step_count": 1,
+                "jump_threshold_px": 220.0,
+                "stationary_mean_px": 12.0,
+                "camera_like_mean_px": 90.0
+              }
+            },
+            "cues": [
+              {
+                "cue_type": "PRE_DEATH_CONTINUITY",
+                "track_id": "trk_0007",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "NEUTRAL",
+                "confidence": 0.35,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "pre_death_observation_count": 1,
+                  "continuous_presence_ms": 0,
+                  "longest_gap_ms": 0,
+                  "window_ms": 3000,
+                  "mean_track_confidence": 0.8
+                },
+                "reason": "sparse_pre_death_observations"
+              },
+              {
+                "cue_type": "DEATH_TIME_PROXIMITY",
+                "track_id": "trk_0007",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "NEUTRAL",
+                "confidence": 0.35,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "delta_ms": 2724,
+                  "align_window_ms": 2000,
+                  "disappearing_track_ids": [],
+                  "unique_disappearance": false
+                },
+                "reason": "loose_death_proximity"
+              },
+              {
+                "cue_type": "MOTION_CONTINUITY",
+                "track_id": "trk_0007",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "NEUTRAL",
+                "confidence": 0.35,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "motion_class": "UNCERTAIN",
+                  "mean_step_px": 27.514,
+                  "max_step_px": 27.514,
+                  "direction_consistency": 0.0,
+                  "observation_count": 2
+                },
+                "reason": "uncertain_motion"
+              },
+              {
+                "cue_type": "POST_DEATH_ABSENCE",
+                "track_id": "trk_0007",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "SUPPORT",
+                "confidence": 0.55,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "observations_after_death": 0,
+                  "observations_in_absence_window": 0,
+                  "absence_window_ms": 1500,
+                  "last_seen_game_t_ms": 837157
+                },
+                "reason": "disappears_near_death_no_reappear"
+              },
+              {
+                "cue_type": "TEAM_LABEL_AGREES",
+                "track_id": "trk_0007",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "CONFLICT",
+                "confidence": 0.2,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "track_team_estimate": "ENEMY",
+                  "expected_subject_label": "ALLY",
+                  "independence": "color_calibration_vs_death_timing"
+                },
+                "reason": "calibrated_team_conflicts_with_subject"
+              }
+            ],
+            "support_count": 1,
+            "conflict_count": 1,
+            "continuity_duration_ms": 0,
+            "longest_gap_ms": 0
+          }
+        }
+      },
+      {
+        "track_id": "trk_0008",
+        "team_label": "ENEMY",
+        "first_seen_ms": 837157,
+        "last_seen_ms": 837157,
+        "duration_ms": 0,
+        "death_t_ms": 839881,
+        "death_delta_ms": -2724,
+        "abs_death_delta_ms": 2724,
+        "temporal_join": true,
+        "temporal_score": 0.1821,
+        "unique_disappearance": false,
+        "continuity_duration_ms": 0,
+        "longest_gap_ms": 0,
+        "continuity_support": false,
+        "trajectory_class": "SPARSE",
+        "trajectory_support": false,
+        "team_agrees": false,
+        "alive_after_death": false,
+        "reappearance_after_death": false,
+        "fragmented": false,
+        "competing_near_death": 0,
+        "supports": [
+          "gst_death",
+          "track_span"
+        ],
+        "conflicts": [
+          "team_mismatch"
+        ],
+        "eligible": false,
+        "score": 0.1821,
+        "rank": 2,
+        "raw": {
+          "score_terms": {
+            "temporal": 0.1821,
+            "unique_disappear": 0.0,
+            "continuity": 0.0,
+            "trajectory": 0.0,
+            "team": 0.0
+          },
+          "weights": {
+            "W_TEMPORAL": 0.4,
+            "W_UNIQUE_DISAPPEAR": 0.2,
+            "W_CONTINUITY": 0.15,
+            "W_TRAJECTORY": 0.1,
+            "W_TEAM": 0.1
+          },
+          "pool_ms": 5000,
+          "death_align_ms": 2000,
+          "observation_count": 1,
+          "continuity_bundle": {
+            "track_id": "trk_0008",
+            "death_t_ms": 839881,
+            "trajectory": {
+              "track_id": "trk_0008",
+              "game_t_ms": 837157,
+              "cue_type": "MOTION_CONTINUITY",
+              "motion_class": "SPARSE",
+              "observation_count": 1,
+              "mean_step_px": 0.0,
+              "max_step_px": 0.0,
+              "total_path_px": 0.0,
+              "direction_consistency": 0.0,
+              "confidence": 0.2,
+              "claim_kind": "OBSERVED",
+              "raw": {
+                "step_count": 0,
+                "jump_threshold_px": 220.0,
+                "stationary_mean_px": 12.0,
+                "camera_like_mean_px": 90.0
+              }
+            },
+            "cues": [
+              {
+                "cue_type": "PRE_DEATH_CONTINUITY",
+                "track_id": "trk_0008",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "NEUTRAL",
+                "confidence": 0.35,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "pre_death_observation_count": 1,
+                  "continuous_presence_ms": 0,
+                  "longest_gap_ms": 0,
+                  "window_ms": 3000,
+                  "mean_track_confidence": 0.8
+                },
+                "reason": "sparse_pre_death_observations"
+              },
+              {
+                "cue_type": "DEATH_TIME_PROXIMITY",
+                "track_id": "trk_0008",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "NEUTRAL",
+                "confidence": 0.35,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "delta_ms": 2724,
+                  "align_window_ms": 2000,
+                  "disappearing_track_ids": [],
+                  "unique_disappearance": false
+                },
+                "reason": "loose_death_proximity"
+              },
+              {
+                "cue_type": "MOTION_CONTINUITY",
+                "track_id": "trk_0008",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "NEUTRAL",
+                "confidence": 0.35,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "motion_class": "SPARSE",
+                  "mean_step_px": 0.0,
+                  "max_step_px": 0.0,
+                  "direction_consistency": 0.0,
+                  "observation_count": 1
+                },
+                "reason": "sparse_motion_evidence"
+              },
+              {
+                "cue_type": "POST_DEATH_ABSENCE",
+                "track_id": "trk_0008",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "SUPPORT",
+                "confidence": 0.55,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "observations_after_death": 0,
+                  "observations_in_absence_window": 0,
+                  "absence_window_ms": 1500,
+                  "last_seen_game_t_ms": 837157
+                },
+                "reason": "disappears_near_death_no_reappear"
+              },
+              {
+                "cue_type": "TEAM_LABEL_AGREES",
+                "track_id": "trk_0008",
+                "game_t_ms": 837157,
+                "death_t_ms": 839881,
+                "verdict": "CONFLICT",
+                "confidence": 0.2,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "track_team_estimate": "ENEMY",
+                  "expected_subject_label": "ALLY",
+                  "independence": "color_calibration_vs_death_timing"
+                },
+                "reason": "calibrated_team_conflicts_with_subject"
+              }
+            ],
+            "support_count": 1,
+            "conflict_count": 1,
+            "continuity_duration_ms": 0,
+            "longest_gap_ms": 0
+          }
+        }
+      },
+      {
+        "track_id": "trk_0002",
+        "team_label": "ENEMY",
+        "first_seen_ms": 829917,
+        "last_seen_ms": 846634,
+        "duration_ms": 16717,
+        "death_t_ms": 839881,
+        "death_delta_ms": 6753,
+        "abs_death_delta_ms": 6753,
+        "temporal_join": false,
+        "temporal_score": 0.0,
+        "unique_disappearance": false,
+        "continuity_duration_ms": 2756,
+        "longest_gap_ms": 276,
+        "continuity_support": true,
+        "trajectory_class": "STATIONARY",
+        "trajectory_support": true,
+        "team_agrees": false,
+        "alive_after_death": true,
+        "reappearance_after_death": true,
+        "fragmented": false,
+        "competing_near_death": 0,
+        "supports": [
+          "pre_death_continuity"
+        ],
+        "conflicts": [
+          "team_mismatch",
+          "alive_after_death",
+          "reappearance_after_death"
+        ],
+        "eligible": false,
+        "score": 0.15,
+        "rank": 3,
+        "raw": {
+          "score_terms": {
+            "temporal": 0.0,
+            "unique_disappear": 0.0,
+            "continuity": 0.15,
+            "trajectory": 0.0,
+            "team": 0.0
+          },
+          "weights": {
+            "W_TEMPORAL": 0.4,
+            "W_UNIQUE_DISAPPEAR": 0.2,
+            "W_CONTINUITY": 0.15,
+            "W_TRAJECTORY": 0.1,
+            "W_TEAM": 0.1
+          },
+          "pool_ms": 5000,
+          "death_align_ms": 2000,
+          "observation_count": 68,
+          "continuity_bundle": {
+            "track_id": "trk_0002",
+            "death_t_ms": 839881,
+            "trajectory": {
+              "track_id": "trk_0002",
+              "game_t_ms": 846634,
+              "cue_type": "MOTION_CONTINUITY",
+              "motion_class": "STATIONARY",
+              "observation_count": 68,
+              "mean_step_px": 0.0,
+              "max_step_px": 0.0,
+              "total_path_px": 0.0,
+              "direction_consistency": 1.0,
+              "confidence": 0.7,
+              "claim_kind": "OBSERVED",
+              "raw": {
+                "step_count": 67,
+                "jump_threshold_px": 220.0,
+                "stationary_mean_px": 12.0,
+                "camera_like_mean_px": 90.0
+              }
+            },
+            "cues": [
+              {
+                "cue_type": "PRE_DEATH_CONTINUITY",
+                "track_id": "trk_0002",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "SUPPORT",
+                "confidence": 0.55,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "pre_death_observation_count": 12,
+                  "continuous_presence_ms": 2756,
+                  "longest_gap_ms": 276,
+                  "window_ms": 3000,
+                  "mean_track_confidence": 0.8
+                },
+                "reason": "continuous_pre_death_presence"
+              },
+              {
+                "cue_type": "DEATH_TIME_PROXIMITY",
+                "track_id": "trk_0002",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "CONFLICT",
+                "confidence": 0.2,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "delta_ms": 6753,
+                  "align_window_ms": 2000,
+                  "disappearing_track_ids": [],
+                  "unique_disappearance": false
+                },
+                "reason": "last_observation_far_from_death"
+              },
+              {
+                "cue_type": "MOTION_CONTINUITY",
+                "track_id": "trk_0002",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "SUPPORT",
+                "confidence": 0.55,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "motion_class": "STATIONARY",
+                  "mean_step_px": 0.0,
+                  "max_step_px": 0.0,
+                  "direction_consistency": 1.0,
+                  "observation_count": 68
+                },
+                "reason": "motion_stationary"
+              },
+              {
+                "cue_type": "POST_DEATH_ABSENCE",
+                "track_id": "trk_0002",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "CONFLICT",
+                "confidence": 0.2,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "observations_after_death": 27,
+                  "observations_in_absence_window": 5,
+                  "absence_window_ms": 1500,
+                  "last_seen_game_t_ms": 846634
+                },
+                "reason": "track_remains_alive_after_death"
+              },
+              {
+                "cue_type": "TEAM_LABEL_AGREES",
+                "track_id": "trk_0002",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "CONFLICT",
+                "confidence": 0.2,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "track_team_estimate": "ENEMY",
+                  "expected_subject_label": "ALLY",
+                  "independence": "color_calibration_vs_death_timing"
+                },
+                "reason": "calibrated_team_conflicts_with_subject"
+              }
+            ],
+            "support_count": 2,
+            "conflict_count": 3,
+            "continuity_duration_ms": 2756,
+            "longest_gap_ms": 276
+          }
+        }
+      },
+      {
+        "track_id": "trk_0003",
+        "team_label": "ENEMY",
+        "first_seen_ms": 829917,
+        "last_seen_ms": 846634,
+        "duration_ms": 16717,
+        "death_t_ms": 839881,
+        "death_delta_ms": 6753,
+        "abs_death_delta_ms": 6753,
+        "temporal_join": false,
+        "temporal_score": 0.0,
+        "unique_disappearance": false,
+        "continuity_duration_ms": 2756,
+        "longest_gap_ms": 276,
+        "continuity_support": true,
+        "trajectory_class": "STATIONARY",
+        "trajectory_support": true,
+        "team_agrees": false,
+        "alive_after_death": true,
+        "reappearance_after_death": true,
+        "fragmented": false,
+        "competing_near_death": 0,
+        "supports": [
+          "pre_death_continuity"
+        ],
+        "conflicts": [
+          "team_mismatch",
+          "alive_after_death",
+          "reappearance_after_death"
+        ],
+        "eligible": false,
+        "score": 0.15,
+        "rank": 4,
+        "raw": {
+          "score_terms": {
+            "temporal": 0.0,
+            "unique_disappear": 0.0,
+            "continuity": 0.15,
+            "trajectory": 0.0,
+            "team": 0.0
+          },
+          "weights": {
+            "W_TEMPORAL": 0.4,
+            "W_UNIQUE_DISAPPEAR": 0.2,
+            "W_CONTINUITY": 0.15,
+            "W_TRAJECTORY": 0.1,
+            "W_TEAM": 0.1
+          },
+          "pool_ms": 5000,
+          "death_align_ms": 2000,
+          "observation_count": 68,
+          "continuity_bundle": {
+            "track_id": "trk_0003",
+            "death_t_ms": 839881,
+            "trajectory": {
+              "track_id": "trk_0003",
+              "game_t_ms": 846634,
+              "cue_type": "MOTION_CONTINUITY",
+              "motion_class": "STATIONARY",
+              "observation_count": 68,
+              "mean_step_px": 0.0,
+              "max_step_px": 0.0,
+              "total_path_px": 0.0,
+              "direction_consistency": 1.0,
+              "confidence": 0.7,
+              "claim_kind": "OBSERVED",
+              "raw": {
+                "step_count": 67,
+                "jump_threshold_px": 220.0,
+                "stationary_mean_px": 12.0,
+                "camera_like_mean_px": 90.0
+              }
+            },
+            "cues": [
+              {
+                "cue_type": "PRE_DEATH_CONTINUITY",
+                "track_id": "trk_0003",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "SUPPORT",
+                "confidence": 0.55,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "pre_death_observation_count": 12,
+                  "continuous_presence_ms": 2756,
+                  "longest_gap_ms": 276,
+                  "window_ms": 3000,
+                  "mean_track_confidence": 0.8
+                },
+                "reason": "continuous_pre_death_presence"
+              },
+              {
+                "cue_type": "DEATH_TIME_PROXIMITY",
+                "track_id": "trk_0003",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "CONFLICT",
+                "confidence": 0.2,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "delta_ms": 6753,
+                  "align_window_ms": 2000,
+                  "disappearing_track_ids": [],
+                  "unique_disappearance": false
+                },
+                "reason": "last_observation_far_from_death"
+              },
+              {
+                "cue_type": "MOTION_CONTINUITY",
+                "track_id": "trk_0003",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "SUPPORT",
+                "confidence": 0.55,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "motion_class": "STATIONARY",
+                  "mean_step_px": 0.0,
+                  "max_step_px": 0.0,
+                  "direction_consistency": 1.0,
+                  "observation_count": 68
+                },
+                "reason": "motion_stationary"
+              },
+              {
+                "cue_type": "POST_DEATH_ABSENCE",
+                "track_id": "trk_0003",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "CONFLICT",
+                "confidence": 0.2,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "observations_after_death": 27,
+                  "observations_in_absence_window": 5,
+                  "absence_window_ms": 1500,
+                  "last_seen_game_t_ms": 846634
+                },
+                "reason": "track_remains_alive_after_death"
+              },
+              {
+                "cue_type": "TEAM_LABEL_AGREES",
+                "track_id": "trk_0003",
+                "game_t_ms": 846634,
+                "death_t_ms": 839881,
+                "verdict": "CONFLICT",
+                "confidence": 0.2,
+                "claim_kind": "INFERRED",
+                "provenance": "VISUAL_INFERRED",
+                "raw": {
+                  "track_team_estimate": "ENEMY",
+                  "expected_subject_label": "ALLY",
+                  "independence": "color_calibration_vs_death_timing"
+                },
+                "reason": "calibrated_team_conflicts_with_subject"
+              }
+            ],
+            "support_count": 2,
+            "conflict_count": 3,
+            "continuity_duration_ms": 2756,
+            "longest_gap_ms": 276
+          }
+        }
+      }
+    ],
+    "alignment_mutated_gst": false,
+    "track_count": 8,
+    "confirmed_detections": 146
+  },
+  "secondary": {
+    "death_t_ms": 1062798,
+    "note": "Secondary window not re-captured for this spike; prior V.5 alt clip had no stable champion-like tracks. Primary clip covers 829881\u2013846881 only.",
+    "skipped": true
+  },
+  "death_align_ms_unchanged": 2000,
+  "verdict_hint": "UNKNOWN"
+}

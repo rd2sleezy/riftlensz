@@ -1,4 +1,4 @@
-"""Visual clip-analysis spike (V.0–V.5). Isolated from coaching.
+"""Visual clip-analysis spike (V.0–V.6). Isolated from coaching.
 
 Depends on the R.11 observation contract. The observation contract does not
 depend on this package. Do not import this module from H.6/H.7/H.8.
@@ -17,6 +17,8 @@ from riftlens.visual.analyze import (
 from riftlens.visual.continuity import ContinuityBundle, ContinuityCue, CueType, CueVerdict
 from riftlens.visual.correlate import CorrelationStatus, SubjectCorrelation, correlate_subject
 from riftlens.visual.correlate_v5 import V5CorrelationResult, refine_subject_correlation
+from riftlens.visual.correlate_v6 import V6CorrelationResult, refine_with_death_ranking
+from riftlens.visual.death_candidate import DeathCandidateEvidence, DeathCandidateRanking
 from riftlens.visual.detect import (
     MAX_PLAUSIBLE_CHAMPIONS,
     DetectedBar,
@@ -86,6 +88,15 @@ from riftlens.visual.v5_analyze import (
     analyze_manifest_v5,
     refine_v4_result,
 )
+from riftlens.visual.v6_analyze import (
+    DEFAULT_V6_SAMPLE_FPS,
+    V6_ANALYZER_ID,
+    V6_ANALYZER_VERSION,
+    V6AnalysisResult,
+    analyze_capture_dir_v6,
+    analyze_manifest_v6,
+    refine_v5_result,
+)
 from riftlens.visual.window import (
     FindingStamp,
     PlannedCapture,
@@ -102,6 +113,7 @@ __all__ = [
     "DEFAULT_V2_SAMPLE_FPS",
     "DEFAULT_V4_SAMPLE_FPS",
     "DEFAULT_V5_SAMPLE_FPS",
+    "DEFAULT_V6_SAMPLE_FPS",
     "ArtifactMissing",
     "MAX_PLAUSIBLE_CHAMPIONS",
     "CalibrationConfidence",
@@ -113,6 +125,8 @@ __all__ = [
     "CorrelationStatus",
     "CueType",
     "CueVerdict",
+    "DeathCandidateEvidence",
+    "DeathCandidateRanking",
     "DetectedBar",
     "EmptyClip",
     "EntityTrack",
@@ -141,6 +155,10 @@ __all__ = [
     "V5_ANALYZER_VERSION",
     "V5AnalysisResult",
     "V5CorrelationResult",
+    "V6_ANALYZER_ID",
+    "V6_ANALYZER_VERSION",
+    "V6AnalysisResult",
+    "V6CorrelationResult",
     "ViewportCoverage",
     "VisualAnalysisResult",
     "VisualRuleDiagnostic",
@@ -151,11 +169,13 @@ __all__ = [
     "analyze_capture_dir_v2",
     "analyze_capture_dir_v4",
     "analyze_capture_dir_v5",
+    "analyze_capture_dir_v6",
     "analyze_manifest",
     "analyze_manifest_v1",
     "analyze_manifest_v2",
     "analyze_manifest_v4",
     "analyze_manifest_v5",
+    "analyze_manifest_v6",
     "capture_request_for_window",
     "capture_window_for_finding",
     "classify_against_claim",
@@ -170,6 +190,8 @@ __all__ = [
     "measure_trajectory",
     "refine_subject_correlation",
     "refine_v4_result",
+    "refine_v5_result",
+    "refine_with_death_ranking",
     "sample_clip",
     "select_finding",
     "track_candidates",

@@ -18,15 +18,16 @@ from riftlens.visual.v1_analyze import DEFAULT_V1_SAMPLE_FPS, analyze_capture_di
 from riftlens.visual.v2_analyze import DEFAULT_V2_SAMPLE_FPS, analyze_capture_dir_v2
 from riftlens.visual.v4_analyze import DEFAULT_V4_SAMPLE_FPS, analyze_capture_dir_v4
 from riftlens.visual.v5_analyze import DEFAULT_V5_SAMPLE_FPS, analyze_capture_dir_v5
+from riftlens.visual.v6_analyze import DEFAULT_V6_SAMPLE_FPS, analyze_capture_dir_v6
 
 
 def main() -> None:
-    """Run V.0–V.5 against an R.10 capture directory. Local only."""
+    """Run V.0–V.6 against an R.10 capture directory. Local only."""
     parser = argparse.ArgumentParser(description="Visual clip analysis spike")
     parser.add_argument("--capture-dir", type=Path, help="Directory containing manifest.json")
     parser.add_argument("--capture-id", help="Lookup capture_id under the capture root")
     parser.add_argument("--capture-root", type=Path, default=None)
-    parser.add_argument("--mode", choices=("v0", "v1", "v2", "v4", "v5"), default="v0")
+    parser.add_argument("--mode", choices=("v0", "v1", "v2", "v4", "v5", "v6"), default="v0")
     parser.add_argument("--fps", type=float, default=None)
     parser.add_argument("--max-frames", type=int, default=None)
     parser.add_argument("--subject-pid", type=int, default=None)
@@ -43,12 +44,13 @@ def main() -> None:
     claim = StructuredClaim(
         rule_id=args.claim_rule, t_ms=args.claim_t_ms, summary=args.claim_summary
     )
-    if args.mode in {"v1", "v2", "v4", "v5"}:
+    if args.mode in {"v1", "v2", "v4", "v5", "v6"}:
         defaults = {
             "v1": DEFAULT_V1_SAMPLE_FPS,
             "v2": DEFAULT_V2_SAMPLE_FPS,
             "v4": DEFAULT_V4_SAMPLE_FPS,
             "v5": DEFAULT_V5_SAMPLE_FPS,
+            "v6": DEFAULT_V6_SAMPLE_FPS,
         }
         fps = defaults[args.mode] if args.fps is None else args.fps
         analyze = {
@@ -56,6 +58,7 @@ def main() -> None:
             "v2": analyze_capture_dir_v2,
             "v4": analyze_capture_dir_v4,
             "v5": analyze_capture_dir_v5,
+            "v6": analyze_capture_dir_v6,
         }[args.mode]
         result = analyze(
             capture_dir,
@@ -81,6 +84,15 @@ def main() -> None:
                 f"base={v5.base.status.value}/{v5.base.confidence} "
                 f"refined={v5.refined.status.value}/{v5.refined.confidence} "
                 f"continuity_ms={getattr(result, 'continuity_ms', 0):.1f}"
+            )
+        v6 = getattr(result, "v6", None)
+        if v6 is not None:
+            print(
+                f"v6 identity_change={v6.identity_change} "
+                f"base={v6.base.status.value}/{v6.base.confidence} "
+                f"refined={v6.refined.status.value}/{v6.refined.confidence} "
+                f"margin={v6.winner_margin} "
+                f"ranking_ms={getattr(result, 'ranking_ms', 0):.1f}"
             )
         print(
             f"perf total={result.timing.total_ms:.0f}ms extract={result.timing.extract_ms:.0f}ms "
