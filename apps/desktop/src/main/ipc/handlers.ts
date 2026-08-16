@@ -42,6 +42,8 @@ import {
   RevealGameplayResultSchema,
   ReviewPresentationSchema,
   ReviewSummarySchema,
+  RunAutoSyncInputSchema,
+  RunAutoSyncResultSchema,
   SidecarStatusSchema,
   SignInResultSchema,
   SignInWithApiKeyInputSchema,
@@ -186,6 +188,11 @@ export function registerIpcHandlers(
       const code = error instanceof SyncAnchorInconsistent ? 'SYNC_INVALID' : 'VALIDATION'
       return BuildManualSyncResultSchema.parse({ ok: false, code, message })
     }
+  })
+
+  ipcMain.handle(IPC.runAutoSync, async (_event, raw: unknown) => {
+    const input = RunAutoSyncInputSchema.parse(raw)
+    return RunAutoSyncResultSchema.parse(await runAutoSync(supervisor, input))
   })
 
   ipcMain.handle(IPC.getDesktopPlatform, () => {
@@ -543,6 +550,76 @@ async function probeVod(supervisor: SidecarSupervisor, path: string) {
     }
   } catch (error) {
     return fail(error, 'INVALID_VOD')
+  }
+}
+
+const AUTO_SYNC_CODES = new Set([
+  'INSUFFICIENT_READINGS',
+  'NO_STABLE_MODEL',
+  'MULTIPLE_GAMES',
+  'INCONSISTENT_OCR',
+  'INSUFFICIENT_COVERAGE',
+  'VERIFICATION_FAILED',
+  'UNSUPPORTED_SOURCE',
+  'MEDIA_UNAVAILABLE',
+  'VALIDATION',
+  'SYNC_INVALID',
+  'UNKNOWN'
+])
+
+async function runAutoSync(
+  supervisor: SidecarSupervisor,
+  input: {
+    matchId: string
+    videoPath: string
+    videoDurationMs: number
+    matchDurationMs?: number | null
+    contentHash?: string
+    force?: boolean
+  }
+) {
+  try {
+    const payload = (await supervisor.request(
+      '/sync/auto',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          match_id: input.matchId,
+          video_path: input.videoPath,
+          video_duration_ms: input.videoDurationMs,
+          match_duration_ms: input.matchDurationMs ?? null,
+          content_hash: input.contentHash ?? null,
+          force: input.force === true
+        })
+      },
+      600_000
+    )) as Record<string, unknown>
+    if (payload['ok'] === true && payload['sync_map'] !== undefined) {
+      return {
+        ok: true as const,
+        sync_map: SyncMapSchema.parse(payload['sync_map']),
+        quality: String(payload['quality'] ?? 'DEGRADED') as
+          | 'EXCELLENT'
+          | 'GOOD'
+          | 'DEGRADED'
+          | 'FAILED',
+        cached: payload['cached'] === true,
+        id: typeof payload['id'] === 'string' ? payload['id'] : null
+      }
+    }
+    const codeRaw = typeof payload['code'] === 'string' ? payload['code'] : 'UNKNOWN'
+    const code = AUTO_SYNC_CODES.has(codeRaw) ? codeRaw : 'UNKNOWN'
+    const boundaries = payload['boundaries_video_ms']
+    return {
+      ok: false as const,
+      code: code as ErrorResult['code'],
+      message: typeof payload['message'] === 'string' ? payload['message'] : 'Automatic sync failed.',
+      boundaries_video_ms: Array.isArray(boundaries)
+        ? boundaries.filter((item): item is number => typeof item === 'number')
+        : undefined
+    }
+  } catch (error) {
+    return fail(error, 'UNKNOWN')
   }
 }
 

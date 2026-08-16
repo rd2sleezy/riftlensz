@@ -526,6 +526,9 @@ class MediaRepository(Protocol):
     async def get_asset(self, media_id: str) -> MediaAssetRecord | None:
         """Return a media asset or None. Assumes ``media_id`` is a ULID."""
 
+    async def get_by_content_hash(self, content_hash: str) -> MediaAssetRecord | None:
+        """Return the asset for ``content_hash`` or None. Assumes hashes are unique."""
+
     async def upsert_layout_profile(self, row: LayoutProfileRecord) -> None:
         """Insert or replace a layout profile. Assumes ``row.id`` is a ULID."""
 

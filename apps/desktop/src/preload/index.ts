@@ -28,6 +28,8 @@ import {
   PickVodResultSchema,
   ProbeVodInputSchema,
   ProbeVodResultSchema,
+  RunAutoSyncInputSchema,
+  RunAutoSyncResultSchema,
   RevealGameplayInputSchema,
   RevealGameplayResultSchema,
   OverlayBoundsSchema,
@@ -65,6 +67,7 @@ import {
   type PickRoflResult,
   type PickVodResult,
   type ProbeVodResult,
+  type RunAutoSyncResult,
   type RevealGameplayResult,
   type SidecarStatus,
   type SignInResult,
@@ -136,6 +139,18 @@ const rift = {
     return ipcRenderer
       .invoke(IPC.buildManualSync, BuildManualSyncInputSchema.parse(input))
       .then((value) => BuildManualSyncResultSchema.parse(value))
+  },
+  runAutoSync(input: {
+    matchId: string
+    videoPath: string
+    videoDurationMs: number
+    matchDurationMs?: number | null
+    contentHash?: string
+    force?: boolean
+  }): Promise<RunAutoSyncResult> {
+    return ipcRenderer
+      .invoke(IPC.runAutoSync, RunAutoSyncInputSchema.parse(input))
+      .then((value) => RunAutoSyncResultSchema.parse(value))
   },
 
   getAuthSession(): Promise<AuthSession> {

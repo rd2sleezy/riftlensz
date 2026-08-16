@@ -24,6 +24,7 @@ import type {
   PickVodResult,
   ProbeVodResult,
   RevealGameplayResult,
+  RunAutoSyncResult,
   SidecarStatus,
   SignInResult,
   SignInWithApiKeyInput
@@ -49,6 +50,14 @@ export interface RiftApi {
     mediaAssetId?: string
     anchors: { t_video_ms: number; t_game_ms: number }[]
   }) => Promise<BuildManualSyncResult>
+  runAutoSync: (input: {
+    matchId: string
+    videoPath: string
+    videoDurationMs: number
+    matchDurationMs?: number | null
+    contentHash?: string
+    force?: boolean
+  }) => Promise<RunAutoSyncResult>
   getAuthSession: () => Promise<AuthSession>
   signIn: () => Promise<SignInResult>
   signInWithApiKey: (input: SignInWithApiKeyInput) => Promise<SignInResult>

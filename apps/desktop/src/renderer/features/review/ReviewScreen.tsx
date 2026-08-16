@@ -38,6 +38,7 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
   const [vodWarning, setVodWarning] = useState<string | null>(null)
   const [clockInput, setClockInput] = useState('0:00')
   const [syncMessage, setSyncMessage] = useState<string | null>(null)
+  const [autoSyncing, setAutoSyncing] = useState(false)
   const [rate, setRate] = useState(1)
   const [gameplayStatus, setGameplayStatus] = useState<GameplayStatus | null>(null)
   const [nativeReplaySupported, setNativeReplaySupported] = useState(false)
@@ -516,6 +517,8 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
             nativeReplaySupported,
             hasInlineVideo: mediaUrl !== null,
             videoSynced: sync !== null,
+            videoSyncMethod: sync?.quality.method ?? null,
+            videoSyncVerdict: sync?.quality.verdict ?? null,
             opening: openingReplay,
             seeking: seekingMs !== null
           })}
@@ -609,6 +612,22 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
                 })
               }}
             />
+            {!preferNative ? (
+              <AutoSyncBar
+                disabled={probe === null || autoSyncing}
+                busy={autoSyncing}
+                quality={sync?.quality.method === 'clock_ocr' ? sync.quality.verdict : null}
+                onRun={() => {
+                  void runAutoSync({
+                    review,
+                    probe,
+                    setSync,
+                    setSyncMessage,
+                    setAutoSyncing
+                  })
+                }}
+              />
+            ) : null}
             <MarkerTrack
               review={review}
               sync={sync}
@@ -621,7 +640,12 @@ export function ReviewScreen({ reviewId }: { reviewId: string }): ReactElement {
                 seekToGame(tMs)
               }}
             />
-            <ItemDetail item={selectedItem} finding={selectedFinding} onSeek={seekToGame} />
+            <ItemDetail
+              item={selectedItem}
+              finding={selectedFinding}
+              sync={sync}
+              onSeek={seekToGame}
+            />
           </div>
           <aside className="col-span-12 space-y-3 xl:col-span-4">
             <ObservationList
@@ -763,6 +787,7 @@ function ObservationList(props: {
 function ItemDetail(props: {
   item: CoachingItem | null
   finding: Finding | null
+  sync: SyncMapData | null
   onSeek: (tMs: number) => void
 }): ReactElement {
   if (props.item === null) {
@@ -803,16 +828,24 @@ function ItemDetail(props: {
 
       {item.evidence_timestamps_ms.length > 0 ? (
         <div className="mt-3 flex flex-wrap gap-2">
-          {item.evidence_timestamps_ms.map((tMs) => (
-            <button
-              key={tMs}
-              type="button"
-              className="rounded-md bg-white/5 px-2 py-1 text-xs text-slate-300 transition hover:bg-white/10"
-              onClick={() => props.onSeek(tMs)}
-            >
-              ▶ {formatMmss(tMs)}
-            </button>
-          ))}
+          {item.evidence_timestamps_ms.map((tMs) => {
+            const target = seekTarget(props.sync, tMs)
+            return (
+              <button
+                key={tMs}
+                type="button"
+                disabled={!target.covered}
+                className={`rounded-md px-2 py-1 text-xs transition ${
+                  target.covered
+                    ? 'bg-white/5 text-slate-300 hover:bg-white/10'
+                    : 'cursor-not-allowed bg-white/5 text-slate-600'
+                }`}
+                onClick={() => props.onSeek(tMs)}
+              >
+                ▶ {formatMmss(tMs)}
+              </button>
+            )
+          })}
         </div>
       ) : null}
 
@@ -918,9 +951,10 @@ function MarkerTrack(props: {
             <button
               key={`${marker.itemId}-${marker.tMs}-${index}`}
               type="button"
+              disabled={!target.covered}
               title={`${formatMmss(marker.tMs)}${target.covered ? '' : ' (no VOD coverage)'}`}
               className={`absolute top-1 h-6 w-1.5 -translate-x-1/2 rounded-full transition ${
-                target.covered ? 'bg-rift-accent' : 'bg-slate-600'
+                target.covered ? 'bg-rift-accent' : 'cursor-not-allowed bg-slate-600'
               } ${target.uncertain ? 'opacity-60' : ''}`}
               style={{ left }}
               onClick={() => props.onSelect(marker.tMs, marker.itemId, marker.findingId)}
@@ -931,6 +965,38 @@ function MarkerTrack(props: {
       <p className="mt-1.5 text-xs text-slate-600">
         Video playhead {formatMmss(props.playheadMs)} · grey markers have no sync coverage
       </p>
+    </Card>
+  )
+}
+
+function AutoSyncBar(props: {
+  disabled: boolean
+  busy: boolean
+  quality: string | null
+  onRun: () => void
+}): ReactElement {
+  return (
+    <Card className="p-3 text-sm" testId="auto-vod-sync">
+      <SectionLabel>Automatic VOD sync</SectionLabel>
+      <p className="mt-1 text-xs text-slate-500">
+        Reads the League clock from the video and fits a sync map. Manual anchors remain available if
+        this fails or is degraded.
+      </p>
+      <div className="mt-2 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          disabled={props.disabled}
+          className="rounded-md bg-rift-accent px-3 py-1 font-medium text-rift-bg transition hover:bg-rift-accent-strong disabled:cursor-not-allowed disabled:opacity-40"
+          onClick={props.onRun}
+        >
+          {props.busy ? 'Reading clock…' : 'Auto-sync from clock'}
+        </button>
+        {props.quality ? (
+          <span className="text-xs text-slate-400" data-testid="auto-sync-quality">
+            {props.quality}
+          </span>
+        ) : null}
+      </div>
     </Card>
   )
 }
@@ -1060,6 +1126,45 @@ async function confirmSync(args: {
   args.setSyncMessage(
     `Anchor set: video ${formatMmss(args.playheadMs)} ↔ game ${formatMmss(tGame)}. ${
       result.sync_map.quality.verdict === 'DEGRADED' ? 'Single-anchor sync is approximate.' : ''
+    }`
+  )
+}
+
+async function runAutoSync(args: {
+  review: ReviewPresentation
+  probe: MediaProbe | null
+  setSync: (value: SyncMapData) => void
+  setSyncMessage: (value: string | null) => void
+  setAutoSyncing: (value: boolean) => void
+}): Promise<void> {
+  if (args.probe === null) {
+    args.setSyncMessage('Attach a playable VOD before running automatic sync.')
+    return
+  }
+  args.setAutoSyncing(true)
+  args.setSyncMessage('Reading the League clock and fitting sync…')
+  const result = await window.rift.runAutoSync({
+    matchId: args.review.match_id,
+    videoPath: args.probe.path,
+    videoDurationMs: args.probe.duration_ms,
+    matchDurationMs: args.review.duration_ms,
+    contentHash: args.probe.content_hash
+  })
+  args.setAutoSyncing(false)
+  if (!result.ok) {
+    const bounds =
+      'boundaries_video_ms' in result && result.boundaries_video_ms && result.boundaries_video_ms.length > 0
+        ? ` Boundaries at ${result.boundaries_video_ms.map((ms) => formatMmss(ms)).join(', ')}.`
+        : ''
+    args.setSyncMessage(`${result.message}${bounds} You can still set a manual clock anchor.`)
+    return
+  }
+  args.setSync(result.sync_map)
+  const uncertain =
+    result.quality === 'DEGRADED' || result.quality === 'FAILED' || !result.sync_map.verified
+  args.setSyncMessage(
+    `Auto-sync ${result.quality}${result.cached ? ' (cached)' : ''}.${
+      uncertain ? ' Treat VOD times as approximate, or add a manual anchor.' : ''
     }`
   )
 }

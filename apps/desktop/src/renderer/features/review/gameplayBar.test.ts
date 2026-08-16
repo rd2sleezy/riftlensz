@@ -66,6 +66,22 @@ describe('deriveGameplayBar', () => {
     expect(view.syncLabel).toBe('Manual sync')
   })
 
+  it('shows video auto-sync quality without using source_type', () => {
+    const view = deriveGameplayBar({
+      status: status({ active_source_id: null, capabilities: [] }),
+      nativeReplaySupported: true,
+      hasInlineVideo: true,
+      videoSynced: true,
+      videoSyncMethod: 'clock_ocr',
+      videoSyncVerdict: 'GOOD',
+      opening: false,
+      seeking: false
+    })
+    expect(view.kind).toBe('video_manual')
+    expect(view.syncLabel).toMatch(/auto-sync/i)
+    expect(view.label).toMatch(/GOOD/)
+  })
+
   it('shows linked replay ready to open', () => {
     const view = deriveGameplayBar({
       status: status({ session_phase: 'IDLE' }),

@@ -44,6 +44,8 @@ export type GameplayBarInput = {
   nativeReplaySupported: boolean
   hasInlineVideo: boolean
   videoSynced: boolean
+  videoSyncMethod?: string | null
+  videoSyncVerdict?: string | null
   opening: boolean
   seeking: boolean
 }
@@ -115,7 +117,7 @@ export function deriveGameplayBar(input: GameplayBarInput): GameplayBarView {
     })
   }
   if (error && !linked && input.hasInlineVideo) {
-    return videoBar(input.videoSynced, technical)
+    return videoBar(input.videoSynced, input.videoSyncMethod, input.videoSyncVerdict, technical)
   }
   if (error && !ready) {
     return errorBar(error, errorView, technical)
@@ -149,7 +151,7 @@ export function deriveGameplayBar(input: GameplayBarInput): GameplayBarView {
     })
   }
   if (input.hasInlineVideo) {
-    return videoBar(input.videoSynced, technical)
+    return videoBar(input.videoSynced, input.videoSyncMethod, input.videoSyncVerdict, technical)
   }
   return bar('none', 'No gameplay attached', 'neutral', { technical })
 }
@@ -171,9 +173,25 @@ export function nativeSessionReady(status: GameplayStatus | null): boolean {
   return status.session_reached_ready && isReadyPhase(status.session_phase)
 }
 
-function videoBar(videoSynced: boolean, technical: GameplayBarView['technical']): GameplayBarView {
-  return bar('video_manual', videoSynced ? 'Video · manual sync' : 'Video attached', 'info', {
-    syncLabel: videoSynced ? 'Manual sync' : 'Sync unavailable',
+function videoBar(
+  videoSynced: boolean,
+  method: string | null | undefined,
+  verdict: string | null | undefined,
+  technical: GameplayBarView['technical']
+): GameplayBarView {
+  const auto = method === 'clock_ocr'
+  const label = auto
+    ? `Video · auto-sync ${verdict ?? ''}`.trim()
+    : videoSynced
+      ? 'Video · manual sync'
+      : 'Video attached'
+  const syncLabel = auto
+    ? `Auto-sync ${verdict ?? ''}`.trim()
+    : videoSynced
+      ? 'Manual sync'
+      : 'Sync unavailable'
+  return bar('video_manual', label, auto && verdict === 'DEGRADED' ? 'warn' : 'info', {
+    syncLabel,
     technical
   })
 }

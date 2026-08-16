@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from riftlens.adapters.db.models import LayoutProfileRow, MediaAssetRow
@@ -17,6 +18,17 @@ class SqlMediaRepository(SessionRepository):
 
         def work(session: Session) -> MediaAssetRecord | None:
             found = session.get(MediaAssetRow, media_id)
+            return None if found is None else _asset_record(found)
+
+        return await self.call(work)
+
+    async def get_by_content_hash(self, content_hash: str) -> MediaAssetRecord | None:
+        """Return the asset for ``content_hash`` or None. Assumes hashes are unique."""
+
+        def work(session: Session) -> MediaAssetRecord | None:
+            found = session.scalar(
+                select(MediaAssetRow).where(MediaAssetRow.content_hash == content_hash)
+            )
             return None if found is None else _asset_record(found)
 
         return await self.call(work)

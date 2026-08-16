@@ -14,6 +14,7 @@ export const IPC = {
   pickVod: 'rift:media:pick',
   probeVod: 'rift:media:probe',
   buildManualSync: 'rift:sync:manual',
+  runAutoSync: 'rift:sync:auto',
   getAuthSession: 'rift:auth:get-session',
   authSessionEvent: 'rift:auth:session',
   signIn: 'rift:auth:sign-in',
@@ -57,6 +58,7 @@ export const IPC_RENDERER_ALLOWLIST = [
   'pickVod',
   'probeVod',
   'buildManualSync',
+  'runAutoSync',
   'getAuthSession',
   'onAuthSession',
   'signIn',
@@ -124,6 +126,14 @@ export const ErrorResultSchema = z.object({
     'AUTH_CANCELLED',
     'AUTH_FAILED',
     'RIOT_CREDENTIAL_MISSING',
+    'INSUFFICIENT_READINGS',
+    'NO_STABLE_MODEL',
+    'MULTIPLE_GAMES',
+    'INCONSISTENT_OCR',
+    'INSUFFICIENT_COVERAGE',
+    'VERIFICATION_FAILED',
+    'UNSUPPORTED_SOURCE',
+    'MEDIA_UNAVAILABLE',
     'UNKNOWN'
   ]),
   message: z.string()
@@ -410,6 +420,28 @@ export const BuildManualSyncResultSchema = z.discriminatedUnion('ok', [
   ErrorResultSchema
 ])
 
+export const RunAutoSyncInputSchema = z.object({
+  matchId: z.string().min(1),
+  videoPath: z.string().min(1),
+  videoDurationMs: z.number().int().positive(),
+  matchDurationMs: z.number().int().positive().nullable().optional(),
+  contentHash: z.string().optional(),
+  force: z.boolean().optional()
+})
+
+export const RunAutoSyncResultSchema = z.discriminatedUnion('ok', [
+  z.object({
+    ok: z.literal(true),
+    sync_map: SyncMapSchema,
+    quality: z.enum(['EXCELLENT', 'GOOD', 'DEGRADED', 'FAILED']),
+    cached: z.boolean(),
+    id: z.string().nullable()
+  }),
+  ErrorResultSchema.extend({
+    boundaries_video_ms: z.array(z.number().int()).optional()
+  })
+])
+
 export type SidecarState = z.infer<typeof SidecarStateSchema>
 export type SidecarStatus = z.infer<typeof SidecarStatusSchema>
 export type HealthPayload = z.infer<typeof HealthSchema>
@@ -426,6 +458,7 @@ export type GetReviewResult = z.infer<typeof GetReviewResultSchema>
 export type ProbeVodResult = z.infer<typeof ProbeVodResultSchema>
 export type PickVodResult = z.infer<typeof PickVodResultSchema>
 export type BuildManualSyncResult = z.infer<typeof BuildManualSyncResultSchema>
+export type RunAutoSyncResult = z.infer<typeof RunAutoSyncResultSchema>
 export type OpenFixtureInput = z.infer<typeof OpenFixtureInputSchema>
 
 export const ReplayErrorPayloadSchema = z.object({
