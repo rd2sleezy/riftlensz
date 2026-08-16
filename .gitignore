@@ -41,3 +41,8 @@ playwright-report/
 test-results/
 coverage/
 .eslintcache
+
+# Local gameplay media — never commit VODs or native replays
+*.rofl
+services/analysis/tests/fixtures/vision/vod_corpus/media/**
+!services/analysis/tests/fixtures/vision/vod_corpus/media/.gitkeep

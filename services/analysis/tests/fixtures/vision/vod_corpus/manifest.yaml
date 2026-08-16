@@ -1,0 +1,46 @@
+schema_version: 1
+atlas_train_match_ids:
+  - NA1_5620410094
+notes: >
+  Committed catalog of locally known validation media. Paths are portable
+  r10:// or vod:// refs — never machine-specific absolute paths.
+  R10-CLIP / SYNTHETIC / REPLAY-GENERATED do not count toward H.10 or H.12
+  real-VOD acceptance. Only REAL user gameplay VIDEO counts.
+  This catalog currently has zero REAL full-game VODs.
+entries:
+  - id: r10_na1_5620410094_mid_17s
+    kind: R10-CLIP
+    media_ref: r10://NA1_5620410094/01M00NSCH421BEY2SP3PADQT8A/clip_g829881.webm
+    match_id: NA1_5620410094
+    source_recorder: MacReplayHost/R.10
+    resolution_width: 1520
+    resolution_height: 982
+    fps: 30.0
+    duration_ms: 16992
+    coverage: partial
+    recording_starts_mid_game: true
+    known_pause: false
+    hud_scale: null
+    checkpoint_file: checkpoints/r10_na1_5620410094_mid_17s.yaml
+    content_hash: null
+    notes: >
+      17s in-game CLIP near 13:49 HUD. Not an OBS/ShadowPlay VOD.
+      Replay API clock is not independent VIDEO OCR ground truth.
+  - id: r10_na1_5620410094_late_clip
+    kind: R10-CLIP
+    media_ref: r10://NA1_5620410094/01KZZAK270FZT68YAKNH40QZVC/clip_g1052798.webm
+    match_id: NA1_5620410094
+    source_recorder: MacReplayHost/R.10
+    resolution_width: 1520
+    resolution_height: 982
+    fps: 30.0
+    duration_ms: null
+    coverage: partial
+    recording_starts_mid_game: true
+    known_pause: false
+    hud_scale: null
+    checkpoint_file: checkpoints/r10_na1_5620410094_late_clip.yaml
+    content_hash: null
+    notes: >
+      Short in-game CLIP near 17:32 HUD. Not an OBS/ShadowPlay VOD.
+      Same match as the mid clip; does not add a second REAL VOD.

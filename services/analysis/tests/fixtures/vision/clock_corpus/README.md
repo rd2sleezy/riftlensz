@@ -9,3 +9,6 @@ Replay/capture API approximate game time. **H.9.1 OCR output is never used as gr
 
 All REAL samples are from match `NA1_5620410094` at frame size **1520×982**
 (windowed R.10 capture). 720p / 1080p / 1440p native clients were **not** validated here.
+
+Atlas templates in `resources/vision/glyphs/league/24px` were built from this same
+match. Those crops are **atlas_match**, not held-out evaluation.

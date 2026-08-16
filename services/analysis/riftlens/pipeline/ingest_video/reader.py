@@ -31,6 +31,27 @@ class VideoReaderError(ValueError):
     """Unreadable or unsupported video for sparse sampling."""
 
 
+def decode_at(path: str | Path, t_video_ms: int) -> SampledVideoFrame | None:
+    """Decode the frame nearest ``t_video_ms``. Assumes the file is readable."""
+    resolved = Path(path).expanduser()
+    if not resolved.is_file():
+        raise VideoReaderError(f"Video file not found: {resolved}")
+    container = av.open(str(resolved))
+    try:
+        stream = _video_stream(container)
+        time_base = _time_base(stream)
+        start_pts = int(stream.start_time or 0)
+        return _decode_near(
+            container,
+            stream,
+            target_ms=max(0, int(t_video_ms)),
+            start_pts=start_pts,
+            time_base=time_base,
+        )
+    finally:
+        container.close()
+
+
 def iter_samples(
     path: str | Path,
     *,
@@ -102,9 +123,7 @@ def _end_ms(container: Any, stream: Any, *, start_pts: int, time_base: Fraction)
     raise VideoReaderError("Video duration is not positive")
 
 
-def _scan_duration_ms(
-    container: Any, stream: Any, *, start_pts: int, time_base: Fraction
-) -> int:
+def _scan_duration_ms(container: Any, stream: Any, *, start_pts: int, time_base: Fraction) -> int:
     """Last-resort duration: demux packets and take the max presentation time."""
     max_ms = 0
     try:

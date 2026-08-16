@@ -1,6 +1,12 @@
 LEAGUE_CROP — real HUD clock glyphs from NA1_5620410094 R.10 captures (1520x982).
 Built from manually labelled clock crops (visual GT; not H.9.1 OCR-as-GT).
 Multiple timestamps; median of up to 8 crops/glyph. Height 24px only.
+
+ATLAS TRAIN/EVAL POLICY:
+This match is the atlas-building match. REAL crops from NA1_5620410094 must be
+reported as atlas_match, never as held-out accuracy. Held-out evaluation requires
+a different match's crops.
+
 0.png: n=8 w=15
 1.png: n=8 w=8
 2.png: n=4 w=15

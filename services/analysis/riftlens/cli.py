@@ -27,10 +27,12 @@ from riftlens.domain.geometry import Point, zone_of
 from riftlens.domain.timeline import GameStateTimeline
 from riftlens.logging import configure_logging
 from riftlens.pipeline.ingest_riot.fact_builder import build_game_state_timeline, games_are_paired
+from riftlens.validation.vod_corpus.cli import register as register_vod_corpus
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
 riot_app = typer.Typer(add_completion=False, no_args_is_help=True)
 app.add_typer(riot_app, name="riot")
+register_vod_corpus(app)
 
 log = structlog.get_logger("riftlens.cli")
 _FIXTURE_ROOT = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "riot"

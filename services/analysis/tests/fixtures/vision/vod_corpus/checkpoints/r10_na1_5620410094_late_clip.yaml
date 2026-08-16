@@ -1,0 +1,23 @@
+corpus_id: r10_na1_5620410094_late_clip
+label_basis: manual_visual
+notes: >
+  Independent HUD clock labels from decoded R.10 frames (known clock ROI).
+  Not copied from H.10 SyncMap. Container duration probe may report ~1ms
+  for this WebM; frames exist at least through 4000ms.
+  17:32 is still mid-game of the ~41 minute match NA1_5620410094.
+checkpoints:
+  - video_t_ms: 0
+    visible_clock: "17:32"
+    phase: mid
+    label_basis: manual_visual
+    notes: visual HUD clock at clip start
+  - video_t_ms: 2000
+    visible_clock: "17:34"
+    phase: mid
+    label_basis: manual_visual
+    notes: visual HUD clock at 2s
+  - video_t_ms: 4000
+    visible_clock: "17:36"
+    phase: mid
+    label_basis: manual_visual
+    notes: visual HUD clock at 4s

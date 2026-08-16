@@ -1,0 +1,174 @@
+{
+  "inventory_summary": {
+    "n_real_looking_videos": 0,
+    "n_r10_clips": 8,
+    "n_rofl": 1,
+    "riot_match_ids": [
+      "NA1_5620410094"
+    ],
+    "clock_crop_counts": {
+      "REAL": 46,
+      "SYNTHETIC": 3
+    },
+    "notes": [
+      "REAL league-looking videos found: 0 (need \u226510 for H.10 acceptance)"
+    ]
+  },
+  "ocr_atlas_match_clean": {
+    "total": 41,
+    "correct": 39,
+    "wrong": 0,
+    "abstained": 2,
+    "rejected": 0,
+    "confident_wrong": 0,
+    "accuracy": 0.9512195121951219,
+    "non_abstain_coverage": 0.9512195121951219,
+    "rejection_rate": 0.0
+  },
+  "ocr_atlas_match_negative": {
+    "total": 5,
+    "correct": 0,
+    "wrong": 0,
+    "abstained": 0,
+    "rejected": 5,
+    "confident_wrong": 0,
+    "accuracy": 0.0,
+    "non_abstain_coverage": 0.0,
+    "rejection_rate": 1.0
+  },
+  "ocr_held_out_clean": {
+    "total": 0,
+    "correct": 0,
+    "wrong": 0,
+    "abstained": 0,
+    "rejected": 0,
+    "confident_wrong": 0,
+    "accuracy": null,
+    "non_abstain_coverage": null,
+    "rejection_rate": null
+  },
+  "ocr_held_out_negative": {
+    "total": 0,
+    "correct": 0,
+    "wrong": 0,
+    "abstained": 0,
+    "rejected": 0,
+    "confident_wrong": 0,
+    "accuracy": null,
+    "non_abstain_coverage": null,
+    "rejection_rate": null
+  },
+  "ocr_diversity": {
+    "n_real": 46,
+    "n_real_clean": 41,
+    "n_matches": 1,
+    "match_ids": [
+      "NA1_5620410094"
+    ],
+    "n_resolutions": 1,
+    "resolutions": [
+      "1520x982"
+    ],
+    "has_early": false,
+    "has_mid": true,
+    "has_late": false
+  },
+  "h10": [
+    {
+      "corpus_id": "r10_na1_5620410094_mid_17s",
+      "kind": "R10-CLIP",
+      "counts_toward_acceptance": false,
+      "media_resolved": true,
+      "match_id": "NA1_5620410094",
+      "ocr_attempted": 17,
+      "ocr_readable": 0,
+      "ocr_abstentions": 17,
+      "filter_accepted": 0,
+      "filter_rejected": 17,
+      "sync_ok": false,
+      "sync_error_code": "INSUFFICIENT_READINGS",
+      "quality": null,
+      "verified": null,
+      "n_segments": null,
+      "coverage": null,
+      "residual_p50_ms": null,
+      "residual_p95_ms": null,
+      "residual_max_ms": null,
+      "checkpoint_n": 4,
+      "checkpoint_n_covered": 0,
+      "checkpoint_p50_ms": null,
+      "checkpoint_p95_ms": null,
+      "checkpoint_max_ms": null,
+      "runtime_ocr_ms": 1724,
+      "runtime_fit_ms": 41,
+      "runtime_total_ms": 1766,
+      "failure_class": "ocr_insufficient",
+      "notes": "17s in-game CLIP near 13:49 HUD. Not an OBS/ShadowPlay VOD. Replay API clock is not independent VIDEO OCR ground truth.\n | Need at least 3 confident clock readings; got 0."
+    },
+    {
+      "corpus_id": "r10_na1_5620410094_late_clip",
+      "kind": "R10-CLIP",
+      "counts_toward_acceptance": false,
+      "media_resolved": true,
+      "match_id": "NA1_5620410094",
+      "ocr_attempted": 5,
+      "ocr_readable": 0,
+      "ocr_abstentions": 5,
+      "filter_accepted": 0,
+      "filter_rejected": 5,
+      "sync_ok": false,
+      "sync_error_code": "INSUFFICIENT_READINGS",
+      "quality": null,
+      "verified": null,
+      "n_segments": null,
+      "coverage": null,
+      "residual_p50_ms": null,
+      "residual_p95_ms": null,
+      "residual_max_ms": null,
+      "checkpoint_n": 3,
+      "checkpoint_n_covered": 0,
+      "checkpoint_p50_ms": null,
+      "checkpoint_p95_ms": null,
+      "checkpoint_max_ms": null,
+      "runtime_ocr_ms": 469,
+      "runtime_fit_ms": 18,
+      "runtime_total_ms": 488,
+      "failure_class": "ocr_insufficient",
+      "notes": "Short in-game CLIP near 17:32 HUD. Not an OBS/ShadowPlay VOD. Same match as the mid clip; does not add a second REAL VOD.\n | Need at least 3 confident clock readings; got 0."
+    }
+  ],
+  "bench_30min": {
+    "runnable": false,
+    "blocked_reason": "no REAL ~30-minute VOD in the catalog",
+    "machine": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+    "cpu": "arm",
+    "cpu_count": 10,
+    "media_duration_ms": null,
+    "resolution": null,
+    "fps": null,
+    "video_ocr_ms": null,
+    "h10_fit_ms": null,
+    "deterministic_ms": null,
+    "total_excluding_llm_ms": null,
+    "under_90s": null,
+    "notes": "R.10 clips and synthetic videos are not evidence for the 30-minute gate."
+  },
+  "verdicts": {
+    "H9_1_REAL_CORPUS": "PARTIAL",
+    "H10_REAL_VOD_ACCEPTANCE": "BLOCKED_INSUFFICIENT_CORPUS",
+    "H12_VIDEO_READINESS": "BLOCKED",
+    "n_real_catalogued": 0,
+    "n_real_evaluated": 0,
+    "n_real_sync_ok": 0,
+    "aggregate_checkpoint_p95_ms": null,
+    "h10_engineering_5vod_met": false,
+    "h12_1_runnable": false,
+    "h12_5_runnable": false,
+    "h12_6_runnable": false,
+    "reasons": [
+      "REAL crops exist but held-out match/resolution/phase coverage is incomplete",
+      "REAL VODs evaluated: 0 (need \u22655 engineering / \u226510 acceptance)",
+      "no REAL full/partial user VODs; H.12 #1 #5 #6 cannot be attempted"
+    ]
+  }
+}

@@ -218,6 +218,8 @@ Fitter, segmentation, verification, cache, APIs, ClockMap wrap, synthetic A–D,
 
 Original ≥5 diverse real recordings with p95 ≤500 ms were not available/tested. H.9.1 OCR is still PARTIAL.
 
+**Update 2026-08-16:** still blocked. See [`h9-1-h10-real-vod-validation-report.md`](./h9-1-h10-real-vod-validation-report.md). Local REAL VOD count remains 0.
+
 ## 22. Whether H.11 is genuinely unblocked
 
 **Engineering of VIDEO SyncMap consumption:** yes — review seek can use an auto `SyncMap` when OCR is good enough.

@@ -81,6 +81,7 @@ forbidden_modules = [
     "riftlens.visual",
     "riftlens.vision",
     "riftlens.orchestration",
+    "riftlens.validation",
 ]
 
 [[tool.importlinter.contracts]]

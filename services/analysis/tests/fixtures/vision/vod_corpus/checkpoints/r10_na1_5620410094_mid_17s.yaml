@@ -1,0 +1,29 @@
+corpus_id: r10_na1_5620410094_mid_17s
+label_basis: manual_visual
+notes: >
+  Independent HUD clock labels from decoded R.10 frames (known clock ROI
+  x=706,y=54 from the H.9.1 crop corpus). Not copied from H.10 SyncMap.
+  detect_layout on these frames latches onto the kill score (y≈5), so the
+  production clock rect is the wrong HUD element — labels still use the
+  visible game clock on the strip.
+checkpoints:
+  - video_t_ms: 0
+    visible_clock: "13:50"
+    phase: mid
+    label_basis: manual_visual
+    notes: visual HUD clock at clip start
+  - video_t_ms: 4981
+    visible_clock: "13:55"
+    phase: mid
+    label_basis: manual_visual
+    notes: visual HUD clock ~5s into clip (PTS 4981)
+  - video_t_ms: 9983
+    visible_clock: "14:00"
+    phase: mid
+    label_basis: manual_visual
+    notes: visual HUD clock ~10s into clip (PTS 9983)
+  - video_t_ms: 15017
+    visible_clock: "14:05"
+    phase: mid
+    label_basis: manual_visual
+    notes: visual HUD clock ~15s into clip (PTS 15017)

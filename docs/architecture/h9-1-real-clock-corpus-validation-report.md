@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-14  
 **Branch:** `integrate/ui-r1`  
-**Does not implement:** H.10, H.11, R.12, V.7, neural OCR, ReplayHost product changes.
+**Corpus status (2026-08-16):** still **PARTIAL** — see [`h9-1-h10-real-vod-validation-report.md`](./h9-1-h10-real-vod-validation-report.md). No new REAL matches/resolutions/phases were found locally.
 
 Companion to [`h9-1-clock-ocr-layout-report.md`](./h9-1-clock-ocr-layout-report.md).
 
