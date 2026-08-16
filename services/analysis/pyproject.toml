@@ -80,6 +80,7 @@ forbidden_modules = [
     "riftlens.gameplay",
     "riftlens.visual",
     "riftlens.vision",
+    "riftlens.orchestration",
 ]
 
 [[tool.importlinter.contracts]]
@@ -110,6 +111,7 @@ forbidden_modules = [
     "riftlens.replay_host",
     "riftlens.gameplay",
     "riftlens.vision",
+    "riftlens.orchestration",
     "openai",
     "anthropic",
 ]
@@ -126,6 +128,7 @@ forbidden_modules = [
     "riftlens.gameplay",
     "riftlens.visual",
     "riftlens.rofl",
+    "riftlens.orchestration",
     "openai",
     "anthropic",
     "tesseract",
@@ -196,6 +199,25 @@ forbidden_modules = [
     "riftlens.pipeline",
     "riftlens.analysis",
     "riftlens.coaching",
+]
+
+[[tool.importlinter.contracts]]
+name = "h11 orchestration isolation"
+type = "forbidden"
+source_modules = ["riftlens.orchestration"]
+forbidden_modules = [
+    "riftlens.visual",
+    "riftlens.replay_host",
+]
+
+[[tool.importlinter.contracts]]
+name = "coaching isolation from visual"
+type = "forbidden"
+source_modules = ["riftlens.coaching"]
+forbidden_modules = [
+    "riftlens.visual",
+    "riftlens.vision",
+    "riftlens.replay_host",
 ]
 
 [[tool.importlinter.contracts]]

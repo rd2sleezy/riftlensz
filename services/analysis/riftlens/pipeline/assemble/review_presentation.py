@@ -44,6 +44,9 @@ def review_to_presentation(
         "rule_pack_version": review.rule_pack_version,
         "engine_version": review.engine_version,
         "llm_provider": review.llm_provider,
+        "llm_model": review.llm_model,
+        "llm_prompt_version": review.llm_prompt_version,
+        "llm_fallback": review.llm_fallback,
         "status": review.status,
         "summary_text": review.summary_text,
         "unpaired_match_timeline": review.unpaired_match_timeline,
@@ -68,6 +71,7 @@ def review_summary(payload: Mapping[str, Any]) -> dict[str, Any]:
     """Return list-card fields from a presentation payload."""
     return {
         "id": payload["id"],
+        "player_id": payload.get("player_id"),
         "match_id": payload["match_id"],
         "participant_id": payload["participant_id"],
         "champion": payload["champion"],
@@ -203,6 +207,8 @@ def _item_json(
         "grouping_reason": item.grouping_reason,
         "cluster_id": item.cluster_id,
         "cost_summary": item.cost_summary,
+        "explanation_source": item.explanation_source,
+        "llm_fallback": item.llm_fallback,
         "exemplar": _exemplar_preview(item.exemplar_finding_id, findings),
     }
 

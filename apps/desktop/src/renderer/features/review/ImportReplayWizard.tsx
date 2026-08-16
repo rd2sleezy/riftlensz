@@ -42,6 +42,7 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
   const [pendingPath, setPendingPath] = useState<string | null>(null)
   const [replayMatchId, setReplayMatchId] = useState<string | null>(null)
   const [participants, setParticipants] = useState<ParticipantRow[]>([])
+  const [activeJobId, setActiveJobId] = useState<string | null>(null)
 
   if (!props.open) {
     return null
@@ -58,6 +59,7 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     setPendingPath(null)
     setReplayMatchId(null)
     setParticipants([])
+    setActiveJobId(null)
   }
 
   const failWith = (code: string, message?: string | null, suggested?: string | null): void => {
@@ -158,16 +160,34 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     setStep('building')
     setErrorLabel(null)
     setInfoLabel(`Building review for participant ${participantId}…`)
-    const built = await window.rift.openRealMatchReview({
+    const started = await window.rift.startAnalyzeJob({
       matchId: replayMatchId,
       participantId,
       rank: 'UNRANKED'
     })
-    if (!built.ok) {
-      failWith(built.code, built.message)
+    if (!started.ok) {
+      failWith(started.code, started.message)
       return
     }
-    await bindAndFinish(pendingPath, replayMatchId, built.review.id)
+    setActiveJobId(started.job.job_id)
+    let job = started.job
+    while (job.status === 'QUEUED' || job.status === 'RUNNING') {
+      setInfoLabel(
+        `${job.current_stage ?? 'analyze'} ${job.progress_pct}% — ${job.progress_message}`
+      )
+      await new Promise((resolve) => setTimeout(resolve, 250))
+      const polled = await window.rift.getAnalyzeJob(job.job_id)
+      if (!polled.ok) {
+        failWith(polled.code, polled.message)
+        return
+      }
+      job = polled.job
+    }
+    if (job.status !== 'COMPLETED' || job.review_id === null) {
+      failWith(job.error_code ?? 'JOB_FAILED', job.error_message)
+      return
+    }
+    await bindAndFinish(pendingPath, replayMatchId, job.review_id)
   }
 
   const runImport = async (): Promise<void> => {
@@ -349,6 +369,9 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
             type="button"
             className="rounded bg-slate-800 px-3 py-1.5 text-sm"
             onClick={() => {
+              if (activeJobId !== null) {
+                void window.rift.cancelAnalyzeJob(activeJobId)
+              }
               reset()
               props.onClose()
             }}

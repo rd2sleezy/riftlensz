@@ -109,6 +109,8 @@ class CoachingItem:
     certainty: str
     cluster_id: str
     cost_summary: str
+    explanation_source: str = "TEMPLATE"
+    llm_fallback: bool = False
 
 
 @dataclass(frozen=True)
@@ -141,6 +143,9 @@ class Review:
     completed_at: int | None
     unpaired_match_timeline: bool = False
     overall_scores: Mapping[str, float] | None = None
+    llm_model: str | None = None
+    llm_prompt_version: str | None = None
+    llm_fallback: bool = False
 
     def finding_by_id(self, finding_id: str) -> Finding | None:
         """Return a preserved original finding, including suppressed ones."""

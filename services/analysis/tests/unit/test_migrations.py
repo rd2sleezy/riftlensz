@@ -54,7 +54,11 @@ R7_TABLES = {
     "media_artifact",
 }
 
-HEAD_TABLES = PHASE1_TABLES | R7_TABLES
+H11_TABLES = {
+    "analysis_job",
+}
+
+HEAD_TABLES = PHASE1_TABLES | R7_TABLES | H11_TABLES
 
 
 def _alembic_env(db_path: Path) -> dict[str, str]:
@@ -111,7 +115,10 @@ def test_alembic_upgrade_phase1_then_r7(tmp_path: Path) -> None:
     assert R7_TABLES.isdisjoint(after_phase1)
     _run_alembic(db_path, "upgrade", "0002_gameplay")
     after_r7 = _table_names(db_path)
-    assert HEAD_TABLES <= after_r7
+    assert (PHASE1_TABLES | R7_TABLES) <= after_r7
+    assert H11_TABLES.isdisjoint(after_r7)
+    _run_alembic(db_path, "upgrade", "head")
+    assert HEAD_TABLES <= _table_names(db_path)
 
 
 def test_alembic_downgrade_r7_keeps_phase1(tmp_path: Path) -> None:
@@ -121,6 +128,7 @@ def test_alembic_downgrade_r7_keeps_phase1(tmp_path: Path) -> None:
     tables = _table_names(db_path)
     assert PHASE1_TABLES <= tables
     assert R7_TABLES.isdisjoint(tables)
+    assert H11_TABLES.isdisjoint(tables)
 
 
 def test_r7_backfill_copies_h9_sync_map(tmp_path: Path) -> None:

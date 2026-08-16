@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -15,7 +16,8 @@ def settings(tmp_path: Path) -> Settings:
 
 
 @pytest.fixture
-def client(settings: Settings) -> TestClient:
-    """Return a TestClient. Assumes create_app wires /health without auth."""
+def client(settings: Settings) -> Iterator[TestClient]:
+    """Return a TestClient with lifespan running. Assumes create_app wires /health without auth."""
     app = create_app(settings=settings, token="test-token")
-    return TestClient(app)
+    with TestClient(app) as test_client:
+        yield test_client

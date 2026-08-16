@@ -1,0 +1,30 @@
+# serializer version: 1
+# name: test_prompt_snapshots
+  '''
+  You are narrating one RiftLens coaching item.
+  
+  Use ONLY the EvidenceBundle JSON that follows. Do not invent numbers, champion
+  names, timestamps, or events. Do not upgrade inferred evidence into certainty.
+  Do not mention video, screenshots, or raw match JSON.
+  
+  Return JSON only:
+  {"explanation": "<concise coaching paragraph grounded in the bundle>"}
+  
+  Certainty language is applied elsewhere. Do not write "definitely", "always",
+  or "proves".
+  '''
+# ---
+# name: test_prompt_snapshots.1
+  '''
+  You are writing a short session summary for a RiftLens review.
+  
+  Use ONLY the EvidenceBundle JSON list that follows. Do not invent numbers,
+  champion names, timestamps, or events. Do not select new focus items.
+  
+  Return JSON only:
+  {"summary": "<2-4 sentences>", "focus": ["<item 1>", "<item 2>", "<item 3>"]}
+  
+  Narrate the already-selected focus items. Certainty language is applied
+  elsewhere.
+  '''
+# ---

@@ -1,6 +1,8 @@
 import { BrowserWindow, dialog, ipcMain } from 'electron'
 import { z } from 'zod'
 import {
+  AnalyzeJobInputSchema,
+  AnalyzeJobResultSchema,
   BuildManualSyncInputSchema,
   BuildManualSyncResultSchema,
   CloseReplayResultSchema,
@@ -138,6 +140,21 @@ export function registerIpcHandlers(
     return GetReviewResultSchema.parse(
       await openRealMatchReview(supervisor, authService, input)
     )
+  })
+
+  ipcMain.handle(IPC.startAnalyzeJob, async (_event, raw: unknown) => {
+    const input = AnalyzeJobInputSchema.parse(raw)
+    return AnalyzeJobResultSchema.parse(await startAnalyzeJob(supervisor, authService, input))
+  })
+
+  ipcMain.handle(IPC.getAnalyzeJob, async (_event, raw: unknown) => {
+    const input = z.object({ jobId: z.string().min(1) }).parse(raw)
+    return AnalyzeJobResultSchema.parse(await getAnalyzeJob(supervisor, input.jobId))
+  })
+
+  ipcMain.handle(IPC.cancelAnalyzeJob, async (_event, raw: unknown) => {
+    const input = z.object({ jobId: z.string().min(1) }).parse(raw)
+    return AnalyzeJobResultSchema.parse(await cancelAnalyzeJob(supervisor, input.jobId))
   })
 
   ipcMain.handle(IPC.listMatchParticipants, async (_event, raw: unknown) => {
@@ -383,6 +400,52 @@ async function openFixtureReview(
         review: buildPlaceholderFixtureBReview(input.participantId, input.rank ?? 'UNRANKED')
       }
     }
+    return fail(error)
+  }
+}
+
+async function startAnalyzeJob(
+  supervisor: SidecarSupervisor,
+  authService: AuthService,
+  input: { matchId: string; participantId: number; rank?: string; mediaAssetId?: string }
+) {
+  const apiKey = authService.getApiKeyForMain()
+  try {
+    const created = await supervisor.request(
+      '/jobs/analyze',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          match_id: input.matchId,
+          participant_id: input.participantId,
+          rank: input.rank ?? 'UNRANKED',
+          media_asset_id: input.mediaAssetId,
+          api_key: apiKey
+        })
+      },
+      30_000
+    )
+    const jobId = (created as { job_id: string }).job_id
+    return await getAnalyzeJob(supervisor, jobId)
+  } catch (error) {
+    return fail(error)
+  }
+}
+
+async function getAnalyzeJob(supervisor: SidecarSupervisor, jobId: string) {
+  try {
+    const payload = await supervisor.request(`/jobs/${jobId}`)
+    return { ok: true as const, job: payload }
+  } catch (error) {
+    return fail(error)
+  }
+}
+
+async function cancelAnalyzeJob(supervisor: SidecarSupervisor, jobId: string) {
+  try {
+    const payload = await supervisor.request(`/jobs/${jobId}`, { method: 'DELETE' })
+    return { ok: true as const, job: payload }
+  } catch (error) {
     return fail(error)
   }
 }

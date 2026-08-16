@@ -34,6 +34,17 @@ class SqlMatchRepository(SessionRepository):
 
         return await self.call(work)
 
+    async def list_recent(self, *, limit: int = 40) -> Sequence[MatchRecord]:
+        """Return recent matches newest-first. Assumes ``limit`` is positive."""
+
+        def work(session: Session) -> list[MatchRecord]:
+            rows = session.scalars(
+                select(MatchRow).order_by(MatchRow.game_creation.desc()).limit(limit)
+            ).all()
+            return [_match_record(row) for row in rows]
+
+        return await self.call(work)
+
     async def replace_participations(
         self, match_id: str, rows: Sequence[MatchParticipationRecord]
     ) -> None:

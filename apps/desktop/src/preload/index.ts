@@ -1,5 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import {
+  AnalyzeJobInputSchema,
+  AnalyzeJobResultSchema,
   AuthSessionSchema,
   BuildManualSyncInputSchema,
   BuildManualSyncResultSchema,
@@ -44,6 +46,8 @@ import {
   SignInResultSchema,
   SignInWithApiKeyInputSchema,
   type AuthSession,
+  type AnalyzeJobInput,
+  type AnalyzeJobResult,
   type BuildManualSyncResult,
   type CloseReplayResult,
   type DesktopPlatform,
@@ -110,6 +114,21 @@ const rift = {
     return ipcRenderer
       .invoke(IPC.openRealMatchReview, OpenRealMatchReviewInputSchema.parse(input))
       .then((value) => GetReviewResultSchema.parse(value))
+  },
+  startAnalyzeJob(input: AnalyzeJobInput): Promise<AnalyzeJobResult> {
+    return ipcRenderer
+      .invoke(IPC.startAnalyzeJob, AnalyzeJobInputSchema.parse(input))
+      .then((value) => AnalyzeJobResultSchema.parse(value))
+  },
+  getAnalyzeJob(jobId: string): Promise<AnalyzeJobResult> {
+    return ipcRenderer
+      .invoke(IPC.getAnalyzeJob, { jobId })
+      .then((value) => AnalyzeJobResultSchema.parse(value))
+  },
+  cancelAnalyzeJob(jobId: string): Promise<AnalyzeJobResult> {
+    return ipcRenderer
+      .invoke(IPC.cancelAnalyzeJob, { jobId })
+      .then((value) => AnalyzeJobResultSchema.parse(value))
   },
   listMatchParticipants(matchId: string): Promise<MatchParticipantsResult> {
     return ipcRenderer

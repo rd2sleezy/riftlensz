@@ -41,7 +41,10 @@ export const IPC = {
   overlayLifecycleEvent: 'rift:overlay:lifecycle',
   overlaySetPresentation: 'rift:overlay:set-presentation',
   overlayRecheckDisplay: 'rift:overlay:recheck-display',
-  overlayAllowInteractionFocus: 'rift:overlay:allow-interaction-focus'
+  overlayAllowInteractionFocus: 'rift:overlay:allow-interaction-focus',
+  startAnalyzeJob: 'rift:jobs:analyze',
+  getAnalyzeJob: 'rift:jobs:get',
+  cancelAnalyzeJob: 'rift:jobs:cancel'
 } as const
 
 export const IPC_RENDERER_ALLOWLIST = [
@@ -85,7 +88,10 @@ export const IPC_RENDERER_ALLOWLIST = [
   'onOverlayLifecycle',
   'overlaySetPresentation',
   'overlayRecheckDisplay',
-  'overlayAllowInteractionFocus'
+  'overlayAllowInteractionFocus',
+  'startAnalyzeJob',
+  'getAnalyzeJob',
+  'cancelAnalyzeJob'
 ] as const
 
 export const SidecarStateSchema = z.enum([
@@ -233,6 +239,8 @@ export const CoachingItemSchema = z.object({
   grouping_reason: z.string(),
   cluster_id: z.string(),
   cost_summary: z.string(),
+  explanation_source: z.string().optional(),
+  llm_fallback: z.boolean().optional(),
   exemplar: z
     .object({
       id: z.string(),
@@ -326,6 +334,9 @@ export const ReviewPresentationSchema = z.object({
   rule_pack_version: z.string(),
   engine_version: z.string(),
   llm_provider: z.string(),
+  llm_model: z.string().nullable().optional(),
+  llm_prompt_version: z.string().nullable().optional(),
+  llm_fallback: z.boolean().optional(),
   status: z.string(),
   summary_text: z.string().nullable(),
   unpaired_match_timeline: z.boolean(),
@@ -345,6 +356,7 @@ export const ReviewPresentationSchema = z.object({
 
 export const ReviewSummarySchema = z.object({
   id: z.string(),
+  player_id: z.string().nullable().optional(),
   match_id: z.string(),
   participant_id: z.number().int(),
   champion: z.string(),
@@ -570,6 +582,31 @@ export const OpenRealMatchReviewInputSchema = z.object({
   rank: z.string().optional()
 })
 
+export const AnalyzeJobInputSchema = z.object({
+  matchId: z.string().min(1),
+  participantId: z.number().int().min(1).max(10),
+  rank: z.string().optional(),
+  mediaAssetId: z.string().optional()
+})
+
+export const AnalyzeJobSnapshotSchema = z.object({
+  job_id: z.string(),
+  status: z.string(),
+  current_stage: z.string().nullable(),
+  progress_pct: z.number().int(),
+  progress_message: z.string(),
+  review_id: z.string().nullable(),
+  error_code: z.string().nullable(),
+  error_message: z.string().nullable(),
+  llm_provider: z.string().optional(),
+  llm_fallback: z.boolean().optional()
+})
+
+export const AnalyzeJobResultSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), job: AnalyzeJobSnapshotSchema }),
+  ErrorResultSchema
+])
+
 export const MatchParticipantsInputSchema = z.object({
   matchId: z.string().min(1)
 })
@@ -717,6 +754,9 @@ export type DesktopPlatform = z.infer<typeof DesktopPlatformSchema>
 export type PickRoflResult = z.infer<typeof PickRoflResultSchema>
 export type ImportReplayResult = z.infer<typeof ImportReplayResultSchema>
 export type OpenRealMatchReviewInput = z.infer<typeof OpenRealMatchReviewInputSchema>
+export type AnalyzeJobInput = z.infer<typeof AnalyzeJobInputSchema>
+export type AnalyzeJobResult = z.infer<typeof AnalyzeJobResultSchema>
+export type AnalyzeJobSnapshot = z.infer<typeof AnalyzeJobSnapshotSchema>
 export type MatchParticipantsResult = z.infer<typeof MatchParticipantsResultSchema>
 export type IngestMatchResult = z.infer<typeof IngestMatchResultSchema>
 export type GameplayStatusResult = z.infer<typeof GameplayStatusResultSchema>

@@ -118,15 +118,21 @@ def dump_review(
         str, typer.Option("--rank", help="Rank tier for relevance curves.")
     ] = "UNRANKED",
     no_llm: Annotated[
-        bool, typer.Option("--no-llm", help="Use Jinja templates only (H.8 default).")
+        bool, typer.Option("--no-llm", help="Use Jinja templates only (null provider).")
     ] = False,
     persist: Annotated[
         bool, typer.Option("--persist/--no-persist", help="Write the Review to the local DB.")
     ] = True,
+    vod: Annotated[
+        Path | None, typer.Option("--vod", help="Optional VIDEO path routed through H.11 jobs.")
+    ] = None,
 ) -> None:
-    """Print a deterministic H.8 coaching review. Assumes GST is built without network."""
-    del no_llm  # H.11 LLM narration is not in scope; templates are always used.
+    """Print a coaching review. ``--no-llm`` forces the null provider."""
     configure_logging()
+    provider = "null" if no_llm else (get_settings().llm_provider or "null")
+    if vod is not None:
+        asyncio.run(_review_via_job(match_id, pid, rank=rank, provider=provider, vod=vod))
+        return
     match, timeline = _load_fixture_pair(match_id, fixtures)
     from riftlens.pipeline.assemble.review_builder import build_review_from_dtos
 
@@ -135,7 +141,7 @@ def dump_review(
         timeline,
         pid,
         rank=rank,
-        llm_provider="null",
+        llm_provider=provider,
         persist=persist,
     )
     _print_review(result.review, paired=result.paired)
@@ -156,6 +162,78 @@ def dump_gst(
     _print_participant_summary(gst)
     _print_fact_histogram(gst)
     _print_per_minute_table(gst, pid)
+
+
+async def _review_via_job(
+    match_id: str,
+    pid: int,
+    *,
+    rank: str,
+    provider: str,
+    vod: Path,
+) -> None:
+    """Run the H.11 job runner for a match plus VIDEO. Assumes ``vod`` is a local file."""
+    from riftlens.adapters.db.engine import init_database, make_session_factory
+    from riftlens.adapters.db.repositories import SqlMediaRepository
+    from riftlens.domain.ids import new_ulid
+    from riftlens.domain.ports import MediaAssetRecord
+    from riftlens.orchestration.job import AnalysisJob, JobInputs
+    from riftlens.orchestration.progress import ProgressBus, now_ms
+    from riftlens.orchestration.runner import JobRunner
+    from riftlens.pipeline.ingest_video.probe import chromium_playable, probe, validate_probe
+
+    settings = get_settings()
+    engine = init_database(settings)
+    factory = make_session_factory(engine)
+    probed = probe(str(vod))
+    errors = validate_probe(probed)
+    if errors:
+        raise typer.BadParameter(" ".join(errors))
+    media_repo = SqlMediaRepository(factory)
+    existing = await media_repo.get_by_content_hash(probed.content_hash)
+    if existing is None:
+        record = MediaAssetRecord(
+            id=new_ulid(),
+            content_hash=probed.content_hash,
+            original_path=probed.path,
+            playable_path=probed.path if chromium_playable(probed) else None,
+            proxy_path=None,
+            thumbnail_sheet_path=None,
+            container=None,
+            codec=probed.codec_name,
+            pix_fmt=probed.pix_fmt,
+            width=probed.width,
+            height=probed.height,
+            fps_num=None,
+            fps_den=None,
+            duration_ms=probed.duration_ms,
+            size_bytes=probed.size_bytes,
+            source_kind="PLAYER_POV",
+            layout_profile_id=None,
+            quality_score=None,
+            imported_at=now_ms(),
+            last_accessed_at=now_ms(),
+        )
+        await media_repo.upsert_asset(record)
+        media_id = record.id
+    else:
+        media_id = existing.id
+    job = AnalysisJob(
+        id=new_ulid(),
+        inputs=JobInputs(
+            match_id=match_id,
+            participant_id=pid,
+            media_asset_id=media_id,
+            rank=rank,
+            llm_provider=provider,
+        ),
+        created_at=now_ms(),
+    )
+    runner = JobRunner(settings=settings, session_factory=factory, bus=ProgressBus())
+    await runner.run(job)
+    print(f"job_id={job.id} status={job.status} review_id={job.review_id}")
+    if job.status != "COMPLETED":
+        raise typer.Exit(code=1)
 
 
 def _load_fixture_pair(match_id: str, fixtures: Path | None) -> tuple[MatchDto, TimelineDto]:

@@ -21,15 +21,20 @@ from riftlens.adapters.db.repositories import (
     SqlGameplayRepository,
     SqlMatchRepository,
 )
+from riftlens.api.accounts import router as accounts_router
 from riftlens.api.capture import router as capture_router
+from riftlens.api.diagnostics import router as diagnostics_router
+from riftlens.api.findings import router as findings_router
 from riftlens.api.gameplay import router as gameplay_router
 from riftlens.api.health import router as health_router
+from riftlens.api.jobs import router as jobs_router
 from riftlens.api.media import router as media_router
 from riftlens.api.reviews import router as reviews_router
 from riftlens.api.sync import router as sync_router
 from riftlens.config import Settings, get_settings
 from riftlens.gameplay.service import GameplaySourceService
 from riftlens.logging import configure_logging
+from riftlens.orchestration.runner import JobService
 from riftlens.replay_host.capture.capture_service import CaptureService
 from riftlens.replay_host.factory import create_replay_host
 from riftlens.replay_host.port import ReplayHostPort
@@ -70,9 +75,13 @@ def create_app(
             matches=SqlMatchRepository(session_factory),
             captures=capture_service,
         )
+        app.state.job_service = JobService(resolved, session_factory)
         try:
             yield
         finally:
+            service = getattr(app.state, "job_service", None)
+            if service is not None:
+                service.shutdown()
             engine.dispose()
 
     app = FastAPI(
@@ -105,6 +114,10 @@ def create_app(
     app.include_router(sync_router)
     app.include_router(gameplay_router)
     app.include_router(capture_router)
+    app.include_router(jobs_router)
+    app.include_router(accounts_router)
+    app.include_router(diagnostics_router)
+    app.include_router(findings_router)
     return app
 
 

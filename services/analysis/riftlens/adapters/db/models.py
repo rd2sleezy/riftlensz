@@ -582,3 +582,37 @@ class MediaArtifactRow(Base):
     retention_class: Mapped[str] = mapped_column(Text, nullable=False, default="review")
     bytes: Mapped[int | None] = mapped_column(Integer)
     expires_at: Mapped[int | None] = mapped_column(Integer)
+
+
+class AnalysisJobRow(Base):
+    __tablename__ = "analysis_job"
+    __table_args__ = (
+        Index("ix_analysis_job_status", "status"),
+        Index("ix_analysis_job_completed", "completed_at"),
+    )
+
+    id: Mapped[str] = mapped_column(Text, primary_key=True)
+    status: Mapped[str] = mapped_column(Text, nullable=False)
+    match_id: Mapped[str] = mapped_column(Text, nullable=False)
+    participant_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    media_asset_id: Mapped[str | None] = mapped_column(Text)
+    current_stage: Mapped[str | None] = mapped_column(Text)
+    progress_pct: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    progress_message: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[int] = mapped_column(Integer, nullable=False)
+    started_at: Mapped[int | None] = mapped_column(Integer)
+    completed_at: Mapped[int | None] = mapped_column(Integer)
+    failure_stage: Mapped[str | None] = mapped_column(Text)
+    error_code: Mapped[str | None] = mapped_column(Text)
+    error_message: Mapped[str | None] = mapped_column(Text)
+    review_id: Mapped[str | None] = mapped_column(Text)
+    stage_timings_json: Mapped[str | None] = mapped_column(Text)
+    cache_hits: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    cache_misses: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    inputs_json: Mapped[str] = mapped_column(Text, nullable=False)
+    llm_provider: Mapped[str | None] = mapped_column(Text)
+    llm_model: Mapped[str | None] = mapped_column(Text)
+    llm_fallback: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    fact_count: Mapped[int | None] = mapped_column(Integer)
+    finding_count: Mapped[int | None] = mapped_column(Integer)
+    sync_quality_json: Mapped[str | None] = mapped_column(Text)

@@ -14,6 +14,8 @@ import type {
   MatchParticipantsResult,
   OpenFixtureInput,
   OpenRealMatchReviewInput,
+  AnalyzeJobInput,
+  AnalyzeJobResult,
   OpenReplayResult,
   OverlayContextResult,
   OverlayLifecycleEventPayload,
@@ -39,6 +41,9 @@ export interface RiftApi {
   getReview: (reviewId: string) => Promise<GetReviewResult>
   openFixtureReview: (input: OpenFixtureInput) => Promise<GetReviewResult>
   openRealMatchReview: (input: OpenRealMatchReviewInput) => Promise<GetReviewResult>
+  startAnalyzeJob: (input: AnalyzeJobInput) => Promise<AnalyzeJobResult>
+  getAnalyzeJob: (jobId: string) => Promise<AnalyzeJobResult>
+  cancelAnalyzeJob: (jobId: string) => Promise<AnalyzeJobResult>
   listMatchParticipants: (matchId: string) => Promise<MatchParticipantsResult>
   ingestMatch: (matchId: string) => Promise<IngestMatchResult>
   pickVod: () => Promise<PickVodResult>

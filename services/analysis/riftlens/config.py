@@ -38,6 +38,12 @@ class Settings(BaseSettings):
 
     data_dir: Path = Field(default_factory=default_data_dir)
     riot_api_key: str = ""
+    llm_provider: str = "null"
+    openai_api_key: str = ""
+    anthropic_api_key: str = ""
+    ollama_base_url: str = "http://127.0.0.1:11434"
+    llm_model: str = ""
+    ingest_video_hold_ms: int = 0
     capture_root: Path | None = None
     capture_max_seconds: float = DEFAULT_CAPTURE_BUDGET.max_seconds
     capture_max_artifacts: int = DEFAULT_CAPTURE_BUDGET.max_artifacts

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import time
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from riftlens import __version__
@@ -39,6 +39,7 @@ from riftlens.coaching.prioritizer import prioritize
 from riftlens.coaching.scoring import score_clusters
 from riftlens.config import Settings, get_settings
 from riftlens.domain.enums import GamePhase
+from riftlens.domain.finding import Finding
 from riftlens.domain.ids import new_ulid
 from riftlens.domain.ports import (
     CoachingItemRecord,
@@ -46,7 +47,14 @@ from riftlens.domain.ports import (
     PlayerRecord,
     ReviewRecord,
 )
-from riftlens.domain.review import CoachingItem, MetricSnapshot, Review
+from riftlens.domain.review import (
+    CoachingItem,
+    FindingCluster,
+    GroupingDecision,
+    MetricSnapshot,
+    Review,
+)
+from riftlens.domain.sync_map import SyncMap
 from riftlens.domain.timeline import GameStateTimeline
 from riftlens.pipeline.ingest_riot.fact_builder import build_game_state_timeline, games_are_paired
 from riftlens.pipeline.ingest_riot.persist import persist_riot_match
@@ -112,12 +120,60 @@ def build_review(
         is_strength=True,
         rank_start=len(focus) + len(secondary) + 1,
     )
-    info = gst.participants[pid]
-    result = _match_result(gst, pid, match)
     now_ms = int(time.time() * 1000)
-    review = Review(
-        id=new_ulid(),
+    review = review_from_parts(
+        gst=gst,
+        pid=pid,
+        rank=rank,
+        findings=tuple(findings),
+        metrics=tuple(metrics),
+        focus=tuple(focus),
+        secondary=tuple(secondary),
+        strengths=tuple(strengths),
+        clusters=tuple(scored),
+        grouping_log=clustered.grouping_log,
+        match=match,
+        timeline=timeline,
+        llm_provider=llm_provider,
+        rule_pack_version=pack.version,
         player_id=player_id or "",
+        created_at=now_ms,
+    )
+    paired = not _unpaired(match, timeline)
+    if persist:
+        resolved = settings or get_settings()
+        review = _persist_review(review, gst, metrics, match, timeline, resolved)
+    return ReviewBuildResult(review=review, gst=gst, paired=paired)
+
+
+def review_from_parts(
+    *,
+    gst: GameStateTimeline,
+    pid: int,
+    rank: str,
+    findings: tuple[Finding, ...],
+    metrics: Sequence[MetricValue],
+    focus: tuple[CoachingItem, ...],
+    secondary: tuple[CoachingItem, ...],
+    strengths: tuple[CoachingItem, ...],
+    clusters: tuple[FindingCluster, ...],
+    grouping_log: tuple[GroupingDecision, ...],
+    match: MatchDto | None,
+    timeline: TimelineDto | None,
+    llm_provider: str,
+    rule_pack_version: str,
+    player_id: str = "",
+    created_at: int | None = None,
+    llm_model: str | None = None,
+    llm_prompt_version: str | None = None,
+    llm_fallback: bool = False,
+) -> Review:
+    """Assemble a Review from already-computed parts. Does not persist."""
+    info = gst.participants[pid]
+    stamp = int(time.time() * 1000) if created_at is None else created_at
+    return Review(
+        id=new_ulid(),
+        player_id=player_id,
         match_id=gst.match_id,
         participant_id=pid,
         champion=info.champion,
@@ -125,29 +181,27 @@ def build_review(
         rank=rank,
         patch=gst.patch,
         duration_ms=gst.duration_ms,
-        result=result,
-        rule_pack_version=pack.version,
+        result=_match_result(gst, pid, match),
+        rule_pack_version=rule_pack_version,
         engine_version=__version__,
         llm_provider=llm_provider,
         status="COMPLETE",
         summary_text=_summary_text(focus, strengths),
-        findings=tuple(findings),
-        clusters=tuple(scored),
-        grouping_log=clustered.grouping_log,
-        focus_items=tuple(focus),
-        secondary_items=tuple(secondary),
-        strengths=tuple(strengths),
+        findings=findings,
+        clusters=clusters,
+        grouping_log=grouping_log,
+        focus_items=focus,
+        secondary_items=secondary,
+        strengths=strengths,
         metrics=tuple(_metric_snapshot(item) for item in metrics),
-        created_at=now_ms,
-        completed_at=now_ms,
+        created_at=stamp,
+        completed_at=stamp,
         unpaired_match_timeline=_unpaired(match, timeline),
-        overall_scores=_domain_scores(scored),
+        overall_scores=_domain_scores(clusters),
+        llm_model=llm_model,
+        llm_prompt_version=llm_prompt_version,
+        llm_fallback=llm_fallback,
     )
-    paired = not _unpaired(match, timeline)
-    if persist:
-        resolved = settings or get_settings()
-        review = _persist_review(review, gst, metrics, match, timeline, resolved)
-    return ReviewBuildResult(review=review, gst=gst, paired=paired)
 
 
 def build_review_from_dtos(
@@ -239,10 +293,32 @@ def _persist_review(
     match: MatchDto | None,
     timeline: TimelineDto | None,
     settings: Settings,
+    sync_map: SyncMap | None = None,
 ) -> Review:
-    del gst
     import asyncio
 
+    try:
+        asyncio.get_running_loop()
+    except RuntimeError:
+        return asyncio.run(
+            persist_review_async(
+                review, gst, metrics, match, timeline, settings, sync_map=sync_map
+            )
+        )
+    raise RuntimeError("use persist_review_async inside a running event loop")
+
+
+async def persist_review_async(
+    review: Review,
+    gst: GameStateTimeline,
+    metrics: Sequence[MetricValue],
+    match: MatchDto | None,
+    timeline: TimelineDto | None,
+    settings: Settings,
+    sync_map: SyncMap | None = None,
+) -> Review:
+    """Persist review rows and presentation JSON. Assumes GST analysis already ran."""
+    del gst
     engine = init_database(settings)
     factory = make_session_factory(engine)
     players = SqlPlayerRepository(factory)
@@ -251,29 +327,27 @@ def _persist_review(
     findings_repo = SqlFindingRepository(factory)
     metric_repo = SqlMetricRepository(factory)
     coaching = SqlCoachingRepository(factory)
+    player_id = review.player_id or await _ensure_local_player(settings, players)
+    if match is not None and timeline is not None:
+        await persist_riot_match(matches, match, timeline, now_ms=review.created_at)
+    updated = replace(review, player_id=player_id)
+    await reviews.upsert(_review_record(updated))
+    await persist_findings(findings_repo, updated.id, updated.findings)
+    await persist_metrics(metric_repo, updated.id, metrics)
+    await coaching.replace_for_review(
+        updated.id, [_coaching_record(updated.id, item) for item in _all_items(updated)]
+    )
+    for item in updated.focus_items:
+        await coaching.upsert_focus_commitment(_commitment(updated, item, player_id))
+    from riftlens.pipeline.assemble.review_presentation import (
+        review_to_presentation,
+        save_review_presentation,
+    )
 
-    async def work() -> Review:
-        player_id = review.player_id or await _ensure_local_player(settings, players)
-        if match is not None and timeline is not None:
-            await persist_riot_match(matches, match, timeline, now_ms=review.created_at)
-        updated = _with_player(review, player_id)
-        await reviews.upsert(_review_record(updated))
-        await persist_findings(findings_repo, updated.id, updated.findings)
-        await persist_metrics(metric_repo, updated.id, metrics)
-        await coaching.replace_for_review(
-            updated.id, [_coaching_record(updated.id, item) for item in _all_items(updated)]
-        )
-        for item in updated.focus_items:
-            await coaching.upsert_focus_commitment(_commitment(updated, item, player_id))
-        from riftlens.pipeline.assemble.review_presentation import (
-            review_to_presentation,
-            save_review_presentation,
-        )
-
-        save_review_presentation(settings.data_dir, review_to_presentation(updated))
-        return updated
-
-    return asyncio.run(work())
+    save_review_presentation(
+        settings.data_dir, review_to_presentation(updated, sync_map=sync_map)
+    )
+    return updated
 
 
 def _commitment(review: Review, item: CoachingItem, player_id: str) -> FocusCommitmentRecord:
@@ -288,37 +362,6 @@ def _commitment(review: Review, item: CoachingItem, player_id: str) -> FocusComm
         created_at=review.created_at,
         resolved_review_id=None,
         outcome=None,
-    )
-
-
-def _with_player(review: Review, player_id: str) -> Review:
-    return Review(
-        id=review.id,
-        player_id=player_id,
-        match_id=review.match_id,
-        participant_id=review.participant_id,
-        champion=review.champion,
-        role=review.role,
-        rank=review.rank,
-        patch=review.patch,
-        duration_ms=review.duration_ms,
-        result=review.result,
-        rule_pack_version=review.rule_pack_version,
-        engine_version=review.engine_version,
-        llm_provider=review.llm_provider,
-        status=review.status,
-        summary_text=review.summary_text,
-        findings=review.findings,
-        clusters=review.clusters,
-        grouping_log=review.grouping_log,
-        focus_items=review.focus_items,
-        secondary_items=review.secondary_items,
-        strengths=review.strengths,
-        metrics=review.metrics,
-        created_at=review.created_at,
-        completed_at=review.completed_at,
-        unpaired_match_timeline=review.unpaired_match_timeline,
-        overall_scores=review.overall_scores,
     )
 
 
@@ -341,8 +384,8 @@ def _review_record(review: Review) -> ReviewRecord:
         summary_text=review.summary_text,
         overall_scores=json.dumps(dict(review.overall_scores or {})),
         llm_provider=review.llm_provider,
-        llm_model=None,
-        llm_prompt_version=None,
+        llm_model=review.llm_model,
+        llm_prompt_version=review.llm_prompt_version,
         created_at=review.created_at,
         completed_at=review.completed_at,
     )
