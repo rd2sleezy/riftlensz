@@ -384,4 +384,6 @@ Independent gates that still apply to later work:
 - H.9.1 OCR real-corpus completeness
 - V-series remains research-isolated (no V.7)
 
-H.12 requires an explicit user start.
+H.12 requires an explicit user start. **Update 2026-08-16:** Phase 1 DoD is
+reinterpreted as ROFL-first; VIDEO gates stay deferred. See
+[`phase1-rofl-first-acceptance-amendment.md`](./phase1-rofl-first-acceptance-amendment.md).

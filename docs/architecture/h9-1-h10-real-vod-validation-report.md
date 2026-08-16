@@ -4,6 +4,12 @@
 **Branch:** `integrate/ui-r1`  
 **Does not implement:** H.12, H.12a/b/c, R.12, V.7, baseline-corpus harvesting, new coaching rules, cloud/neural OCR, UI redesign.
 
+**Later product decision (2026-08-16):** these VIDEO verdicts remain the truth for
+VIDEO. They are **no longer Phase 1 release-blocking**. See
+[`phase1-rofl-first-acceptance-amendment.md`](./phase1-rofl-first-acceptance-amendment.md).
+`H9_1_REAL_CORPUS` is still **PARTIAL**. `H10_REAL_VOD_ACCEPTANCE` is still
+**BLOCKED_INSUFFICIENT_CORPUS**.
+
 Companion to [`h9-1-real-clock-corpus-validation-report.md`](./h9-1-real-clock-corpus-validation-report.md) and [`h10-automatic-video-sync-report.md`](./h10-automatic-video-sync-report.md).
 
 This work order built a reproducible real-VOD validation workflow and evaluated every locally available League recording. It did **not** invent or download footage.
@@ -299,4 +305,6 @@ Production OCR confidence floors and H.10 RANSAC thresholds were **not** changed
 | **H10_REAL_VOD_ACCEPTANCE** | **BLOCKED_INSUFFICIENT_CORPUS** |
 | **H12_VIDEO_READINESS** | **BLOCKED** |
 
-Stop. Do not start H.12, R.12, V.7, or baseline harvesting until REAL VODs exist.
+Stop. Do not start H.12 VIDEO execution, R.12, V.7, or baseline harvesting in order
+to fake a VOD corpus. ROFL-first Phase 1 acceptance is a separate plan:
+[`phase1-rofl-first-acceptance-amendment.md`](./phase1-rofl-first-acceptance-amendment.md).

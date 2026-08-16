@@ -6,6 +6,12 @@
 **New work order series:** R.0 – R.11 (interleaved with, not replacing, H.10+)
 **Author role:** System architect. Implementation is performed by Cursor from the work orders in §15.
 
+**Later product decision (2026-08-16):** Phase 1 primary gameplay source is native
+`.rofl` (including macOS MacReplayHost). VIDEO/VOD is experimental and no longer
+release-blocking. This file remains the R-series architecture; it does **not**
+mean VIDEO was never the original Phase 1 plan. See
+[`phase1-rofl-first-acceptance-amendment.md`](./phase1-rofl-first-acceptance-amendment.md).
+
 ---
 
 ## 0. Executive summary

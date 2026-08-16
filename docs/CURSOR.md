@@ -1,6 +1,11 @@
-PROJECT: RiftLens — a Windows-first Electron desktop app that analyzes a League of
-Legends match (Riot API data + an optional recorded VOD) and produces timestamped,
+PROJECT: RiftLens — an Electron desktop app that analyzes a League of
+Legends match (Riot API data + a gameplay source) and produces timestamped,
 evidence-backed coaching feedback.
+
+**Phase 1 gameplay source (2026-08-16):** native `.rofl` is primary (TIER 1).
+VIDEO/VOD is optional/experimental (TIER 2). Historical H.9.1/H.10 VIDEO
+verdicts remain PARTIAL / BLOCKED_INSUFFICIENT_CORPUS and must not be faked
+with ROFL. See `docs/architecture/phase1-rofl-first-acceptance-amendment.md`.
 
 ARCHITECTURE IN ONE PARAGRAPH
 An Electron app (TypeScript/React) is the UI shell. All analysis happens in a Python
