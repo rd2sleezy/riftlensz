@@ -667,6 +667,13 @@ class FindingRepository(Protocol):
     async def add(self, finding: FindingRecord, evidence: Sequence[EvidenceRecord]) -> None:
         """Insert a finding and its evidence. Assumes review and concept rows exist."""
 
+    async def replace_for_review(
+        self,
+        review_id: str,
+        rows: Sequence[tuple[FindingRecord, Sequence[EvidenceRecord]]],
+    ) -> None:
+        """Replace findings and evidence for a review. Assumes coaching links are already gone."""
+
     async def get(self, finding_id: str) -> FindingRecord | None:
         """Return a finding or None. Assumes ``finding_id`` is a ULID."""
 

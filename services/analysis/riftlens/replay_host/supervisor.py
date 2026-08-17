@@ -35,6 +35,8 @@ DEFAULT_STARTUP_TIMEOUT_S = 120.0
 MIN_POLL_INTERVAL_S = 0.25
 MAX_POLL_INTERVAL_S = 2.0
 ADVANCE_SAMPLE_GAP_S = 1.0
+END_OF_REPLAY_SLACK_S = 1.0
+END_REWIND_S = 5.0
 STARTUP_HTTP_RETRIES = 0
 
 
@@ -347,12 +349,15 @@ class ReplayProcessSupervisor:
                 )
             )
         if second.time <= t0:
-            return self._fail(
-                ReplayError(
-                    ReplayErrorCode.PLAYBACK_NOT_ADVANCING,
-                    details={"t0": t0, "t1": second.time},
+            recovered = self._recover_end_of_replay(transport, second)
+            if recovered is None:
+                return self._fail(
+                    ReplayError(
+                        ReplayErrorCode.PLAYBACK_NOT_ADVANCING,
+                        details={"t0": t0, "t1": second.time},
+                    )
                 )
-            )
+            second = recovered
         api_pid = None
         try:
             api_pid = transport.get_game_process_id()
@@ -362,6 +367,28 @@ class ReplayProcessSupervisor:
         self._machine.mark_ready(state, api_process_id=api_pid)
         self._machine.sync_playback(state)
         return self.snapshot
+
+    def _recover_end_of_replay(
+        self, transport: PlaybackTransport, stuck: ReplayPlayback
+    ) -> ReplayPlayback | None:
+        """Rewind a finished replay so READY can be proven. Mid-timeline freezes stay failed."""
+        if stuck.length <= 0 or stuck.time + END_OF_REPLAY_SLACK_S < stuck.length:
+            return None
+        rewind_s = min(END_REWIND_S, max(0.0, stuck.length * 0.25))
+        try:
+            transport.set_playback(time=rewind_s, paused=False)
+        except ReplayError:
+            return None
+        self._clock.sleep(ADVANCE_SAMPLE_GAP_S)
+        if self._cancelled():
+            return None
+        try:
+            moved = transport.get_playback()
+        except ReplayError:
+            return None
+        if moved.length <= 0 or moved.time <= rewind_s:
+            return None
+        return moved
 
     def _cancel_close(self) -> ReplaySessionSnapshot:
         if self.snapshot.phase not in {

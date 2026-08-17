@@ -1,0 +1,205 @@
+{
+  "match_id": "NA1_5620410094",
+  "review_id": "01M06GVG21399Y34RQ3YSWN96A",
+  "source_id": "01M06GVEVV8E4VTD3K2FXPXW9B",
+  "lead_in_ms": 8000,
+  "sync_map_involved": false,
+  "fixture_id": null,
+  "locate": {
+    "ok": true,
+    "error": null,
+    "attempts": [
+      [
+        "well_known",
+        "/Applications/League of Legends.app"
+      ]
+    ],
+    "root": "/Applications/League of Legends.app/Contents/LoL",
+    "game_dir": "/Applications/League of Legends.app/Contents/LoL/Game",
+    "game_exe": "/Applications/League of Legends.app/Contents/LoL/Game/LeagueofLegends.app/Contents/MacOS/LeagueofLegends",
+    "game_cfg": "/Applications/League of Legends.app/Contents/LoL/Game/Config/game.cfg"
+  },
+  "environment": {
+    "supported": true,
+    "install_found": true,
+    "replay_api_documented": true,
+    "live_game": false,
+    "error": null,
+    "warning_codes": []
+  },
+  "enable_replay_api": {
+    "ok": true,
+    "changed": false,
+    "error": null,
+    "backup_path": null,
+    "path": "/Applications/League of Legends.app/Contents/LoL/Game/Config/game.cfg",
+    "requires_restart": true,
+    "details": {
+      "ok": true,
+      "primary": {
+        "state": {
+          "path": "/Applications/League of Legends.app/Contents/LoL/Game/Config/game.cfg",
+          "exists": true,
+          "general_present": true,
+          "enable_replay_api": true,
+          "newline": "crlf"
+        },
+        "backup_path": null,
+        "changed": false,
+        "error": null
+      },
+      "secondary": {
+        "state": {
+          "path": "/Applications/League of Legends.app/Contents/LoL/Config/game.cfg",
+          "exists": true,
+          "general_present": true,
+          "enable_replay_api": true,
+          "newline": "crlf"
+        },
+        "backup_path": null,
+        "changed": false,
+        "error": null
+      }
+    }
+  },
+  "open": {
+    "phase": "PLAYING",
+    "error": null,
+    "open_s": 1.064
+  },
+  "startup": {
+    "final_phase": "PLAYING",
+    "phases_seen": [
+      "PLAYING"
+    ],
+    "error": null,
+    "replay_connected": false,
+    "session_reached_ready": true,
+    "open_to_ready_s": 1.07,
+    "playback": {
+      "t_source_ms": 1512375,
+      "length_ms": 2484308,
+      "paused": false,
+      "seeking": false,
+      "speed_milli": 1000,
+      "t_game_ms": null
+    },
+    "clock": null,
+    "active_source_id": "01M06GVEVV8E4VTD3K2FXPXW9B",
+    "match_id": "NA1_5620410094"
+  },
+  "seeks": [
+    {
+      "id": "01M06GVG21GBB7A7549Q1SMJGV",
+      "section": "focus_items",
+      "title": "Stop dying to an unseen jungler",
+      "evidence_t_ms": 1468841,
+      "lead_in_ms": 8000,
+      "expected_target_ms": 1460841,
+      "target_source_ms": 1460844,
+      "landed_source_ms": 1460844,
+      "delta_vs_target_ms": 0,
+      "delta_vs_raw_evidence_ms": -7997,
+      "abs_delta_vs_target_ms": 0,
+      "within_1000ms": true,
+      "ok": true,
+      "clock_mode": "OFFSET",
+      "clock_verified": true,
+      "seek_request_to_landed_ms": 1876,
+      "error": null
+    },
+    {
+      "id": "01M06GVG21QBBGRSRA3DWBSHA7",
+      "section": "focus_items",
+      "title": "Do not start fogged fights",
+      "evidence_t_ms": 1446861,
+      "lead_in_ms": 8000,
+      "expected_target_ms": 1438861,
+      "target_source_ms": 1438864,
+      "landed_source_ms": 1438864,
+      "delta_vs_target_ms": 0,
+      "delta_vs_raw_evidence_ms": -7997,
+      "abs_delta_vs_target_ms": 0,
+      "within_1000ms": true,
+      "ok": true,
+      "clock_mode": "OFFSET",
+      "clock_verified": true,
+      "seek_request_to_landed_ms": 1920,
+      "error": null
+    },
+    {
+      "id": "01M06GVG213NZ65WJ3T494770C",
+      "section": "focus_items",
+      "title": "Spend tempo after a won fight",
+      "evidence_t_ms": 1556719,
+      "lead_in_ms": 8000,
+      "expected_target_ms": 1548719,
+      "target_source_ms": 1548722,
+      "landed_source_ms": 1548722,
+      "delta_vs_target_ms": 0,
+      "delta_vs_raw_evidence_ms": -7997,
+      "abs_delta_vs_target_ms": 0,
+      "within_1000ms": true,
+      "ok": true,
+      "clock_mode": "OFFSET",
+      "clock_verified": true,
+      "seek_request_to_landed_ms": 1891,
+      "error": null
+    },
+    {
+      "id": "01M06GVG21Z1YJRHT13X22SKG6",
+      "section": "secondary_items",
+      "title": "Show up for objectives",
+      "evidence_t_ms": 427729,
+      "lead_in_ms": 8000,
+      "expected_target_ms": 419729,
+      "target_source_ms": 419732,
+      "landed_source_ms": 419732,
+      "delta_vs_target_ms": 0,
+      "delta_vs_raw_evidence_ms": -7997,
+      "abs_delta_vs_target_ms": 0,
+      "within_1000ms": true,
+      "ok": false,
+      "clock_mode": "OFFSET",
+      "clock_verified": true,
+      "seek_request_to_landed_ms": 1882,
+      "error": {
+        "code": "REPLAY_API_UNAVAILABLE",
+        "message": "Local Replay API is not reachable.",
+        "details": {
+          "reason": "http_status",
+          "status": 404,
+          "url": "https://127.0.0.1:2999/replay/playback",
+          "body_preview": "{\r\n\t\"errorCode\": \"RESOURCE_NOT_FOUND\",\r\n\t\"httpStatus\": 404,\r\n\t\"message\": \"Invalid URI format\"\r\n}"
+        }
+      }
+    }
+  ],
+  "rf4_pass": true,
+  "capture": {
+    "capture_id": "01M06H9EGHYMR3496TTBARHR0R",
+    "requested_start_ms": 1464841,
+    "requested_end_ms": 1472841,
+    "requested_duration_ms": 8000,
+    "evidence_t_ms": 1468841,
+    "status": "failed",
+    "ok": false,
+    "wall_s": 0.522,
+    "error": {
+      "code": "REPLAY_API_UNAVAILABLE",
+      "message": "Local Replay API is not reachable.",
+      "details": {
+        "capture_id": "01M06H9EGHYMR3496TTBARHR0R"
+      }
+    },
+    "camera_controlled": false,
+    "coverage": null,
+    "camera_framing": null,
+    "artifact_count": 0,
+    "artifacts": []
+  },
+  "close": {
+    "phase": "CLOSED",
+    "error": null
+  }
+}

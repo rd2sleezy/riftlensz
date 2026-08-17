@@ -189,6 +189,20 @@ def test_playback_does_not_advance(tmp_path: Path) -> None:
     assert snap.reached_ready is False
 
 
+def test_playback_at_end_rewinds_then_ready(tmp_path: Path) -> None:
+    """A finished replay (clock at length) is still a usable Replay API session."""
+    ended = playback(length=2484.4, time=2484.4, paused=True)
+    unpaused = playback(length=2484.4, time=2484.4, paused=False)
+    rewound = playback(length=2484.4, time=5.0, paused=False)
+    advancing = playback(length=2484.4, time=6.4, paused=False)
+    transport = ScriptedTransport([ended, unpaused, unpaused, rewound, advancing])
+    supervisor, rofl, _ops = _supervisor(tmp_path, transport=transport)
+    snap = supervisor.open(rofl, _install(tmp_path))
+    assert snap.error is None, snap.error
+    assert snap.reached_ready is True
+    assert any(call.get("time") == 5.0 for call in transport.set_calls)
+
+
 def test_ready_only_after_playback_verification(tmp_path: Path) -> None:
     seen: list[ReplaySessionPhase] = []
     box: dict[str, ReplayProcessSupervisor] = {}

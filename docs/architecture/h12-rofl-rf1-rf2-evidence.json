@@ -1,0 +1,572 @@
+{
+  "commit_note": "H.12-ROFL validation on integrate/ui-r1 after CLI/persist/READY fixes",
+  "data_dir": "/Users/rylanddunn/.riftlens",
+  "db_path": "/Users/rylanddunn/.riftlens/riftlens.db",
+  "rofl_path": "/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5620410094.rofl",
+  "rofl_exists": true,
+  "rofl_size_bytes": 19295406,
+  "llm_provider_env": "null",
+  "api_key_present": false,
+  "api_key_fingerprint": null,
+  "rf1_identify": {
+    "recognised": true,
+    "error": null,
+    "match_id_hint": "NA1_5620410094",
+    "platform_id": "NA1",
+    "game_id": 5620410094,
+    "identify_method": "filename",
+    "header_parse_status": "partial",
+    "declared_patch": "16.16.804.9184",
+    "declared_length_ms": null,
+    "file_size_bytes": 19295406,
+    "magic": "RIOT",
+    "warnings": []
+  },
+  "rf1_fixture_mismatch": {
+    "ok": false,
+    "error": "MATCH_IDENTITY_MISMATCH",
+    "details": {
+      "open_match_id": "NA1_fixture_a",
+      "replay_match_id": "NA1_5620410094",
+      "suggested_action": "open_replay_match"
+    },
+    "bound_match_id": "NA1_5620410094",
+    "source_id": null
+  },
+  "rf1_import": {
+    "ok": true,
+    "source_id": "01M06GVEVV8E4VTD3K2FXPXW9B",
+    "match_id": "NA1_5620410094",
+    "error": null,
+    "display_name": "NA1-5620410094.rofl",
+    "source_type": "rofl",
+    "source_uri": "/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5620410094.rofl",
+    "status": "linked"
+  },
+  "rf1_reload": {
+    "source_id": "01M06GVEVV8E4VTD3K2FXPXW9B",
+    "resolved": true,
+    "resolved_match_id": "NA1_5620410094",
+    "status_match_id": "NA1_5620410094",
+    "active_source_id": "01M06GVEVV8E4VTD3K2FXPXW9B",
+    "replay_connected": null
+  },
+  "rf1_db": {
+    "alembic": [
+      {
+        "version_num": "0004_h11_jobs"
+      }
+    ],
+    "gameplay_sources": [
+      {
+        "id": "01M06GVEVV8E4VTD3K2FXPXW9B",
+        "match_id": "NA1_5620410094",
+        "source_type": "rofl",
+        "source_uri": "/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5620410094.rofl",
+        "status": "linked"
+      }
+    ],
+    "participants": [
+      {
+        "participant_id": 1,
+        "champion_name": "Ezreal",
+        "individual_position": "TOP",
+        "win": 0
+      },
+      {
+        "participant_id": 2,
+        "champion_name": "DrMundo",
+        "individual_position": "JUNGLE",
+        "win": 0
+      },
+      {
+        "participant_id": 3,
+        "champion_name": "Fizz",
+        "individual_position": "MIDDLE",
+        "win": 0
+      },
+      {
+        "participant_id": 4,
+        "champion_name": "Jhin",
+        "individual_position": "BOTTOM",
+        "win": 0
+      },
+      {
+        "participant_id": 5,
+        "champion_name": "TahmKench",
+        "individual_position": "UTILITY",
+        "win": 0
+      },
+      {
+        "participant_id": 6,
+        "champion_name": "Vladimir",
+        "individual_position": "TOP",
+        "win": 1
+      },
+      {
+        "participant_id": 7,
+        "champion_name": "Amumu",
+        "individual_position": "JUNGLE",
+        "win": 1
+      },
+      {
+        "participant_id": 8,
+        "champion_name": "Katarina",
+        "individual_position": "MIDDLE",
+        "win": 1
+      },
+      {
+        "participant_id": 9,
+        "champion_name": "KogMaw",
+        "individual_position": "BOTTOM",
+        "win": 1
+      },
+      {
+        "participant_id": 10,
+        "champion_name": "Morgana",
+        "individual_position": "UTILITY",
+        "win": 1
+      }
+    ],
+    "fixture_source_bound": false
+  },
+  "rf2": {
+    "fresh": {
+      "job_id": "01M06GVF8VPZ98PY0M1F3VN053",
+      "status": "COMPLETED",
+      "review_id": "01M06GVG21399Y34RQ3YSWN96A",
+      "wall_ms": 1109,
+      "cache_hits": 0,
+      "cache_misses": 7,
+      "fact_count": 5309,
+      "finding_count": 9,
+      "llm_provider": "null",
+      "llm_model": "null",
+      "llm_fallback": false,
+      "error_code": null,
+      "error_message": null,
+      "stage_timings": [
+        {
+          "name": "ingest_riot",
+          "duration_ms": 252,
+          "cache_hit": false,
+          "skipped": false
+        },
+        {
+          "name": "ingest_video",
+          "duration_ms": 0,
+          "cache_hit": false,
+          "skipped": true
+        },
+        {
+          "name": "synchronize",
+          "duration_ms": 0,
+          "cache_hit": false,
+          "skipped": true
+        },
+        {
+          "name": "build_facts",
+          "duration_ms": 12,
+          "cache_hit": false,
+          "skipped": false
+        },
+        {
+          "name": "compute_metrics",
+          "duration_ms": 102,
+          "cache_hit": false,
+          "skipped": false
+        },
+        {
+          "name": "run_rules",
+          "duration_ms": 354,
+          "cache_hit": false,
+          "skipped": false
+        },
+        {
+          "name": "prioritize",
+          "duration_ms": 87,
+          "cache_hit": false,
+          "skipped": false
+        },
+        {
+          "name": "compose_coaching",
+          "duration_ms": 2,
+          "cache_hit": false,
+          "skipped": false
+        },
+        {
+          "name": "persist",
+          "duration_ms": 300,
+          "cache_hit": false,
+          "skipped": false
+        }
+      ],
+      "wall_s": 1.3,
+      "riot_calls": [
+        "get_match",
+        "get_timeline"
+      ]
+    },
+    "cached": {
+      "job_id": "01M06GVGH3CCABJ4DC863ZD76D",
+      "status": "FAILED",
+      "review_id": null,
+      "wall_ms": 335,
+      "cache_hits": 6,
+      "cache_misses": 1,
+      "fact_count": null,
+      "finding_count": null,
+      "llm_provider": "null",
+      "llm_model": null,
+      "llm_fallback": false,
+      "error_code": "IntegrityError",
+      "error_message": "(sqlite3.IntegrityError) UNIQUE constraint failed: finding.id\n[SQL: INSERT INTO finding (id, review_id, rule_id, rule_version, concept_id, t_ms, t_end_ms, severity, confidence, gold_equivalent, outcome, map_x, map_y, title, explanation, alternative, explanation_source, suppressed, suppressed_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)]\n[parameters: ('01M06GVFV93C5B4HBZ9HQ6GVE6', '01M06GVG21399Y34RQ3YSWN96A', 'R-008', 1, 'MACRO.OBJECTIVES.NO_SHOW', 427729, None, 'CRITICAL', 0.6714852077060955, None, None, 12977, 14289, 'Missed the objective without a trade', 'It looks like you missed EARTH_DRAGON at 7:07 (~10354 units from the pit) without a plate/tower trade (CS delta 10). Distance uses interpolated frames.\\n', 'Either rotate on time or take a real cross-map trade (two plates or a tower).', 'TEMPLATE', 0, None)]\n(Background on this error at: https://sqlalche.me/e/20/gkpj)",
+      "stage_timings": [
+        {
+          "name": "ingest_riot",
+          "duration_ms": 6,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "ingest_video",
+          "duration_ms": 0,
+          "cache_hit": false,
+          "skipped": true
+        },
+        {
+          "name": "synchronize",
+          "duration_ms": 0,
+          "cache_hit": false,
+          "skipped": true
+        },
+        {
+          "name": "build_facts",
+          "duration_ms": 51,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "compute_metrics",
+          "duration_ms": 1,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "run_rules",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "prioritize",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "compose_coaching",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        }
+      ],
+      "wall_s": 0.512,
+      "riot_calls": []
+    },
+    "fresh_review": {
+      "review_id": "01M06GVG21399Y34RQ3YSWN96A",
+      "match_id": "NA1_5620410094",
+      "participant_id": 6,
+      "champion": "Vladimir",
+      "role": "TOP",
+      "result": "WIN",
+      "llm_provider": "null",
+      "fixture_id": null,
+      "sync_map": null,
+      "unpaired_match_timeline": false,
+      "focus_count": 3,
+      "secondary_count": 2,
+      "strength_count": 1,
+      "finding_count": 9,
+      "metric_ids": [
+        "M-01",
+        "M-02",
+        "M-03",
+        "M-04",
+        "M-05",
+        "M-07",
+        "M-15",
+        "M-19",
+        "M-20",
+        "M-22"
+      ],
+      "all_explanations_nonempty": true,
+      "items": [
+        {
+          "id": "01M06GVG21GBB7A7549Q1SMJGV",
+          "section": "focus_items",
+          "title": "Stop dying to an unseen jungler",
+          "body_len": 515,
+          "fix_len": 59,
+          "check_len": 41,
+          "evidence_t_ms": [
+            1468841
+          ],
+          "finding_ids": [
+            "01M06GVFYXDVQ1NK63TQ5YCE3E"
+          ]
+        },
+        {
+          "id": "01M06GVG21QBBGRSRA3DWBSHA7",
+          "section": "focus_items",
+          "title": "Do not start fogged fights",
+          "body_len": 558,
+          "fix_len": 58,
+          "check_len": 47,
+          "evidence_t_ms": [
+            1446861,
+            1884239
+          ],
+          "finding_ids": [
+            "01M06GVFQZBZNEPW7EMVS6SFG7",
+            "01M06GVFR1YFBFRVQF40188CM7"
+          ]
+        },
+        {
+          "id": "01M06GVG213NZ65WJ3T494770C",
+          "section": "focus_items",
+          "title": "Spend tempo after a won fight",
+          "body_len": 455,
+          "fix_len": 77,
+          "check_len": 79,
+          "evidence_t_ms": [
+            1556719,
+            1687957,
+            2121636
+          ],
+          "finding_ids": [
+            "01M06GVFW8ZGJ2NT8PYZ09WXDC",
+            "01M06GVFWBAVKEDJWEDJXE8QT8",
+            "01M06GVFWF9KXWW8AD0Q0PE15W"
+          ]
+        },
+        {
+          "id": "01M06GVG21Z1YJRHT13X22SKG6",
+          "section": "secondary_items",
+          "title": "Show up for objectives",
+          "body_len": 452,
+          "fix_len": 76,
+          "check_len": 65,
+          "evidence_t_ms": [
+            427729
+          ],
+          "finding_ids": [
+            "01M06GVFV93C5B4HBZ9HQ6GVE6"
+          ]
+        },
+        {
+          "id": "01M06GVG2145FJR2N5XNWYVJAC",
+          "section": "secondary_items",
+          "title": "Roam only with lane priority",
+          "body_len": 589,
+          "fix_len": 52,
+          "check_len": 67,
+          "evidence_t_ms": [
+            1440000
+          ],
+          "finding_ids": [
+            "01M06GVFX2DPJBAT4JB0RV4FRB"
+          ]
+        },
+        {
+          "id": "01M06GVG219FGJTYDFRYHHWS8A",
+          "section": "strengths",
+          "title": "Keep your clean early lane",
+          "body_len": 138,
+          "fix_len": 63,
+          "check_len": 52,
+          "evidence_t_ms": [
+            840000
+          ],
+          "finding_ids": [
+            "01M06GVFX3YJWXRYNP9HD4RTHQ"
+          ]
+        }
+      ]
+    },
+    "cached_review": null,
+    "production_review_list": [
+      {
+        "id": "01M06GVG21399Y34RQ3YSWN96A",
+        "player_id": "01KZM32F8RR8V28PQYA7NR46VZ",
+        "match_id": "NA1_5620410094",
+        "participant_id": 6,
+        "champion": "Vladimir",
+        "role": "TOP",
+        "rank": "UNRANKED",
+        "patch": "16.16.804.9184",
+        "duration_ms": 2478546,
+        "result": "WIN",
+        "status": "COMPLETE",
+        "unpaired_match_timeline": false,
+        "fixture_warning": null,
+        "fixture_id": null,
+        "created_at": 1786925400129,
+        "focus_count": 3,
+        "has_sync": false
+      }
+    ],
+    "video_stages_skipped_fresh": [
+      "ingest_video",
+      "synchronize"
+    ],
+    "completed": false
+  },
+  "rf2_after_persist_fix": {
+    "first": {
+      "job_id": "01M06GZSRFWPS6C6V053T1RSMM",
+      "status": "COMPLETED",
+      "review_id": "01M06GVG21399Y34RQ3YSWN96A",
+      "wall_ms": 349,
+      "cache_hits": 6,
+      "cache_misses": 1,
+      "fact_count": 5309,
+      "finding_count": 9,
+      "llm_provider": "null",
+      "error_code": null,
+      "error_message": null,
+      "stage_timings": [
+        {
+          "name": "ingest_riot",
+          "duration_ms": 38,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "ingest_video",
+          "duration_ms": 0,
+          "cache_hit": false,
+          "skipped": true
+        },
+        {
+          "name": "synchronize",
+          "duration_ms": 0,
+          "cache_hit": false,
+          "skipped": true
+        },
+        {
+          "name": "build_facts",
+          "duration_ms": 14,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "compute_metrics",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "run_rules",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "prioritize",
+          "duration_ms": 1,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "compose_coaching",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "persist",
+          "duration_ms": 296,
+          "cache_hit": false,
+          "skipped": false
+        }
+      ],
+      "wall_s": 0.546,
+      "riot_client_calls": []
+    },
+    "second": {
+      "job_id": "01M06GZT91D7XN3MV6DNGS3W5C",
+      "status": "COMPLETED",
+      "review_id": "01M06GVG21399Y34RQ3YSWN96A",
+      "wall_ms": 308,
+      "cache_hits": 6,
+      "cache_misses": 1,
+      "fact_count": 5309,
+      "finding_count": 9,
+      "llm_provider": "null",
+      "error_code": null,
+      "error_message": null,
+      "stage_timings": [
+        {
+          "name": "ingest_riot",
+          "duration_ms": 6,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "ingest_video",
+          "duration_ms": 0,
+          "cache_hit": false,
+          "skipped": true
+        },
+        {
+          "name": "synchronize",
+          "duration_ms": 0,
+          "cache_hit": false,
+          "skipped": true
+        },
+        {
+          "name": "build_facts",
+          "duration_ms": 14,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "compute_metrics",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "run_rules",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "prioritize",
+          "duration_ms": 1,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "compose_coaching",
+          "duration_ms": 0,
+          "cache_hit": true,
+          "skipped": false
+        },
+        {
+          "name": "persist",
+          "duration_ms": 287,
+          "cache_hit": false,
+          "skipped": false
+        }
+      ],
+      "wall_s": 0.488,
+      "riot_client_calls": []
+    },
+    "completed": true,
+    "same_review_id": true
+  }
+}

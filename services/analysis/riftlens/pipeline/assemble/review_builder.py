@@ -20,7 +20,7 @@ from riftlens.adapters.ddragon.patch_data import PatchDataProvider
 from riftlens.adapters.riot.models import MatchDto, TimelineDto
 from riftlens.analysis.metrics.base import MetricValue
 from riftlens.analysis.metrics.registry import compute_metrics, persist_metrics
-from riftlens.analysis.rules.engine import RuleEngine, persist_findings
+from riftlens.analysis.rules.engine import RuleEngine, finding_to_records
 from riftlens.analysis.rules.lab import production_rules
 from riftlens.analysis.rules.loader import load_rule_pack
 from riftlens.analysis.rules.models import RulePack
@@ -332,7 +332,11 @@ async def persist_review_async(
         await persist_riot_match(matches, match, timeline, now_ms=review.created_at)
     updated = replace(review, player_id=player_id)
     await reviews.upsert(_review_record(updated))
-    await persist_findings(findings_repo, updated.id, updated.findings)
+    await coaching.replace_for_review(updated.id, [])
+    await findings_repo.replace_for_review(
+        updated.id,
+        [finding_to_records(item, updated.id) for item in updated.findings],
+    )
     await persist_metrics(metric_repo, updated.id, metrics)
     await coaching.replace_for_review(
         updated.id, [_coaching_record(updated.id, item) for item in _all_items(updated)]

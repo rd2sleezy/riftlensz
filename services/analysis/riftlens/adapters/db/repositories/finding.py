@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from riftlens.adapters.db.models import EvidenceRow, FindingFeedbackRow, FindingRow
@@ -19,6 +19,33 @@ class SqlFindingRepository(SessionRepository):
             session.flush()
             for item in evidence:
                 session.add(_evidence_row(item))
+
+        await self.call(work)
+
+    async def replace_for_review(
+        self,
+        review_id: str,
+        rows: Sequence[tuple[FindingRecord, Sequence[EvidenceRecord]]],
+    ) -> None:
+        """Replace findings and evidence for a review. Assumes coaching links are already gone."""
+
+        def work(session: Session) -> None:
+            existing_ids = list(
+                session.scalars(
+                    select(FindingRow.id).where(FindingRow.review_id == review_id)
+                ).all()
+            )
+            if existing_ids:
+                session.execute(
+                    delete(FindingFeedbackRow).where(FindingFeedbackRow.finding_id.in_(existing_ids))
+                )
+                session.execute(delete(EvidenceRow).where(EvidenceRow.finding_id.in_(existing_ids)))
+                session.execute(delete(FindingRow).where(FindingRow.id.in_(existing_ids)))
+            for finding, evidence in rows:
+                session.add(_finding_row(finding))
+                session.flush()
+                for item in evidence:
+                    session.add(_evidence_row(item))
 
         await self.call(work)
 

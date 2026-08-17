@@ -35,6 +35,7 @@ dev = [
     "mypy>=1.13",
     "import-linter>=2",
     "types-pyyaml>=6",
+    "pytest-cov>=6",
 ]
 
 [tool.hatch.build.targets.wheel]

@@ -28,9 +28,7 @@ def test_cli_review_fixture_b_prints_focus_secondary_strengths_and_metrics(
     settings: Settings, monkeypatch: object
 ) -> None:
     monkeypatch.setattr("riftlens.cli.get_settings", lambda: settings)
-    monkeypatch.setattr(
-        "riftlens.pipeline.assemble.review_builder.get_settings", lambda: settings
-    )
+    monkeypatch.setattr("riftlens.pipeline.assemble.review_builder.get_settings", lambda: settings)
     runner = CliRunner()
     result = runner.invoke(
         app,
@@ -85,6 +83,63 @@ def test_review_builder_persists_findings_and_coaching_items(settings: Settings)
     assert items
     linked = {fid for item in items for fid in item.finding_ids}
     assert linked <= original_ids
+
+
+def test_cli_review_real_match_without_vod_uses_null_job_runner(
+    settings: Settings, monkeypatch: object
+) -> None:
+    """ROFL-first CLI must not require --vod or a fixture folder for a real match_id."""
+    monkeypatch.setattr("riftlens.cli.get_settings", lambda: settings)
+    called: dict[str, object] = {}
+
+    async def fake_job(
+        match_id: str,
+        pid: int,
+        *,
+        rank: str,
+        provider: str,
+        vod: Path | None,
+    ) -> None:
+        called["match_id"] = match_id
+        called["pid"] = pid
+        called["rank"] = rank
+        called["provider"] = provider
+        called["vod"] = vod
+
+    monkeypatch.setattr("riftlens.cli._review_via_job", fake_job)
+    result = CliRunner().invoke(
+        app,
+        ["review", "NA1_5620410094", "--pid", "6", "--no-llm"],
+    )
+    assert result.exit_code == 0, result.output
+    assert called == {
+        "match_id": "NA1_5620410094",
+        "pid": 6,
+        "rank": "UNRANKED",
+        "provider": "null",
+        "vod": None,
+    }
+
+
+def test_cli_review_missing_fixture_folder_is_actionable(
+    settings: Settings, monkeypatch: object
+) -> None:
+    monkeypatch.setattr("riftlens.cli.get_settings", lambda: settings)
+    result = CliRunner().invoke(
+        app,
+        [
+            "review",
+            "NA1_missing",
+            "--pid",
+            "1",
+            "--no-llm",
+            "--fixtures",
+            str(_FIXTURES),
+        ],
+    )
+    assert result.exit_code != 0
+    assert "fixture folder not found" in result.output
+    assert "omit --fixtures" in result.output
 
 
 def test_causal_graph_tests_are_all_registered() -> None:

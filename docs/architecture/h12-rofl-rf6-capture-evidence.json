@@ -1,0 +1,57 @@
+{
+  "open": {
+    "phase": "PLAYING",
+    "error": null
+  },
+  "ready": true,
+  "final_phase": "PLAYING",
+  "open_to_ready_s": 1.092,
+  "prior_8s_capture": "01M06HAW7605DV5CTY654W4GP2 CAPTURE_TRUNCATED not COMPLETE",
+  "capture": {
+    "capture_id": "01M06HD279SGGSWT69P30K1EFY",
+    "requested_start_ms": 1467341,
+    "requested_end_ms": 1470341,
+    "requested_duration_ms": 3000,
+    "evidence_t_ms": 1468841,
+    "evidence_inside_interval": true,
+    "status": "complete",
+    "ok": true,
+    "wall_s": 3.824,
+    "error": null,
+    "camera_controlled": false,
+    "coverage": {
+      "actual_duration_ms": 2762,
+      "actual_frame_count": 72,
+      "api_dropout_count": 0,
+      "completion_method": "api_recording_false",
+      "coverage_verdict": "covered",
+      "min_acceptable_duration_ms": 2700,
+      "requested_duration_ms": 3000,
+      "requested_end_game_ms": 1470341,
+      "requested_start_game_ms": 1467341,
+      "temp_promotion_method": null
+    },
+    "camera_framing": null,
+    "artifact_count": 1,
+    "artifacts": [
+      {
+        "id": "01M06HD5Y5VQ31J6J8B9ERYEA7",
+        "kind": "clip",
+        "relative_path": "clip_g1467341.webm",
+        "game_t_ms": 1467341,
+        "source_t_ms": 1467344,
+        "sha256": "ed0f43a17b253ab377decbc26d780732174cfb3444e65144beb14b4a489b1be4",
+        "bytes": 2408246,
+        "width": null,
+        "height": null,
+        "frame_index": 0
+      }
+    ],
+    "clock_confidence": "GOOD",
+    "clock_verified": true
+  },
+  "close": {
+    "phase": "CLOSED"
+  },
+  "note": "webm is machine-local and is not committed"
+}

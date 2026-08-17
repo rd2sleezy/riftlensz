@@ -35,9 +35,13 @@ def _runner(tmp_path: Path, **kwargs: object) -> JobRunner:
     )
 
 
-def _job(media_asset_id: str | None = None) -> AnalysisJob:
+def _job(
+    *,
+    media_asset_id: str | None = None,
+    job_id: str = "01H11JOB000000000000000001",
+) -> AnalysisJob:
     return AnalysisJob(
-        id="01H11JOB000000000000000001",
+        id=job_id,
         inputs=JobInputs(
             match_id=FIXTURE,
             participant_id=5,
@@ -59,6 +63,19 @@ async def test_dag_skips_video_when_absent(tmp_path: Path) -> None:
     assert "ingest_video" in skipped
     assert "synchronize" in skipped
     assert job.review_id
+
+
+@pytest.mark.asyncio
+async def test_cached_rerun_persist_is_idempotent(tmp_path: Path) -> None:
+    """Stage-cache hits reuse finding ids; persist must replace, not insert."""
+    runner = _runner(tmp_path)
+    first = await runner.run(_job())
+    assert first.status == JOB_COMPLETED
+    assert first.review_id
+    second = await runner.run(_job(job_id="01H11JOB000000000000000002"))
+    assert second.status == JOB_COMPLETED, second.error_message
+    assert second.review_id == first.review_id
+    assert second.cache_hits >= 1
 
 
 @pytest.mark.asyncio

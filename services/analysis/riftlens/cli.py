@@ -129,24 +129,31 @@ def dump_review(
         Path | None, typer.Option("--vod", help="Optional VIDEO path routed through H.11 jobs.")
     ] = None,
 ) -> None:
-    """Print a coaching review. ``--no-llm`` forces the null provider."""
+    """Print a coaching review. ``--no-llm`` forces the null provider.
+
+    Fixture folders remain a developer path. A real cached ``match_id`` runs the
+    H.11 job without VIDEO. ``--vod`` is optional TIER 2 and is not required.
+    """
     configure_logging()
     provider = "null" if no_llm else (get_settings().llm_provider or "null")
     if vod is not None:
         asyncio.run(_review_via_job(match_id, pid, rank=rank, provider=provider, vod=vod))
         return
-    match, timeline = _load_fixture_pair(match_id, fixtures)
-    from riftlens.pipeline.assemble.review_builder import build_review_from_dtos
+    if _should_use_fixture_pair(match_id, fixtures):
+        match, timeline = _load_fixture_pair(match_id, fixtures)
+        from riftlens.pipeline.assemble.review_builder import build_review_from_dtos
 
-    result = build_review_from_dtos(
-        match,
-        timeline,
-        pid,
-        rank=rank,
-        llm_provider=provider,
-        persist=persist,
-    )
-    _print_review(result.review, paired=result.paired)
+        result = build_review_from_dtos(
+            match,
+            timeline,
+            pid,
+            rank=rank,
+            llm_provider=provider,
+            persist=persist,
+        )
+        _print_review(result.review, paired=result.paired)
+        return
+    asyncio.run(_review_via_job(match_id, pid, rank=rank, provider=provider, vod=None))
 
 
 @app.command("gst")
@@ -172,54 +179,20 @@ async def _review_via_job(
     *,
     rank: str,
     provider: str,
-    vod: Path,
+    vod: Path | None,
 ) -> None:
-    """Run the H.11 job runner for a match plus VIDEO. Assumes ``vod`` is a local file."""
+    """Run the H.11 job runner. VIDEO is optional; omit ``vod`` for ROFL-first analysis."""
     from riftlens.adapters.db.engine import init_database, make_session_factory
-    from riftlens.adapters.db.repositories import SqlMediaRepository
     from riftlens.domain.ids import new_ulid
-    from riftlens.domain.ports import MediaAssetRecord
-    from riftlens.orchestration.job import AnalysisJob, JobInputs
+    from riftlens.orchestration.job import JOB_COMPLETED, AnalysisJob, JobInputs
     from riftlens.orchestration.progress import ProgressBus, now_ms
     from riftlens.orchestration.runner import JobRunner
-    from riftlens.pipeline.ingest_video.probe import chromium_playable, probe, validate_probe
+    from riftlens.pipeline.assemble.review_presentation import load_review_presentation
 
     settings = get_settings()
     engine = init_database(settings)
     factory = make_session_factory(engine)
-    probed = probe(str(vod))
-    errors = validate_probe(probed)
-    if errors:
-        raise typer.BadParameter(" ".join(errors))
-    media_repo = SqlMediaRepository(factory)
-    existing = await media_repo.get_by_content_hash(probed.content_hash)
-    if existing is None:
-        record = MediaAssetRecord(
-            id=new_ulid(),
-            content_hash=probed.content_hash,
-            original_path=probed.path,
-            playable_path=probed.path if chromium_playable(probed) else None,
-            proxy_path=None,
-            thumbnail_sheet_path=None,
-            container=None,
-            codec=probed.codec_name,
-            pix_fmt=probed.pix_fmt,
-            width=probed.width,
-            height=probed.height,
-            fps_num=None,
-            fps_den=None,
-            duration_ms=probed.duration_ms,
-            size_bytes=probed.size_bytes,
-            source_kind="PLAYER_POV",
-            layout_profile_id=None,
-            quality_score=None,
-            imported_at=now_ms(),
-            last_accessed_at=now_ms(),
-        )
-        await media_repo.upsert_asset(record)
-        media_id = record.id
-    else:
-        media_id = existing.id
+    media_id = None if vod is None else await _register_vod_media(factory, vod)
     job = AnalysisJob(
         id=new_ulid(),
         inputs=JobInputs(
@@ -233,9 +206,68 @@ async def _review_via_job(
     )
     runner = JobRunner(settings=settings, session_factory=factory, bus=ProgressBus())
     await runner.run(job)
-    print(f"job_id={job.id} status={job.status} review_id={job.review_id}")
-    if job.status != "COMPLETED":
+    _print_job_summary(job)
+    if job.status != JOB_COMPLETED:
         raise typer.Exit(code=1)
+    if not job.review_id:
+        return
+    payload = load_review_presentation(settings.data_dir, job.review_id)
+    if payload is not None:
+        _print_presentation(payload)
+
+
+async def _register_vod_media(factory: object, vod: Path) -> str:
+    """Persist a VIDEO media row for H.11. Assumes ``vod`` is a local file."""
+    from sqlalchemy.orm import Session, sessionmaker
+
+    from riftlens.adapters.db.repositories import SqlMediaRepository
+    from riftlens.domain.ids import new_ulid
+    from riftlens.domain.ports import MediaAssetRecord
+    from riftlens.orchestration.progress import now_ms
+    from riftlens.pipeline.ingest_video.probe import chromium_playable, probe, validate_probe
+
+    if not isinstance(factory, sessionmaker):
+        raise TypeError("expected a SQLAlchemy sessionmaker")
+    typed_factory: sessionmaker[Session] = factory
+    probed = probe(str(vod))
+    errors = validate_probe(probed)
+    if errors:
+        raise typer.BadParameter(" ".join(errors))
+    media_repo = SqlMediaRepository(typed_factory)
+    existing = await media_repo.get_by_content_hash(probed.content_hash)
+    if existing is not None:
+        return existing.id
+    record = MediaAssetRecord(
+        id=new_ulid(),
+        content_hash=probed.content_hash,
+        original_path=probed.path,
+        playable_path=probed.path if chromium_playable(probed) else None,
+        proxy_path=None,
+        thumbnail_sheet_path=None,
+        container=None,
+        codec=probed.codec_name,
+        pix_fmt=probed.pix_fmt,
+        width=probed.width,
+        height=probed.height,
+        fps_num=None,
+        fps_den=None,
+        duration_ms=probed.duration_ms,
+        size_bytes=probed.size_bytes,
+        source_kind="PLAYER_POV",
+        layout_profile_id=None,
+        quality_score=None,
+        imported_at=now_ms(),
+        last_accessed_at=now_ms(),
+    )
+    await media_repo.upsert_asset(record)
+    return record.id
+
+
+def _should_use_fixture_pair(match_id: str, fixtures: Path | None) -> bool:
+    """Return True when the caller asked for fixtures or a fixture folder exists."""
+    if fixtures is not None:
+        return True
+    return (_FIXTURE_ROOT / match_id).is_dir()
 
 
 def _load_fixture_pair(match_id: str, fixtures: Path | None) -> tuple[MatchDto, TimelineDto]:
@@ -243,7 +275,10 @@ def _load_fixture_pair(match_id: str, fixtures: Path | None) -> tuple[MatchDto, 
     root = fixtures if fixtures is not None else _FIXTURE_ROOT
     folder = root / match_id
     if not folder.is_dir():
-        raise typer.BadParameter(f"fixture folder not found: {folder}")
+        raise typer.BadParameter(
+            f"fixture folder not found: {folder}. "
+            "For a real cached match, omit --fixtures so H.11 runs without VIDEO."
+        )
     match_path = folder / "match.json"
     timeline_path = folder / "timeline.json"
     match = MatchDto.model_validate(json.loads(match_path.read_text(encoding="utf-8")))
@@ -368,6 +403,82 @@ def _print_findings(
             print(f"  evidence[{item.kind.value}] {item.label}: {item.value}")
 
 
+def _print_job_summary(job: object) -> None:
+    """Print H.11 job identity, errors, and stage timings. Assumes ``job`` already ran."""
+    from riftlens.orchestration.job import AnalysisJob
+
+    if not isinstance(job, AnalysisJob):
+        raise TypeError("expected an AnalysisJob")
+    print(f"job_id={job.id} status={job.status} review_id={job.review_id}")
+    print(f"llm_provider={job.llm_provider} llm_model={job.llm_model or '-'}")
+    print(
+        f"cache_hits={job.cache_hits} fact_count={job.fact_count} finding_count={job.finding_count}"
+    )
+    if job.error_code or job.error_message:
+        print(f"error_code={job.error_code} error_message={job.error_message}")
+        if job.failure_stage:
+            print(f"failure_stage={job.failure_stage}")
+    print("stage_timings")
+    print(f"{'stage':<18} {'ms':>8} {'cache':<6} {'skip':<6}")
+    for item in job.stage_timings:
+        print(
+            f"{item.name:<18} {item.duration_ms:8d} {str(item.cache_hit):<6} {str(item.skipped):<6}"
+        )
+
+
+def _print_presentation(payload: dict[str, object]) -> None:
+    """Print a persisted review presentation. Assumes H.8 JSON shape."""
+    print(
+        f"match_id={payload.get('match_id')} pid={payload.get('participant_id')} "
+        f"champion={payload.get('champion')} role={payload.get('role')} "
+        f"rank={payload.get('rank')} patch={payload.get('patch')} "
+        f"duration_ms={payload.get('duration_ms')} result={payload.get('result')}"
+    )
+    print(
+        f"llm_provider={payload.get('llm_provider')} engine={payload.get('engine_version')} "
+        f"review_id={payload.get('id')}"
+    )
+    findings = payload.get("findings")
+    print(f"findings={len(findings) if isinstance(findings, list) else 0}")
+    print()
+    print("FOCUS")
+    _print_presentation_items(payload.get("focus_items"))
+    print("SECONDARY")
+    _print_presentation_items(payload.get("secondary_items"), empty_ok=True)
+    print("STRENGTHS")
+    _print_presentation_items(payload.get("strengths"), empty_ok=True)
+
+
+def _print_presentation_items(raw: object, *, empty_ok: bool = False) -> None:
+    """Print coaching items from presentation JSON. Assumes list-or-missing."""
+    items = raw if isinstance(raw, list) else []
+    if not items and empty_ok:
+        print("  (none)")
+        return
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        if item.get("is_focus"):
+            kind = "FOCUS"
+        elif item.get("is_strength"):
+            kind = "STRENGTH"
+        else:
+            kind = "SECONDARY"
+        stamps = item.get("evidence_timestamps_ms")
+        print(f"{item.get('rank')}. [{kind}] {item.get('title')}")
+        print(
+            f"   type={item.get('issue_type')} cost={item.get('cost_summary')} "
+            f"conf={item.get('confidence')}"
+        )
+        print(f"   why: {str(item.get('body') or '').replace(chr(10), ' / ')}")
+        print(f"   fix: {item.get('the_fix')}")
+        print(f"   check: {item.get('next_game_check')}")
+        print(f"   evidence_t=ms={stamps}")
+        print(f"   grouping: {item.get('grouping_reason')}")
+        print(f"   findings={item.get('finding_ids')}")
+        print()
+
+
 def _print_review(review: object, *, paired: bool) -> None:
     from riftlens.domain.review import Review
 
@@ -402,8 +513,7 @@ def _print_review(review: object, *, paired: bool) -> None:
         _print_coaching_item(item)
     print("METRICS")
     header = (
-        f"{'metric':<6} {'phase':<16} {'value':>10} {'unit':<16} "
-        f"{'conf':>5} {'pctl':>6}  context"
+        f"{'metric':<6} {'phase':<16} {'value':>10} {'unit':<16} {'conf':>5} {'pctl':>6}  context"
     )
     print(header)
     print("-" * len(header))
