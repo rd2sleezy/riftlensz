@@ -1,6 +1,6 @@
 # H.12-ROFL — Phase 1 ROFL-First Definition of Done
 
-**Date:** 2026-08-16 (engineering + real-replay gates); **RF-5 manual T4 updated 2026-08-19**; **second-ROFL ingest fix 2026-08-19**  
+**Date:** 2026-08-16 (engineering + real-replay gates); **RF-5 manual T4 updated 2026-08-19**; **second-ROFL ingest fix 2026-08-19**; **third-ROFL Open Replay fix 2026-08-19**  
 **Branch:** `integrate/ui-r1`  
 **Does not implement:** R.12, V.7, VIDEO corpus harvesting, new visual research, new coaching rules, new product architecture, remote replay hosting, Phase 2, camera-attachment changes.
 
@@ -438,6 +438,73 @@ Historical Windows T4 on `NA1_5617764200` (older HEAD) remains **historical only
 
 ---
 
+## 14b. Third-replay result
+
+**Verdict: PASS — real third-match import/review/Open Replay/seek on fixed HEAD**
+
+Third independent `.rofl` on this Mac:
+
+| Field | Value |
+|---|---|
+| File | `/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5624560795.rofl` |
+| Identity | `NA1_5624560795` |
+| Review id | `01M0EJ5B4KZ8X8414391996QCV` |
+| ROFL source id | `01M0EJ5BK3FTDVSNCFC66732M9` (`linked`) |
+| Participant | **6** — Vladimir |
+| Duration | ~30 min (`game_duration_ms` 1 813 000) |
+| Focus / Areas of Improvement | **3** |
+
+### Reproduced failure (pre-fix)
+
+Operator imported, ingested, selected participant, and persisted a real review with **3** legitimate coaching items. **Open Replay** failed immediately with **“Replay API is not enabled in the game client”** (`REPLAY_API_DISABLED`).
+
+### Root cause (diagnosed)
+
+1. League had **removed** `Game/Config/` since the prior successful Mac session (`NA1_5620410094`). Only `LoL/Config/game.cfg` retained `EnableReplayApi=1`.
+2. `MacReplayHost.check_environment()` correctly warned `REPLAY_API_DISABLED` (`reason=game_cfg_missing`).
+3. **Bug:** `MacReplayHost.open_session()` returned **FAILED before launch** when the warning was present and the swagger probe was unreachable (`not env.replay_api_documented`). **`enable_mac_replay_api` was never called** on Open Replay — only via the separate enable IPC/button.
+4. Windows `open_session` does not have this pre-launch gate; Mac regressed the previously proven lifecycle (create `Game/Config`, seed from `LoL/Config`, launch with `GameBaseDir=<Game>`).
+
+This is **not** an H.12 fresh-match regression; it is a **Mac Open Replay lifecycle** issue present since the early-fail guard was added.
+
+### Fix (smallest production diff)
+
+- `MacReplayHost.open_session`: when `REPLAY_API_DISABLED` is detected, **auto-call** `enable_mac_replay_api(consent=True)` (Open Replay implies consent) to create/seed `Game/Config/game.cfg`, then proceed to supervisor launch like Windows.
+- Remove the pre-launch early return that blocked launch when swagger was not yet reachable.
+
+Regression: `test_mac_host_open_auto_enables_missing_game_config`, `test_mac_host_open_auto_enables_flag_missing`.
+
+### Post-fix real acceptance (2026-08-19, HEAD pending commit)
+
+**Open Replay: PASS** on real `NA1_5624560795` without manual `game.cfg` edits and without calling enable IPC first.
+
+| Check | Result |
+|---|---|
+| `Game/Config` before open | **missing** |
+| `enable_mac_replay_api` before open | **not called** |
+| Install | `/Applications/League of Legends.app` → `Contents/LoL/Game` |
+| `game.cfg` after open | created at `Game/Config/game.cfg`, `EnableReplayApi=1` |
+| Launch | direct exe, `GameBaseDir=<Game>` |
+| Session | **PLAYING** (READY), Replay API connected |
+| ClockMap | native **OFFSET** (`offset_ms=-6546`, `verified=false`, **no SyncMap**) |
+| Overlay | **not re-tested** this run (non-blocking) |
+
+**Three coaching seeks** (lead-in 8000 ms; tolerance per `REAL_SEEK_TOLERANCE_MS`):
+
+| # | Focus title | Rule | Finding | Expected `t_ms` | Seek target (source) | Landed clock | Δ vs target | Δ vs expected |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Base when low with a gold pile | R-007 | `01M0EJ5AZKTH7WF8R85TBPDEB9` | 600 000 | 598 546 | 598 546 | **0** | −1454 |
+| 2 | Respect dive angles under tower | R-015 | `01M0EJ5B23KX0ESPR1VDXDT7J8` | 1 438 382 | 1 436 928 | 1 436 928 | **0** | −1454 |
+| 3 | Roam only with lane priority | R-018 | `01M0EJ5B0VD19R8MXBZ9NBJYD1` | 1 020 000 | 1 018 546 | 1 018 546 | **0** | −1454 |
+
+All three seeks **ok=true**. Uniform −1454 ms vs game `t_ms` matches calibrated OFFSET + lead-in mapping (landed exactly on computed target; no silent compensation).
+
+**Third ROFL verdict:** **PASS** — import, real review (3 improvements), ROFL link, Open Replay READY, native ClockMap, three legitimate seeks.
+
+**RF-11:** third distinct real review → **n=3** (still **BLOCKED**, need 10).
+
+---
+
 ## 15. CLI result
 
 **Verdict: PASS** (after smallest production fix)
@@ -489,6 +556,7 @@ VIDEO remains experimental. **H.12-ROFL PASS must not imply VIDEO production rea
 | Cached H.11 rerun `IntegrityError` on `finding.id` | Persist `add`s cached finding ULIDs; coaching/metrics already `replace_for_review` | Finding `replace_for_review` after clearing coaching links | `test_cached_rerun_persist_is_idempotent` |
 | Open Replay `PLAYBACK_NOT_ADVANCING` at end of match (`t≈length`) | READY required time to increase; finished replay cannot | Rewind ~5 s from end, then re-sample; mid-timeline freeze still fails | `test_playback_at_end_rewinds_then_ready` |
 | Second `.rofl` ingest loop (`NA1_5624772791`) | Ingest button never called `ingestMatch` IPC; Riot 403 mapped to `MATCH_NOT_INGESTED` | Wizard `runIngestMatch` + honest Riot error mapping in `_fetch_pair` | `test_real_match_ingest_errors.py`, `importReplayWizard.test.ts` |
+| Third `.rofl` Open Replay `REPLAY_API_DISABLED` (`NA1_5624560795`) | Mac `open_session` failed before launch when `Game/Config` missing and swagger unreachable; `enable_mac_replay_api` not invoked on Open Replay | Auto-enable `Game/Config` in `MacReplayHost.open_session` when disabled, then launch | `test_mac_host_open_auto_enables_missing_game_config`, `test_mac_host_open_auto_enables_flag_missing` |
 
 No feature expansion.
 
@@ -496,7 +564,7 @@ No feature expansion.
 
 ## 19. Limitations
 
-- Two real ROFL-backed reviews on this Mac (`NA1_5620410094`, `NA1_5624772791`); second has **zero** improvement items by correct rule outcome (clean win).
+- Three real ROFL-backed reviews on this Mac (`NA1_5620410094`, `NA1_5624772791`, `NA1_5624560795`); second has **zero** improvement items by correct rule outcome; third validates Open Replay auto-enable when League drops `Game/Config`.
 - Overlay live pixels were **user-observed**, not automated.
 - Coaching seeks do not lock the camera to the reviewed subject (deferred, non-blocking).
 - Friend-test N=10 not possible.
@@ -523,8 +591,9 @@ No feature expansion.
 | RF-8 | **PASS** |
 | RF-9 | **PASS** |
 | RF-10 | **PASS** |
-| RF-11 | **BLOCKED_INSUFFICIENT_REAL_REVIEWS** (n=2) |
+| RF-11 | **BLOCKED_INSUFFICIENT_REAL_REVIEWS** (n=3) |
 | Second ROFL | **PARTIAL** (import/review/ROFL link PASS; replay seek N/A — zero improvement items) |
+| Third ROFL | **PASS** (import/review/3 improvements/Open Replay READY/three seeks; overlay not re-tested) |
 | CLI | **PASS** |
 
 ---
@@ -541,7 +610,7 @@ Sidecar pytest, 89.11% domain+analysis coverage, ruff, mypy --strict, import-lin
 
 **PARTIAL**
 
-Mac TIER 1 path on `NA1_5620410094` is real: import, analysis, READY, ClockMap, seeks, covered capture, and **user-observed overlay**. Still blocked on the 10-review friend-test (RF-11) and a second independent `.rofl`. Overlay PASS does **not** force Phase 1 READY.
+Mac TIER 1 path on `NA1_5620410094` and **`NA1_5624560795`** is real: import, analysis, READY, ClockMap, seeks, covered capture (first match), and **user-observed overlay** (first match). Still blocked on the 10-review friend-test (RF-11). Overlay PASS does **not** force Phase 1 READY.
 
 ---
 
@@ -555,8 +624,8 @@ Not READY. Engineering is green and RF-5 is closed by manual T4. Release still n
 
 ## 24. Exact remaining blockers
 
-1. **RF-11** — only **1** distinct real review; need 10 genuinely distinct real (prefer ROFL-backed) reviews + friend judgment. **BLOCKED_INSUFFICIENT_REAL_REVIEWS**.
-2. **Second independent `.rofl`** — not on this Mac; `NA1_5617764200` absent. Still **BLOCKED**.
+1. **RF-11** — only **3** distinct real reviews; need 10 genuinely distinct real (prefer ROFL-backed) reviews + friend judgment. **BLOCKED_INSUFFICIENT_REAL_REVIEWS**.
+2. **Second independent `.rofl` with improvement seeks** — `NA1_5624772791` has zero focus items (correct); third match now covers multi-seek Open Replay. Still need breadth across more distinct games.
 3. **Windows current-HEAD T4** — historical only until rerun (do not generalize Mac overlay T4 to Windows).
 4. **VIDEO** — remains PARTIAL / BLOCKED_INSUFFICIENT_CORPUS / experimental (non-blocking for ROFL-first, still debt).
 

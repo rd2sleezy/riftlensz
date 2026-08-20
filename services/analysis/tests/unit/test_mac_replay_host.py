@@ -196,9 +196,26 @@ def test_mac_host_environment_reports_disabled_cfg(tmp_path: Path) -> None:
     assert any(w.code is ReplayErrorCode.REPLAY_API_DISABLED for w in env.warnings)
 
 
-def test_mac_host_open_fails_when_api_disabled(tmp_path: Path) -> None:
-    lol = _mac_tree(tmp_path / "LoL", enable_api=False)
+def test_mac_host_open_auto_enables_missing_game_config(tmp_path: Path) -> None:
+    """Open Replay must seed Game/Config and enable API instead of failing early."""
+    from riftlens.replay_host.session import ReplaySessionPhase, ReplaySessionSnapshot
     from riftlens.replay_host.windows.capability_probe import ReplayApiCapability
+
+    lol = _mac_tree(tmp_path / "LoL", enable_api=False)
+    game_cfg_dir = lol / "Game" / "Config"
+    for child in list(game_cfg_dir.iterdir()):
+        child.unlink()
+    game_cfg_dir.rmdir()
+    install = validate_mac_install_root(lol)
+    assert not install.game_cfg.is_file()
+    rofl = tmp_path / "NA1-1.rofl"
+    rofl.write_bytes(b"RIOT")
+    launched: list[str] = []
+
+    class _FakeSupervisor:
+        def open(self, rofl_path: str, install_arg: object) -> ReplaySessionSnapshot:
+            launched.append(rofl_path)
+            return ReplaySessionSnapshot(phase=ReplaySessionPhase.READY)
 
     host = MacReplayHost(
         locate=lambda: locate_league_install_mac(lol, platform="darwin"),
@@ -209,7 +226,39 @@ def test_mac_host_open_fails_when_api_disabled(tmp_path: Path) -> None:
             spec_path=None,
             error=None,
         ),
+        supervisor_factory=lambda: _FakeSupervisor(),  # type: ignore[return-value]
     )
-    snap = host.open_session(str(tmp_path / "missing.rofl"))
-    assert snap.error is not None
-    assert snap.error.code is ReplayErrorCode.REPLAY_API_DISABLED
+    snap = host.open_session(str(rofl))
+    assert snap.phase is ReplaySessionPhase.READY
+    assert launched == [str(rofl)]
+    assert install.game_cfg.is_file()
+    assert read_mac_replay_api_state(install).enable_replay_api is True
+
+
+def test_mac_host_open_auto_enables_flag_missing(tmp_path: Path) -> None:
+    from riftlens.replay_host.session import ReplaySessionPhase, ReplaySessionSnapshot
+    from riftlens.replay_host.windows.capability_probe import ReplayApiCapability
+
+    lol = _mac_tree(tmp_path / "LoL", enable_api=False)
+    install = validate_mac_install_root(lol)
+    rofl = tmp_path / "NA1-2.rofl"
+    rofl.write_bytes(b"RIOT")
+
+    class _FakeSupervisor:
+        def open(self, rofl_path: str, install_arg: object) -> ReplaySessionSnapshot:
+            return ReplaySessionSnapshot(phase=ReplaySessionPhase.READY)
+
+    host = MacReplayHost(
+        locate=lambda: locate_league_install_mac(lol, platform="darwin"),
+        probe=lambda: ReplayApiCapability(
+            reachable=False,
+            replay_playback_present=False,
+            documented_paths=(),
+            spec_path=None,
+            error=None,
+        ),
+        supervisor_factory=lambda: _FakeSupervisor(),  # type: ignore[return-value]
+    )
+    snap = host.open_session(str(rofl))
+    assert snap.phase is ReplaySessionPhase.READY
+    assert read_mac_replay_api_state(install).enable_replay_api is True

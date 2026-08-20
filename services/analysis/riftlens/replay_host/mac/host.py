@@ -187,13 +187,22 @@ class MacReplayHost:
         if self._install is None:
             error = env.error or ReplayError(ReplayErrorCode.INSTALL_NOT_FOUND)
             return ReplaySessionSnapshot(phase=ReplaySessionPhase.FAILED, error=error)
-        # Config disabled is a warning until open; refuse open when flag missing.
         disabled = next(
             (w for w in env.warnings if w.code is ReplayErrorCode.REPLAY_API_DISABLED),
             None,
         )
-        if disabled is not None and not env.replay_api_documented:
-            return ReplaySessionSnapshot(phase=ReplaySessionPhase.FAILED, error=disabled)
+        if disabled is not None:
+            # League often drops Game/Config between sessions; ensure flag before launch.
+            enable_result = enable_mac_replay_api(self._install, consent=True)
+            if not enable_result.ok:
+                err = enable_result.primary.error or ReplayError(
+                    ReplayErrorCode.REPLAY_API_DISABLED,
+                    details={
+                        "reason": "enable_failed",
+                        "path": str(self._install.game_cfg),
+                    },
+                )
+                return ReplaySessionSnapshot(phase=ReplaySessionPhase.FAILED, error=err)
         supervisor = self._fresh_supervisor()
         return supervisor.open(rofl_path, self._install)
 
