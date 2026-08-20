@@ -1,10 +1,10 @@
 # H.12-ROFL — Phase 1 ROFL-First Definition of Done
 
-**Date:** 2026-08-16  
+**Date:** 2026-08-16 (engineering + real-replay gates); **RF-5 manual T4 updated 2026-08-19**  
 **Branch:** `integrate/ui-r1`  
-**Does not implement:** R.12, V.7, VIDEO corpus harvesting, new visual research, new coaching rules, new product architecture, remote replay hosting, Phase 2.
+**Does not implement:** R.12, V.7, VIDEO corpus harvesting, new visual research, new coaching rules, new product architecture, remote replay hosting, Phase 2, camera-attachment changes.
 
-This work order is validation / hardening on current HEAD. Historical VIDEO verdicts are not reinterpreted.
+This work order is validation / hardening on current HEAD. Historical VIDEO verdicts are not reinterpreted. The 2026-08-19 update is documentation / acceptance only.
 
 ---
 
@@ -26,7 +26,8 @@ Machine: Apple M4 (10-core), macOS darwin 25.5.0.
 ## 2. Current commit tested
 
 - Amendment HEAD at start of this work order: **`95b2b51`** (`Record the Phase 1 decision that native .rofl is the primary gameplay source.`)
-- This report is committed with the H.12-ROFL validation patches on `integrate/ui-r1` (CLI no-VIDEO path, idempotent persist, end-of-replay READY recovery). The tree that produced the RF evidence is that patched HEAD, not `95b2b51` alone.
+- H.12-ROFL engineering + real-replay evidence commit: **`9574475`** (CLI no-VIDEO path, idempotent persist, end-of-replay READY recovery). Automated RF evidence was produced on that tree, not on `95b2b51` alone.
+- RF-5 user-observed overlay acceptance (this update): performed **2026-08-19** against current-HEAD product on `integrate/ui-r1` at **`9574475`** (no production-code change in the docs-only follow-up).
 
 Evidence artifacts (no media, no secrets):
 
@@ -143,9 +144,11 @@ No manual SyncMap.
 
 ## 7. RF-5 — Overlay
 
-**Verdict: BLOCKED** — live overlay on this real replay was **not visually observed** in this agent session (Electron overlay was not launched over League).
+**Verdict: PASS**
 
-### Engineering (automated, current HEAD) — PASS
+**Evidence class: USER-OBSERVED / MANUAL T4.** This is not automated visual verification. No agent, screenshot pipeline, or pixel test observed the overlay over League. The 2026-08-16 engineering run left RF-5 BLOCKED because Electron overlay was not launched in that session. The operator closed that gap on **2026-08-19** on current HEAD **`9574475`**.
+
+### Engineering (automated, current HEAD) — PASS (unchanged)
 
 - `inputPolicy.test.ts`: no Electron `globalShortcut` in overlay modules; no process injection / Replay API from overlay code.
 - `macOverlay.contract.test.ts`: prev/next/seek/minimize/expand **without Escape or Space**; live-game refuse; Spaces/fullscreen documented, not auto-switched.
@@ -153,22 +156,45 @@ No manual SyncMap.
 - `displayModeAssist.ts`: exclusive fullscreen / separate macOS Space cannot keep an always-on-top companion; Borderless/Windowed is the supported path; no `game.cfg` WindowMode write, no Alt+Enter, no injection.
 - Overlay vitest suite included in 90 passing desktop tests.
 
-### Manual checks still required (not claimed)
+### USER-OBSERVED / MANUAL T4 (2026-08-19, HEAD `9574475`) — PASS
 
-On a Windowed or Borderless replay of `NA1_5620410094`:
+Real RiftLens replay/review flow on macOS, current HEAD. Operator observations:
 
-1. Access Overlay opens the separate overlay window.
-2. League remains or is restored frontmost after Access Overlay.
-3. Overlay is visible over the replay (not trapped behind League).
-4. Previous / next coaching item works.
-5. Seek from overlay lands (same ClockMap path as RF-4).
-6. Minimize/hide works; restore/Access Overlay works.
-7. Overlay survives replay seeks / session updates.
-8. Overlay closes/hides when the replay session ends.
-9. Live-game safety remains fail-closed (do not overlay a live match).
-10. No global hotkey regression; Escape/Space remain League’s.
+- Real League replay opened successfully.
+- RiftLens overlay appeared **visibly over** the League replay.
+- Overlay was **not** trapped behind League.
+- Access Overlay returned/preserved the expected League experience rather than leaving the user stranded in the RiftLens main window.
+- Overlay was usable during the replay.
+- Overlay controls behaved correctly.
+- Previous/next coaching navigation worked.
+- Coaching seek worked.
+- Overall overlay behavior looked correct to the user.
 
-**Fullscreen limitation (honest):** overlay is not claimed over a separate macOS fullscreen Space or Windows exclusive D3D fullscreen. Player path is Borderless/Windowed + Recheck.
+**Fullscreen limitation (honest, unchanged):** overlay is not claimed over a separate macOS fullscreen Space or Windows exclusive D3D fullscreen. Player path is Borderless/Windowed + Recheck.
+
+### Deferred (non-blocking): subject camera lock on coaching seek
+
+**Not a Phase 1 blocker. Do not fix in this work order. Do not start V.7. Do not change ReplayHost or camera-attachment code.**
+
+During the same manual session, jumping to coaching timestamps did **not** necessarily lock the replay camera onto the reviewed subject (Vladimir, pid 6). The replay may frame/pan around the broader event (for example the full team fight) rather than remaining specifically attached to Vladimir.
+
+Current behavior remains **acceptable** for Phase 1 because:
+
+- seek timing is correct (RF-4 landing ≤1000 ms; operator also saw seek work from overlay);
+- the relevant event is visible;
+- coaching evidence remains inspectable;
+- native replay synchronization is functioning.
+
+Recorded as **deferred improvement after planned H.x / R.x work is complete**. Future work (not now) may use prior camera-attachment spike research:
+
+- champion-name attachment can visually follow Vladimir;
+- Replay API exposes **no** authoritative participant/entity id;
+- `selectionName` may clear during playback while attachment remains;
+- seek **clears** camera attachment;
+- therefore a future subject-focused replay path likely needs a deliberate **`seek → attach/reacquire`** lifecycle;
+- that work must stay separate from visual identity claims / `CONTROLLED_SUBJECT` semantics unless independently justified.
+
+This note is **not** a V.7 work order and is **not** a change to current camera behavior.
 
 ---
 
@@ -222,7 +248,7 @@ An 8 s request truncating while a 3 s request covering is recorded honestly. Cap
 | B. Cached deterministic rerun | **&lt;10 s**, **0 Riot API calls** | **0.488–0.546 s**, **0** `get_match`/`get_timeline` | 6 stage-cache hits |
 | C. Replay open → READY | record; fail if never READY in ~120 s | **1.07 s** attached session | Cold launch not measured this run |
 | D. Coaching seek request → landed clock | landing ≤1000 ms | landing **0 ms**; request wall **~1.9 s** | Wall includes HTTP; gate is landing error |
-| E. Overlay access | if measurable | **not measured** | RF-5 blocked |
+| E. Overlay access | if measurable | **not instrumented** (no wall-clock) | RF-5 closed by **USER-OBSERVED / MANUAL T4** 2026-08-19; not an automated pixel measurement |
 | F. R.10 capture | report separately | **3.824 s** for 3 s CLIP; 8.555 s truncated 8 s attempt | Recording consumes wall time |
 
 Future budget: keep the amendment’s **&lt;10 s** fresh cached-match analysis number. Measured 1.3 s on M4; no tighter gate invented here.
@@ -373,7 +399,7 @@ No VIDEO argument required. No developer-only fixture path required for the real
 
 | Platform | What is actually true after H.12-ROFL |
 |---|---|
-| **macOS** | Current HEAD: RF-1 import/identity, RF-2 analysis, RF-3 READY+ClockMap, RF-4 seeks (0 ms), RF-6 covered 3 s CLIP, CLI `--no-llm`, engineering gates. Overlay **contracts** tested; **live overlay visual not observed**. One real `.rofl`. |
+| **macOS** | Current HEAD (`9574475`): RF-1 import/identity, RF-2 analysis, RF-3 READY+ClockMap, RF-4 seeks (0 ms), RF-6 covered 3 s CLIP, CLI `--no-llm`, engineering gates. Overlay **contracts** tested; **RF-5 live overlay = PASS** via USER-OBSERVED / MANUAL T4 (2026-08-19). One real `.rofl`. |
 | **Windows** | Automated T0–T2 (pytest fakes, Playwright not Windows-specific). Historical T4: R.9 desktop + R.10.5 overlay on `NA1_5617764200` (older HEAD). **Current HEAD real Windows rerun: not done.** Do not generalize Mac T4 to Windows. |
 | **Linux** | Native replay **unsupported** (`UnsupportedReplayHost`). Analysis-only possible. Not a Phase 1 native Open Replay claim. |
 
@@ -408,7 +434,8 @@ No feature expansion.
 ## 19. Limitations
 
 - One real `.rofl` / one real review on this Mac.
-- Overlay live visual not observed.
+- Overlay live pixels were **user-observed**, not automated.
+- Coaching seeks do not lock the camera to the reviewed subject (deferred, non-blocking).
 - Friend-test N=10 not possible.
 - Windows current-HEAD T4 not rerun.
 - Cold League launch time not measured (attached session).
@@ -427,7 +454,7 @@ No feature expansion.
 | RF-2 | **PASS** |
 | RF-3 | **PASS** |
 | RF-4 | **PASS** |
-| RF-5 | **BLOCKED** (manual overlay observation required) |
+| RF-5 | **PASS** (USER-OBSERVED / MANUAL T4, 2026-08-19, HEAD `9574475`) |
 | RF-6 | **PASS** |
 | RF-7 | **PASS** |
 | RF-8 | **PASS** |
@@ -451,7 +478,7 @@ Sidecar pytest, 89.11% domain+analysis coverage, ruff, mypy --strict, import-lin
 
 **PARTIAL**
 
-Mac TIER 1 path on `NA1_5620410094` is real: import, analysis, READY, ClockMap, seeks, covered capture. Blocked on live overlay observation, 10-review friend-test, and a second independent `.rofl`.
+Mac TIER 1 path on `NA1_5620410094` is real: import, analysis, READY, ClockMap, seeks, covered capture, and **user-observed overlay**. Still blocked on the 10-review friend-test (RF-11) and a second independent `.rofl`. Overlay PASS does **not** force Phase 1 READY.
 
 ---
 
@@ -459,17 +486,18 @@ Mac TIER 1 path on `NA1_5620410094` is real: import, analysis, READY, ClockMap, 
 
 **PARTIAL**
 
-Not READY. Engineering is green; release still needs human overlay confirmation, more distinct real reviews (RF-11), and preferably a second real replay (and a current Windows T4 if Windows is a claimed demo platform).
+Not READY. Engineering is green and RF-5 is closed by manual T4. Release still needs more distinct real reviews (RF-11) and a second independent `.rofl` (and a current Windows T4 if Windows is a claimed demo platform). Do not treat overlay PASS as VIDEO readiness or as a 10-review friend-test.
 
 ---
 
 ## 24. Exact remaining blockers
 
-1. **RF-5 live overlay** — operator must run the §7 manual checklist on Windowed/Borderless `NA1_5620410094`.
-2. **RF-11** — only **1** distinct real review; need 10 genuinely distinct real (prefer ROFL-backed) reviews + friend judgment.
-3. **Second independent `.rofl`** — not on this Mac; `NA1_5617764200` absent.
-4. **Windows current-HEAD T4** — historical only until rerun.
-5. **VIDEO** — remains PARTIAL / BLOCKED_INSUFFICIENT_CORPUS / experimental (non-blocking for ROFL-first, still debt).
+1. **RF-11** — only **1** distinct real review; need 10 genuinely distinct real (prefer ROFL-backed) reviews + friend judgment. **BLOCKED_INSUFFICIENT_REAL_REVIEWS**.
+2. **Second independent `.rofl`** — not on this Mac; `NA1_5617764200` absent. Still **BLOCKED**.
+3. **Windows current-HEAD T4** — historical only until rerun (do not generalize Mac overlay T4 to Windows).
+4. **VIDEO** — remains PARTIAL / BLOCKED_INSUFFICIENT_CORPUS / experimental (non-blocking for ROFL-first, still debt).
+
+RF-5 is **no longer** a Phase 1 blocker. Subject-camera-lock on seek is **deferred and non-blocking** (see §7).
 
 ---
 
@@ -479,10 +507,11 @@ Stop. Do **not** start R.12, V.7, VIDEO harvest, new rules, overlay features, Re
 
 When the operator continues:
 
-1. Perform the RF-5 overlay checklist on this Mac (highest remaining product-surface gap).
-2. Import/analyze additional **real** matches as `.rofl` files appear; fill RF-11 without fabricating.
+1. Import/analyze additional **real** matches as `.rofl` files appear; fill RF-11 without fabricating.
+2. If a second independent `.rofl` appears locally, run the reduced second-case acceptance (identity, analysis, Open Replay, READY, ClockMap, one seek).
 3. If a Windows machine is available, rerun T4 on this HEAD (`NA1_5617764200` or another real replay).
 4. Keep VIDEO experimental until a real VOD corpus exists.
+5. Subject-camera-lock (`seek → attach/reacquire`) only **after** planned H.x / R.x work — not V.7, not now.
 
 ---
 
