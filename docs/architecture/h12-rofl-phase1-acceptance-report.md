@@ -396,11 +396,43 @@ Import League Replay wizard correctly identified `NA1_5624772791`, reported **ma
 - Sidecar: `_replay_error_from_riot_exc` maps **Forbidden → `RIOT_CREDENTIAL_MISSING`** (sign-in action), **NotFound / RateLimited / 5xx** → honest messages (not generic ingest loop).
 - Regression: `test_real_match_ingest_errors.py`, `importReplayWizard.test.ts`.
 
-### Post-fix real acceptance (this run)
+### Post-fix real acceptance (2026-08-19, HEAD `ee2c898`)
 
-**Not completed end-to-end on fixed HEAD in this session.** Operator desktop auth session exists (`session.enc` dated 2026-08-12); CLI `settings.riot_api_key` is empty. Without a verified fresh Riot developer key in the desktop Account menu, ingest cannot be re-run here. **Operator action:** refresh API key → Import `NA1-5624772791.rofl` → **Ingest this match** → participant picker → review → ROFL bind → Open Replay smoke.
+**Import / ingest / review: PASS.** Operator refreshed Riot access, imported `NA1-5624772791.rofl`, ingested the uncached match, selected participant, and reached a persisted real review.
 
-Until that succeeds: second independent ROFL-backed review remains **unproven**. RF-11 count unchanged (**n=1**).
+| Field | Value |
+|---|---|
+| Review id | `01M0EHDEJ62VBMQY6TSVVW12PR` |
+| ROFL source id | `01M0EHDEXRRA122NS1KKP9Q23V` (`linked`) |
+| Participant | **6** — Vladimir TOP |
+| Riot identity | **immynator#loler** (same account as first match) |
+| Result | **WIN** · ~17 min (`duration_ms` 1 025 114) |
+| KDA | 6 / 1 / 0 |
+
+**Coaching composition (diagnosed, not a bug):**
+
+| Stage | Count |
+|---|---|
+| Raw rule findings | **1** (P-001 strength only) |
+| Improvement findings (R-001…R-020) | **0** |
+| Focus / “coaching plan” items | **0** |
+| Secondary items | **0** |
+| Strengths | **1** (“Clean lane phase”) |
+
+Re-running the production pipeline on cached MATCH-V5 + timeline reproduces the persisted JSON exactly: GST **2 178** facts, **23** `CHAMPION_KILL` events, **17** metrics computed, **25** rules in pack, **0** improvement rules triggered. UI renders `focus_items.length === 0` with the existing empty-state copy — not a rendering bug.
+
+**Why zero improvements (primary diagnosis: `ZERO_FINDINGS_CORRECT`):**
+
+- Dominant lane win: CS diff **+33** at 14:00 vs Garen, **1** death before 14:00 → **P-001** fires as a strength.
+- Sole death at **5:30** (`t_ms=330 407`) to **Garen (TOP lane opponent)**, not an unseen jungler → **R-001** correctly does not fire.
+- Shorter stomp (~17 min vs ~41 min on first match) → fewer macro/tempo/objective windows; **R-008 / R-014 / R-017 / R-012** did not trigger (same as first-match structural comparison).
+- **R-002** logged `rule_inputs_unsatisfied` for `unspent_gold_estimate` on this death — inputs missing, not a silent failure.
+
+**Open Replay / seek gate:** not exercised here — no legitimate coaching timestamps to seek. Do not invent a seek.
+
+**Second ROFL verdict:** **PARTIAL** — fresh import + real review + ROFL link **PASS**; replay READY/seek **not applicable** (no improvement items).
+
+**RF-11:** this counts as a **second distinct real review** → **n=2** (still **BLOCKED**, need 10).
 
 Historical Windows T4 on `NA1_5617764200` (older HEAD) remains **historical only**.
 
@@ -464,7 +496,7 @@ No feature expansion.
 
 ## 19. Limitations
 
-- One real ROFL-backed review proven on this Mac (`NA1_5620410094`); second file present but ingest acceptance pending operator re-run with fresh Riot key.
+- Two real ROFL-backed reviews on this Mac (`NA1_5620410094`, `NA1_5624772791`); second has **zero** improvement items by correct rule outcome (clean win).
 - Overlay live pixels were **user-observed**, not automated.
 - Coaching seeks do not lock the camera to the reviewed subject (deferred, non-blocking).
 - Friend-test N=10 not possible.
@@ -491,8 +523,8 @@ No feature expansion.
 | RF-8 | **PASS** |
 | RF-9 | **PASS** |
 | RF-10 | **PASS** |
-| RF-11 | **BLOCKED_INSUFFICIENT_REAL_REVIEWS** (n=1) |
-| Second ROFL | **PARTIAL** (file present; ingest bug fixed; end-to-end acceptance not re-run on fixed HEAD) |
+| RF-11 | **BLOCKED_INSUFFICIENT_REAL_REVIEWS** (n=2) |
+| Second ROFL | **PARTIAL** (import/review/ROFL link PASS; replay seek N/A — zero improvement items) |
 | CLI | **PASS** |
 
 ---
