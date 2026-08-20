@@ -41,4 +41,9 @@ describe('production home / fixture separation', () => {
     expect(view.actionId).toBe('sign_in_api_key')
     expect(wizard.toLowerCase()).not.toContain('from-fixture')
   })
+
+  it('routes unseen-match ingest through ingestMatch IPC', () => {
+    expect(wizard).toContain('window.rift.ingestMatch(replayMatchId)')
+    expect(wizard).toContain('runIngestMatch')
+  })
 })

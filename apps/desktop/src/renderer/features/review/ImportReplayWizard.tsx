@@ -134,12 +134,29 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
     setInfoLabel(`Loading players for ${matchId}…`)
     const listed = await window.rift.listMatchParticipants(matchId)
     if (!listed.ok) {
-      failWith(listed.code, listed.message)
+      failWith(listed.code, listed.message, listed.suggested_action ?? null)
       return
     }
     setParticipants(listed.participants)
     setInfoLabel(`Choose your champion for ${matchId}.`)
     setBusy(false)
+  }
+
+  const runIngestMatch = async (): Promise<void> => {
+    if (pendingPath === null || replayMatchId === null) {
+      return
+    }
+    setBusy(true)
+    setErrorLabel(null)
+    setInfoLabel(null)
+    setStep('matching')
+    setInfoLabel(`Downloading match data for ${replayMatchId}…`)
+    const ingested = await window.rift.ingestMatch(replayMatchId)
+    if (!ingested.ok) {
+      failWith(ingested.code, ingested.message, ingested.suggested_action ?? null)
+      return
+    }
+    await openReplayMatchFlow(pendingPath, replayMatchId)
   }
 
   const openReplayMatchFlow = async (path: string, matchId: string): Promise<void> => {
@@ -217,10 +234,13 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
           ? String(imported.error.details['replay_match_id'])
           : null)
       setReplayMatchId(hint)
-      if (
-        (imported.code === 'MATCH_NOT_INGESTED' || imported.code === 'MATCH_IDENTITY_MISMATCH') &&
-        hint !== null
-      ) {
+      if (imported.code === 'MATCH_NOT_INGESTED' && hint !== null) {
+        setPendingPath(picked.path)
+        setReplayMatchId(hint)
+        failWith(imported.code, imported.message, imported.suggested_action)
+        return
+      }
+      if (imported.code === 'MATCH_IDENTITY_MISMATCH' && hint !== null) {
         await openReplayMatchFlow(picked.path, hint)
         return
       }
@@ -240,10 +260,12 @@ export function ImportReplayWizard(props: Props): ReactElement | null {
   }
 
   const handlePrimaryAction = (): void => {
+    if (actionId === 'ingest_match' && pendingPath !== null && replayMatchId !== null) {
+      void runIngestMatch()
+      return
+    }
     if (
-      (actionId === 'open_replay_match' ||
-        actionId === 'ingest_match' ||
-        actionId === 'choose_participant') &&
+      (actionId === 'open_replay_match' || actionId === 'choose_participant') &&
       pendingPath !== null &&
       replayMatchId !== null
     ) {

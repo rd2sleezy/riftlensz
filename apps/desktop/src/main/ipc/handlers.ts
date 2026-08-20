@@ -519,7 +519,8 @@ async function listMatchParticipants(
     return {
       ok: false as const,
       code: typed?.code ?? 'UNKNOWN',
-      message: typed?.message ?? 'Could not list match participants.'
+      message: typed?.message ?? 'Could not list match participants.',
+      suggested_action: typed?.suggested_action ?? null
     }
   } catch (error) {
     if (apiKey === null) {
@@ -565,7 +566,8 @@ async function ingestMatch(
         typed?.message ??
         (apiKey === null
           ? 'Riot access is required to download this match.'
-          : 'Match ingest failed.')
+          : 'Match ingest failed.'),
+      suggested_action: typed?.suggested_action ?? (apiKey === null ? 'sign_in_api_key' : null)
     }
   } catch (error) {
     if (apiKey === null) {

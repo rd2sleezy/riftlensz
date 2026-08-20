@@ -631,7 +631,8 @@ export const MatchParticipantsResultSchema = z.discriminatedUnion('ok', [
   z.object({
     ok: z.literal(false),
     code: z.string(),
-    message: z.string()
+    message: z.string(),
+    suggested_action: z.string().nullable().optional()
   })
 ])
 
@@ -648,7 +649,8 @@ export const IngestMatchResultSchema = z.discriminatedUnion('ok', [
   z.object({
     ok: z.literal(false),
     code: z.string(),
-    message: z.string()
+    message: z.string(),
+    suggested_action: z.string().nullable().optional()
   })
 ])
 

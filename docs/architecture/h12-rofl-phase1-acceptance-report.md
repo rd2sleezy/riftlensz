@@ -1,6 +1,6 @@
 # H.12-ROFL — Phase 1 ROFL-First Definition of Done
 
-**Date:** 2026-08-16 (engineering + real-replay gates); **RF-5 manual T4 updated 2026-08-19**  
+**Date:** 2026-08-16 (engineering + real-replay gates); **RF-5 manual T4 updated 2026-08-19**; **second-ROFL ingest fix 2026-08-19**  
 **Branch:** `integrate/ui-r1`  
 **Does not implement:** R.12, V.7, VIDEO corpus harvesting, new visual research, new coaching rules, new product architecture, remote replay hosting, Phase 2, camera-attachment changes.
 
@@ -368,11 +368,41 @@ Review `01M06GVG21399Y34RQ3YSWN96A`, Vladimir TOP, WIN, ~41 min, null LLM templa
 
 ## 14. Second-replay result
 
-**Verdict: BLOCKED** — second independent `.rofl` **not present** on this Mac.
+**Verdict: PARTIAL — production ingest bug fixed; real second-match acceptance not yet re-run on fixed HEAD**
 
-Inventory: only `NA1-5620410094.rofl` under Documents League Replays. **`NA1_5617764200` is not on this machine.** Not fabricated.
+Second independent `.rofl` now present on this Mac:
 
-Historical Windows T4 on `NA1_5617764200` (older HEAD) may be cited as **historical only**. Current Windows real-replay acceptance is **unverified**.
+| Field | Value |
+|---|---|
+| File | `/Users/rylanddunn/Documents/League of Legends/Replays/NA1-5624772791.rofl` (7 585 597 bytes) |
+| Identity | `NA1_5624772791` (filename `NA1-5624772791.rofl` → underscore form) |
+| Pre-fix DB | **Absent** from `~/.riftlens/riftlens.db` `match` table (only `NA1_5620410094` + fixtures) |
+
+### Reproduced failure (pre-fix)
+
+Import League Replay wizard correctly identified `NA1_5624772791`, reported **match not in RiftLens yet**, and showed **Ingest this match**. Clicking the button **looped** to the same state without persisting the match or opening the participant picker.
+
+### Root cause (diagnosed)
+
+1. **UI:** `ImportReplayWizard` treated `ingest_match` like `open_replay_match` — it re-ran `openReplayMatchFlow` instead of calling `window.rift.ingestMatch` → `POST /matches/ingest`. No explicit ingest IPC on button click.
+2. **Error mapping:** Riot HTTP **403 Forbidden** (typical expired 24 h dev key) was mapped to **`MATCH_NOT_INGESTED`**, so the UI showed “match not in RiftLens yet” and offered **Ingest this match** again — an infinite misleading loop even when `listMatchParticipants` attempted fetch.
+3. **Why `NA1_5620410094` worked:** that match was already persisted locally from an earlier successful ingest; `import_rofl` only checks the DB and does not call Riot. The second match is genuinely uncached.
+
+`POST /matches/ingest` was **not** invoked on **Ingest this match** before the fix. Match-id normalization (`NA1-5624772791.rofl` → `NA1_5624772791`) was already correct.
+
+### Fix (smallest production diff)
+
+- Wizard: `runIngestMatch()` calls `ingestMatch` IPC, then continues participant/review flow; initial `MATCH_NOT_INGESTED` stops at failed step with honest ingest button (no silent auto-loop).
+- Sidecar: `_replay_error_from_riot_exc` maps **Forbidden → `RIOT_CREDENTIAL_MISSING`** (sign-in action), **NotFound / RateLimited / 5xx** → honest messages (not generic ingest loop).
+- Regression: `test_real_match_ingest_errors.py`, `importReplayWizard.test.ts`.
+
+### Post-fix real acceptance (this run)
+
+**Not completed end-to-end on fixed HEAD in this session.** Operator desktop auth session exists (`session.enc` dated 2026-08-12); CLI `settings.riot_api_key` is empty. Without a verified fresh Riot developer key in the desktop Account menu, ingest cannot be re-run here. **Operator action:** refresh API key → Import `NA1-5624772791.rofl` → **Ingest this match** → participant picker → review → ROFL bind → Open Replay smoke.
+
+Until that succeeds: second independent ROFL-backed review remains **unproven**. RF-11 count unchanged (**n=1**).
+
+Historical Windows T4 on `NA1_5617764200` (older HEAD) remains **historical only**.
 
 ---
 
@@ -426,6 +456,7 @@ VIDEO remains experimental. **H.12-ROFL PASS must not imply VIDEO production rea
 | Real `review <match_id>` required `--vod` or a fixture folder | CLI always called `_load_fixture_pair` | Route non-fixture ids through H.11 with no media | `test_cli_review_real_match_without_vod_uses_null_job_runner` |
 | Cached H.11 rerun `IntegrityError` on `finding.id` | Persist `add`s cached finding ULIDs; coaching/metrics already `replace_for_review` | Finding `replace_for_review` after clearing coaching links | `test_cached_rerun_persist_is_idempotent` |
 | Open Replay `PLAYBACK_NOT_ADVANCING` at end of match (`t≈length`) | READY required time to increase; finished replay cannot | Rewind ~5 s from end, then re-sample; mid-timeline freeze still fails | `test_playback_at_end_rewinds_then_ready` |
+| Second `.rofl` ingest loop (`NA1_5624772791`) | Ingest button never called `ingestMatch` IPC; Riot 403 mapped to `MATCH_NOT_INGESTED` | Wizard `runIngestMatch` + honest Riot error mapping in `_fetch_pair` | `test_real_match_ingest_errors.py`, `importReplayWizard.test.ts` |
 
 No feature expansion.
 
@@ -433,7 +464,7 @@ No feature expansion.
 
 ## 19. Limitations
 
-- One real `.rofl` / one real review on this Mac.
+- One real ROFL-backed review proven on this Mac (`NA1_5620410094`); second file present but ingest acceptance pending operator re-run with fresh Riot key.
 - Overlay live pixels were **user-observed**, not automated.
 - Coaching seeks do not lock the camera to the reviewed subject (deferred, non-blocking).
 - Friend-test N=10 not possible.
@@ -461,7 +492,7 @@ No feature expansion.
 | RF-9 | **PASS** |
 | RF-10 | **PASS** |
 | RF-11 | **BLOCKED_INSUFFICIENT_REAL_REVIEWS** (n=1) |
-| Second ROFL | **BLOCKED** (file absent) |
+| Second ROFL | **PARTIAL** (file present; ingest bug fixed; end-to-end acceptance not re-run on fixed HEAD) |
 | CLI | **PASS** |
 
 ---

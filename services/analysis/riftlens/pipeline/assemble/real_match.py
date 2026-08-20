@@ -197,6 +197,53 @@ async def build_real_match_review(
     )
 
 
+def _replay_error_from_riot_exc(match_id: str, exc: Forbidden | NotFound | RateLimited | ServerError) -> ReplayError:
+    """Map Riot client failures to honest ReplayError codes. Never hides credential expiry."""
+    if isinstance(exc, Forbidden):
+        return ReplayError(
+            ReplayErrorCode.RIOT_CREDENTIAL_MISSING,
+            message=str(exc),
+            details={
+                "match_id": match_id,
+                "riot_error": type(exc).__name__,
+                "suggested_action": "sign_in_api_key",
+            },
+        )
+    if isinstance(exc, NotFound):
+        return ReplayError(
+            ReplayErrorCode.MATCH_NOT_INGESTED,
+            message="Riot has no record of this match. Check the match id or try again later.",
+            details={
+                "match_id": match_id,
+                "riot_error": type(exc).__name__,
+                "suggested_action": "choose_file",
+            },
+        )
+    if isinstance(exc, RateLimited):
+        return ReplayError(
+            ReplayErrorCode.MATCH_NOT_INGESTED,
+            message=(
+                f"Riot rate limit reached ({exc.scope}). "
+                f"Wait about {int(exc.retry_after_s)} seconds and try again."
+            ),
+            details={
+                "match_id": match_id,
+                "riot_error": type(exc).__name__,
+                "retry_after_s": exc.retry_after_s,
+                "suggested_action": "retry",
+            },
+        )
+    return ReplayError(
+        ReplayErrorCode.MATCH_NOT_INGESTED,
+        message="Riot servers returned an error while downloading this match. Try again shortly.",
+        details={
+            "match_id": match_id,
+            "riot_error": type(exc).__name__,
+            "suggested_action": "retry",
+        },
+    )
+
+
 async def _fetch_pair(
     match_id: str,
     *,
@@ -213,14 +260,7 @@ async def _fetch_pair(
         match = await client.get_match(match_id, routing)
         timeline = await client.get_timeline(match_id, routing)
     except (Forbidden, NotFound, RateLimited, ServerError) as exc:
-        raise ReplayError(
-            ReplayErrorCode.MATCH_NOT_INGESTED,
-            details={
-                "match_id": match_id,
-                "riot_error": type(exc).__name__,
-                "suggested_action": "ingest_match",
-            },
-        ) from exc
+        raise _replay_error_from_riot_exc(match_id, exc) from exc
     finally:
         await client.aclose()
     return match, timeline
