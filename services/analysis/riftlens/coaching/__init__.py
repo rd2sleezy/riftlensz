@@ -16,6 +16,11 @@ from riftlens.coaching.context import (
     EpisodeBuilderConfig,
     build_coaching_episodes,
 )
+from riftlens.coaching.evaluation import (
+    EVALUATION_SCHEMA_VERSION,
+    HUMAN_VALIDATION_STATUS,
+    run_ci_regression_benchmark,
+)
 from riftlens.coaching.interpretation import (
     EPISODE_INTERPRETATION_SCHEMA_VERSION,
     EpisodeInterpretation,
@@ -45,6 +50,8 @@ __all__ = [
     "COACHING_EPISODE_SCHEMA_VERSION",
     "CONCEPTS_SCHEMA_VERSION",
     "EPISODE_INTERPRETATION_SCHEMA_VERSION",
+    "EVALUATION_SCHEMA_VERSION",
+    "HUMAN_VALIDATION_STATUS",
     "LONGITUDINAL_SCHEMA_VERSION",
     "PRIORITIZATION_SCHEMA_VERSION",
     "TEACHING_SCHEMA_VERSION",
@@ -71,6 +78,7 @@ __all__ = [
     "map_concept_signals",
     "prioritize",
     "prioritize_lesson_candidates",
+    "run_ci_regression_benchmark",
     "score_clusters",
     "score_lesson_candidates",
     "synthesize_lesson_candidates",
