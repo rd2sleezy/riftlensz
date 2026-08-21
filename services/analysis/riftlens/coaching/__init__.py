@@ -30,12 +30,18 @@ from riftlens.coaching.prioritization import (
 )
 from riftlens.coaching.prioritizer import PrioritizedSet, prioritize
 from riftlens.coaching.scoring import score_clusters
+from riftlens.coaching.teaching import (
+    TEACHING_SCHEMA_VERSION,
+    TeachingLessonSet,
+    build_teaching_lessons,
+)
 
 __all__ = [
     "COACHING_EPISODE_SCHEMA_VERSION",
     "CONCEPTS_SCHEMA_VERSION",
     "EPISODE_INTERPRETATION_SCHEMA_VERSION",
     "PRIORITIZATION_SCHEMA_VERSION",
+    "TEACHING_SCHEMA_VERSION",
     "ClusterResult",
     "CoachingEpisode",
     "EpisodeBuilderConfig",
@@ -45,7 +51,9 @@ __all__ = [
     "PrioritizedLessonSet",
     "PrioritizedSet",
     "SynthesisResult",
+    "TeachingLessonSet",
     "build_coaching_episodes",
+    "build_teaching_lessons",
     "bundle_item",
     "bundle_review",
     "cluster_findings",

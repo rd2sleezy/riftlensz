@@ -299,6 +299,25 @@ forbidden_modules = [
 ]
 
 [[tool.importlinter.contracts]]
+name = "c5 coaching teaching isolation"
+type = "forbidden"
+source_modules = ["riftlens.coaching.teaching"]
+forbidden_modules = [
+    "riftlens.visual",
+    "riftlens.vision",
+    "riftlens.replay_host",
+    "riftlens.gameplay",
+    "riftlens.api",
+    "riftlens.orchestration",
+    "riftlens.coaching.providers",
+    "riftlens.coaching.composer",
+    "riftlens.coaching.validator",
+    "riftlens.coaching.bundler",
+    "openai",
+    "anthropic",
+]
+
+[[tool.importlinter.contracts]]
 name = "replay lcu isolation"
 type = "forbidden"
 source_modules = ["riftlens.replay_host.lcu"]
