@@ -22,6 +22,11 @@ from riftlens.coaching.interpretation import (
     interpret_coaching_episode,
     interpret_coaching_episodes,
 )
+from riftlens.coaching.longitudinal import (
+    LONGITUDINAL_SCHEMA_VERSION,
+    PlayerCoachingState,
+    build_player_coaching_state,
+)
 from riftlens.coaching.prioritization import (
     PRIORITIZATION_SCHEMA_VERSION,
     PrioritizedLessonSet,
@@ -40,6 +45,7 @@ __all__ = [
     "COACHING_EPISODE_SCHEMA_VERSION",
     "CONCEPTS_SCHEMA_VERSION",
     "EPISODE_INTERPRETATION_SCHEMA_VERSION",
+    "LONGITUDINAL_SCHEMA_VERSION",
     "PRIORITIZATION_SCHEMA_VERSION",
     "TEACHING_SCHEMA_VERSION",
     "ClusterResult",
@@ -48,11 +54,13 @@ __all__ = [
     "EpisodeInterpretation",
     "EvidenceBundle",
     "LessonCandidate",
+    "PlayerCoachingState",
     "PrioritizedLessonSet",
     "PrioritizedSet",
     "SynthesisResult",
     "TeachingLessonSet",
     "build_coaching_episodes",
+    "build_player_coaching_state",
     "build_teaching_lessons",
     "bundle_item",
     "bundle_review",
