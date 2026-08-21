@@ -22,6 +22,12 @@ from riftlens.coaching.interpretation import (
     interpret_coaching_episode,
     interpret_coaching_episodes,
 )
+from riftlens.coaching.prioritization import (
+    PRIORITIZATION_SCHEMA_VERSION,
+    PrioritizedLessonSet,
+    prioritize_lesson_candidates,
+    score_lesson_candidates,
+)
 from riftlens.coaching.prioritizer import PrioritizedSet, prioritize
 from riftlens.coaching.scoring import score_clusters
 
@@ -29,12 +35,14 @@ __all__ = [
     "COACHING_EPISODE_SCHEMA_VERSION",
     "CONCEPTS_SCHEMA_VERSION",
     "EPISODE_INTERPRETATION_SCHEMA_VERSION",
+    "PRIORITIZATION_SCHEMA_VERSION",
     "ClusterResult",
     "CoachingEpisode",
     "EpisodeBuilderConfig",
     "EpisodeInterpretation",
     "EvidenceBundle",
     "LessonCandidate",
+    "PrioritizedLessonSet",
     "PrioritizedSet",
     "SynthesisResult",
     "build_coaching_episodes",
@@ -46,6 +54,8 @@ __all__ = [
     "interpret_coaching_episodes",
     "map_concept_signals",
     "prioritize",
+    "prioritize_lesson_candidates",
     "score_clusters",
+    "score_lesson_candidates",
     "synthesize_lesson_candidates",
 ]
