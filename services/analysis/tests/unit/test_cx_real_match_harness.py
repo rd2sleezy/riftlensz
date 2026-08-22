@@ -90,7 +90,8 @@ def test_harness02_zero_findings_clean() -> None:
     assert result.episodes == ()
     assert result.synthesis.lessons == ()
     assert result.prioritized.major == ()
-    assert "Primary C.5 teaching lesson: NONE" in format_human_report(result)
+    assert "Primary MAJOR lesson: NONE" in format_human_report(result)
+    assert "Top teaching lesson: NONE" in format_human_report(result)
 
 
 def test_harness03_participant_validation() -> None:

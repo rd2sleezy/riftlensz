@@ -51,15 +51,17 @@ python scripts/cx_run_real_match.py \
 
 ## Expected stdout sections
 
-- Top summary banner (match / pid / episode & lesson counts / primary teaching / C.7 status)
-- `## C.1 Episodes`
+- Top summary banner (match / pid / episode & lesson counts / `Primary MAJOR lesson` / `Top teaching lesson` with tier / C.7 status)
+- `## C.1 Episodes` (clock ranges via harness `format_game_clock_ms`)
 - `## C.2 Interpretations`
-- `## C.3 Lesson Candidates` + capability readiness (BLOCKED surfaced)
-- `## C.4 Prioritization` (MAJOR / SECONDARY / STRENGTHS / WITHHELD)
-- `## C.5 Teaching` (via `render_teaching_lesson_set`)
+- `## C.3 Lesson Candidates` + per-concept **replay traceability** (rule / finding / anchor / episode / interpretation) + capability readiness (BLOCKED surfaced)
+- `## C.4 Prioritization` (MAJOR / SECONDARY / STRENGTHS / WITHHELD) each with **Replay moments:** `MM:SS` list
+- `## C.5 Teaching` — `REVIEW THESE MOMENTS:` then unchanged `render_teaching_lesson_set` body
 - Optional C.6 / C.7 sections
 
-Zero findings is a valid clean result (0 episodes / 0 majors).
+Zero findings is a valid clean result (0 episodes / 0 majors). Missing links print `TRACE_UNAVAILABLE` (no invented timestamps).
+
+Harness-only JSON may include a `traceability` map; C.1–C.7 schemas are not modified.
 
 ## Privacy
 

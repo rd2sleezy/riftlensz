@@ -36,6 +36,18 @@ from riftlens.coaching.prioritization import prioritize_lesson_candidates
 from riftlens.coaching.prioritization.models import PrioritizedLessonSet
 from riftlens.coaching.teaching import build_teaching_lessons, render_teaching_lesson_set
 from riftlens.coaching.teaching.models import TeachingLessonSet
+from riftlens.coaching.validation.traceability import (
+    ConceptReplayTrace,
+    TraceIndex,
+    build_trace_index,
+    format_concept_trace_block,
+    format_game_clock_ms,
+    format_replay_moments,
+    format_review_these_moments,
+    trace_for_lesson_candidate,
+    trace_for_prioritized,
+    trace_for_teaching,
+)
 from riftlens.domain.finding import Finding
 from riftlens.domain.ports import PatchData
 from riftlens.domain.timeline import GameStateTimeline
@@ -65,6 +77,7 @@ class CxValidationResult:
     finding_count: int
     patch_status: str
     notes: tuple[str, ...]
+    findings: tuple[Finding, ...]
     episodes: tuple[CoachingEpisode, ...]
     interpretations: tuple[EpisodeInterpretation, ...]
     synthesis: SynthesisResult
@@ -78,6 +91,16 @@ class CxValidationResult:
     c7_reminder: str = "HUMAN QUALITY VALIDATION = NOT PERFORMED"
 
     def to_dict(self) -> dict[str, Any]:
+        index = build_trace_index(
+            findings=self.findings,
+            episodes=self.episodes,
+            interpretations=self.interpretations,
+            synthesis=self.synthesis,
+        )
+        traces = {
+            lesson.concept_id: trace_for_lesson_candidate(lesson, index).to_dict()
+            for lesson in self.synthesis.lessons
+        }
         return {
             "metadata": {
                 "match_id": self.match_id,
@@ -97,6 +120,7 @@ class CxValidationResult:
             "c4_prioritized": self.prioritized.to_dict(),
             "c5_teaching": self.teaching.to_dict(),
             "c5_render": self.teaching_render,
+            "traceability": traces,
             "c6_state": self.c6_state.to_dict() if self.c6_state else None,
             "c6_notes": list(self.c6_notes),
             "c7": {
@@ -209,6 +233,7 @@ def run_cx_pipeline(
         finding_count=len(findings),
         patch_status=patch_status,
         notes=tuple(notes.items),
+        findings=tuple(findings),
         episodes=tuple(episodes),
         interpretations=tuple(interpretations),
         synthesis=synthesis,
@@ -222,14 +247,25 @@ def run_cx_pipeline(
     )
 
 
+def _banner_focus_lines(result: CxValidationResult) -> tuple[str, str]:
+    """Presentation-only banner lines — does not change C.4/C.5 tiers."""
+    major = result.prioritized.major
+    if major:
+        primary_major = f"Primary MAJOR lesson: {major[0].concept_id}"
+    else:
+        primary_major = "Primary MAJOR lesson: NONE"
+
+    if not result.teaching.lessons:
+        return primary_major, "Top teaching lesson: NONE"
+
+    top = result.teaching.lessons[0]
+    return primary_major, f"Top teaching lesson: {top.concept_id} ({top.tier})"
+
+
 def format_human_report(result: CxValidationResult) -> str:
     """Build the developer-facing stdout report (no PII fields)."""
     lines: list[str] = []
-    primary = (
-        result.teaching.lessons[0].concept_id
-        if result.teaching.lessons
-        else "NONE"
-    )
+    primary_major, top_teaching = _banner_focus_lines(result)
     c7_line = "NOT RUN"
     if result.c7_passed is not None:
         c7_line = (
@@ -237,6 +273,13 @@ def format_human_report(result: CxValidationResult) -> str:
             f"(hard_fails={len(result.c7_hard_fails)}) — "
             f"{result.c7_reminder}"
         )
+
+    index = build_trace_index(
+        findings=result.findings,
+        episodes=result.episodes,
+        interpretations=result.interpretations,
+        synthesis=result.synthesis,
+    )
 
     lines.extend(
         [
@@ -261,7 +304,8 @@ def format_human_report(result: CxValidationResult) -> str:
             f"Strengths: {len(result.prioritized.strengths)}",
             f"Withheld: {len(result.prioritized.withheld)}",
             "",
-            f"Primary C.5 teaching lesson: {primary}",
+            primary_major,
+            top_teaching,
             f"C.7 hard failures: {c7_line}",
             "",
             "WARNING: C.x output is experimental.",
@@ -291,7 +335,10 @@ def format_human_report(result: CxValidationResult) -> str:
         ]
         gap_fields = [gap.field for gap in episode.gaps]
         lines.append(
-            f"- {episode.id} t=[{episode.start_ms},{episode.end_ms}] "
+            f"- {episode.id} "
+            f"{format_game_clock_ms(episode.start_ms)}–"
+            f"{format_game_clock_ms(episode.end_ms)} "
+            f"t=[{episode.start_ms},{episode.end_ms}] "
             f"anchors={anchors} associated={associated} "
             f"gaps={gap_fields} resolutions={resolutions}"
         )
@@ -329,6 +376,8 @@ def format_human_report(result: CxValidationResult) -> str:
             f"gaps={list(lesson.context_gaps)[:6]} "
             f"hypotheses={len(lesson.causal_hypothesis_ids)}"
         )
+        concept_trace = trace_for_lesson_candidate(lesson, index)
+        lines.extend(format_concept_trace_block(concept_trace))
     lines.append("### Capability readiness")
     for cap in result.synthesis.capabilities:
         mark = " << BLOCKED" if cap.readiness is CapabilityStatus.BLOCKED else ""
@@ -355,9 +404,35 @@ def format_human_report(result: CxValidationResult) -> str:
                 f"reasons={reasons} "
                 f"exclusion={item.exclusion_reason}"
             )
+            concept_trace = trace_for_prioritized(item, index)
+            lines.extend(format_replay_moments(concept_trace))
 
     lines.extend(["", "## C.5 Teaching"])
-    lines.append(result.teaching_render)
+    if not result.teaching.lessons:
+        lines.append(result.teaching_render)
+    else:
+        capability_by_concept = {
+            row.concept_id: row.capability_status
+            for row in (
+                *result.prioritized.major,
+                *result.prioritized.secondary,
+                *result.prioritized.strengths,
+                *result.prioritized.withheld,
+            )
+        }
+        rendered_blocks = result.teaching_render.split("\n\n")
+        for i, teaching_lesson in enumerate(result.teaching.lessons):
+            concept_trace = trace_for_teaching(
+                teaching_lesson,
+                index,
+                capability_status=capability_by_concept.get(
+                    teaching_lesson.concept_id
+                ),
+            )
+            lines.extend(format_review_these_moments(concept_trace))
+            if i < len(rendered_blocks):
+                lines.append(rendered_blocks[i])
+            lines.append("")
 
     if result.c6_state is not None or result.c6_notes:
         lines.extend(["", "## C.6 Single-game longitudinal (optional)"])
@@ -401,6 +476,14 @@ def format_human_report(result: CxValidationResult) -> str:
     text = "\n".join(lines) + "\n"
     _assert_no_sensitive_leak(text)
     return text
+
+
+# Re-export for tests / package surface
+__trace_helpers__ = (
+    ConceptReplayTrace,
+    TraceIndex,
+    format_game_clock_ms,
+)
 
 
 def assert_safe_output_path(path: Path, *, repo_root: Path) -> Path:
