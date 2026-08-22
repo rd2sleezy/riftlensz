@@ -356,6 +356,22 @@ forbidden_modules = [
 ]
 
 [[tool.importlinter.contracts]]
+name = "cx validation harness isolation"
+type = "forbidden"
+source_modules = ["riftlens.coaching.validation"]
+forbidden_modules = [
+    "riftlens.visual",
+    "riftlens.vision",
+    "riftlens.replay_host",
+    "riftlens.gameplay",
+    "riftlens.api",
+    "riftlens.orchestration",
+    "riftlens.coaching.providers",
+    "openai",
+    "anthropic",
+]
+
+[[tool.importlinter.contracts]]
 name = "replay lcu isolation"
 type = "forbidden"
 source_modules = ["riftlens.replay_host.lcu"]
