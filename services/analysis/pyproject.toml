@@ -372,6 +372,59 @@ forbidden_modules = [
 ]
 
 [[tool.importlinter.contracts]]
+name = "rp0 reference parity isolation"
+type = "forbidden"
+source_modules = ["riftlens.coaching.parity"]
+forbidden_modules = [
+    "riftlens.visual",
+    "riftlens.vision",
+    "riftlens.replay_host",
+    "riftlens.gameplay",
+    "riftlens.api",
+    "riftlens.orchestration",
+    "riftlens.coaching.providers",
+    "riftlens.coaching.composer",
+    "riftlens.coaching.validator",
+    "riftlens.coaching.bundler",
+    "riftlens.coaching.context",
+    "riftlens.coaching.interpretation",
+    "riftlens.coaching.concepts",
+    "riftlens.coaching.prioritization",
+    "riftlens.coaching.teaching",
+    "riftlens.coaching.longitudinal",
+    "riftlens.coaching.evaluation",
+    "riftlens.coaching.validation",
+    "openai",
+    "anthropic",
+]
+
+[[tool.importlinter.contracts]]
+name = "production isolation from rp0 parity"
+type = "forbidden"
+source_modules = [
+    "riftlens.api",
+    "riftlens.pipeline",
+    "riftlens.analysis",
+    "riftlens.orchestration",
+    "riftlens.visual",
+    "riftlens.replay_host",
+    "riftlens.coaching.context",
+    "riftlens.coaching.interpretation",
+    "riftlens.coaching.concepts",
+    "riftlens.coaching.prioritization",
+    "riftlens.coaching.teaching",
+    "riftlens.coaching.longitudinal",
+    "riftlens.coaching.evaluation",
+    "riftlens.coaching.items",
+    "riftlens.coaching.prioritizer",
+    "riftlens.coaching.bundler",
+    "riftlens.coaching.composer",
+]
+forbidden_modules = [
+    "riftlens.coaching.parity",
+]
+
+[[tool.importlinter.contracts]]
 name = "replay lcu isolation"
 type = "forbidden"
 source_modules = ["riftlens.replay_host.lcu"]
