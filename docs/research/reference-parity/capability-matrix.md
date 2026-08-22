@@ -23,10 +23,10 @@ RiftLens column uses `READY | PARTIAL | BLOCKED | UNTESTED | REFERENCE_ONLY` fro
 
 | Capability | RiftLens | Primary blocker | Track |
 | --- | --- | --- | --- |
-| RP-CAP-WAVE-STATE | BLOCKED | No minion-level GST; MATCH-V5 has no wave geometry | RP.2 ← RP.1 |
+| RP-CAP-WAVE-STATE | BLOCKED | No wave-state engine yet. RP.1 adds `MINION_CANDIDATE` pixels only — not READY | RP.2 ← RP.1 |
 | RP-CAP-WAVE-ACTION | BLOCKED | Requires wave state | RP.2 |
 | RP-CAP-RECALL | PARTIAL | Gold/HP/purchase without wave-dependent recall | RP.2 |
-| RP-CAP-FIGHT-CONTEXT | PARTIAL | ~60s positions; no production identity-stable tracks | RP.3 ← RP.1 |
+| RP-CAP-FIGHT-CONTEXT | PARTIAL | RP.1 champion candidates/tracks exist; no participant binding | RP.3 ← RP.1 |
 | RP-CAP-FIGHT-SELECTION | BLOCKED | Cannot split unaccounted vs knowingly outnumbered | RP.3 |
 | RP-CAP-PLAYER-KNOWLEDGE | BLOCKED | No true fog in Riot timeline | RP.4 |
 | RP-CAP-JUNGLE-INFORMATION | BLOCKED | No player-vision / last-seen proof | RP.4 |

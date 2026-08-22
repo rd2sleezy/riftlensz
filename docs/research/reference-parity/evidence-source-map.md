@@ -13,12 +13,12 @@ python scripts/rp_parity.py sources
 
 | Input | Riot MATCH | Riot timeline | Video frames | CV/OCR | Tracking | Minimap | VLM | Live Client | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Minion count | NO | NO | LIKELY | LIKELY detect | LIKELY | UNKNOWN | POSSIBLE | NO | V.0–V.2 treated minion-sized bars as noise. Dedicated detector required. |
-| Minion HP | NO | NO | LIKELY | LIKELY if detected | LIKELY | NO | POSSIBLE | NO | |
-| Wave position/direction | NO | NO | LIKELY | — | LIKELY | UNKNOWN | POSSIBLE | NO | Derived from minion tracks. CS delta ≠ wave. |
-| Player HP at t | — | PROVEN ~60s | LIKELY | LIKELY HUD | — | NO | POSSIBLE | POSSIBLE | R.0: `/liveclientdata/activeplayer` HTTP 400 in replay. Do not assume activeplayer HP. |
-| Mana / resource | NO | NO | POSSIBLE | LIKELY HUD | — | NO | POSSIBLE | POSSIBLE | Absent from production GST frames used today. |
-| Dense champion positions | — | PROVEN ~60s + interpolation (omniscient) | LIKELY bars | LIKELY | LIKELY V.1–V.6 spike | POSSIBLE | POSSIBLE | NO | Identity-stable production tracks **not proven**. |
+| Minion count | NO | NO | LIKELY | **PARTIAL (RP.1 short-bar candidates)** | PARTIAL | UNKNOWN | POSSIBLE | NO | RP.1 `MINION_CANDIDATE` on synthetic + local frames. Not wave-state. Real-replay precision TBD. |
+| Minion HP | NO | NO | LIKELY | PARTIAL (bar fill) | PARTIAL | NO | POSSIBLE | NO | Fractional estimate only. |
+| Wave position/direction | NO | NO | LIKELY | — | LIKELY | UNKNOWN | POSSIBLE | NO | Derived from minion tracks. CS delta ≠ wave. **Still missing (RP.2).** |
+| Player HP at t | — | PROVEN ~60s | LIKELY | **PARTIAL (RP.1 HUD fraction)** | — | NO | POSSIBLE | POSSIBLE | Fractional HUD when green bar visible; else UNKNOWN. |
+| Mana / resource | NO | NO | POSSIBLE | **PARTIAL / UNKNOWN** | — | NO | POSSIBLE | POSSIBLE | UNKNOWN when blue bar absent — never fabricated 0. |
+| Dense champion positions | — | PROVEN ~60s | LIKELY bars | PARTIAL (V.2 via RP.1) | PARTIAL RP.1 tracks | POSSIBLE | POSSIBLE | NO | Identity-stable production tracks **not proven**. |
 | True player vision | NO | NO | POSSIBLE | — | LIKELY if gated | POSSIBLE | POSSIBLE | NO | Omniscient timeline ≠ player knowledge. |
 | Ward positions | — | NO position field (PROVEN gap) | POSSIBLE | POSSIBLE | — | POSSIBLE | POSSIBLE | NO | CURSOR.md: WARD_PLACED/KILL have no position. |
 | Jungler last-seen | NO | omniscient ≠ last-seen | POSSIBLE | — | LIKELY | POSSIBLE | POSSIBLE | NO | Needs a visibility gate. |
@@ -30,4 +30,6 @@ python scripts/rp_parity.py sources
 
 **Manual annotation:** always PROVEN as a benchmark fallback; not a product perception path.
 
-**Inference:** a shared RP.1 perception layer is the dependency for wave, fight-time resources, and (later) vision. Do not implement those detectors in RP.0.
+**Inference:** RP.1 (`riftlens.perception`) provides candidate bars/HUD/minimap ROI. Wave/fight/knowledge semantics remain later tracks.
+
+See [rp1-perception.md](./rp1-perception.md).

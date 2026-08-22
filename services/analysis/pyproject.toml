@@ -114,6 +114,7 @@ forbidden_modules = [
     "riftlens.gameplay",
     "riftlens.vision",
     "riftlens.orchestration",
+    "riftlens.perception",
     "openai",
     "anthropic",
 ]
@@ -422,6 +423,36 @@ source_modules = [
 ]
 forbidden_modules = [
     "riftlens.coaching.parity",
+]
+
+[[tool.importlinter.contracts]]
+name = "rp1 perception isolation"
+type = "forbidden"
+source_modules = ["riftlens.perception"]
+forbidden_modules = [
+    "riftlens.coaching",
+    "riftlens.api",
+    "riftlens.orchestration",
+    "riftlens.analysis",
+    "riftlens.pipeline",
+    "riftlens.replay_host",
+    "riftlens.gameplay",
+    "openai",
+    "anthropic",
+]
+
+[[tool.importlinter.contracts]]
+name = "production isolation from rp1 perception"
+type = "forbidden"
+source_modules = [
+    "riftlens.api",
+    "riftlens.pipeline",
+    "riftlens.analysis",
+    "riftlens.orchestration",
+    "riftlens.coaching",
+]
+forbidden_modules = [
+    "riftlens.perception",
 ]
 
 [[tool.importlinter.contracts]]

@@ -11,7 +11,8 @@
 | Layer | Status |
 | --- | --- |
 | **RP.0 benchmark / registry infrastructure** | COMPLETE |
-| **Capability implementation (wave, fight, CV, …)** | NOT STARTED (later RP tracks) |
+| **RP.1 rich replay perception foundation** | COMPLETE (`riftlens.perception`) |
+| **Capability reasoning (wave, fight, …)** | NOT STARTED (RP.2+) |
 | **HUMAN QUALITY VALIDATION** | NOT YET PERFORMED |
 | **Independent expert validation of the Vladimir match** | NOT PERFORMED (pilot is `PILOT_SELF_REVIEW`) |
 
@@ -61,7 +62,8 @@ specialized perception/reasoning (later RP tracks)
 | [capability-matrix.md](./capability-matrix.md) | Matrix + how to regenerate |
 | [baseline-vladimir-match.md](./baseline-vladimir-match.md) | NA1_5620410094 pid 6 pilot |
 | [evidence-source-map.md](./evidence-source-map.md) | Where missing inputs could come from |
-| [rp-roadmap.md](./rp-roadmap.md) | RP.1+ dependencies and next track |
+| [rp-roadmap.md](./rp-roadmap.md) | RP track order |
+| [rp1-perception.md](./rp1-perception.md) | RP.1 architecture, CLI, consumers |
 
 ## Privacy
 
